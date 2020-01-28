@@ -1,5 +1,7 @@
-const express = require('express'),
+const
     mongoose = require('mongoose'),
+    express = require('express'),
+
     cors = require('cors'),
     config = require('./configuracion'),
     app = module.exports = express(),
