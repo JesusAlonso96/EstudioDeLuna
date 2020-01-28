@@ -9,7 +9,7 @@
     "ng": "ng",
     "start": "npm run start --prefix servidor",
     "start-dev": "ng serve -o --proxy-config proxy.conf.json",
-    "build": "ng build",
+    "build": "ng build --prod",
     "heroku-postbuild":"npm run build",
     "test": "ng test",
     "lint": "ng lint",
