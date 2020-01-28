@@ -1,0 +1,130 @@
+@import 'variables';
+.titulo{
+    margin-top: 40px;
+   // margin-left: 30px;
+    color: $light-gray-color;
+}
+.hr{
+    //margin-left: 30px;
+}
+.principal{
+    margin-left: 50px ;
+    margin-right: 50px;
+}
+.card-pedidos-cola{
+    cursor: pointer;
+    border-left: 4px solid $info;
+    .titulo1{
+        font-size: 12px;
+        color: $info;
+    }
+    .info1{
+        font-size: 20px;
+        color: $main-text-color;
+        letter-spacing: 0.5px;
+    }
+    .icono{
+        color: $light-gray-color2;
+        position: absolute;
+        font-size: 60px;
+        width: 60px;
+        height: 60px;
+        right: 0;
+        top: 0;
+        margin-top: 15px;
+        margin-right: 10px;
+    }
+}
+.card-pedidos-proceso{
+    cursor: pointer;
+    border-left: 4px solid $warn;
+    .titulo1{
+        font-size: 12px;
+        color: $warn;
+    }
+    .info1{
+        font-size: 20px;
+        color: $main-text-color;
+        letter-spacing: 0.5px;
+    }
+    .icono{
+        color: $light-gray-color2;
+        position: absolute;
+        font-size: 60px;
+        width: 60px;
+        height: 60px;
+        right: 0;
+        top: 0;
+        margin-top: 15px;
+        margin-right: 10px;
+    }
+   
+}
+.card-pedidos-realizados{
+    cursor: pointer;
+    border-left: 4px solid $success;
+    .titulo1{
+        font-size: 12px;
+        color: $success;
+    }
+    .info1{
+        font-size: 20px;
+        color: $main-text-color;
+        letter-spacing: 0.5px;
+    }
+    .icono{
+        color: $light-gray-color2;
+        position: absolute;
+        font-size: 60px;
+        width: 60px;
+        height: 60px;
+        right: 0;
+        top: 0;
+        margin-top: 15px;
+        margin-right: 10px;
+    }
+   
+}
+.card-pedidos-proximos{
+    cursor: pointer;
+    border-left: 4px solid $danger;
+    .titulo1{
+        font-size: 12px;
+        color: $danger;
+    }
+    .info1{
+        font-size: 20px;
+        color: $main-text-color;
+        letter-spacing: 0.5px;
+    }
+    .icono{
+        color: $light-gray-color2;
+        position: absolute;
+        font-size: 60px;
+        width: 60px;
+        height: 60px;
+        right: 0;
+        top: 0;
+        margin-top: 15px;
+        margin-right: 10px;
+    }
+
+    
+   
+}
+.pedidos-proximos{
+    
+    box-shadow: 0px 0px 20px $light-gray-color2;
+    margin-top: 15px;
+    &:before{
+        content: '';
+        height: 15px;
+        width: 15px;
+        display: block;
+        position: absolute;
+        top: -20px;
+        left: 85%;
+        border: 10px solid #fff;
+        border-color: transparent transparent #fff transparent;
+    }
+}

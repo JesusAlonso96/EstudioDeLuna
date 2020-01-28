@@ -1,0 +1,30 @@
+<app-barra-cargando [cargando]="cargando"></app-barra-cargando>
+<mat-toolbar>
+    <button mat-button (click)="seleccionarEmpleado()">
+        <mat-icon>search</mat-icon>
+        Buscar pedidos por empleado
+    </button>
+</mat-toolbar>
+<div class="container margin-top">
+    <div class="row" *ngIf="buscar">
+        <div class="col-lg-12">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto my-1">
+                        <mat-chip-list *ngIf="empleadoSeleccionado">
+                            <mat-chip>Pedidos de {{empleadoSeleccionado.nombre}} {{empleadoSeleccionado.ape_pat}}
+                                {{empleadoSeleccionado.ape_mat}}
+                                <mat-icon matChipRemove (click)="quitarFiltro()">cancel</mat-icon>
+                            </mat-chip>
+                        </mat-chip-list>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <app-lista-pedidos *ngIf="pedidos" [pedidos]="pedidos"></app-lista-pedidos>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,105 @@
+@import 'variables';
+
+.contenedor{
+    height: 93%;
+    border-bottom: 2px solid $light-gray-color2;
+
+}
+.productos{
+    margin-bottom: 10px;
+}
+.titulo-productos{
+    margin: 10px 0;
+    color: $light-gray-color;
+}
+.titulo-productos2{
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 10px;
+    width: 100%;
+}
+.total{
+    font-size: 18px;
+}
+.total1{
+    font-size: 18px;
+    margin-left: 3%;
+}
+.formulario{
+    
+}
+.quitarProducto{
+    cursor: pointer;
+}
+.familias, .productos, .agregados{
+    border-right: 2px solid $light-gray-color2;
+}
+.titulo{
+    margin-top: 10px;
+}
+.titulo-orden{
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+.familias-item{
+    width: 100%;
+    &:hover{
+        cursor: pointer;
+        background-color: $light-gray-color2;
+    }
+}
+.agregar{
+    margin-right: 7%;
+}
+.titulo-productos3{
+    margin-top: 5px;
+    //margin-bottom: 8px;
+    margin-left: 10px;
+    width: 100%;
+   
+}
+.headers{
+    background-color: $light-gray-color2;
+}
+mat-radio-group{
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+}
+mat-radio-button{
+    margin: 5px; 
+}
+.buscarCliente{
+    z-index: 99999;
+}
+.cargando{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,.6);
+    z-index: 1000000000000000000000000000000;
+    .spinner{
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 20%;
+    }
+    h3{
+        z-index: 100000;
+        color: #ffffff;
+        margin-top: 2%;
+        text-align: center;
+    }
+}
+.imagen{
+    background-size: cover;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+}
+.btn-img{
+    margin-bottom: 5px;
+}
+
+table{
+    width: 100%;
+}

@@ -1,0 +1,68 @@
+<app-barra-cargando [cargando]="cargando"></app-barra-cargando>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <mat-form-field class="full-width margin-top" appearance="outline">
+                <mat-label>Buscar usuario</mat-label>
+                <input [(ngModel)]="busquedaUsuario" placeholder="Buscar por nombre" (keyup)="aplicarFiltroBusqueda()"
+                    autocomplete="off" matInput>
+                <button *ngIf="busquedaUsuario" (click)="borrarBusqueda()" mat-button matSuffix mat-icon-button>
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12" style="margin-bottom: 40px;">
+            <div class="mat-elevation-z8">
+                <mat-table [dataSource]="listData" matSort>
+                    <ng-container matColumnDef="nombre">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{element.nombre}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="ape_pat">
+                        <mat-header-cell *matHeaderCellDef>Apellido paterno</mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{element.ape_pat}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="ape_mat">
+                        <mat-header-cell *matHeaderCellDef>Apellido materno</mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{element.ape_mat}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="rol">
+                        <mat-header-cell *matHeaderCellDef>Permisos</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <span *ngIf="element.rol == 2">Administrador</span>
+                            <span *ngIf="element.rol == 1">Supervisor</span>
+                            <span *ngIf="element.rol == 0">Empleado</span>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="editar">
+                        <mat-header-cell *matHeaderCellDef>Editar</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <button mat-icon-button (click)="abrirEditarUsuario(element)"  class="editar">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="permiso">
+                        <mat-header-cell *matHeaderCellDef>Cambiar permisos</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <button mat-icon-button (click)="cambiarPermisos(element)" [disabled]="!esAdministrador()" color="accent">
+                                <mat-icon>lock</mat-icon>
+                            </button>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="noData">
+                        <mat-footer-cell *matFooterCellDef colspan="6">
+                            No hay usuarios registrados
+                        </mat-footer-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row;columns: displayedColumns"></mat-row>
+                    <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':!(listData!=null && listData.data.length == 0)}"></mat-footer-row>
+                </mat-table>
+                <mat-paginator [pageSizeOptions]="[5,10,15,20]" [pageSize]="15"></mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>

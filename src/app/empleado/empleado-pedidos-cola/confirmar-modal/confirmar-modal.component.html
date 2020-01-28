@@ -1,0 +1,8 @@
+<h1 mat-dialog-title align="center">Tomar pedido</h1>
+<div mat-dialog-content>
+    <p>¿Deseas tomar el pedido?</p>
+</div>
+<div mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Tomar</button>
+    <button mat-button (click)="onNoClick()">Cancelar</button>
+</div>

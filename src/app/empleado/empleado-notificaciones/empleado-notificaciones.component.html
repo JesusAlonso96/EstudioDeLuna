@@ -1,0 +1,39 @@
+<div class="contain">
+    <button mat-icon-button class=" notificationicon on">
+        <mat-icon [matBadge]="notificaciones.length" matBadgeColor="warn">notifications</mat-icon>
+    </button>
+    <ul id="notificationMenu" class="notifications">
+        <li class="titlebar">
+            <span class="title">Notificaciones</span>
+        </li>
+        <div class="notifbox">
+            <mat-progress-bar *ngIf="cargandoEliminacion" mode="indeterminate"></mat-progress-bar>
+            <li *ngIf="notificaciones.length == 0" class="notif">
+                No hay notificaciones del dia de hoy
+            </li>
+            <ng-container *ngFor="let not of notificaciones; let i = index">
+                <li class="notif">
+                    <div class="messageblock">
+                        <div class="message">
+                            <mat-toolbar class="full-width">
+                                <h6 class="titulo">{{not.titulo}}</h6>
+                                <span class="espaciador"></span>
+                                <mat-icon matTooltip="Quitar notificacion" (click)="quitarNotificacion(not,i)"
+                                    class="cerrarNot">close</mat-icon>
+                            </mat-toolbar>
+                            <a class="link" (click)="quitarNotificacion(not,i)"
+                                [routerLink]="not.tipo_pedido == 0 ? '/usuario/pedidos-realizados' : '/usuario/pedidos-cola'">
+                                <em>{{not.mensaje}}</em><br></a>
+                        </div>
+                        <mat-toolbar>
+                            <span class="fecha">{{not.fecha | date:'shortDate'}}</span>
+                            <span class="espaciador"></span>
+                            <span class="fecha">Pedido {{not.num_pedido}}</span>
+                        </mat-toolbar>
+                    </div>
+                </li>
+                <mat-divider></mat-divider>
+            </ng-container>
+        </div>
+    </ul>
+</div>

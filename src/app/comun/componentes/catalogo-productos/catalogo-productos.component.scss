@@ -1,0 +1,26 @@
+@import 'variables';
+.container-fluid{
+    height: 100vh;
+}
+.tituloProd{
+    margin: 10px 10px;
+}
+.margen{
+    margin: 10px 10px;
+}
+.card-productos{
+    margin-bottom: 10px;
+}
+.eliminarProducto{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.paginador{
+    position: sticky;
+    bottom: 0;
+}
+.agregarProducto{
+    color: $light-gray-color;
+}

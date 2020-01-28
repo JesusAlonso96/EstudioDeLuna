@@ -1,0 +1,20 @@
+<h3 mat-dialog-title>Cambiar permisos</h3>
+<mat-dialog-content>
+    <mat-form-field class="full-width" appearance="outline">
+        <mat-select [(ngModel)]="data.rol">
+            <mat-option [value]="2">Administrador</mat-option>
+            <mat-option [value]="1">Supervisor</mat-option>
+            <mat-option [value]="0">Empleado</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngIf="data.rol == 0" class="full-width" appearance="outline">
+        <mat-select [(ngModel)]="data.rol_sec">
+            <mat-option [value]="1">Fotografo</mat-option>
+            <mat-option [value]="2">Recepcionista</mat-option>
+        </mat-select>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" (click)="cambiarPermisos()">Cambiar</button>
+    <button mat-button (click)="onNoClick()">Cancelar</button>
+</mat-dialog-actions>

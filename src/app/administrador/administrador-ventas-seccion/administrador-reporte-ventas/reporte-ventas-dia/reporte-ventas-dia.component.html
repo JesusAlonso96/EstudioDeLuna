@@ -1,0 +1,8 @@
+<mat-card  class="card-pedidos-cola">
+    <span class="titulo1">VENTAS DEL DIA</span> <br>
+    <span *ngIf="!sinVentas && ventas" class="info1">${{ventas.montoTotal}}</span>
+    <span *ngIf="sinVentas" class="info1">Sin ventas</span>
+    <mat-icon class="icono">trending_up</mat-icon>
+</mat-card>
+<button class="botonReporte" [disabled]="sinVentas" (click)="generarReporte()" mat-raised-button color="primary">Generar
+    reporte del dia</button>

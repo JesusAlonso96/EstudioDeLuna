@@ -1,0 +1,63 @@
+<div class="container-fluid full-width full-height">
+        <div class="row">
+            <div class="col-12">
+                <div mat-dialog-title class="text-center">
+                    <h5 class="">Agregar producto</h5>
+                    <mat-icon class="cerrar" (click)="onNoClick()">close</mat-icon>
+                </div>
+    
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-9 contenedor-productos">
+                <mat-progress-bar *ngIf="buscador" mode="indeterminate"></mat-progress-bar>
+                <div class="row" *ngIf="productosEncontrados">
+                    <ng-container *ngFor="let producto of productosEncontrados">
+                        <mat-card class="col-lg-12" style="margin-bottom: 5px;">
+                            
+                                <h6>{{producto.nombre}}</h6>
+                                <h6 class="card-subtitle mb-2 text-muted" style="height: 10px;">{{producto.descripcion ? producto.descripcion: 'Sin descripcion'}}</h6>
+                                <ng-container *ngIf="producto.c_r">
+                                    <span>Con retoque</span> <br>
+                                </ng-container>
+    
+                                <ng-container *ngIf="!producto.c_r">
+                                    <span>Sin retoque</span> <br>
+                                </ng-container>
+                                <ng-container *ngIf="producto.b_n">
+                                    <span>Blanco y negro</span> <br>
+                                </ng-container>
+                                <ng-container *ngIf="!producto.b_n">
+                                    <span>Color</span> <br>
+                                </ng-container>
+                                <span class="precio-titulo"> <strong>Costo:</strong> </span> <span
+                                    class="precio">${{producto.precio}}
+                                    MXN</span> <br>
+                                <h5>¿Desea agregar al pedido?</h5>
+                                <button class="float-left" mat-raised-button [mat-dialog-close]="producto"
+                                    color="primary">Agregar</button>
+                        </mat-card>
+                    </ng-container>
+    
+                </div>
+                <div class="row" *ngIf="error">
+                    <div class="col-12">
+                        <div class="alert alert-danger sin-borde alert-dismissible fade show" role="alert">
+                            {{error.detalles}}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+    
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 ">
+                <button class="float-right cancelar" mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
+            </div>
+    
+    
+        </div>
+    </div>

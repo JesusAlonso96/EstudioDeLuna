@@ -1,0 +1,61 @@
+<mat-sidenav-container class="sidenav-container" *ngIf="autenticacionService.estaAutenticado()">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="false">
+    <mat-toolbar color="primary">Menu</mat-toolbar>
+    <mat-nav-list>
+      <mat-list>
+        <ng-container *ngIf="esRecepcionista()">
+          <h3 mat-subheader>Clientes</h3>
+          <mat-list-item routerLink="/usuario/registrar">
+            <mat-icon mat-list-icon>person_add</mat-icon>
+            <h5 mat-line>Registrar cliente</h5>
+          </mat-list-item>
+          <mat-list-item routerLink="/usuario/nuevaVenta">
+            <mat-icon mat-list-icon>add_a_photo</mat-icon>
+            <h5 mat-line>Realizar pedido</h5>
+          </mat-list-item>
+          <mat-list-item routerLink="/usuario/pedidos">
+            <mat-icon mat-list-icon>search</mat-icon>
+            <h5 mat-line>Buscar pedido</h5>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+        </ng-container>
+        <ng-container *ngIf="!esRecepcionista()">
+            <h3 mat-subheader>Tablero general</h3>
+            <mat-list-item routerLink="/usuario/dashboard">
+              <mat-icon mat-list-icon>dashboard</mat-icon>
+              <h5 mat-line>Tablero</h5>
+            </mat-list-item>
+          <h3 mat-subheader>Pedidos</h3>
+          <mat-list-item routerLink="/usuario/pedidos-realizados">
+            <mat-icon mat-list-icon>done</mat-icon>
+            <h5 mat-line>Pedidos realizados</h5>
+          </mat-list-item>
+          <mat-list-item routerLink="/usuario/pedidos-proceso">
+            <mat-icon mat-list-icon>flip_camera_ios</mat-icon>
+            <h5 mat-line>Pedidos en proceso</h5>
+          </mat-list-item>
+          <mat-list-item routerLink="/usuario/pedidos-cola">
+            <mat-icon mat-list-icon>list</mat-icon>
+            <h5 mat-line>Pedidos en cola</h5>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+        </ng-container>
+      </mat-list>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>Usuario</span>
+      <span class="espaciador"></span>
+        <app-empleado-notificaciones style="z-index: 0;"></app-empleado-notificaciones>
+      <button mat-button class="botonesPerfil" routerLink="/usuario/perfil">Editar perfil</button>
+      <button mat-button class="botonesPerfil" (click)="cerrarSesion()">Cerrar
+        sesion</button>
+    </mat-toolbar>
+    <ng-content></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>

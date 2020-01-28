@@ -1,0 +1,16 @@
+@import 'variables';
+.pedido{
+    margin-bottom: 10px;
+    mat-card-header{
+        .img{
+            height: 70px;
+            width: 70px;
+        }
+    }
+}
+.paginador{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: $light-gray-color2;
+}

@@ -1,0 +1,139 @@
+<div class="container-fluid margin-top">
+    <mat-card>
+        <form>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="profile-img">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog"
+                            alt="" />
+                        <div class="file btn btn-lg btn-primary">
+                            Cambiar foto
+                            <input type="file" name="file" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="profile-head">
+                        <h5>
+                            {{usuario.nombre}} {{usuario.ape_pat}} {{usuario.ape_mat}}
+                        </h5>
+                        <h6>
+                            <span *ngIf="usuario.rol==2">Administrador</span>
+                            <span *ngIf="usuario.rol==1">Supervisor</span>
+                            <span *ngIf="usuario.rol==0">Empleado</span>
+
+                        </h6>
+                        <mat-tab-group class="nav-tabs" animationDuration="0ms">
+                            <mat-tab label="Informacion personal">
+                                <div class="container-fluid profile-tab">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Id</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p>{{usuario._id}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Nombre</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p>{{usuario.nombre}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Apellido paterno</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p>{{usuario.ape_pat}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Apellido materno</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p>{{usuario.ape_mat}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Correo electronico</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p>{{usuario.email}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Telefono</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p>{{usuario.telefono}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-tab>
+                            <mat-tab label="Permisos">
+                                <div class="container-fluid profile-tab">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Rol principal</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p *ngIf="usuario.rol == 2">Administrador</p>
+                                            <p *ngIf="usuario.rol == 1">Supervisor</p>
+                                            <p *ngIf="usuario.rol == 0">Empleado</p>
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngIf="usuario.rol == 0">
+                                        <div class="col-md-6">
+                                            <label>Rol secundario</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p *ngIf="usuario.rol_sec == 1">Fotografo</p>
+                                            <p *ngIf="usuario.rol == 2">Recepcionista</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-tab>
+                            <mat-tab label="Cambiar contraseña">
+                                <div class="container-fluid profile-tab">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <mat-form-field class="full-width" appearance="outline">
+                                                <input matInput>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p *ngIf="usuario.rol == 2">Administrador</p>
+                                            <p *ngIf="usuario.rol == 1">Supervisor</p>
+                                            <p *ngIf="usuario.rol == 0">Empleado</p>
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngIf="usuario.rol == 0">
+                                        <div class="col-md-6">
+                                            <label>Rol secundario</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p *ngIf="usuario.rol_sec == 1">Fotografo</p>
+                                            <p *ngIf="usuario.rol == 2">Recepcionista</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-tab>
+                        </mat-tab-group>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button mat-raised-button color="primary">
+                        <mat-icon>edit</mat-icon> Editar perfil
+                    </button>
+                </div>
+            </div>
+        </form>
+    </mat-card>
+
+</div>

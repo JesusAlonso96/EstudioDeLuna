@@ -1,0 +1,143 @@
+<h2 mat-dialog-title>Datos del cliente</h2>
+<mat-dialog-content>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Nombre</mat-label>
+                    <input matInput [(ngModel)]="data.nombre" disabled>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Apellido paterno</mat-label>
+                    <input matInput [(ngModel)]="data.ape_pat" disabled>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Apellido materno</mat-label>
+                    <input matInput [(ngModel)]="data.ape_mat" disabled>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6" *ngIf="data.username">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Nombre de usuario</mat-label>
+                    <input matInput [(ngModel)]="data.username" disabled>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6" *ngIf="!data.username">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Nombre de usuario</mat-label>
+                    <input matInput [(ngModel)]="usernameVacio" disabled>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Correo electronico</mat-label>
+                    <input matInput [(ngModel)]="data.email" disabled>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Telefono celular</mat-label>
+                    <input matInput [(ngModel)]="data.telefono" disabled>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6" *ngIf="data.razonSocial">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Razon social</mat-label>
+                    <input matInput [(ngModel)]="data.razonSocial" disabled>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6" *ngIf="!data.razonSocial">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Razon social</mat-label>
+                    <input matInput [(ngModel)]="sinRazonSocial" disabled>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6" *ngIf="data.rfc">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>RFC</mat-label>
+                    <input matInput [(ngModel)]="data.rfc" disabled>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6" *ngIf="!data.rfc">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>RFC</mat-label>
+                    <input matInput [(ngModel)]="sinRfc" disabled>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Estado</mat-label>
+                    <input matInput [(ngModel)]="data.estado" disabled>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Municipio</mat-label>
+                    <input matInput [(ngModel)]="data.municipio" disabled>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Direccion</mat-label>
+                    <input matInput [(ngModel)]="data.direccion" disabled>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-4">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Colonia</mat-label>
+                    <input matInput [(ngModel)]="data.colonia" disabled>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4" *ngIf="data.num_int">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Numero interior</mat-label>
+                    <input matInput [(ngModel)]="data.num_int" disabled>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-4" *ngIf="!data.num_int">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Numero interior</mat-label>
+                    <input matInput [(ngModel)]="sinNumInt" disabled>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-4">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Numero exterior</mat-label>
+                    <input matInput [(ngModel)]="data.num_ext" disabled>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-4">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Codigo postal</mat-label>
+                    <input matInput [(ngModel)]="data.cp" disabled>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <button class="full-width" (click)="verPedidosCliente(data._id)" style="margin-bottom: 20px;" mat-raised-button color="primary">Ver pedidos realizados</button>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-card-actions align="end">
+    <button mat-button (click)="onNoClick()">Cerrar</button>
+</mat-card-actions>

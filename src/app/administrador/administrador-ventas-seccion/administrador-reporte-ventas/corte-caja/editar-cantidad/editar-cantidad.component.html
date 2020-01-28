@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>Editar cantidad</h2>
+<mat-dialog-content>
+    <mat-form-field appearance="outline">
+        <mat-label>Cantidad</mat-label>
+        <input type="number" matInput [(ngModel)]="cantidad" placeholder="Ingresa la cantidad">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" [mat-dialog-close]="cantidad" cdkFocusInitial>Aceptar</button>
+    <button mat-button (click)="onNoClick()">Cancelar</button>
+  </mat-dialog-actions>

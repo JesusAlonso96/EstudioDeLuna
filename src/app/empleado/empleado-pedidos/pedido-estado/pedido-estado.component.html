@@ -1,0 +1,73 @@
+<h1 mat-dialog-title>Estado del pedido</h1>
+<div mat-dialog-content>
+    <nav aria-label="breadcrumb ">
+        <ol class="breadcrumb sin-borde">
+            <ng-container *ngFor="let estado of estadosNuevo;let i = index">
+                <li class="breadcrumb-item">
+                    <a class="text-success">{{estado}}</a>
+                </li>
+            </ng-container>
+            <li class="breadcrumb-item"> <a class="text-muted">{{estadoActual}}</a> </li>
+        </ol>
+    </nav>
+    <mat-list>
+        <h3 mat-subheader>Colores</h3>
+        <mat-list-item>
+            <mat-icon class="text-success" mat-list-icon>fiber_manual_record
+            </mat-icon>
+            <h4 mat-line>Terminado</h4>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-icon class="text-muted" mat-list-icon>fiber_manual_record
+            </mat-icon>
+            <h4 mat-line>Estado actual</h4>
+        </mat-list-item>
+    </mat-list>
+    <div align="end">
+        <span><strong>Total: </strong>${{data.total}}</span> <br>
+        <span><strong> Anticipo: </strong>${{data.anticipo}}</span>
+    </div>
+
+    <hr>
+</div>
+<div mat-dialog-actions align="end">
+    <ng-container *ngIf="montoCumplido2()">
+        <button mat-button>
+            <mat-icon>done</mat-icon>
+            Pedido pagado
+        </button>
+        <button class="boton" *ngIf="estadoActual == 'Finalizado'" mat-raised-button
+        color="primary" (click)="marcarEntregado()">Marcar como entregado</button>
+    <button mat-button (click)="onNoClick()" cdkFocusInitial>Cancelar</button>
+    </ng-container>
+    <form #pagadoForm="ngForm" *ngIf="!montoCumplido2() &&  estadoActual == 'Finalizado' ">
+        <mat-form-field appearance="outline" class="">
+            <mat-label>Metodo pago</mat-label>
+            <mat-select [(ngModel)]="metodoPago" name="metodoPago2" #metodoPago2="ngModel" required>
+                <mat-option value="efectivo">
+                    Efectivo
+                </mat-option>
+                <mat-option value="tarjeta">
+                    Tarjeta
+                </mat-option>
+            </mat-select>
+            <mat-error
+                *ngIf="(metodoPago2.invalid && (metodoPago2.dirty || metodoPago2.touched) && metodoPago2.errors.required)">
+                Porfavor ingresa el campo
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Cubrir monto</mat-label>
+            <input type="number" matInput [(ngModel)]="inputDebe" name="debeI" #debeI="ngModel"
+                placeholder="Cubrir monto" required>
+            <mat-error *ngIf="(debeI.invalid && (debeI.dirty || debeI.touched) && debeI.errors.required)">
+                Porfavor ingresa el campo
+            </mat-error>
+        </mat-form-field>
+        <button class="boton" *ngIf="estadoActual == 'Finalizado'" [disabled]="!pagadoForm.valid" mat-raised-button
+            color="primary" (click)="marcarEntregado()">Marcar como entregado</button>
+        <button mat-button (click)="onNoClick()" cdkFocusInitial>Cancelar</button>
+    </form>
+    
+
+</div>

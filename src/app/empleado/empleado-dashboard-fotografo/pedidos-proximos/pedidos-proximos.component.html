@@ -1,0 +1,30 @@
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <h4>Pedidos elaborados proximos a entregar</h4>
+            <hr>
+        </div>
+        <div class="col-lg-12" *ngIf="pedidosProximos.length == 0">
+            <h5 class="text-muted">No hay pedidos proximos a entregar</h5>
+        </div>
+        <ng-container
+            *ngFor="let pedido of pedidosProximos  ">
+            <div class="col-lg-4">
+                <mat-card class="pedido">
+                    <mat-card-header>
+                        <img *ngIf="pedido.foto" mat-card-avatar class="img" [src]="url_fotos + pedido.foto" alt="">
+                        <img *ngIf="!pedido.foto" mat-card-avatar class="img"
+                            src="../../../assets/imagenes/profile_user.gif" alt="">
+                        <mat-card-title>Pedido {{pedido.num_pedido}}</mat-card-title>
+                        <mat-card-subtitle>{{pedido.fecha_entrega | formatoFecha:0 }}
+                        </mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-actions align="end">
+                        <button routerLink="/usuario/pedidos-proceso" mat-raised-button color="primary">Ir a pedidos en proceso</button>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+        </ng-container>
+    </div>
+</div>

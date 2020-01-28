@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>Pedidos realizados</h2>
+<div mat-dialog-content>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6" *ngFor="let pedido of pedidos">
+                <mat-card class="card-pedido">
+                    <mat-card-header>
+                        <img mat-card-avatar *ngIf="pedido.foto != ''" [src]="urlFotos + pedido.foto" alt="">
+                        <img mat-card-avatar *ngIf="pedido.foto == ''"
+                            src="../../../../../../assets/imagenes/profile_user.gif" alt="">
+                        <mat-card-title>Pedido {{pedido.num_pedido}}</mat-card-title>
+                        <mat-card-subtitle>${{pedido.total}} pesos</mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <div class="row" *ngFor="let producto of pedido.productos">
+                            <div class="col-lg-12">
+                                <h6 class="" *ngIf="producto.activo == 1">{{producto.nombre}} {{producto.num_fotos}}
+                                    fotos. Familia {{producto.familia.nombre}}</h6>
+                                <h6 class="no-disponible" *ngIf="producto.activo == 0">Producto no disponible</h6>
+                                <hr>
+                            </div>
+                            <div class="col-lg-12">
+                                <mat-nav-list style="margin-top: 0;">
+                                    <h3 mat-subheader style="padding-bottom: 0%;">Detalles</h3>
+                                    <mat-list-item *ngIf="producto.descripcion">
+                                        <mat-icon mat-list-icon class="iconos">description</mat-icon>
+                                        <h4 mat-line>{{producto.descripcion}}</h4>
+                                    </mat-list-item>
+                                    <mat-list-item *ngIf="producto.b_n">
+                                        <mat-icon mat-list-icon class="iconos">invert_colors</mat-icon>
+                                        <h4 mat-line>Blanco y negro</h4>
+                                    </mat-list-item>
+                                    <mat-list-item *ngIf="!producto.b_n">
+                                        <mat-icon mat-list-icon class="iconos">invert_colors</mat-icon>
+                                        <h4 mat-line>Color</h4>
+                                    </mat-list-item>
+                                    <mat-list-item *ngIf="producto.c_r">
+                                        <mat-icon mat-list-icon class="iconos">brush</mat-icon>
+                                        <h4 mat-line>Con retoque</h4>
+                                    </mat-list-item>
+                                    <mat-list-item *ngIf="!producto.c_r">
+                                        <mat-icon mat-list-icon class="iconos">brush</mat-icon>
+                                        <h4 mat-line>Sin retoque</h4>
+                                    </mat-list-item>
+                                    <mat-list-item *ngIf="producto.c_ad">
+                                        <mat-icon mat-list-icon class="iconos">wallpaper</mat-icon>
+                                        <h4 mat-line>Con adherible</h4>
+                                    </mat-list-item>
+                                    <mat-list-item *ngIf="!producto.c_ad">
+                                        <mat-icon mat-list-icon class="iconos">wallpaper</mat-icon>
+                                        <h4 mat-line>Sin adherible</h4>
+                                    </mat-list-item>
+                                </mat-nav-list>
+                            </div>
+                        </div>
+                    </mat-card-content>
+
+                </mat-card>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onNoClick()">Cerrar</button>
+</div>

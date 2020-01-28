@@ -1,0 +1,152 @@
+<h2 mat-dialog-title>Editar producto</h2>
+<mat-dialog-content>
+    <form class="container-fluid" #productoForm="ngForm">
+        <div class="row">
+            <div class="col-lg-6">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Familia</mat-label>
+                    <input matInput type="text" [(ngModel)]="data.familia.nombre" name="nombreFamilia"
+                        #nombreFamilia="ngModel" disabled>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Nombre</mat-label>
+                    <input matInput type="text" [(ngModel)]="data.nombre" name="nombre" #nombre="ngModel"
+                        placeholder="Nombre" required>
+                    <mat-error *ngIf="(nombre.invalid && (nombre.dirty || nombre.touched) && nombre.errors.required)">
+                        Por favor ingresa el nombre
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Numero de fotos</mat-label>
+                    <input matInput type="number" [(ngModel)]="data.num_fotos" name="num_fotos" #num_fotos="ngModel"
+                        placeholder="Numero de fotos" required>
+                    <mat-error
+                        *ngIf="(num_fotos.invalid && (num_fotos.dirty || num_fotos.touched) && num_fotos.errors.required)">
+                        Por favor ingresa el numero total de fotos
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Precio</mat-label>
+                    <input matInput type="number" [(ngModel)]="data.precio" name="precio" #precio="ngModel"
+                        placeholder="Precio" required>
+                    <mat-error *ngIf="(precio.invalid && (precio.dirty || precio.touched) && precio.errors.required)">
+                        Por favor ingresa el precio del producto
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Descripcion del producto</mat-label>
+                    <textarea matInput placeholder="Ingresa una descripcion" [(ngModel)]="data.descripcion"
+                        name="descripcion" #descripcion="ngModel" cols="20" rows="10" required></textarea>
+                    <mat-hint>Escribe una descripcion breve de lo que contiene el producto</mat-hint>
+                    <mat-error
+                        *ngIf="(descripcion.invalid && (descripcion.dirty || descripcion.touched) && descripcion.errors.required)">
+                        Por favor ingresa la descripcion del producto
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row" *ngIf="data.caracteristicas.length > 0">
+            <div class="col-lg-12">
+                <h6 style="margin-top: 10px; margin-bottom: 10px;">¿Agregar otra caracteristicas?</h6>
+                <mat-checkbox [(ngModel)]="caracteristicas" name="caract" #caract="ngModel"> <span
+                        *ngIf="caracteristicas">Si</span><span *ngIf="!caracteristicas">No</span>
+                </mat-checkbox>
+            </div>
+        </div>
+        <div class="row">
+            <ng-container *ngIf="caracteristicas">
+                <div class="col-lg-12">
+                    <mat-form-field appearance="outline" style="width: 80%;">
+                        <mat-label>Ingresa una caracteristica</mat-label>
+                        <input matInput type="text" [(ngModel)]="caracteristica" name="caracteristica2"
+                            #caracteristica2="ngModel" placeholder="Caracteristica">
+                        <button *ngIf="caracteristica !== ''" mat-button matSuffix mat-icon-button
+                            (click)="limpiarCampoCaracteristica()" aria-label="Clear">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <button mat-raised-button color="primary" class="botonAgregar" (click)="agregarCaracteristica()"
+                        [disabled]="estaVaciaCaracteristica()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+
+                </div>
+                <div class="col-lg-12">
+                    <ul>
+                        <li *ngFor="let caracteristica of data.caracteristicas; let i = index">
+                            {{caracteristica}}
+                            <button mat-icon-button (click)="quitarCaracteristica(i)">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </ng-container>
+        </div>
+        <div class="row">
+            <ng-container *ngIf="tam">
+                <div class="col-lg-6">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Ingresa el ancho (pulgadas)</mat-label>
+                        <input matInput type="number" [(ngModel)]="data.ancho" name="ancho" #ancho="ngModel"
+                            placeholder="Ancho" required>
+                        <mat-error
+                            *ngIf="(ancho.invalid && (ancho.dirty || ancho.touched) && ancho.errors.required)">
+                            Por favor ingresa el ancho del producto
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-6">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Ingresa el alto (pulgadas)</mat-label>
+                        <input matInput type="number" [(ngModel)]="data.alto" name="alto" #alto="ngModel"
+                            placeholder="Alto" required>
+                            <mat-error
+                            *ngIf="(alto.invalid && (alto.dirty || alto.touched) && alto.errors.required)">
+                            Por favor ingresa el alto del producto
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </ng-container>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <label for="">Retoque</label>
+                <mat-radio-group [(ngModel)]="data.c_r" name="c_r" #c_r="ngModel" required>
+                    <mat-radio-button [value]=true>Con retoque</mat-radio-button>
+                    <mat-radio-button [value]=false>Sin retoque</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <div class="col-lg-4">
+                <label for="">Color</label>
+                <mat-radio-group [(ngModel)]="data.b_n" name="b_n" #b_n="ngModel" required>
+                    <mat-radio-button [value]=true>Blanco y negro</mat-radio-button>
+                    <mat-radio-button [value]=false>Color</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <div class="col-lg-4">
+                <label for="">Adherible</label>
+                <mat-radio-group [(ngModel)]="data.c_ad" name="c_ad" #c_ad="ngModel" required>
+                    <mat-radio-button [value]=true>Con adherible</mat-radio-button>
+                    <mat-radio-button [value]=false>Sin adherible</mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]="producto" [disabled]="!productoForm.valid" cdkFocusInitial>Guardar</button>
+    <button mat-button (click)="onNoClick()">Cancelar</button>
+</mat-dialog-actions>

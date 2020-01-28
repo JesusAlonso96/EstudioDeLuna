@@ -1,0 +1,18 @@
+<app-encabezado-titulo titulo="Tablero principal"></app-encabezado-titulo>
+<mat-tab-group>
+    <mat-tab label="Pedidos en cola">
+        <ng-template matTabContent>
+            <app-pedidos-cola></app-pedidos-cola>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Pedidos vendidos">
+        <ng-template matTabContent>
+            <app-pedidos-vendidos></app-pedidos-vendidos>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Pedidos realizados">
+        <ng-template matTabContent>
+            <app-pedidos-completados></app-pedidos-completados>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>

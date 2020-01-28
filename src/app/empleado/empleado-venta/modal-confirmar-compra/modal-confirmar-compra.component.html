@@ -1,0 +1,26 @@
+<h1 mat-dialog-title class="text-center">Confirmar compra</h1>
+<div mat-dialog-content>
+    <h5 class="text-muted ">Productos</h5>
+    <ng-container *ngFor="let producto of data.pedido.productos">
+        <span>{{producto.nombre}} {{producto.num_fotos}} fotos ${{producto.precio}} pesos</span> <br>
+    </ng-container>
+    <hr>
+    <span> <strong>Fecha de creacion: </strong> {{fecha_creacion}}</span> <br>
+    <span> <strong>Fecha de entrega: </strong> {{fecha_entrega}}</span>
+    <hr>
+    <h6 class="text-muted">Detalles del pedido</h6>
+    <ul>
+        <li *ngIf="data.pedido.c_retoque">Con retoque</li>
+        <li *ngIf="!data.pedido.c_retoque">Sin retoque</li>
+        <li *ngIf="data.pedido.c_adherible">Con adherible</li>
+        <li *ngIf="!data.pedido.c_adherible">Sin adherible</li>
+    </ul>
+    <hr>
+    <span> <strong>Total:</strong> ${{data.pedido.total}} pesos</span> <br>
+    <span> <strong>Anticipo:</strong>$ {{data.pedido.anticipo}} pesos</span> <br>
+    <span *ngIf="data.pedido.total == data.pedido.anticipo"> <strong>Monto cubierto</strong></span>
+</div>
+<div mat-dialog-actions align="right">
+    <button mat-button [mat-dialog-close]="!data.crear" color="primary" cdkFocusInitial>Confirmar</button>
+    <button mat-button (click)="onNoClick()" color="warn">Cancelar</button>
+</div>

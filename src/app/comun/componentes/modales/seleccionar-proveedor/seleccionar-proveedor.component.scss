@@ -1,0 +1,16 @@
+@import 'variables';
+.card-empleado{
+    margin-bottom: 2%;
+}
+.activa{
+    color: $success;
+}
+.nombre{
+    font-weight: 100;
+}
+.seleccionado {
+    font-weight: 500;
+}
+.empleado-seleccionado{
+    margin-bottom: 2%;
+}

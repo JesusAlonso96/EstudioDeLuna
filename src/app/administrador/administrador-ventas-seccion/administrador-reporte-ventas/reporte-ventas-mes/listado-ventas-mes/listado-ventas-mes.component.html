@@ -1,0 +1,72 @@
+<h2 mat-dialog-title *ngIf="data.tipoReporte == 1">Detalles de ventas del mes</h2>
+<h2 mat-dialog-title *ngIf="data.tipoReporte == 0">Detalles de ventas del dia</h2>
+
+<hr>
+<mat-dialog-content>
+    <div #contenido>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h5 class="tituloventa" *ngIf="data.tipoReporte == 1">Detalles de ventas del mes</h5>
+                    <h5 class="tituloventa" *ngIf="data.tipoReporte == 0">Detalles de ventas del dia</h5>
+
+                    <hr>
+                </div>
+                <div class="col-lg-12">
+                    <table mat-table [dataSource]="data.ventas.ventas" class="mat-elevation-z8 full-width tabla">
+                        <ng-container matColumnDef="pedido">
+                            <th mat-header-cell *matHeaderCellDef> Pedido </th>
+                            <td mat-cell *matCellDef="let element"> {{element.pedido.num_pedido}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+
+                        </ng-container>
+                        <ng-container matColumnDef="fecha">
+                            <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                            <td mat-cell *matCellDef="let element"> {{element.fecha | date: 'dd/MM/yyyy'}}
+                                {{element.hora}}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <ng-container matColumnDef="cliente">
+                            <th mat-header-cell *matHeaderCellDef> Cliente </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span *ngIf="!element.pedido.cliente">Publico en general</span>
+                                <span *ngIf="element.pedido.cliente">{{element.pedido.cliente}}</span>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <ng-container matColumnDef="tipo">
+                            <th mat-header-cell *matHeaderCellDef> Tipo </th>
+                            <td mat-cell *matCellDef="let element"> Contado </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+
+                        </ng-container>
+                        <ng-container matColumnDef="iva">
+                            <th mat-header-cell *matHeaderCellDef> IVA </th>
+                            <td mat-cell *matCellDef="let element"> $00 </td>
+                            <td mat-footer-cell *matFooterCellDef> $00</td>
+
+                        </ng-container>
+                        <ng-container matColumnDef="total">
+                            <th mat-header-cell *matHeaderCellDef> Total </th>
+                            <td mat-cell *matCellDef="let element"> ${{element.pedido.total}} </td>
+                            <td mat-footer-cell *matFooterCellDef> ${{data.ventas.montoTotal}} </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cerrar</button>
+    <button mat-button [mat-dialog-close]="true" (click)="descargarReporte()" cdkFocusInitial>Descargar reporte</button>
+</mat-dialog-actions>

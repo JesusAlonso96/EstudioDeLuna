@@ -1,0 +1,55 @@
+<app-barra-cargando [cargando]="cargando"></app-barra-cargando>
+<mat-toolbar>
+    <mat-toolbar-row>
+        <button mat-button (click)="seleccionarEmpleado()">
+            <mat-icon>search</mat-icon>
+            Buscar pedidos por empleado
+        </button>
+        <button mat-button (click)="obtenerVendidos()">
+            <mat-icon>monetization_on</mat-icon>
+            Obtener pedidos vendidos con retoque
+        </button>
+    </mat-toolbar-row>
+</mat-toolbar>
+<div class="container margin-top mb-4">
+    <div class="row mb-2">
+        <div class="col-lg-12">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <mat-chip-list>
+                            <mat-chip *ngIf="empleadoSeleccionado">Pedidos de {{empleadoSeleccionado.nombre}}
+                                {{empleadoSeleccionado.ape_pat}}
+                                {{empleadoSeleccionado.ape_mat}}
+                                <mat-icon matChipRemove (click)="quitarFiltro()">cancel</mat-icon>
+                            </mat-chip>
+                            <mat-chip>
+                                <span *ngIf="filtro == 1">Pedidos vendidos hoy</span>
+                                <span *ngIf="filtro == 2">Todos los pedidos vendidos</span>
+                            </mat-chip>
+                        </mat-chip-list>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto my-1 ">
+                        <mat-radio-group [(ngModel)]="filtro" (change)="buscarFiltro()">
+                            <mat-radio-button [value]="1">Hoy</mat-radio-button>
+                            <mat-radio-button [value]="2">Todos</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <app-lista-pedidos *ngIf="pedidos" [pedidos]="pedidos"></app-lista-pedidos>
+        </div>
+    </div>
+</div>

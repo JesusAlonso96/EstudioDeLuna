@@ -1,0 +1,12 @@
+@import 'variables';
+.cerrar{
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    top: 0;
+  }
+.subtitulos{
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: $light-gray-color;
+}

@@ -1,0 +1,43 @@
+<div class="row">
+    <div class="col-lg-12">
+        <mat-nav-list style="margin-top: 0;">
+            <h3 mat-subheader style="padding-bottom: 0%;">Detalles</h3>
+            <mat-list-item *ngIf="data.producto.descripcion">
+                <mat-icon mat-list-icon >description</mat-icon>
+                <h4 mat-line>{{data.producto.descripcion}}</h4>
+            </mat-list-item>
+            <mat-list-item *ngIf="data.producto.b_n">
+                <mat-icon mat-list-icon>invert_colors</mat-icon>
+                <h4 mat-line>Blanco y negro</h4>
+            </mat-list-item>
+            <mat-list-item *ngIf="!data.producto.b_n">
+                <mat-icon mat-list-icon>invert_colors</mat-icon>
+                <h4 mat-line>Color</h4>
+            </mat-list-item>
+            <mat-list-item *ngIf="data.producto.c_r">
+                <mat-icon mat-list-icon>brush</mat-icon>
+                <h4 mat-line>Con retoque</h4>
+            </mat-list-item>
+            <mat-list-item *ngIf="!data.producto.c_r">
+                <mat-icon mat-list-icon>brush</mat-icon>
+                <h4 mat-line>Sin retoque</h4>
+            </mat-list-item>
+            <mat-list-item *ngIf="data.producto.c_ad">
+                <mat-icon mat-list-icon>wallpaper</mat-icon>
+                <h4 mat-line>Con adherible</h4>
+            </mat-list-item>
+        </mat-nav-list>
+    </div>
+    <div class="col-lg-12" *ngIf="data.producto.caracteristicas && data.producto.caracteristicas.length > 0">
+        <mat-nav-list style="margin-top: 0;">
+            <h3 mat-subheader style="padding-bottom: 0%;">Caracteristicas del paquete</h3>
+            <mat-list-item *ngFor="let caracteristica of data.producto.caracteristicas">
+                <mat-icon mat-list-icon>chevron_right</mat-icon>
+                <h4 mat-line>{{caracteristica}}</h4>
+            </mat-list-item>
+        </mat-nav-list>
+    </div>
+</div>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

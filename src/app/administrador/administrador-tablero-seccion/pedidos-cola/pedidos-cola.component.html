@@ -1,0 +1,71 @@
+<app-barra-cargando [cargando]="cargando"></app-barra-cargando>
+<mat-toolbar>
+    <button mat-raised-button color="primary" class="mr-1" [disabled]="!asignar"
+        (click)="confirmarAsignacion()">Confirmar
+        asignacion</button>
+    <button mat-raised-button color="warn" [disabled]="!asignar" (click)="eliminarAsignacion()">Cancelar</button>
+    <span class="espaciador"></span>
+    <span *ngIf="pedidoSeleccionado && empleadoSeleccionado">El pedido numero {{pedidoSeleccionado.num_pedido}} sera
+        realizado por
+        {{empleadoSeleccionado.nombre}}
+        {{empleadoSeleccionado.ape_pat}} {{empleadoSeleccionado.ape_mat}}</span>
+</mat-toolbar>
+<div class="container margin-top mb-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="mat-elevation-z8">
+                <mat-table [dataSource]="listData" matSort>
+                    <ng-container matColumnDef="num_pedido">
+                        <mat-header-cell *matHeaderCellDef>No. Pedido</mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{element.num_pedido}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{element.status}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="fecha_entrega">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de entrega</mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{element.fecha_entrega | date: 'd/M/yy, h:mm a'}}
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="total">
+                        <mat-header-cell *matHeaderCellDef>Total</mat-header-cell>
+                        <mat-cell *matCellDef="let element">${{element.total}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="anticipo">
+                        <mat-header-cell *matHeaderCellDef>Anticipo</mat-header-cell>
+                        <mat-cell *matCellDef="let element">${{element.anticipo}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="asignar">
+                        <mat-header-cell *matHeaderCellDef>Asignar pedido</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <a (click)="asignarPedido(element)" mat-icon-button>
+                                <mat-icon>launch</mat-icon>
+                            </a>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="verDetalles">
+                        <mat-header-cell *matHeaderCellDef>Ver detalles</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <a (click)="verDetalles(element)" mat-icon-button class="verDetalles">
+                                <mat-icon>pageview</mat-icon>
+                            </a>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="noData">
+                        <mat-footer-cell *matFooterCellDef colspan="6">
+                            No hay pedidos en cola...
+                        </mat-footer-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row;columns: displayedColumns;"></mat-row>
+                    <mat-footer-row *matFooterRowDef="['noData']"
+                        [ngClass]="{'hide':!(listData!=null && listData.data.length == 0)}"></mat-footer-row>
+
+                </mat-table>
+                <mat-paginator [pageSizeOptions]="[5,10,15,20]" [pageSize]="15"></mat-paginator>
+
+            </div>
+        </div>
+    </div>
+</div>

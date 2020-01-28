@@ -1,0 +1,44 @@
+@import 'variables';
+.cargando{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,.6);
+    z-index: 100000;
+    .spinner{
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 20%;
+    }
+    h3{
+        z-index: 100000;
+        color: #ffffff;
+        margin-top: 2%;
+        text-align: center;
+    }
+}
+.card{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 0;
+}
+.filtro{
+    margin-top: 40px;
+}
+.items{
+    color: royalblue;
+}
+.left{
+    text-align: left;
+}
+.rigth{
+    text-align: right;
+}
+.foto{
+    height: 80px;
+    width: 80px;
+    margin-bottom: 10px;
+}
+.titulo{
+    color: $light-gray-color;
+}

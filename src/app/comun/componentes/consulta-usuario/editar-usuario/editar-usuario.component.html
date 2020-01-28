@@ -1,0 +1,97 @@
+<h3 mat-dialog-title>Editar usuario</h3>
+<mat-dialog-content>
+    <form #usuarioForm="ngForm">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <mat-form-field class="full-width" appearance="outline">
+                        <mat-label>Nombre</mat-label>
+                        <input matInput [(ngModel)]="data.nombre" name="nombre" #nombre="ngModel"
+                            pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]*(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$"
+                            required>
+                        <mat-error
+                            *ngIf="(nombre.invalid && (nombre.dirty || nombre.touched)) && nombre.errors.required">
+                            Por favor ingresa tu nombre</mat-error>
+                        <mat-error
+                            *ngIf="(nombre.invalid && (nombre.dirty || nombre.touched)) && nombre.errors.pattern">
+                            Por favor ingresa solo letras</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Apellido paterno</mat-label>
+                        <input matInput [(ngModel)]="data.ape_pat" name="ape_pat" #ape_pat="ngModel"
+                            pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$"
+                            required>
+                        <mat-error
+                            *ngIf="(ape_pat.invalid && (ape_pat.dirty || ape_pat.touched)) && ape_pat.errors.required">
+                            Por favor ingresa tu apellido paterno</mat-error>
+                        <mat-error
+                            *ngIf="(ape_pat.invalid && (ape_pat.dirty || ape_pat.touched)) && ape_pat.errors.pattern">
+                            Por favor ingresa solo letras</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-6">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Apellido materno</mat-label>
+                        <input matInput [(ngModel)]="data.ape_mat" name="ape_mat" #ape_mat="ngModel"
+                            pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$"
+                            required>
+                        <mat-error
+                            *ngIf="(ape_mat.invalid && (ape_mat.dirty || ape_mat.touched)) && ape_mat.errors.required">
+                            Por favor ingresa tu apellido materno</mat-error>
+                        <mat-error
+                            *ngIf="(ape_mat.invalid && (ape_mat.dirty || ape_mat.touched)) && ape_mat.errors.pattern">
+                            Por favor ingresa solo letras</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <mat-form-field class="full-width" appearance="outline">
+                        <mat-label>Nombre de usuario</mat-label>
+                        <input matInput [(ngModel)]="data.username" name="username" #username="ngModel">
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-6">
+                    <mat-form-field class="full-width" appearance="outline">
+                        <mat-label>Correo electronico</mat-label>
+                        <input matInput [(ngModel)]="data.email" name="email" #email="ngModel"
+                            pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" required>
+                        <mat-error *ngIf="(email.invalid && (email.dirty || email.touched)) &&  email.errors.required">
+                            Por favor ingresa tu correo electronico</mat-error>
+                        <mat-error *ngIf="(email.invalid && (email.dirty || email.touched)) &&  email.errors.pattern">
+                            Por favor ingresa un formato de correo valido</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <mat-form-field class="full-width" appearance="outline">
+                        <mat-label>Telefono celular</mat-label>
+                        <input matInput [(ngModel)]="data.telefono" pattern="^[0-9]+$" minlength="10" maxlength="10" name="telefono"
+                            #telefono="ngModel" required>
+                        <mat-error
+                            *ngIf="(telefono.invalid && (telefono.dirty || telefono.touched)) && telefono.errors.minlength">
+                            Por favor ingresa 10 digitos</mat-error>
+                            <mat-error
+                            *ngIf="(telefono.invalid && (telefono.dirty || telefono.touched)) && telefono.errors.maxlength">
+                            Por favor ingresa 10 digitos</mat-error>
+                        <mat-error
+                            *ngIf="(telefono.invalid && (telefono.dirty || telefono.touched)) && telefono.errors.pattern">
+                            Por favor ingresa solo digitos</mat-error>
+                            <mat-error
+                            *ngIf="(telefono.invalid && (telefono.dirty || telefono.touched)) && telefono.errors.required">
+                            Por favor ingresa el numero telefonico</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" [mat-dialog-close]="true" [disabled]="!usuarioForm.valid">Guardar</button>
+    <button mat-button (click)="onNoClick()">Cancelar</button>
+</mat-dialog-actions>

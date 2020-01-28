@@ -1,0 +1,34 @@
+<h3 mat-dialog-title>Seleccionar empleado</h3>
+<mat-dialog-content>
+    <div class="container">
+        <div class="row">
+            <div *ngFor="let fotografo of empleados; let i = index" class="col-lg-12">
+                <mat-toolbar class="mat-elevation-z4 card-empleado">
+                    <span class="nombre">{{fotografo.nombre}} {{fotografo.ape_pat}} {{fotografo.ape_mat}}</span>
+                    <span class="espaciador"></span>
+                    <button mat-icon-button (click)="seleccionarEmpleado(fotografo, i)">
+                        <mat-icon [ngClass]="{'activa':seleccionados[i] == true}">done</mat-icon>
+                    </button>
+                </mat-toolbar>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <span class="seleccionado">Empleado seleccionado:</span>
+            </div>
+            <div class="col-lg-6 empleado-seleccionado">
+                <span *ngIf="seleccionado">{{seleccionado.nombre}} {{seleccionado.ape_pat}}
+                    {{seleccionado.ape_mat}}</span>
+                <span *ngIf="!seleccionado">Sin empleado seleccionado</span>
+            </div>
+
+
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" [mat-dialog-close]="seleccionado">Aceptar</button>
+    <button mat-raised-button color="accent" (click)="limpiarSeleccionado()">Limpiar</button>
+    <button mat-raised-button (click)="onNoClick()">Cancelar</button>
+</mat-dialog-actions>

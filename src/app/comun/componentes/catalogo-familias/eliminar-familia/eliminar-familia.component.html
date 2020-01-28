@@ -1,0 +1,8 @@
+<h2 mat-dialog-title class="text-center">Eliminar familia</h2>
+<mat-dialog-content>
+    <p class="text-center">¿Seguro que desea eliminar la familia de productos?</p>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+    <button mat-button color="warn" [mat-dialog-close]="true">Eliminar</button>
+    <button mat-button (click)="onNoClick()">Cancelar</button>
+</mat-dialog-actions>

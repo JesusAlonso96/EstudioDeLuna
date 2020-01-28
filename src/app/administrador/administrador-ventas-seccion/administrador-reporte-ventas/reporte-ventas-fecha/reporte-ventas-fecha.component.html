@@ -1,0 +1,125 @@
+<div *ngIf="cargando" class="cargando ">
+    <mat-spinner class="spinner"></mat-spinner>
+    <h3>Cargando elementos...</h3>
+</div>
+
+<mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="descargarReporte()">
+        <mat-icon>play_for_work</mat-icon>
+        <span>Descargar reporte</span>
+    </button>
+</mat-menu>
+<mat-card class="card">
+    <mat-toolbar>
+        <span>Reporte de ventas en intervalo de fechas</span>
+        <span class="espaciador"></span>
+        <button [matMenuTriggerFor]="menu" mat-icon-button>
+            <mat-icon>more_vert
+            </mat-icon>
+        </button>
+    </mat-toolbar>
+    <div class="container-fluid">
+        <br>
+        <div class="row">
+            <div class="col-lg-4">
+                <mat-form-field class="full-width">
+                    <input matInput [matDatepicker]="picker" (dateInput)="agregarFechaInicio($event)"
+                        placeholder="Elige la fecha de inicio">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker touchUi #picker></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-4">
+                <mat-form-field class="full-width">
+                    <input matInput [matDatepicker]="picker2" (dateInput)="agregarFechaFinal($event)"
+                        placeholder="Elige la fecha final">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker touchUi #picker2></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-4">
+                <button mat-raised-button class="boton" color="primary" (click)="generarGrafica()"
+                    [disabled]="!validDates()">Generar
+                    grafica</button>
+            </div>
+
+        </div>
+        <div class="row" #contenido>
+            <div class="col-lg-12">
+                <h5 style="margin-top: 5px;">Grafica de ventas</h5>
+                <hr>
+            </div>
+            <div class="col-lg-12">
+                <canvas baseChart width="400" height="300" [datasets]="lineChartData" [labels]="lineChartLabels"
+                    [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
+                    [chartType]="lineChartType" (chartHover)="chartHovered($event)"
+                    (chartClick)="chartClicked($event)"></canvas>
+                <hr>
+            </div>
+            <div class="col-lg-12">
+                <h5>Detalles</h5>
+                <hr>
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="width:100%">
+                    <ng-container matColumnDef="fecha">
+                        <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                        <td mat-cell *matCellDef="let element"> {{element._id}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="clientes">
+                        <th mat-header-cell *matHeaderCellDef> Clientes </th>
+                        <td mat-cell *matCellDef="let element"> {{element.clientes}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="ventas">
+                        <th mat-header-cell *matHeaderCellDef> Ventas </th>
+                        <td mat-cell *matCellDef="let element"> {{element.montoTotal}} </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+            <div class="col-lg-12">
+                <h5 style="margin-top:5px">Resultados</h5>
+                <p>
+                    <span class="resultados">Total:</span> ${{total}} <br>
+                    <span class="resultados">Promedio de ventas: </span> ${{promedioVentas}} <br>
+                    <span class="resultados">Promedio por clientes:</span> ${{promedioPorCliente}} <br>
+                    <span class="resultados">Promedio de clientes:</span> {{promedioCliente}}
+
+                </p>
+                <hr>
+            </div>
+            <div class="col-lg-12">
+                <h5>Los 10 productos mas vendidos</h5>
+                <hr>
+                <table mat-table [dataSource]="dataSource2" class="mat-elevation-z8" style="width:100%">
+                    <ng-container matColumnDef="id">
+                        <th mat-header-cell *matHeaderCellDef> Id </th>
+                        <td mat-cell *matCellDef="let element"> {{element._id._id}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="producto">
+                        <th mat-header-cell *matHeaderCellDef> Producto </th>
+                        <td mat-cell *matCellDef="let element"> {{element._id.nombre}} {{element._id.descripcion}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="precio">
+                        <th mat-header-cell *matHeaderCellDef> Precio </th>
+                        <td mat-cell *matCellDef="let element"> {{element._id.precio}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="cantidad">
+                        <th mat-header-cell *matHeaderCellDef> Cantidad </th>
+                        <td mat-cell *matCellDef="let element"> {{element.cantidad}} </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+                </table>
+                <hr>
+            </div>
+            <div class="col-lg-12">
+                <app-reporte-ventas-familia *ngIf="datosFamilia" [datos]="datosFamilia" [fechaInicio]="fechaInicio"
+                    [fechaFin]="fechaFin"></app-reporte-ventas-familia>
+            </div>
+        </div>
+
+    </div>
+
+
+</mat-card>

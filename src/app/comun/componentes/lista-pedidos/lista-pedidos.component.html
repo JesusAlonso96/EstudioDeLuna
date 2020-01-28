@@ -1,0 +1,39 @@
+<div class="container">
+    <div class="row">
+        <mat-card class="col-lg-8 mx-auto">
+            <div *ngIf="pedidos.length == 0">
+                <h3>No hay pedidos realizados</h3>
+            </div>
+            <ul class="list-group shadow mb-4">
+                <li class="list-group-item" *ngFor="let pedido of pedidos">
+                    <div class="media align-items-lg-center flex-column flex-lg-row p-3">
+                        <div class="media-body order-2 order-lg-1">
+                            <h5 class="mt-0 font-weight-bold mb-2">Hecho por {{pedido.fotografo.nombre}}
+                                {{pedido.fotografo.ape_pat}} {{pedido.fotografo.ape_mat}}</h5>
+                            <p class="text-muted mb-0 small">Pedido numero {{pedido.num_pedido}}
+                                <span *ngIf="pedido.c_retoque"> <strong>con retoque</strong> </span> <span
+                                    *ngIf="!pedido.c_retoque"> <strong>sin retoque</strong></span> con fecha
+                                de entrega para el dia
+                                {{pedido.fecha_entrega | formatoFecha:0}}.
+                            </p>
+                            <p class="text-muted mb-0 small">
+                                <span *ngIf="pedido.anticipo > 0">Pago en {{pedido.metodoPago}} un
+                                    total de ${{pedido.anticipo}} pesos</span>
+                                <span *ngIf="pedido.anticipo == 0">No dejo anticipo</span>.
+                            </p>
+                            <div class="d-flex align-items-center justify-content-between mt-1">
+                                <h6 class="font-weight-bold my-2">${{pedido.total}}</h6>
+                                <button mat-raised-button color="primary" (click)="verProductos(pedido)">Ver
+                                    productos</button>
+                            </div>
+                        </div>
+                        <img *ngIf="pedido.foto" [src]="url_fotos + pedido.foto" width="120"
+                            class="ml-lg-5 order-1 order-lg-2">
+                        <img *ngIf="!pedido.foto" src="../../../../assets/imagenes/profile_user.gif"
+                            width="120" class="ml-lg-5 order-1 order-lg-2">
+                    </div>
+                </li>
+            </ul>
+        </mat-card>
+    </div>
+</div>

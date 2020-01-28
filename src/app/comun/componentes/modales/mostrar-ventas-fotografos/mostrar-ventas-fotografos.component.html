@@ -1,0 +1,29 @@
+<h3 mat-dialog-title>Pedidos vendidos con retoque</h3>
+<mat-dialog-content>
+    <mat-progress-bar *ngIf="cargando" mode="indeterminate" color="accent"></mat-progress-bar>
+    <div class="container-fluid">
+        <div class="row" *ngIf="data.length > 0">
+            <div class="col-lg-4" *ngFor="let d of data">
+                <mat-card class="card mb-3" style="padding: 0;">
+                    <div class="card-header text-white nombre-empleado">{{d._id.nombre}} {{d._id.ape_pat}}
+                        {{d._id.ape_mat}}</div>
+                    <div class="card-body">
+                        <h5 class="card-title" *ngIf="d.pedidos == 1">{{d.pedidos}} pedido con retoque</h5>
+                        <h5 class="card-title" *ngIf="d.pedidos > 1">{{d.pedidos}} pedidos con retoque</h5>
+                        <p class="card-text">Vendio un total de ${{d.montoVendido}} en pedidos con retoque</p>
+                        <button mat-raised-button color="primary" (click)="desglosarVentas(d._id)">Desglosar</button>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+        <div class="row" *ngIf="data.length == 0">
+            <div class="col-lg-12 mx-auto">
+                <h4 class="text-center">No se ha realizado ningun pedido con retoque</h4>
+            </div>
+        </div>
+    </div>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onNoClick()">Cerrar</button>
+</mat-dialog-actions>

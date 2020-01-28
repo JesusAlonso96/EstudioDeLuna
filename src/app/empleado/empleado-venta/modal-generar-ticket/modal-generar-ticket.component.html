@@ -1,0 +1,88 @@
+<button style="display: none;"
+    [printStyle]="{img: {'height': '80px','width':'170px','position':'absolute', 'left':'0','margin-top':'30px', 'margin-left':'4px'},th:{'margin-right':'5px'},td:{'margin-left':'5px'}, p:{'margin-bottom': '2px'}, body:{'font-family':'Arial','font-size':'110%'}}"
+    id="botonImprimir" printTitle="nota" printSectionId="nota" ngxPrint>Imprimir</button>
+<div id="nota" style="display: none;">
+
+    <body>
+        <div align="center">
+            <img class="imagen" src="../../../../assets/imagenes/LOGO ESTUDIO FOTOGRAFICO copia.png" alt="">
+        </div> <br>
+        <div align="end">
+            <p>
+                <span><strong>ROSA IMELDA ESPINOZA ROMO</strong></span> <br>
+                <span><strong>EIIR-600513-Q5A</strong></span> <br>
+                <span>Rivero y Gutiérrez 115 Zona Centro</span> <br>
+                <span>Aguascalientes, Ags</span> <br>
+                <span>Expedida en Aguascalientes, Ags.</span> <br>
+                <span><strong>Tel. 915 13 85</strong></span>
+            </p>
+        </div>
+        <hr>
+        <div align="center">
+            <p>
+                <span><strong>Pedido No. {{data.pedido.num_pedido}}</strong></span> <br>
+                <span>{{data.pedido.fecha_creacion | date:'short'}}</span>
+            </p>
+        </div>
+        <hr>
+        <div align="center">
+            <span><strong>Detalles del cliente:</strong></span> <br>
+        </div>
+        <div align="start">
+            <p>
+                <span><strong>Nombre: </strong> <span *ngIf="data.pedido.cliente != null">{{data.pedido.cliente.nombre}}
+                        {{data.pedido.cliente.ape_pat}}
+                        {{data.pedido.cliente.ape_mat}}</span> </span>
+            </p>
+            <p>
+                <span><strong>Correo: </strong> <span
+                        *ngIf="data.pedido.cliente != null">{{data.pedido.cliente.email}}</span> </span>
+            </p>
+            <p>
+                <span><strong>Telefono: </strong> <span
+                        *ngIf="data.pedido.cliente != null">{{data.pedido.cliente.telefono}}</span> </span>
+            </p>
+            <p>
+                <span><strong>Contraseña: </strong> <span
+                        *ngIf="data.pedido.cliente != null">{{data.pedido.cliente.contrasena}}</span></span>
+            </p>
+
+        </div>
+        <hr>
+        <table mat-table [dataSource]="tabla_productos" class="mat-elevation-z8 tabla">
+            <th>Cantidad</th>
+            <td>1</td>
+            <ng-container matColumnDef="descripcion">
+                <th mat-header-cell *matHeaderCellDef>Descripcion</th>
+                <td mat-cell *matCellDef="let element" align="start">{{element.descripcion}}</td>
+            </ng-container>
+            <ng-container matColumnDef="precio">
+                <th mat-header-cell *matHeaderCellDef align="end">Importe</th>
+                <td mat-cell *matCellDef="let element" align="end">${{element.precio}}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columnas_tabla"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnas_tabla;"></tr>
+        </table>
+        <hr>
+        <div align="end" class="montos">
+            <span>Total: ${{data.pedido.total}}</span> <br>
+            <span>Importe: ${{data.pedido.anticipo}}</span> <br>
+            <ng-container *ngIf="pagado()">
+                <span> <strong>Pedido pagado</strong> </span>
+            </ng-container>
+            <ng-container *ngIf="!pagado()">
+                <span>Debe: ${{debe}}</span> <br>
+            </ng-container>
+        </div>
+        <hr>
+        <div align="center">
+            <span> <strong>Gracias por su preferencia!</strong> </span> <br>
+            <br>
+            <span>E-mail: contacto@estudiodeluna.com.mx</span> <br>
+            <span>http://www.estudiodeluna.com.mx</span>
+        </div>
+    </body>
+
+
+</div>
+<mat-spinner></mat-spinner>

@@ -1,0 +1,17 @@
+@import 'variables';
+.card-productos{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+mat-expansion-panel{
+    margin-bottom: 10px;
+}
+.no-disponible{
+    color: $danger;
+}
+.card-pedido{
+    margin-bottom: 15px;
+}
+.iconos{
+    color: $light-gray-color;
+}

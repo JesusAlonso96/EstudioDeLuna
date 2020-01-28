@@ -1,0 +1,91 @@
+<div mat-dialog-title>
+    <mat-card-header>
+        <img mat-card-avatar *ngIf="data.pedido.foto" class="img" [src]="foto" alt="">
+        <img mat-card-avatar *ngIf="!data.pedido.foto" class="img" src="../../../../assets/imagenes/profile_user.gif"
+            alt="">
+        <mat-card-title>Pedido {{data.pedido.num_pedido}}</mat-card-title>
+        <mat-card-subtitle *ngIf="data.tipo == 0">{{data.pedido.cliente}}</mat-card-subtitle>
+        <mat-card-subtitle *ngIf="data.tipo == 1">{{data.pedido.cliente.nombre}} {{data.pedido.cliente.ape_pat}}
+            {{data.pedido.cliente.ape_mat}}</mat-card-subtitle>
+    </mat-card-header>
+</div>
+<div mat-dialog-content>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 class="mat-subheader">Especificaciones de productos</h5>
+                <hr>
+            </div>
+            <ng-container *ngFor="let producto of data.pedido.productos; let i = index">
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <mat-card style="margin-bottom: 10px;">
+                                <mat-card-header>
+                                    <mat-card-title>Producto {{i+1}}</mat-card-title>
+                                    <mat-card-subtitle>{{producto.nombre}}</mat-card-subtitle>
+                                </mat-card-header>
+                                <mat-card-content>
+                                    <p>
+                                        {{producto.descripcion}}
+                                    </p>
+                                </mat-card-content>
+                            </mat-card>
+                        </div>
+                        <div class="col-lg-12">
+                            <ul>
+                                <li *ngIf="producto.c_r">Con retoque</li>
+                                <li *ngIf="!producto.c_r">Sin retoque</li>
+                                <li *ngIf="producto.b_n">Blanco y negro</li>
+                                <li *ngIf="!producto.b_n">Color</li>
+                                <li *ngIf="producto.c_ad">Con adherible</li>
+                                <li *ngIf="!producto.c_ad">Sin adherible</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <ng-container *ngIf="producto.caracteristicas">
+                        <mat-list>
+                            <h3 mat-subheader>Caracteristicas del producto {{i+1}}</h3>
+                            <ng-container *ngFor="let caracteristica of producto.caracteristicas; let j = index">
+                                <mat-list-item>
+                                    <h4 mat-line>{{caracteristica}}</h4>
+                                </mat-list-item>
+                            </ng-container>
+                        </mat-list>
+                    </ng-container>
+                    <ng-container *ngIf="!producto.caracteristicas">
+                        <h6>No existen caracteristicas especiales</h6>
+                    </ng-container>
+                </div>
+                <div class="col-lg-12">
+                    <hr>
+                </div>
+            </ng-container>
+
+        </div>
+    </div>
+</div>
+<div class="col-lg-12">
+    <mat-list *ngIf="data.pedido.comentarios != ' '">
+        <h3 mat-subheader>Observaciones</h3>
+        <mat-list-item>
+            <h4 mat-line>{{data.pedido.comentarios}}</h4>
+        </mat-list-item>
+    </mat-list>
+    <mat-list *ngIf="data.pedido.comentarios == ' '">
+        <h3 mat-subheader>Observaciones</h3>
+        <mat-list-item>
+            <h4 mat-line>No existen observaciones adicionales para este pedido</h4>
+        </mat-list-item>
+        <mat-list-item *ngIf="data.pedido.c_adherible">
+            <h4 mat-line> <strong>El pedido lleva adherible</strong> </h4>
+        </mat-list-item>
+
+    </mat-list>
+    <div align="end">
+        <button mat-button (click)="onNoClick()">Cerrar</button>
+    </div>
+</div>
