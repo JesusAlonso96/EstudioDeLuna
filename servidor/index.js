@@ -13,8 +13,10 @@ const express = require('express'),
     rutasEmpleado = require('./rutas/empleado'),
     rutasCliente = require('./rutas/cliente'),
     rutasAdmin = require('./rutas/administrador'),
-    path = require('path');
-
+    path = require('path'),
+    bcrypt = require('bcrypt'),
+    saltRounds = 10;
+module.exports.bcrypt = bcrypt;
 
 //Conexion a la base de datos
 mongoose.set('useCreateIndex', true);
@@ -46,7 +48,7 @@ app.use('/api/v1/admins', rutasAdmin);
 if (process.env.NODE_ENV == 'production') {
     const appPath = path.join(__dirname, '..', 'dist/cliente');
     app.use(express.static(appPath));
-    
+
     app.get('*', function (req, res) {
         res.sendFile(path.resolve(appPath, 'index.html'));
     });
