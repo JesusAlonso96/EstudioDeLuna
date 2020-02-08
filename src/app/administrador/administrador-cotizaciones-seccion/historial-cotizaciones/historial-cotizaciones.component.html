@@ -1,0 +1,181 @@
+<app-barra-cargando [cargando]="cargando"></app-barra-cargando>
+<mat-toolbar>
+    <span class="espaciador"></span>
+    <mat-paginator class="paginador" [length]="cotizaciones.length" [pageSize]="page_size"
+        (page)="manejarPaginacion($event)">
+    </mat-paginator>
+</mat-toolbar>
+<mat-card class="container margin-top mb-4 sin-borde">
+    <div class="row">
+        <div class="col-lg-12">
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Buscar por numero de cotización</mat-label>
+                <input matInput [(ngModel)]="busquedaCotizacion" type="text"
+                    placeholder="Buscar cotizacion">
+                <button *ngIf="busquedaCotizacion" (click)="borrarBusqueda()" mat-button matSuffix mat-icon-button
+                    aria-label="Clear">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row" *ngIf="cotizaciones.length == 0">
+        <div class="col-lg-12">
+            <div class="alert alert-warning alerta sin-borde" role="alert">
+                No hay <a class="alert-link">cotizaciones</a> generadas hasta el momento.
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="cotizaciones.length > 0">
+        <div class="col-lg-12">
+            <mat-accordion class="example-headers-align">
+                <ng-container *ngFor="let cotizacion of cotizaciones  | filtroCotizacion:busquedaCotizacion; let i = index">
+                    <mat-expansion-panel class="mb-2" (click)="inicializarTabla(cotizacion);" (opened)="panelAbierto[i] = true"
+                        (closed)="panelAbierto[i] = false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Cotizacion {{cotizacion.num_cotizacion}}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{cotizacion.empresa.nombre}}, {{cotizacion.fecha | formatoFecha:2}}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div class="container">
+                            <div class="row mt-4">
+                                <div class="col-lg-6">
+                                    <div class="card mb-3">
+                                        <div class="row no-gutters">
+                                            <div class="col-md-3 division">
+                                                <div class="card-body">
+                                                    <p class="text-rigth">
+                                                        <span class="campos">Empresa</span> <br>
+                                                        <span class="campos">Direccion</span> <br>
+                                                        <span class="campos">Contacto</span> <br>
+                                                        <span class="campos">Tel.</span> <br>
+                                                        <span class="campos">E-mail</span> <br>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="card-body">
+                                                    <p>
+                                                        <span class="camposLlenos">{{cotizacion.empresa.nombre}}</span>
+                                                        <br>
+                                                        <span
+                                                            class="camposLlenos">{{cotizacion.empresa.direccion}}</span>
+                                                        <br>
+                                                        <span
+                                                            class="camposLlenos">{{cotizacion.empresa.contacto}}</span>
+                                                        <br>
+                                                        <span
+                                                            class="camposLlenos">{{cotizacion.empresa.telefono}}</span>
+                                                        <br>
+                                                        <span class="camposLlenos">{{cotizacion.empresa.email}}</span>
+                                                        <br>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card mb-3">
+                                        <div class="row no-gutters">
+                                            <div class="col-md-3 division">
+                                                <div class="card-body">
+                                                    <p>
+                                                        <span class="campos">Cotización</span> <br>
+                                                        <span class="campos">Fecha</span> <br>
+                                                        <span class="campos">Vigencia</span> <br>
+                                                        <span class="campos">Asesor</span> <br>
+                                                        <span class="campos">E-mail</span> <br>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="card-body">
+                                                    <p>
+                                                        <span class="camposLlenos">UTR-007</span> <br>
+                                                        <span
+                                                            class="camposLlenos">{{cotizacion.fecha | formatoFecha:2}}</span>
+                                                        <br>
+                                                        <span class="camposLlenos">{{cotizacion.vigencia}}</span> <br>
+                                                        <span class="camposLlenos">{{cotizacion.asesor.nombre}}
+                                                            {{cotizacion.asesor.ape_pat}}</span> <br>
+                                                        <span class="camposLlenos">{{cotizacion.asesor.email}}</span>
+                                                        <br>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2" *ngIf="panelAbierto[i]">
+                                <div class="col-lg-12">
+                                    <mat-table [dataSource]="listData" style="width: 100%;">
+                                        <ng-container matColumnDef="cantidad">
+                                            <mat-header-cell *matHeaderCellDef>Cantidad</mat-header-cell>
+                                            <mat-cell *matCellDef="let element">{{element.cantidad}}</mat-cell>
+                                            <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="descripcion">
+                                            <mat-header-cell class="descripcion" *matHeaderCellDef>Descripcion
+                                            </mat-header-cell>
+                                            <mat-cell class="descripcion" *matCellDef="let element">
+                                                {{element.producto.descripcion}}
+                                            </mat-cell>
+                                            <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="precio">
+                                            <mat-header-cell *matHeaderCellDef>Precio</mat-header-cell>
+                                            <mat-cell *matCellDef="let element">${{element.producto.precio}}</mat-cell>
+                                            <mat-footer-cell *matFooterCellDef>Subtotal</mat-footer-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="subtotal">
+                                            <mat-header-cell *matHeaderCellDef>Subtotal</mat-header-cell>
+                                            <mat-cell *matCellDef="let element">
+                                                ${{usuarioService.obtenerSubtotalPorProducto(element)}}</mat-cell>
+                                            <mat-footer-cell *matFooterCellDef>${{cotizacion.subtotal}}
+                                            </mat-footer-cell>
+                                        </ng-container>
+                                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                        <mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>
+                                    </mat-table>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-6">
+                                    <span class="campos2">FECHA TENTATIVA DEL EVENTO: </span> <span
+                                        class="camposLlenos2"
+                                        *ngIf="cotizacion.fecha_evento">{{cotizacion.fecha_evento | formatoFecha:2}}</span>
+                                    <span class="camposLlenos2" *ngIf="!cotizacion.fecha_evento">Sin fecha
+                                        designada</span> <br>
+                                    <span class="campos2">FECHA DE ENTREGA: </span> <span
+                                        class="camposLlenos2">{{cotizacion.fecha_entrega | formatoFecha:2}}</span> <br>
+                                    <span class="campos2">FORMA DE PAGO: </span> <span class="camposLlenos2"
+                                        *ngIf="cotizacion.forma_pago">{{cotizacion.forma_pago}}</span> <span
+                                        class="camposLlenos2" *ngIf="!cotizacion.forma_pago">Sin forma de pago
+                                        establecida.</span>
+                                </div>
+                                <div class="col-lg-6">
+                                    <span class="campos2">I.V.A: </span> <span
+                                        class="camposLlenos2">${{cotizacion.iva}}</span> <br>
+                                    <span class="campos2">Total: </span> <span
+                                        class="camposLlenos2">${{cotizacion.total}}</span>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-lg-12">
+                                    <button mat-raised-button (click)="descargarCotizacion(cotizacion)"
+                                        color="primary">Descargar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </ng-container>
+            </mat-accordion>
+        </div>
+    </div>
+</mat-card>

@@ -33,6 +33,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PaginadorTraductor } from './pipes/paginador-translate';
+import { MatNativeDateModule } from '@angular/material';
 
 
 
@@ -49,7 +50,8 @@ import { PaginadorTraductor } from './pipes/paginador-translate';
     MatSidenavModule,
     MatIconModule,
     MatListModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   exports: [
     MatToolbarModule,
@@ -78,6 +80,7 @@ import { PaginadorTraductor } from './pipes/paginador-translate';
     MatSortModule,
     MatTabsModule,
     MatDatepickerModule,
+    MatNativeDateModule,
     MatCheckboxModule,
     MatChipsModule,
     MatMomentDateModule

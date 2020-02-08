@@ -1,18 +1,17 @@
 <mat-toolbar *ngIf="!autServicio.estaAutenticado()" color="primary" class="toolbar"></mat-toolbar>
-<div *ngIf="!autServicio.estaAutenticado()" class="container-fluid contenedor-principal" style="height: 100%;">
-
+<div *ngIf="!autServicio.estaAutenticado()" class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-lg-5 col-md-9 col-sm-10 align-self-center " style="margin-top: 10%;">
+        <div class="col-lg-4 col-md-8 col-sm-10 align-self-center " style="margin-top: 10%;">
             <mat-card class="loginCard sin-borde card">
                 <div class="card-body">
-                    <div class="row justify-content-center" style="margin-top: 10%;">
+                    <div class="row justify-content-center mt-4">
                         <div class="col-12">
                             <h2 class="text-center">Iniciar sesion</h2>
                         </div>
                     </div>
                     <form #usuarioDatos="ngForm">
                         <div class="row justify-content-center">
-                            <div class="col-lg-9 col-md-8" style="margin-top: 8%;">
+                            <div class="col-lg-9 col-md-8 mt-4">
                                 <div class="text-center">
                                     <mat-form-field style="width:100%" appearance="outline">
                                         <mat-label>Nombre de usuario</mat-label>
@@ -32,7 +31,7 @@
                                 </div>
 
                             </div>
-                            <div class="col-lg-9 col-md-8" style="margin-top: 2%;">
+                            <div class="col-lg-9 col-md-8 mt-4">
                                 <div class="text-center">
                                     <mat-form-field style="width:100%" appearance="outline">
                                         <mat-label>Contraseña</mat-label>
@@ -47,7 +46,7 @@
                                 </div>
 
                             </div>
-                            <div class=" col-lg-9 col-md-8" style="margin-top: 2%;">
+                            <div class=" col-lg-9 col-md-8 mt-4 mb-4">
                                 <div class="text-center">
                                     <button mat-raised-button class="loginBoton text-center" color="primary"
                                         [disabled]="!usuarioDatos.valid" (click)="login()">
@@ -62,8 +61,6 @@
                 </div>
             </mat-card>
             <mat-progress-bar *ngIf="cargando"  mode="indeterminate"></mat-progress-bar>
-
         </div>
     </div>
-
 </div>

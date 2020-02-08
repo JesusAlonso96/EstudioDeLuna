@@ -36,6 +36,9 @@ import { EditarProveedorComponent } from './componentes/modales/editar-proveedor
 import { SeleccionarProveedorComponent } from './componentes/modales/seleccionar-proveedor/seleccionar-proveedor.component';
 import { BarraCargandoComponent } from './componentes/barra-cargando/barra-cargando.component';
 import { EditarProductoProveedorComponent } from './componentes/modales/editar-producto-proveedor/editar-producto-proveedor.component';
+import { AltaEmpresaComponent } from './componentes/modales/alta-empresa/alta-empresa.component';
+import { EditarEmpresaComponent } from './componentes/modales/editar-empresa/editar-empresa.component';
+import { VerCotizacionComponent } from './componentes/modales/ver-cotizacion/ver-cotizacion.component';
 //modulos
 import { MaterialModule } from './material.module';
 //servicios
@@ -47,6 +50,7 @@ import { FiltroPedidosPipe } from './pipes/filtro-pedidos.pipe';
 import { FormatoFechaPipe } from './pipes/formato-fecha.pipe';
 import { PaginacionPipe } from './pipes/paginacion.pipe';
 import { FiltroProductosPipe } from './pipes/filtro-productos.pipe';
+import { FiltroCotizacionPipe } from './pipes/filtro-cotizacion.pipe';
 
 @NgModule({
     declarations: [
@@ -58,6 +62,7 @@ import { FiltroProductosPipe } from './pipes/filtro-productos.pipe';
         FormatoFechaPipe,
         PaginacionPipe,
         FiltroProductosPipe,
+        FiltroCotizacionPipe,
         EncabezadoTituloComponent,
         AgregarProductoComponent,
         EliminarProductoComponent,
@@ -85,7 +90,10 @@ import { FiltroProductosPipe } from './pipes/filtro-productos.pipe';
         EditarProveedorComponent,
         SeleccionarProveedorComponent,
         BarraCargandoComponent,
-        EditarProductoProveedorComponent
+        EditarProductoProveedorComponent,
+        AltaEmpresaComponent,
+        EditarEmpresaComponent,
+        VerCotizacionComponent
     ],
     imports: [
         CommonModule,
@@ -100,6 +108,7 @@ import { FiltroProductosPipe } from './pipes/filtro-productos.pipe';
         FormatoFechaPipe,
         PaginacionPipe,
         FiltroProductosPipe,
+        FiltroCotizacionPipe,
         InfoSucursalesComponent,
         CatalogoFamiliasComponent,
         CatalogoProductosComponent,
@@ -133,7 +142,10 @@ import { FiltroProductosPipe } from './pipes/filtro-productos.pipe';
         DesgloseVentasFotografosComponent,
         EditarProveedorComponent,
         SeleccionarProveedorComponent,
-        EditarProductoProveedorComponent
+        EditarProductoProveedorComponent,
+        AltaEmpresaComponent,
+        EditarEmpresaComponent,
+        VerCotizacionComponent
     ],
     providers: [
         EstadosService,

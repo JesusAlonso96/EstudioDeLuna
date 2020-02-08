@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
-
+import { Pestana } from 'src/app/comun/modelos/pestana.model';
+import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-main-nav-admin',
@@ -12,12 +14,24 @@ import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-aut
   styleUrls: ['./main-nav-admin.component.scss']
 })
 export class MainNavAdminComponent implements OnInit {
-  pestanasTam: number = 11;
   pestanasActivas: boolean[] = [];
-  constructor(private breakpointObserver: BreakpointObserver, public autenticacionService: ServicioAutenticacionService, private rutas: Router) {
+  pestanas: Pestana[] = [];
+  constructor(private breakpointObserver: BreakpointObserver, public autenticacionService: ServicioAutenticacionService, private rutas: Router, private usuarioService: UsuarioService, private toastr: ToastrService) {
   }
   ngOnInit() {
-    this.iniciarPestanas();
+    this.obtenerPestanas();
+  }
+  obtenerPestanas() {
+    this.usuarioService.obtenerPestanas('Administrador').subscribe(
+      (pestanas: Pestana[]) => {
+        this.pestanas = pestanas;
+        this.iniciarPestanas();
+      },
+      (err: any) => {
+        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      }
+    );
+
   }
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -35,7 +49,7 @@ export class MainNavAdminComponent implements OnInit {
     this.pestanasActivas[indice] = true;
   }
   iniciarPestanas() {
-    for (let i = 0; i < this.pestanasTam; i++) {
+    for (let i = 0; i < this.pestanas.length; i++) {
       this.pestanasActivas[i] = false;
     }
   }

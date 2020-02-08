@@ -96,3 +96,20 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 mat-card{
   border-radius: 0%;
 }
+//cotizaciones
+.division{
+  border-right: 0.3px solid $light-gray-color;
+}
+//alertas
+.alerta{
+  background-color: rgba($color: $warn, $alpha: 0.5);
+}
+.alerta-info{
+  background-color: rgba($color: $info, $alpha: 0.5);
+}
+.alerta-error{
+  background-color: rgba($color: $danger, $alpha: 0.5);
+}
+.alerta-exito{
+  background-color: rgba($color: $success, $alpha: 0.5);
+}

@@ -644,6 +644,7 @@ function actualizarCaja(cantidad, metodoPago) {
         case 'efectivo':
             Caja.findOne().exec(function (err, caja) {
                 if (err) {
+                    console.log(err)
                     return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear la venta' });
                 }
                 let cajaCantidad = caja.cantidadTotal + cantidadSuma;
@@ -651,6 +652,7 @@ function actualizarCaja(cantidad, metodoPago) {
                 Caja.updateOne({ _id: caja._id }, { cantidadTotal: cajaCantidad, cantidadEfectivo: cajaEfectivo })
                     .exec(function (err, cajaActualizada) {
                         if (err) {
+                            console.log(err)
                             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear la venta' });
                         }
                     })
@@ -660,6 +662,7 @@ function actualizarCaja(cantidad, metodoPago) {
         case 'tarjeta':
             Caja.findOne().exec(function (err, caja) {
                 if (err) {
+                    console.log(err)
                     return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear la venta' });
                 }
                 let cajaCantidad = caja.cantidadTotal + cantidadSuma;
@@ -667,6 +670,7 @@ function actualizarCaja(cantidad, metodoPago) {
                 Caja.updateOne({ _id: caja._id }, { cantidadTotal: cajaCantidad, cantidadTarjetas: cajaTarjetas })
                     .exec(function (err, cajaActualizada) {
                         if (err) {
+                            console.log(err)
                             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear la venta' });
                         }
                     })

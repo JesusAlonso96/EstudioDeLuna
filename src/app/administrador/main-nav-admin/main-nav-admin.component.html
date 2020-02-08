@@ -7,61 +7,10 @@
     <mat-nav-list>
       <mat-list>
         <h3 mat-subheader>Secciones</h3>
-        <mat-list-item (click)="activarPestana(0)" [ngClass]="{'activa':pestanasActivas[0] == true }"
-          routerLink="/admin/dashboard">
-          <mat-icon mat-list-icon>dashboard</mat-icon>
-          <h5 mat-line>Tablero principal</h5>
-        </mat-list-item>
-        <mat-list-item (click)="activarPestana(1)" [ngClass]="{'activa':pestanasActivas[1] == true }"
-          routerLink="/admin/ventas/reportes-ventas">
-          <mat-icon mat-list-icon>attach_money</mat-icon>
-          <h5 mat-line>Ventas</h5>
-        </mat-list-item>
-        <mat-list-item (click)="activarPestana(2)" [ngClass]="{'activa':pestanasActivas[2] == true }"
-          routerLink="/admin/compras">
-          <mat-icon mat-list-icon>shopping_basket</mat-icon>
-          <h5 mat-line>Compras</h5>
-        </mat-list-item>
-        <mat-list-item (click)="activarPestana(3)" [ngClass]="{'activa':pestanasActivas[3] == true }"
-          routerLink="/admin/clientes">
-          <mat-icon mat-list-icon>face</mat-icon>
-          <h5 mat-line>Clientes</h5>
-        </mat-list-item>
-        <mat-list-item (click)="activarPestana(4)" [ngClass]="{'activa':pestanasActivas[4] == true }"
-          routerLink="/admin/usrs">
-          <mat-icon mat-list-icon>supervised_user_circle
-          </mat-icon>
-          <h5 mat-line>Usuarios</h5>
-        </mat-list-item>
-        <mat-list-item (click)="activarPestana(5)" [ngClass]="{'activa':pestanasActivas[5] == true }"
-          routerLink="/admin/familias-productos">
-          <mat-icon mat-list-icon>group_work</mat-icon>
-          <h5 mat-line>Familias productos</h5>
-        </mat-list-item>
-        <mat-list-item (click)="activarPestana(6)" [ngClass]="{'activa':pestanasActivas[6] == true }"
-          routerLink="/admin/productos">
-          <mat-icon mat-list-icon>photo_library</mat-icon>
-          <h5 mat-line>Productos</h5>
-        </mat-list-item>
-        <mat-list-item (click)="activarPestana(7)" [ngClass]="{'activa':pestanasActivas[7] == true }"
-          routerLink="/admin/inventarios">
-          <mat-icon mat-list-icon>layers</mat-icon>
-          <h5 mat-line>Inventarios</h5>
-        </mat-list-item>
-        <mat-list-item (click)="activarPestana(8)" [ngClass]="{'activa':pestanasActivas[8] == true }"
-          routerLink="/admin/proveedores">
-          <mat-icon mat-list-icon>assignment_ind</mat-icon>
-          <h5 mat-line>Proveedores</h5>
-        </mat-list-item>
-        <mat-list-item (click)="activarPestana(9)" [ngClass]="{'activa':pestanasActivas[9] == true }"
-          routerLink="/admin/sucursales">
-          <mat-icon mat-list-icon>home_work</mat-icon>
-          <h5 mat-line>Sucursales</h5>
-        </mat-list-item>
-        <mat-list-item (click)="activarPestana(10)" [ngClass]="{'activa':pestanasActivas[10] == true }"
-          routerLink="/admin/perfil">
-          <mat-icon mat-list-icon>account_circle</mat-icon>
-          <h5 mat-line>Perfil</h5>
+        <mat-list-item *ngFor="let pestana of pestanas; let i=index" (click)="activarPestana(i)" [ngClass]="{'activa':pestanasActivas[i] == true }"
+          [routerLink]="pestana.ruta">
+          <mat-icon mat-list-icon>{{pestana.icono}}</mat-icon>
+          <h5 mat-line>{{pestana.nombre}}</h5>
         </mat-list-item>
       </mat-list>
     </mat-nav-list>

@@ -10,7 +10,7 @@ import { NgxPrintModule } from 'ngx-print';
 import { NgxImageCompressService } from 'ngx-image-compress';
 
 //modulos de componentes
-import { AdministradorModule } from './administrador/modulo-administrador/modulo-administrador.module';
+import { AdministradorModule } from './administrador/modulo-administrador.module';
 import { EmpleadoModule } from './empleado/modulo-empleado/modulo-empleado.module';
 import { SupervisorModule } from './supervisor/modulo-supervisor/modulo-supervisor.module';
 import { ComunModule } from './comun/comun.module';

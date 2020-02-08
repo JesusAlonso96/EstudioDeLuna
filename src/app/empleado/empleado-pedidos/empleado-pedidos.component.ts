@@ -26,7 +26,7 @@ export class EmpleadoPedidosComponent implements OnInit {
   obtenerPedidos() {
     this.cargando = true;
     this.empleadoService.obtenerPedidos().subscribe(
-      (pedidos) => {
+      (pedidos: Pedido[]) => {
         this.pedidos = pedidos;
         this.cargando = false;
       },
@@ -44,13 +44,7 @@ export class EmpleadoPedidosComponent implements OnInit {
     this.page_number = e.pageIndex + 1;
   }
   verDetalles(pedido: Pedido) {
-    const dialogRef = this.dialog.open(PedidoEstadoComponent,{
-      width:'60%',
-      data: pedido
-    })
-    dialogRef.afterClosed().subscribe(actualizar=>{
-    
-    })
+    this.dialog.open(PedidoEstadoComponent, { data: pedido })
   }
 
 }

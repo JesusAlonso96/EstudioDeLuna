@@ -8,8 +8,12 @@ const Usuario = require('../modelos/usuario'),
     Venta = require('../modelos/venta'),
     Proveedor = require('../modelos/proveedor'),
     ProductoProveedor = require('../modelos/producto_proveedor'),
+    EmpresasCot = require('../modelos/empresa_cot'),
+    DatosEstudio = require('../modelos/datos_estudio'),
+    Cotizacion = require('../modelos/cotizacion'),
+    Pestana = require('../modelos/pestana'),
     momento = require('moment'),
-    config = require('../configuracion');
+    config = require('../configuracion/index');
 
 exports.login = function (req, res) {
     const { username, contrasena } = req.body;
@@ -36,6 +40,20 @@ exports.login = function (req, res) {
             }
         }
     })
+}
+exports.obtenerPestanas = function (req, res) {
+    Pestana.find({ rol: req.params.rol })
+        .exec(function (err, pestanas) {
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: `Error al obtener los módulos de ${req.params.rol}` });
+            if (pestanas) return res.json(pestanas);
+        })
+}
+exports.obtenerDatosEstudio = function (req, res) {
+    DatosEstudio.findOne()
+        .exec(function (err, datos) {
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los datos' });
+            return res.json(datos);
+        })
 }
 exports.crearAsistencia = function (req, res) {
     var hoy = new Date();
@@ -360,13 +378,71 @@ exports.obtenerProductosProveedor = function (req, res) {
     ProductoProveedor.find({ proveedor: req.params.id, activo: 1 })
         .exec(function (err, productos) {
             if (err) {
-                console.log(err);
                 return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los productos' });
             }
             return res.json(productos);
         })
 }
-
+//modulo de cotizaciones
+exports.obtenerEmpresas = function (req, res) {
+    EmpresasCot.find({ activa: 1 })
+        .exec(function (err, empresas) {
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las empresas' });
+            return res.json(empresas);
+        })
+}
+exports.nuevaEmpresa = function (req, res) {
+    nuevaEmpresa = new EmpresasCot(req.body);
+    nuevaEmpresa.save(function (err, guardada) {
+        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la empresa' });
+        return res.json({ titulo: 'Empresa agregada', detalles: 'Empresa agregada exitosamente' });
+    })
+}
+exports.eliminarEmpresa = function (req, res) {
+    EmpresasCot.findByIdAndUpdate(req.body._id, {
+        activa: 0
+    })
+        .exec(function (err, eliminada) {
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo eliminar la empresa' });
+            return res.json({ titulo: 'Empresa eliminada', detalles: 'Empresa eliminada exitosamente' });
+        })
+}
+exports.editarEmpresa = function (req, res) {
+    EmpresasCot.findByIdAndUpdate(req.body._id, {
+        nombre: req.body.nombre,
+        direccion: req.body.direccion,
+        contacto: req.body.contacto,
+        telefono: req.body.telefono,
+        email: req.body.email,
+        activa: req.body.activa
+    })
+        .exec(function (err, actualizada) {
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar la empresa' });
+            return res.json({ titulo: 'Empresa actualizada', detalles: 'Empresa actualizada exitosamente' });
+        })
+}
+exports.nuevaCotizacion = function (req, res) {
+    const cotizacion = new Cotizacion(req.body);
+    cotizacion.save(function (err, guardada) {
+        if (err) {
+            console.log(err);
+            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la cotizacion' });
+        }
+        if (guardada) return res.json({ titulo: 'Cotizacion guardada', detalles: 'Cotizacion guardada exitosamente' })
+    })
+}
+exports.obtenerCotizaciones = function (req, res) {
+    Cotizacion.find({}, { __v: 0 })
+        .populate('productos.producto', '-activo -caracteristicas -__v -familia -c_ad -c_r -b_n -nombre -num_fotos')
+        .populate('asesor', '-_id -__v -ape_mat -asistencia -ocupado -pedidosTomados -activo -username -contrasena -rol -rol_sec')
+        .populate('empresa', '-_id -activa -__v')
+        .populate('datos', '-_id -__v')
+        .sort({ num_cotizacion: 'desc' })
+        .exec(function (err, cotizaciones) {
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la cotizacion' });
+            return res.json(cotizaciones);
+        })
+}
 //middlewares
 exports.autenticacionMiddleware = function (req, res, next) {
     const token = req.headers.authorization;

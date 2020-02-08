@@ -1,11 +1,10 @@
 <div class="row">
-    <div class="col-lg-12">
-        <div *ngIf="cortes.length == 0">
-            <h5>Sin historial</h5>
-            <span class="text-muted">No existen cortes de caja realizados.</span>
+    <div class="col-lg-12" *ngIf="cortes.length == 0">
+        <div class="alert alerta-info sin-borde" role="alert">
+            No existen <a class="alert-link">cortes de caja</a> realizados hasta el momento.
         </div>
     </div>
-    <div class="col-lg-12">
+    <div class="col-lg-12" *ngIf="cortes.length > 0">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-8 ">
@@ -40,9 +39,14 @@
                                             ${{(corte.efectivoContado + corte.tarjetaContado) - (corte.efectivoEsperado + corte.tarjetaEsperado)}}</span>
                                         <br>
                                         <span
-                                            *ngIf="menorIgualCero(corte.efectivoContado,corte.tarjetaContado, corte.efectivoEsperado,corte.tarjetaEsperado) == 0">Se detecto dinero faltante en caja en este corte.</span>
-                                        <span *ngIf="menorIgualCero(corte.efectivoContado,corte.tarjetaContado, corte.efectivoEsperado,corte.tarjetaEsperado) == 1">Cantidades correctas</span>
-                                        <span *ngIf="menorIgualCero(corte.efectivoContado,corte.tarjetaContado, corte.efectivoEsperado,corte.tarjetaEsperado) == 2">Se detecto dinero sobrante en caja en este corte.</span>
+                                            *ngIf="menorIgualCero(corte.efectivoContado,corte.tarjetaContado, corte.efectivoEsperado,corte.tarjetaEsperado) == 0">Se
+                                            detecto dinero faltante en caja en este corte.</span>
+                                        <span
+                                            *ngIf="menorIgualCero(corte.efectivoContado,corte.tarjetaContado, corte.efectivoEsperado,corte.tarjetaEsperado) == 1">Cantidades
+                                            correctas</span>
+                                        <span
+                                            *ngIf="menorIgualCero(corte.efectivoContado,corte.tarjetaContado, corte.efectivoEsperado,corte.tarjetaEsperado) == 2">Se
+                                            detecto dinero sobrante en caja en este corte.</span>
 
                                     </div>
 

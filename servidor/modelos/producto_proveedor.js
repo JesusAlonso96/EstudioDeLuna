@@ -7,6 +7,7 @@ const productoProveedorSchema = new Schema({
     proveedor: { type: Schema.Types.ObjectId, ref: 'Proveedor' },
     detalles: { type: String, required: true },
     existencias: { type: Number, default: 0, required: true },
+    almacen: { type: Schema.Types.ObjectId, ref: 'Almacen' },
     activo: { type: Number, default: 1 }
 });
 

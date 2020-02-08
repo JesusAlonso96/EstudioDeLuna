@@ -6,6 +6,9 @@ import { Familia } from '../modelos/familia.model';
 import { Usuario } from '../modelos/usuario.model';
 import { Proveedor } from '../modelos/proveedor.model';
 import { ProductoProveedor } from '../modelos/producto_proveedor.model';
+import { EmpresaCot } from '../modelos/empresa_cot.model';
+import { Cotizacion } from '../modelos/cotizacion.model';
+import { ProductoCot } from '../modelos/producto_cot.model';
 
 @Injectable({
     providedIn: 'root'
@@ -29,6 +32,12 @@ export class UsuarioService {
     }
     public agregarProductoProveedor(producto: ProductoProveedor): Observable<any> {
         return this.http.post('/api/v1/usuarios/agregarProductoProveedor', producto);
+    }
+    public agregarEmpresa(empresa: EmpresaCot): Observable<any> {
+        return this.http.post('/api/v1/usuarios/agregarEmpresa', empresa);
+    }
+    public agregarCotizacion(cotizacion: Cotizacion): Observable<any>{
+        return this.http.post('/api/v1/usuarios/agregarCotizacion', cotizacion);
     }
     //get
     public obtenerUsuario(id: string): Observable<any> {
@@ -67,6 +76,18 @@ export class UsuarioService {
     public obtenerProductosProveedor(idProveedor: string): Observable<any> {
         return this.http.get(`/api/v1/usuarios/obtenerProductosProveedor/${idProveedor}`);
     }
+    public obtenerEmpresas(): Observable<any> {
+        return this.http.get('/api/v1/usuarios/obtenerEmpresas');
+    }
+    public obtenerDatosEstudio(): Observable<any> {
+        return this.http.get('/api/v1/usuarios/obtenerDatosEstudio');
+    }
+    public obtenerCotizacionesRealizadas(): Observable<any>{
+        return this.http.get('/api/v1/usuarios/obtenerCotizaciones');
+    }
+    public obtenerPestanas(rol: string): Observable<any>{
+        return this.http.get(`/api/v1/usuarios/obtenerPestanas/${rol}`)
+    }
     //patch
     public actualizarProducto(producto: Producto): Observable<any> {
         return this.http.patch('/api/v1/usuarios/actualizarProducto', producto);
@@ -76,5 +97,15 @@ export class UsuarioService {
     }
     public eliminarFamilia(id: string): Observable<any> {
         return this.http.patch(`/api/v1/usuarios/eliminarFamilia/${id}`, null);
+    }
+    public eliminarEmpresa(empresa: EmpresaCot): Observable<any> {
+        return this.http.patch('/api/v1/usuarios/eliminarEmpresa', empresa);
+    }
+    public actualizarEmpresa(empresa: EmpresaCot): Observable<any> {
+        return this.http.patch('/api/v1/usuarios/actualizarEmpresa', empresa);
+    }
+    //FUNCIONES AUXILIARES
+    obtenerSubtotalPorProducto(producto: ProductoCot): number {
+        return producto.cantidad * <number>producto.producto.precio;
     }
 }

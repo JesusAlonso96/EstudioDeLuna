@@ -15,9 +15,8 @@ export class ListadoVentasMesComponent implements OnInit {
     public dialogRef: MatDialogRef<ListadoVentasMesComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
-  ngOnInit() {
-    console.log(this.data)
-  }
+  ngOnInit() { }
+  
   descargarReporte() {
     const opciones = {
       filename: 'reporte.pdf',
@@ -30,8 +29,8 @@ export class ListadoVentasMesComponent implements OnInit {
   onNoClick(): void {
     this.dialogRef.close();
   }
-  obtenerTotal(){
-    return this.data.ventas.ventas.map( t => t.pedido.total).reduce((acc,value)=> acc + value, 0)
+  obtenerTotal() {
+    return this.data.ventas.ventas.map(t => t.pedido.total).reduce((acc, value) => acc + value, 0)
   }
 
 }

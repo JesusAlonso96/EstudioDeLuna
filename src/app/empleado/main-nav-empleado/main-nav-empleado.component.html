@@ -21,11 +21,11 @@
           <mat-divider></mat-divider>
         </ng-container>
         <ng-container *ngIf="!esRecepcionista()">
-            <h3 mat-subheader>Tablero general</h3>
-            <mat-list-item routerLink="/usuario/dashboard">
-              <mat-icon mat-list-icon>dashboard</mat-icon>
-              <h5 mat-line>Tablero</h5>
-            </mat-list-item>
+          <h3 mat-subheader>Tablero general</h3>
+          <mat-list-item routerLink="/usuario/dashboard">
+            <mat-icon mat-list-icon>dashboard</mat-icon>
+            <h5 mat-line>Tablero</h5>
+          </mat-list-item>
           <h3 mat-subheader>Pedidos</h3>
           <mat-list-item routerLink="/usuario/pedidos-realizados">
             <mat-icon mat-list-icon>done</mat-icon>
@@ -41,20 +41,27 @@
           </mat-list-item>
           <mat-divider></mat-divider>
         </ng-container>
+        <mat-list-item routerLink="/usuario/perfil">
+          <mat-icon mat-list-icon>account_circle</mat-icon>
+          <h5 mat-line>Perfil</h5>
+        </mat-list-item>
       </mat-list>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar color="primary">
+    <mat-toolbar color="primary" class="navbar">
       <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <span>Usuario</span>
       <span class="espaciador"></span>
-        <app-empleado-notificaciones style="z-index: 0;"></app-empleado-notificaciones>
-      <button mat-button class="botonesPerfil" routerLink="/usuario/perfil">Editar perfil</button>
-      <button mat-button class="botonesPerfil" (click)="cerrarSesion()">Cerrar
-        sesion</button>
+      <app-empleado-notificaciones></app-empleado-notificaciones>
+      <button class="iconos" mat-icon-button color="primary" matTooltip="Ayuda">
+        <mat-icon>help_outline</mat-icon>
+      </button>
+      <button class="iconos" mat-icon-button color="primary" (click)="cerrarSesion()" matTooltip="Cerrar sesion">
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
     </mat-toolbar>
     <ng-content></ng-content>
   </mat-sidenav-content>

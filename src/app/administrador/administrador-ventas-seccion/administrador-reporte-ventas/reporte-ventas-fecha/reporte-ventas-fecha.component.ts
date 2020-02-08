@@ -6,7 +6,6 @@ import { ToastrService } from 'ngx-toastr';
 import { AdministradorService } from 'src/app/administrador/servicio-administrador/servicio-administrador.service';
 import * as jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import * as html2pdf from 'html2pdf.js';
 
 @Component({
   selector: 'app-reporte-ventas-fecha',

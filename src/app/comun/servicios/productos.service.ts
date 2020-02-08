@@ -13,7 +13,7 @@ export class ProductosService {
     public obtenerFamiliasProductos(): Observable<any> {
         return this.http.get('/api/v1/productos/familias');
     }
-    public obtenerProductos(id): Observable<any>{
+    public obtenerProductos(id: string): Observable<any>{
         return this.http.get(`/api/v1/productos/obtenerProductos/${id}`);
     }
     public obtenerProductosPorCantidad(nombre): Observable<any>{

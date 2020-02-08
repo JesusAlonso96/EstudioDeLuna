@@ -9,6 +9,8 @@ export class FormatoFechaPipe implements PipeTransform{
     transform(valor: any, tipo:number): string{
         if(tipo == 0){
             return momento(valor).locale('es').format('DD [de] MMMM [del] YYYY [a las] hh:mm:s a')
+        } else if(tipo == 2){
+            return momento(valor).locale('es').format('DD/MMMM/YYYY');
         } else {
             return momento(valor).locale('es').format('DD [de] MMMM [del] YYYY');
         }

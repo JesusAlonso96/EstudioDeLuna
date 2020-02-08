@@ -65,7 +65,7 @@ import { ProductosFiltroPipe } from '../compartido/productos-filtro.pipe';
     EmpleadoPedidosComponent,
     PedidoEstadoComponent,
     EmpleadoDashboardFotografoComponent,
-    PedidosProximosComponent
+    PedidosProximosComponent,
   ],
   imports: [
     CommonModule,

@@ -12,12 +12,9 @@ declare var $: any;
 })
 export class EmpleadoNotificacionesComponent implements OnInit {
 
-  notificaciones: Notificacion[];
+  notificaciones: Notificacion[] = [];
   cargandoEliminacion: boolean;
-  constructor(private toastr: ToastrService, private empleadoService: EmpleadoService, private autService: ServicioAutenticacionService) {
-    this.notificaciones = [];
-    this.cargandoEliminacion = false;
-  }
+  constructor(private toastr: ToastrService, private empleadoService: EmpleadoService, private autService: ServicioAutenticacionService) { }
 
   ngOnInit() {
     this.obtenerNotificaciones();
@@ -36,20 +33,17 @@ export class EmpleadoNotificacionesComponent implements OnInit {
   toggleMenu() {
     $(document).ready(function () {
       $(".on").click(function () {
-        $("#notificationMenu").toggle("linear")
+        $("#notificationMenu").toggle();
       });
     });
   }
   quitarNotificacion(notificacion, indice) {
-    this.notificaciones.splice(indice, 1);
-    //this.cargandoEliminacion = true;
     this.empleadoService.eliminarNotificacion(notificacion._id).subscribe(
-      () => {
-        this.cargandoEliminacion = false;
+      (eliminada: any) => {
+        this.notificaciones.splice(indice, 1);
       },
-      () => {
-        this.cargandoEliminacion = false;
-        this.toastr.error('No se pudo eliminar de la cola al notificacion')
+      (err: any) => {
+        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );
   }

@@ -9,17 +9,14 @@
  overflow-y: hidden;
 }
 
-.sidenav .mat-toolbar {
-  //background: inherit;
-}
 
 .mat-toolbar.mat-primary {
   position: sticky;
   top: 0;
   z-index: 999999999999999;
   -webkit-box-shadow: 0px 6px 17px 0px rgba(0,0,0,0.59);
--moz-box-shadow: 0px 6px 17px 0px rgba(0,0,0,0.59);
-box-shadow: 0px 6px 17px 0px rgba(0,0,0,0.59);
+  -moz-box-shadow: 0px 6px 17px 0px rgba(0,0,0,0.59);
+  box-shadow: 0px 6px 17px 0px rgba(0,0,0,0.59);
 }
 .botonesPerfil{
   width: 108px;
@@ -43,7 +40,6 @@ box-shadow: 0px 6px 17px 0px rgba(0,0,0,0.59);
 }
 .activa{
   background-color: $light-gray-color2;
-  //color: red;
 }
 
 

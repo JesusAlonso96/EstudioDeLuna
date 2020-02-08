@@ -1,16 +1,17 @@
 @import 'variables';
 .loginCard{
-    width: 100%;
-    height: 600px;
+   // width: 100%;
+    height: 40%;
 }
 .loginBoton{
     width: 100%;
     height: 60px;
 }
-.contenedor-principal{
+.container-fluid{
     background-color: $light-gray-color2;
+    height: 100%;
 }
 .toolbar{
-    height: 250px;
+    height: 30%;
     position: absolute;
 }

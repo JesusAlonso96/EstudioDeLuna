@@ -1,0 +1,173 @@
+<app-barra-cargando [cargando]="cargando"></app-barra-cargando>
+<div class="container-fluid margin-top mb-4">
+    <div class="row">
+        <div class="col-lg-6">
+            <mat-card class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4 class="text-center">Nueva cotización</h4>
+                        <hr>
+                    </div>
+                </div>
+                <form #cotizacionForm="ngForm">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Empresa</mat-label>
+                                <input type="text" matInput [formControl]="empresa" [matAutocomplete]="auto"
+                                    placeholder="Empresa">
+                                <mat-autocomplete #auto="matAutocomplete" [displayWith]="mostrarEmpresa">
+                                    <mat-option *ngFor="let empresa of empresasFiltradas | async" [value]="empresa">
+                                        {{empresa.nombre}}
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-lg-4">
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Vigencia</mat-label>
+                                <input type="number" [(ngModel)]="cotizacion.vigencia" name="vigencia"
+                                    #vigencia="ngModel" matInput placeholder="Año de vigenca" required>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Fecha de entrega</mat-label>
+                                <input matInput [matDatepicker]="picker" placeholder="Fecha de entrega"
+                                    [formControl]="fecha_entrega" required>
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-lg-6">
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Fecha del evento</mat-label>
+                                <input matInput [matDatepicker]="picker2" placeholder="Fecha del evento"
+                                    [formControl]="fecha_evento">
+                                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                <mat-datepicker #picker2></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Forma de pago</mat-label>
+                                <input matInput [(ngModel)]="cotizacion.forma_pago" name="forma_pago"
+                                    #forma_pago="ngModel" type="text" placeholder="Describa la forma de pago">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h5 class="text-left">Seleccionar productos</h5>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Familia de productos</mat-label>
+                                <input type="text" matInput [formControl]="familias" [matAutocomplete]="auto2"
+                                    placeholder="Familia">
+                                <mat-autocomplete #auto2="matAutocomplete" [displayWith]="mostrarFamilia">
+                                    <mat-option (click)="buscarProductosPorFamilia()"
+                                        *ngFor="let familia of familiasFiltradas | async" [value]="familia">
+                                        {{familia.nombre}}
+                                    </mat-option>
+                                </mat-autocomplete>
+                                <button *ngIf="familias.value" (click)="iniciarFiltroFamilias()" mat-button matSuffix
+                                    mat-icon-button aria-label="Clear">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-lg-12" *ngIf="productos_cot.length > 0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center"
+                                    *ngFor="let producto of productos_cot">
+                                    <div style="width: 85%;">
+                                        {{producto.producto.descripcion}} ${{producto.producto.precio}} MXN
+                                    </div>
+                                    <div style="width: 15%;">
+                                        <button mat-raised-button (click)="agregarCantidadProducto(producto)"
+                                            [disabled]="existeProducto(producto)" class="agregar">
+                                            <mat-icon>done</mat-icon>
+                                            Agregar
+                                        </button>
+                                    </div>
+
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-12" *ngIf="productos_cot.length == 0">
+                            <div class="alert alert-info alerta-info sin-borde" role="alert">
+                                Selecciona una familia para ver los productos.
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <button mat-raised-button (click)="abrirCotizacion()" color="primary" class="float-right"
+                                [disabled]="!cotizacionForm.valid">Generar cotización</button>
+                        </div>
+                    </div>
+                </form>
+            </mat-card>
+        </div>
+        <div class="col-lg-6">
+            <mat-card class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4 class="text-center">Productos agregados</h4>
+                        <hr>
+                    </div>
+                </div>
+                <div class="row" *ngIf="cotizacion.productos.length > 0">
+                    <div class="col-lg-12">
+                        <button mat-raised-button color="primary" (click)="editarManual = !editarManual">
+                            <span *ngIf="!editarManual">Editar cantidades manualmente</span>
+                            <span *ngIf="editarManual">Editar con botones</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12" *ngIf="cotizacion.productos.length > 0">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                *ngFor="let producto of cotizacion.productos">
+                                <div class="descripcion">
+                                    {{producto.producto.descripcion}} ${{producto.producto.precio}} MXN
+                                </div>
+                                <div class="acciones">
+                                    <button mat-icon-button (click)="quitarCantidadProducto(producto)"
+                                        [disabled]="cantidadIgualCero(producto)" matTooltip="Quitar" color="warn">
+                                        <mat-icon>remove</mat-icon>
+                                    </button>
+                                    <button mat-icon-button *ngIf="!editarManual" class="cantidad">
+                                        {{producto.cantidad}}
+                                    </button>
+                                    <mat-form-field *ngIf="editarManual" class="editarManual">
+                                        <input matInput type="number" (keyup)="editarCantidadesManualmente(producto)"
+                                            [(ngModel)]="producto.cantidad">
+                                    </mat-form-field>
+                                    <button mat-icon-button (click)="agregarCantidadProducto(producto)"
+                                        matTooltip="Agregar" color="primary">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                </div>
+
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-12" *ngIf="cotizacion.productos.length == 0">
+                        <div class="alert alert-warning alerta sin-borde" role="alert">
+                            No hay productos agregados a la <a class="alert-link">cotizacion</a>. Elige una
+                            familia para ver la lista.
+                        </div>
+                    </div>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+</div>

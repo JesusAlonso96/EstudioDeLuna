@@ -5,6 +5,5 @@ export class Familia{
     nombre: String;
     productos: Producto[];
     constructor(){
-        this.nombre = '';
     }
 }

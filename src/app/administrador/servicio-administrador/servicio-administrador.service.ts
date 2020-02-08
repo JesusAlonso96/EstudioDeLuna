@@ -5,6 +5,7 @@ import { Usuario } from 'src/app/comun/modelos/usuario.model';
 import { CorteCaja } from 'src/app/comun/modelos/corte_caja.model';
 import { Proveedor } from 'src/app/comun/modelos/proveedor.model';
 import { ProductoProveedor } from 'src/app/comun/modelos/producto_proveedor.model';
+import { EmpresaCot } from 'src/app/comun/modelos/empresa_cot.model';
 
 @Injectable({
   providedIn: 'root'
@@ -57,6 +58,9 @@ export class AdministradorService {
   public obtenerProductosProveedorEliminados(): Observable<any>{
     return this.http.get('/api/v1/admins/obtenerProductosProveedorEliminados');
   }
+  public obtenerEmpresasEliminadas(): Observable<any>{
+    return this.http.get('/api/v1/admins/obtenerEmpresasEliminadas');
+  }
   //patch
   public actualizarCaja(caja): Observable<any> {
     return this.http.patch('/api/v1/admins/actualizarCaja', caja);
@@ -91,6 +95,8 @@ export class AdministradorService {
   public restaurarProductoProveedorEliminado(producto: ProductoProveedor): Observable<any>{
     return this.http.patch('/api/v1/admins/restaurarProductoProveedorEliminado', producto);
   }
-
+  public restaurarEmpresa(empresa: EmpresaCot): Observable<any>{
+    return this.http.patch('/api/v1/admins/restaurarEmpresaEliminada', empresa);
+  }
 
 }

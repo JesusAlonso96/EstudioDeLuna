@@ -6,6 +6,7 @@ const Usuario = require('../modelos/usuario'),
     Proveedor = require('../modelos/proveedor'),
     Caja = require('../modelos/caja'),
     ProductoProveedor = require('../modelos/producto_proveedor'),
+    EmpresaCot = require('../modelos/empresa_cot'),
     momento = require('moment');
 
 exports.altaUsuario = function (req, res) {
@@ -412,6 +413,7 @@ exports.obtenerCortesCaja = function (req, res) {
             return res.json(cortes);
         })
 }
+//modulo de usuarios
 exports.cambiarPermisos = function (req, res) {
     Usuario.findByIdAndUpdate(req.body._id, {
         rol: req.body.rol,
@@ -438,7 +440,6 @@ exports.restaurarUsuarioEliminado = function (req, res) {
             return res.json({ titulo: 'Usuario restaurado', detalles: 'Usuario restaurado exitosmente' });
         })
 }
-//Usuarios
 exports.registrarUsuario = function (req, res) {
     const usuario = new Usuario(req.body);
     Usuario.findOne({ username: req.body.username })
@@ -478,7 +479,7 @@ exports.editarUsuario = function (req, res) {
             return res.json({ titulo: 'Usuario actualizado', detalles: 'Los datos fueron actualizados correctamente' });
         })
 }
-//Proveedores
+//Modulo de proveedores
 exports.editarProveedor = function (req, res) {
     Proveedor.findByIdAndUpdate(req.body._id, {
         nombre: req.body.nombre,
@@ -563,14 +564,31 @@ exports.obtenerProductosProveedorEliminados = function (req, res) {
             return res.json(productos);
         })
 }
-exports.restaurarProductoProveedorEliminado = function(req,res){
+exports.restaurarProductoProveedorEliminado = function (req, res) {
     ProductoProveedor.findByIdAndUpdate(req.body._id, {
-        activo:1
+        activo: 1
     })
-    .exec(function(err,actualizado){
-        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo restaurar el producto' });
-        if (actualizado) return res.json({titulo:'Producto restaurado', detalles:'Producto restaurado exitosamente'})
+        .exec(function (err, actualizado) {
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo restaurar el producto' });
+            if (actualizado) return res.json({ titulo: 'Producto restaurado', detalles: 'Producto restaurado exitosamente' });
+        })
+}
+//Modulo de cotizaciones
+exports.obtenerEmpresasEliminadas = function (req, res) {
+    EmpresaCot.find({ activa: 0 })
+        .exec(function (err, empresasEliminadas) {
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las empresas eliminadas' });
+            if (empresasEliminadas) return res.json(empresasEliminadas);
+        })
+}
+exports.restaurarEmpresaEliminada = function (req, res) {
+    EmpresaCot.findByIdAndUpdate(req.body._id, {
+        activa: 1
     })
+        .exec(function (err, restaurada) {
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo restaurar el producto' });
+            if (restaurada) return res.json({ titulo: 'Empresa restaurada', detalles: 'Empresa restaurada exitosamente' });
+        })
 }
 //Middleware
 exports.adminMiddleware = function (req, res, next) {
