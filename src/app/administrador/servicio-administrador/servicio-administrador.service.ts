@@ -71,8 +71,8 @@ export class AdministradorService {
   public restaurarUsuario(usuario: Usuario): Observable<any> {
     return this.http.patch('/api/v1/admins/restaurarUsuario', usuario);
   }
-  public eliminarUsuario(id: string): Observable<any> {
-    return this.http.patch(`/api/v1/admins/eliminarUsuario/${id}`, null);
+  public eliminarUsuario(usuario: Usuario): Observable<any> {
+    return this.http.patch('/api/v1/admins/eliminarUsuario', usuario);
   }
   public editarUsuario(usuario: Usuario): Observable<any> {
     return this.http.patch('/api/v1/admins/editarUsuario', usuario);

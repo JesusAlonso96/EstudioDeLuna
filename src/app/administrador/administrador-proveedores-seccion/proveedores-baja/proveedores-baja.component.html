@@ -1,58 +1,7 @@
 <app-barra-cargando [cargando]="cargando"></app-barra-cargando>
-<div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <mat-form-field class="full-width margin-top" appearance="outline">
-                <mat-label>Buscar proveedor</mat-label>
-                <input matInput [(ngModel)]="busquedaProveedor" placeholder="Buscar por nombre"
-                    (keyup)="aplicarFiltro()" autocomplete="off">
-                <button *ngIf="busquedaProveedor" (click)="borrarBusqueda()" mat-button matSuffix mat-icon-button
-                    aria-label="Clear">
-                    <mat-icon>close</mat-icon>
-                </button>
-            </mat-form-field>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12 mb-4">
-            <div class="mat-elevation-z8">
-                <mat-table [dataSource]="listData" matSort>
-                    <ng-container matColumnDef="nombre">
-                        <mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</mat-header-cell>
-                        <mat-cell *matCellDef="let element">{{element.nombre}}</mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="rfc">
-                        <mat-header-cell *matHeaderCellDef>RFC</mat-header-cell>
-                        <mat-cell *matCellDef="let element">{{element.rfc}}</mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="telefono">
-                        <mat-header-cell *matHeaderCellDef>Telefono</mat-header-cell>
-                        <mat-cell *matCellDef="let element">{{element.telefono}}</mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="ciudad">
-                        <mat-header-cell *matHeaderCellDef>Ciudad</mat-header-cell>
-                        <mat-cell *matCellDef="let element">{{element.ciudad}}</mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="borrar">
-                        <mat-header-cell *matHeaderCellDef>Eliminar proveedor</mat-header-cell>
-                        <mat-cell *matCellDef="let element">
-                            <a  (click)="confirmarEliminacion(element)" mat-icon-button color="warn">
-                                <mat-icon>delete</mat-icon>
-                            </a>
-                        </mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="noData">
-                        <mat-footer-cell *matFooterCellDef colspan="6">
-                            No hay proveedores registrados
-                        </mat-footer-cell>
-                    </ng-container>
-                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                    <mat-row *matRowDef="let row;columns: displayedColumns;"></mat-row>
-                    <mat-footer-row *matFooterRowDef="['noData']"
-                        [ngClass]="{'hide':!(listData!=null && listData.data.length == 0)}"></mat-footer-row>
-                </mat-table>
-                <mat-paginator [pageSizeOptions]="[5,10,15,20]" [pageSize]="15"></mat-paginator>
-            </div>
-        </div>
-    </div>
-</div>
+<app-buscador *ngIf="proveedores" 
+    [elementos]="proveedores" 
+    [columnas]="columnasTabla" 
+    nombre="proveedor"
+    accion="borrar" >
+</app-buscador>

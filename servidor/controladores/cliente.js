@@ -70,12 +70,12 @@ exports.obtenerClienteNombreEmail = function (req, res) {
         })
 }
 exports.eliminarCliente = function (req, res) {
-    Cliente.findOneAndUpdate({ _id: req.params.id }, {
+    Cliente.findOneAndUpdate({ _id: req.body._id }, {
         activo: 0
     })
         .exec(function (err, clienteEliminado) {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo eliminar el cliente' });
-            return res.json(clienteEliminado);
+            return res.json({ titulo: 'Cliente eliminado', detalles: 'Cliente eliminado exitosamente' });
         })
 }
 exports.obtenerPedidosCliente = function (req, res) {
@@ -118,7 +118,7 @@ exports.editarCliente = function (req, res) {
     })
         .exec(function (err, cliente) {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar el perfil del cliente' });
-            return res.json(cliente);
+            if (cliente) return res.json({ titulo: 'Cliente actualizado', detalles: 'Datos guardados exitosamente' });
         })
 }
 exports.obtenerClientesEliminados = function (req, res) {
@@ -129,9 +129,9 @@ exports.obtenerClientesEliminados = function (req, res) {
         })
 }
 exports.restaurarClienteEliminado = function (req, res) {
-    Cliente.findByIdAndUpdate(req.params.id, { activo: 1 })
+    Cliente.findByIdAndUpdate(req.body._id, { activo: 1 })
         .exec(function (err, clienteRestaurado) {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo restaurar al cliente' });
-            return res.json(clienteRestaurado);
+            if (clienteRestaurado) return res.json({ titulo: 'Cliente restaurado', detalles: 'Cliente restaurado exitosamente' });
         })
 }

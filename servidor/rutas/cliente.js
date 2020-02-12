@@ -13,7 +13,7 @@ ruta.get('/obtenerClientesEliminados', Usuario.autenticacionMiddleware, Usuario.
 //post
 ruta.post('/registrar', Usuario.autenticacionMiddleware, Usuario.adminOSupervisorORecepcionistaMiddleware, Cliente.registrarCliente);
 //patch
-ruta.patch('/eliminarCliente/:id', Usuario.autenticacionMiddleware, Usuario.adminOSupervisorMiddleware, Cliente.eliminarCliente);
+ruta.patch('/eliminarCliente', Usuario.autenticacionMiddleware, Usuario.adminOSupervisorMiddleware, Cliente.eliminarCliente);
 ruta.patch('/actualizarCliente', Usuario.autenticacionMiddleware, Usuario.adminOSupervisorMiddleware, Cliente.editarCliente);
-ruta.patch('/restaurarCliente/:id', Usuario.autenticacionMiddleware, Usuario.adminOSupervisorMiddleware, Cliente.restaurarClienteEliminado)
+ruta.patch('/restaurarCliente', Usuario.autenticacionMiddleware, Usuario.adminOSupervisorMiddleware, Cliente.restaurarClienteEliminado)
 module.exports = ruta;

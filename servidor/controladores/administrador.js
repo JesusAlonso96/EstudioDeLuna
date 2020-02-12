@@ -457,7 +457,7 @@ exports.registrarUsuario = function (req, res) {
 
 }
 exports.eliminarUsuario = function (req, res) {
-    Usuario.findByIdAndUpdate(req.params.id, {
+    Usuario.findByIdAndUpdate(req.body._id, {
         activo: 0
     })
         .exec(function (err, usuarioEliminado) {
