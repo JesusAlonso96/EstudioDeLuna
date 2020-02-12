@@ -30,14 +30,14 @@ export class ClienteService {
         return this.http.get('/api/v1/clientes/obtenerClientesEliminados');
     }
     //patch
-    public eliminarCliente(idCliente: string): Observable<any> {
-        return this.http.patch(`/api/v1/clientes/eliminarCliente/${idCliente}`, null);
+    public eliminarCliente(cliente: Cliente): Observable<any> {
+        return this.http.patch('/api/v1/clientes/eliminarCliente', cliente);
     }
     public editarCliente(cliente: Cliente): Observable<any> {
         return this.http.patch('/api/v1/clientes/actualizarCliente', cliente);
     }
-    public restaurarCliente(idCliente: string): Observable<any> {
-        return this.http.patch(`/api/v1/clientes/restaurarCliente/${idCliente}`, null);
+    public restaurarCliente(cliente: Cliente): Observable<any> {
+        return this.http.patch('/api/v1/clientes/restaurarCliente', cliente);
     }
 
 }

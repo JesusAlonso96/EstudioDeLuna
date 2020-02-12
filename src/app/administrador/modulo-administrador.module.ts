@@ -46,8 +46,14 @@ import { ProveedoresEditarComponent } from './administrador-proveedores-seccion/
 import { ProveedoresAgregarProductoComponent } from './administrador-proveedores-seccion/proveedores-agregar-producto/proveedores-agregar-producto.component';
 import { ProveedoresEditarProductoComponent } from './administrador-proveedores-seccion/proveedores-editar-producto/proveedores-editar-producto.component';
 import { ProveedoresRestaurarComponent } from './administrador-proveedores-seccion/proveedores-restaurar/proveedores-restaurar.component';
+import { ProveedoresRestaurarProductoComponent } from './administrador-proveedores-seccion/proveedores-restaurar-producto/proveedores-restaurar-producto.component';
 //seccion de sucursales
 import { AdministradorSucursalesSeccionComponent } from './administrador-sucursales-seccion/administrador-sucursales-seccion.component';
+import { VerSucursalesComponent } from './administrador-sucursales-seccion/ver-sucursales/ver-sucursales.component';
+import { AgregarSucursalComponent } from './administrador-sucursales-seccion/agregar-sucursal/agregar-sucursal.component';
+import { EliminarSucursalComponent } from './administrador-sucursales-seccion/eliminar-sucursal/eliminar-sucursal.component';
+import { EditarSucursalComponent } from './administrador-sucursales-seccion/editar-sucursal/editar-sucursal.component';
+import { RestaurarSucursalComponent } from './administrador-sucursales-seccion/restaurar-sucursal/restaurar-sucursal.component';
 //seccion de cotizaciones
 import { AdministradorCotizacionesSeccionComponent } from './administrador-cotizaciones-seccion/administrador-cotizaciones-seccion.component';
 import { GenerarCotizacionComponent } from './administrador-cotizaciones-seccion/generar-cotizacion/generar-cotizacion.component';
@@ -76,11 +82,7 @@ import { ComunModule } from 'src/app/comun/comun.module';
 import { AdministradorRoutingModule } from './administrador-routing.module';
 //guardia
 import { AutenticacionGuard } from 'src/app/autenticacion/compartido/autenticacion.guard';
-import { ProveedoresRestaurarProductoComponent } from './administrador-proveedores-seccion/proveedores-restaurar-producto/proveedores-restaurar-producto.component';
-import { VerSucursalesComponent } from './administrador-sucursales-seccion/ver-sucursales/ver-sucursales.component';
-import { AgregarSucursalComponent } from './administrador-sucursales-seccion/agregar-sucursal/agregar-sucursal.component';
-import { EliminarSucursalComponent } from './administrador-sucursales-seccion/eliminar-sucursal/eliminar-sucursal.component';
-import { EditarSucursalComponent } from './administrador-sucursales-seccion/editar-sucursal/editar-sucursal.component';
+
 
 
 @NgModule({
@@ -136,7 +138,8 @@ import { EditarSucursalComponent } from './administrador-sucursales-seccion/edit
     VerSucursalesComponent,
     AgregarSucursalComponent,
     EliminarSucursalComponent,
-    EditarSucursalComponent
+    EditarSucursalComponent,
+    RestaurarSucursalComponent
   ],
   imports: [
     CommonModule,

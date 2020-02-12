@@ -21,7 +21,6 @@ import { DatosClienteComponent } from './componentes/consulta-cliente/datos-clie
 import { EditarClienteComponent } from './componentes/consulta-cliente/editar-cliente/editar-cliente.component';
 import { PedidosClienteComponent } from './componentes/consulta-cliente/datos-cliente/pedidos-cliente/pedidos-cliente.component';
 import { CargandoComponent } from './componentes/cargando/cargando.component';
-import { ConfirmarRestauracionComponent } from './componentes/restaurar-cliente/confirmar-restauracion/confirmar-restauracion.component';
 import { ModalConfirmacionComponent } from './componentes/modal-confirmacion/modal-confirmacion.component';
 import { ConsultaUsuarioComponent } from './componentes/consulta-usuario/consulta-usuario.component';
 import { AltaUsuarioComponent } from './componentes/alta-usuario/alta-usuario.component';
@@ -39,12 +38,14 @@ import { EditarProductoProveedorComponent } from './componentes/modales/editar-p
 import { AltaEmpresaComponent } from './componentes/modales/alta-empresa/alta-empresa.component';
 import { EditarEmpresaComponent } from './componentes/modales/editar-empresa/editar-empresa.component';
 import { VerCotizacionComponent } from './componentes/modales/ver-cotizacion/ver-cotizacion.component';
+import { BuscadorComponent } from './componentes/buscador/buscador.component';
 //modulos
 import { MaterialModule } from './material.module';
 //servicios
 import { EstadosService } from './servicios/estados.service';
 import { ClienteService } from './servicios/cliente.service';
 import { UsuarioService } from './servicios/usuario.service';
+import { BuscadorService } from './servicios/buscador.service';
 //pipes
 import { FiltroPedidosPipe } from './pipes/filtro-pedidos.pipe';
 import { FormatoFechaPipe } from './pipes/formato-fecha.pipe';
@@ -76,7 +77,6 @@ import { FiltroCotizacionPipe } from './pipes/filtro-cotizacion.pipe';
         EditarClienteComponent,
         PedidosClienteComponent,
         CargandoComponent,
-        ConfirmarRestauracionComponent,
         ModalConfirmacionComponent,
         ConsultaUsuarioComponent,
         AltaUsuarioComponent,
@@ -93,7 +93,8 @@ import { FiltroCotizacionPipe } from './pipes/filtro-cotizacion.pipe';
         EditarProductoProveedorComponent,
         AltaEmpresaComponent,
         EditarEmpresaComponent,
-        VerCotizacionComponent
+        VerCotizacionComponent,
+        BuscadorComponent
     ],
     imports: [
         CommonModule,
@@ -121,7 +122,8 @@ import { FiltroCotizacionPipe } from './pipes/filtro-cotizacion.pipe';
         AltaUsuarioComponent,
         PerfilComponent,
         ListaPedidosComponent,
-        BarraCargandoComponent
+        BarraCargandoComponent,
+        BuscadorComponent
 
     ],
     entryComponents: [
@@ -133,7 +135,6 @@ import { FiltroCotizacionPipe } from './pipes/filtro-cotizacion.pipe';
         DatosClienteComponent,
         EditarClienteComponent,
         PedidosClienteComponent,
-        ConfirmarRestauracionComponent,
         ModalConfirmacionComponent,
         EditarUsuarioComponent,
         SeleccionarEmpleadoComponent,
@@ -145,12 +146,13 @@ import { FiltroCotizacionPipe } from './pipes/filtro-cotizacion.pipe';
         EditarProductoProveedorComponent,
         AltaEmpresaComponent,
         EditarEmpresaComponent,
-        VerCotizacionComponent
+        VerCotizacionComponent,
     ],
     providers: [
         EstadosService,
         ClienteService,
         UsuarioService,
+        BuscadorService
     ],
 })
 export class ComunModule { }

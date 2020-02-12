@@ -25,7 +25,7 @@ ruta.post('/registrar', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMidd
 ruta.patch('/actualizarCaja', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.actualizarCaja);
 ruta.patch('/cambiarPermisos', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.cambiarPermisos);
 ruta.patch('/restaurarUsuario', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.restaurarUsuarioEliminado);
-ruta.patch('/eliminarUsuario/:id', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.eliminarUsuario);
+ruta.patch('/eliminarUsuario', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.eliminarUsuario);
 ruta.patch('/editarUsuario', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.editarUsuario);
 ruta.patch('/editarProveedor', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.editarProveedor);
 ruta.patch('/eliminarProveedor', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.eliminarProveedor);
