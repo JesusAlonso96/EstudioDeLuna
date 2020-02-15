@@ -104,7 +104,7 @@ exports.obtenerVentasMes = function (req, res) {
 exports.obtenerVentasDia = function (req, res) {
     var fecha = new Date(Date.now());
     fecha = momento().format('YYYY-MM-DD');
-    fecha2 = new Date(fecha);
+    const fecha2 = new Date(fecha);
     Venta.aggregate()
         .lookup({
             from: "pedidos",
