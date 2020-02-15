@@ -36,5 +36,4 @@ ruta.patch('/restaurarProductoProveedorEliminado', UsuarioCtrl.autenticacionMidd
 ruta.patch('/restaurarEmpresaEliminada', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.restaurarEmpresaEliminada);
 
 
-
 module.exports = ruta;

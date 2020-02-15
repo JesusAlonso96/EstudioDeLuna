@@ -5,7 +5,7 @@ const express = require('express'),
     Empleado = require('../controladores/empleado'),
     cron = require('node-cron'),
     app = require('../index');
-storage = multer.diskStorage({
+const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         cb(null, file.originalname + '.jpeg')
     },
@@ -36,7 +36,6 @@ ruta.get('/obtenerProductosPorPedido/:id', Empleado.obtenerProductosPorPedido);
 //post
 ruta.post('/crearPedido/:id', UsuarioCtrl.autenticacionMiddleware, Empleado.recepcionistaMiddleware, Empleado.crearPedido);
 ruta.post('/crearVenta/:cantidadACaja/:metodoPago', UsuarioCtrl.autenticacionMiddleware, Empleado.recepcionistaMiddleware, Empleado.realizarVenta);
-ruta.post('/crearNotificacion', UsuarioCtrl.autenticacionMiddleware, Empleado.recepcionistaMiddleware, Empleado.crearNotificacion)
 //patch
 ruta.patch('/crearImagen/:id', upload.single('image'), Empleado.crearFoto);
 ruta.patch('/tomarPedido/:idPedido/:id', UsuarioCtrl.autenticacionMiddleware, Empleado.tomarPedido);

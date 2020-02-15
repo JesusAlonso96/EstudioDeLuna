@@ -1,6 +1,7 @@
 import { Component, OnInit  } from '@angular/core';
 import { EmpleadoService } from '../servicio-empleado/empleado.service';
 import { ToastrService } from 'ngx-toastr';
+import { PedidosService } from '../servicio-empleado/pedidos.service';
 
 @Component({
   selector: 'app-empleado-dashboard-fotografo',
@@ -14,11 +15,11 @@ export class EmpleadoDashboardFotografoComponent implements OnInit {
   numPedidosRealizados: number = 0;
   numPedidosProximos: number = 0;
   cargando: boolean = false;
-  constructor(private empleadoService: EmpleadoService, private toastr: ToastrService) { }
+  constructor(private empleadoService: EmpleadoService, private toastr: ToastrService, private pedidosService: PedidosService) { }
 
   ngOnInit() {
-   
     this.obtenerNumPedidosEnCola();
+    this.obtenerNumPedidosEnColaTiempoReal();
     this.obtenerNumPedidosEnProceso();
     this.obtenerNumPedidosRealizados();
   }
@@ -34,6 +35,12 @@ export class EmpleadoDashboardFotografoComponent implements OnInit {
         this.cargando = false;
       }
     )
+  }
+  obtenerNumPedidosEnColaTiempoReal(){
+    this.pedidosService.obtenerNumPedidosEnCola().subscribe(
+      (num: number)=>{
+        this.numPedidosCola = num;
+      })
   }
   obtenerNumPedidosEnProceso() {
     this.cargando = true;

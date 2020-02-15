@@ -2,18 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { Pedido } from 'src/app/comun/modelos/pedido.model';
-import { WebSocketService } from '../../comun/servicios/socket.service';
 import { Notificacion } from 'src/app/comun/modelos/notificacion.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmpleadoService {
-  socket;
 
-  constructor(private http: HttpClient, private wsService: WebSocketService) {
-
-  }
+  constructor(private http: HttpClient) { }
+  
   //get
   public asignarFotografoLibre(fecha): Observable<any> {
     return this.http.get(`/api/v1/empleados/asignarFotografo/${fecha}`);
@@ -61,9 +58,6 @@ export class EmpleadoService {
   }
   public crearVenta(pedido: Pedido, cantidadACaja, metodoPago): Observable<any> {
     return this.http.post(`/api/v1/empleados/crearVenta/${cantidadACaja}/${metodoPago}`, pedido);
-  }
-  public crearNotificacion(notificacion: Notificacion): Observable<any> {
-    return this.http.post('/api/v1/empleados/crearNotificacion', notificacion);
   }
   //patch
   public crearFoto(image, id): Observable<any> {

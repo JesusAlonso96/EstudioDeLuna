@@ -1,25 +1,25 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import * as momento from 'moment';
+import { NgxImageCompressService } from 'ngx-image-compress';
+import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { ProductosService } from '../../comun/servicios/productos.service';
-import { Producto } from 'src/app/comun/modelos/producto.model';
-import { Familia } from 'src/app/comun/modelos/familia.model';
-import * as momento from 'moment';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Pedido } from 'src/app/comun/modelos/pedido.model';
-import { EmpleadoService } from '../servicio-empleado/empleado.service';
-import { ToastrService } from 'ngx-toastr';
-import { Usuario } from 'src/app/comun/modelos/usuario.model';
 import { Cliente } from 'src/app/comun/modelos/cliente.model';
+import { Familia } from 'src/app/comun/modelos/familia.model';
+import { Pedido } from 'src/app/comun/modelos/pedido.model';
+import { Producto } from 'src/app/comun/modelos/producto.model';
+import { Usuario } from 'src/app/comun/modelos/usuario.model';
 import { ClienteService } from 'src/app/comun/servicios/cliente.service';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
-import { Notificacion } from 'src/app/comun/modelos/notificacion.model';
+import { ProductosService } from '../../comun/servicios/productos.service';
+import { EmpleadoService } from '../servicio-empleado/empleado.service';
+import { PedidosService } from '../servicio-empleado/pedidos.service';
+import { ModalConfirmarCompraComponent } from './modal-confirmar-compra/modal-confirmar-compra.component';
 import { ModalDetallesProductoComponent } from './modal-detalles-producto/modal-detalles-producto.component';
 import { ModaDetallesTamComponent } from './modal-detalles-tam/modal-detalles-tam.component';
-import { ModalConfirmarCompraComponent } from './modal-confirmar-compra/modal-confirmar-compra.component';
 import { ModalGenerarTicketComponent } from './modal-generar-ticket/modal-generar-ticket.component';
-import { NgxImageCompressService } from 'ngx-image-compress';
 
 export interface DialogData {
   num: number,
@@ -57,7 +57,7 @@ export class EmpleadoVentaComponent implements OnInit {
   pagado: number;
   imagen: any;
   pedidoCreado: Pedido = new Pedido();
-  constructor(private usuarioService: UsuarioService, private toastr: ToastrService, private productosService: ProductosService, private clientesService: ClienteService, private empleadoService: EmpleadoService, public dialog: MatDialog, private imageCompress: NgxImageCompressService) { }
+  constructor(private usuarioService: UsuarioService, private toastr: ToastrService, private productosService: ProductosService, private clientesService: ClienteService, private empleadoService: EmpleadoService, public dialog: MatDialog, private imageCompress: NgxImageCompressService, private pedidosService: PedidosService) { }
 
   ngOnInit() {
     this.obtenerFamiliasProductos();
@@ -264,36 +264,6 @@ export class EmpleadoVentaComponent implements OnInit {
     var random = Math.floor(Math.random() * num_fotografos) + 0;
     this.pedido.fotografo = fotografos[random];
   }
-  mandarNotificacion(pedidoCreado) {
-    this.cargandoFotografo = true;
-    this.empleadoService.obtenerFotografo(pedidoCreado.fotografo).subscribe(
-      (fotografo) => {
-        var notificacion: Notificacion = new Notificacion('Nuevo pedido rapido', 'Existe un nuevo pedido rapido, verifica la seccion de pedidos realizados', fotografo, pedidoCreado.fecha_creacion, pedidoCreado.num_pedido, 0);
-        this.empleadoService.crearNotificacion(notificacion).subscribe((ok) => { }, (err) => { });
-        this.cargandoFotografo = false;
-      }, (err) => { });
-  }
-  mandarNotificaciones(pedidoCreado) {
-    this.cargandoFotografo = true;
-    this.empleadoService.obtenerFotografos().subscribe(
-      (fotografosEncontrados) => {
-        this.fotografosDisponibles = fotografosEncontrados
-        for (let i = 0; i < this.fotografosDisponibles.length; i++) {
-          var notificacion: Notificacion = new Notificacion('Nuevo pedido', 'Existe un nuevo pedido en cola, verifica la seccion de Pedidos en cola', this.fotografosDisponibles[i], pedidoCreado.fecha_creacion, pedidoCreado.num_pedido, 1);
-          this.empleadoService.crearNotificacion(notificacion).subscribe(
-            (ok) => {
-              this.cargandoFotografo = false;
-            }, (err) => {
-              this.cargandoFotografo = false;
-            }
-          );
-        }
-      },
-      (err) => {
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
-      }
-    );
-  }
   asignarFotografo() {
     if (this.pedido.c_retoque) {
       this.pedido.fotografo._id = undefined;
@@ -353,31 +323,36 @@ export class EmpleadoVentaComponent implements OnInit {
     this.pedido.anticipo = this.pagado;
     return true;
   }
-  crearVenta(pedidoCreado) {
+  crearVenta(pedidoCreado: Pedido) {
     if (!this.pedido.c_retoque) {
-      this.empleadoService.crearVenta(pedidoCreado, pedidoCreado.anticipo, pedidoCreado.metodoPago).subscribe((ok) => {
-        this.mandarNotificacion(pedidoCreado);
-      }, (err) => { });
+      this.empleadoService.crearVenta(pedidoCreado, pedidoCreado.anticipo, pedidoCreado.metodoPago).subscribe(
+        (ok: any) => {
+
+        },
+        (err: any) => {
+          this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        });
     } else {
-      this.mandarNotificaciones(pedidoCreado);
       this.empleadoService.actualizarCaja(pedidoCreado.anticipo, pedidoCreado.metodoPago).subscribe();
     }
   }
   crearPedido() {
     this.cargandoPedido = true;
     this.empleadoService.crearPedido(this.pedido, this.pedido.fotografo._id).subscribe(
-      (pedidoCreado) => {
+      (pedidoCreado: Pedido) => {
         if (this.imagen) {
           this.subirImagen(pedidoCreado._id);
         }
-        this.toastr.success('El pedido ha sido creado con exito', 'Pedido creado');
+        //socket aqui
         this.crearVenta(pedidoCreado);
+        this.mandarNotificaciones(pedidoCreado);
         this.abrirModalTicket(pedidoCreado);
+        this.toastr.success('El pedido ha sido creado con exito', 'Pedido creado', { closeButton: true });
         this.cargandoPedido = false;
         this.pedido = new Pedido();
         this.pagado = 0;
       },
-      (err) => {
+      (err: any) => {
         this.cargandoPedido = false;
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
@@ -388,6 +363,9 @@ export class EmpleadoVentaComponent implements OnInit {
     this.pedido.productos.push(producto);
     this.pedido.c_retoque = this.tieneRetoque();
     this.pedido.c_adherible = this.llevaAdherible();
+  }
+  mandarNotificaciones(pedido: Pedido) {
+    this.pedidosService.mandarNotificaciones(pedido);
   }
   //MODAL PARA VER LOS PRODUCTOS
   verDetalles(producto) {

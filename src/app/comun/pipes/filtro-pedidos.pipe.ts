@@ -8,6 +8,6 @@ export class FiltroPedidosPipe implements PipeTransform {
 
   transform(pedidos: Pedido[], parametroBusqueda: string): any {
     if (parametroBusqueda == '') return pedidos;
-    return pedidos.filter(pedido=>pedido.num_pedido.toString().indexOf(parametroBusqueda) !== -1);
+    return pedidos.filter(pedido => pedido.num_pedido.toString().indexOf(parametroBusqueda) !== -1);
   }
 }

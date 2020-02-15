@@ -117,11 +117,10 @@ exports.tieneAsistenciaTrabajador = function (req, res) {
         })
 }
 exports.crearPedido = function (req, res) {
-    pedido = req.body;
-    if (pedido.fotografo._id == undefined) {
-        pedido.fotografo = null;
+    if (req.body.fotografo._id == undefined) {
+        req.body.fotografo = null;
     }
-    pedidoAlta = new Pedido(pedido);
+    let pedidoAlta = new Pedido(req.body);
     pedidoAlta.save(function (err, pedidoGuardado) {
         if (err) {
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear el pedido' });
@@ -446,25 +445,6 @@ exports.obtenerProductosPorPedido = function (req, res) {
             return res.json(pedidos.productos);
         })
 }
-exports.crearNotificacion = function (req, res) {
-    var hoy = new Date();
-    hoy = momento().format('YYYY-MM-DD');
-    notificacion = new Notificacion({
-        titulo: req.body.titulo,
-        mensaje: req.body.mensaje,
-        fecha: hoy,
-        usuario: req.body.usuario,
-        num_pedido: req.body.num_pedido,
-        fecha_pedido: req.body.fecha_pedido,
-        tipo_pedido: req.body.tipo_pedido
-    });
-    notificacion.save(function (err, notificacion) {
-        if (err) {
-            return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al mandar las notificaciones a los empleados' })
-        }
-        return res.json({ titulo: 'Notificacion creada con exito' });
-    })
-}
 exports.obtenerFotografos = function (req, res) {
     Usuario.find({ rol: 0, rol_sec: 1 }).exec(function (err, fotografosEncontrados) {
         if (err) {
@@ -483,7 +463,7 @@ exports.obtenerFotografo = function (req, res) {
 }
 exports.obtenerNotificaciones = function (req, res) {
     var fecha = new Date(req.params.fecha);
-    Notificacion.find({ usuario: req.params.id, fecha: fecha })
+    Notificacion.find({ $or: [{ usuario: req.params.id }, { usuario: null }], fecha: fecha })
         .sort({ num_pedido: -1 })
         .exec(function (err, notificaciones) {
             if (err) {
@@ -510,7 +490,7 @@ exports.obtenerNumPedidosEnCola = function (req, res) {
             if (err) {
                 return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al cargar a los pedidos' })
             }
-            return res.json(pedidosEncontrados)
+            return res.json(pedidosEncontrados);
         })
 }
 exports.tomarPedido = function (req, res) {
@@ -538,6 +518,7 @@ exports.tomarPedido = function (req, res) {
             if (err) {
                 return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al actualizar el pedido' })
             }
+            io.emit('quitar-pedido-cola', pedidoActualizado)
             return res.json(pedidos);
         })
     })

@@ -104,7 +104,7 @@ exports.obtenerVentasMes = function (req, res) {
 exports.obtenerVentasDia = function (req, res) {
     var fecha = new Date(Date.now());
     fecha = momento().format('YYYY-MM-DD');
-    fecha2 = new Date(fecha);
+    const fecha2 = new Date(fecha);
     Venta.aggregate()
         .lookup({
             from: "pedidos",
@@ -172,13 +172,8 @@ exports.obtenerVentasDia = function (req, res) {
             }
         })
         .exec(function (err, ventas) {
-            if (err) {
-                console.log(err);
-                return res.json(err);
-            }
-            if (ventas.length == 0) {
-                return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas en este dia', tipo: 0 })
-            }
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las ventas del dia' })
+            if (ventas.length == 0) return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas en este dia', tipo: 0 })
             return res.json(ventas);
         })
 }
@@ -214,15 +209,10 @@ exports.obtenerVentasRango = function (req, res) {
             _id: 1
         })
         .exec(function (err, ventas) {
-            if (err) {
-                console.log(err);
-                return res.json(err);
-            }
-            if (ventas.length == 0) {
-                return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas', tipo: 0 })
-            }
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las ventas', tipo: 0 })
+            if (ventas.length == 0) return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas', tipo: 0 })
             return res.json(ventas);
-        })
+        });
 }
 exports.obtenerProductosRango = function (req, res) {
     var fechaInicio = new Date(momento(req.params.fechaInicio).format('YYYY-MM-DD'));
@@ -283,14 +273,10 @@ exports.obtener10ProductosMasVendidos = function (req, res) {
         })
         .limit(15)
         .exec(function (err, ventas) {
-            if (err) {
-                return res.json(err);
-            }
-            if (ventas.length == 0) {
-                return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas', tipo: 0 })
-            }
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al obtener las ventas' })
+            if (ventas.length == 0) return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas', tipo: 0 });
             return res.json(ventas);
-        })
+        });
 }
 exports.obtenerVentasPorFamilias = function (req, res) {
     var fechaInicio = new Date(momento(req.params.fechaInicio).format('YYYY-MM-DD'));
@@ -331,14 +317,10 @@ exports.obtenerVentasPorFamilias = function (req, res) {
             },
         })
         .exec(function (err, ventas) {
-            if (err) {
-                return res.json(err);
-            }
-            if (ventas.length == 0) {
-                return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas', tipo: 0 })
-            }
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al obtener las ventas' })
+            if (ventas.length == 0) return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas', tipo: 0 })
             return res.json(ventas);
-        })
+        });
 }
 //corte de caja
 exports.existeCorte = function (req, res) {
@@ -360,7 +342,6 @@ exports.crearCorteCaja = function (req, res) {
     var hora = new Date(Date.now());
     fecha = momento().format('YYYY-MM-DD');
     hora = momento().format('h:mm:ss a');
-
     corte = new Corte({
         fecha,
         hora,
@@ -386,7 +367,7 @@ exports.obtenerCaja = function (req, res) {
                 return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al obtener las cantidades', tipo: 2 })
             }
             return res.json(caja)
-        })
+        });
 }
 exports.actualizarCaja = function (req, res) {
     Caja.findOneAndUpdate({}, {
@@ -411,7 +392,7 @@ exports.obtenerCortesCaja = function (req, res) {
                 return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al obtener el historial', tipo: 2 })
             }
             return res.json(cortes);
-        })
+        });
 }
 //modulo de usuarios
 exports.cambiarPermisos = function (req, res) {
@@ -454,7 +435,6 @@ exports.registrarUsuario = function (req, res) {
                 })
             }
         })
-
 }
 exports.eliminarUsuario = function (req, res) {
     Usuario.findByIdAndUpdate(req.body._id, {
@@ -497,7 +477,7 @@ exports.editarProveedor = function (req, res) {
         .exec(function (err, proveedorActualizado) {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar al proveedor' });
             return res.json({ titulo: 'Datos actualizados', detalles: 'Datos del proveedor actualizados correctamente' });
-        })
+        });
 }
 exports.eliminarProveedor = function (req, res) {
     Proveedor.findByIdAndUpdate(req.body._id, {
@@ -537,7 +517,7 @@ exports.eliminarProductoProveedor = function (req, res) {
                         return res.json(productos);
                     })
             }
-        })
+        });
 }
 exports.editarProductoProveedor = function (req, res) {
     ProductoProveedor.findByIdAndUpdate(req.body._id, {
@@ -554,7 +534,7 @@ exports.editarProductoProveedor = function (req, res) {
                         return res.json(productos);
                     })
             }
-        })
+        });
 }
 exports.obtenerProductosProveedorEliminados = function (req, res) {
     ProductoProveedor.find({ activo: 0 })
@@ -579,7 +559,7 @@ exports.obtenerEmpresasEliminadas = function (req, res) {
         .exec(function (err, empresasEliminadas) {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las empresas eliminadas' });
             if (empresasEliminadas) return res.json(empresasEliminadas);
-        })
+        });
 }
 exports.restaurarEmpresaEliminada = function (req, res) {
     EmpresaCot.findByIdAndUpdate(req.body._id, {
