@@ -33,7 +33,7 @@ import { EstadosService } from 'src/app/comun/servicios/estados.service';
 import { ProductosService } from 'src/app/comun/servicios/productos.service';
 import { EmpleadoGuard } from '../compartido/empleado.guard';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
-import { WebSocketService } from 'src/app/comun/servicios/socket.service';
+import { PedidosService } from '../servicio-empleado/pedidos.service';
 
 //modulos
 import { ComunModule } from 'src/app/comun/comun.module';
@@ -87,7 +87,7 @@ import { ProductosFiltroPipe } from '../compartido/productos-filtro.pipe';
     EstadosService,
     ProductosService,
     UsuarioService,
-    WebSocketService
+    PedidosService
   ],
   entryComponents: [
     Modal,

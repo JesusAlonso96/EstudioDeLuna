@@ -9,6 +9,7 @@ const jwt = new JwtHelperService();
 import * as momento from 'moment';
 import 'rxjs/Rx';
 import { Router } from '@angular/router';
+import { WebSocketService } from 'src/app/comun/servicios/websocket.service';
 
 
 @Injectable({
@@ -16,7 +17,7 @@ import { Router } from '@angular/router';
 })
 export class ServicioAutenticacionService {
   private tokenDesencriptado;
-  constructor(private http: HttpClient, private rutas: Router) { 
+  constructor(private http: HttpClient, private rutas: Router, private wsService: WebSocketService) { 
     this.tokenDesencriptado = JSON.parse(localStorage.getItem('usuario_meta')) || new tokenDesencriptado();
   }
   private guardarToken(token: string){
@@ -38,8 +39,10 @@ export class ServicioAutenticacionService {
     return this.http.post('/api/v1/usuarios/login', datosUsuario).pipe(map((token: string) => this.guardarToken(token)));
   }
   public cerrarSesion(){
-    localStorage.removeItem('usuario_auth');
-    localStorage.removeItem('usuario_meta');
+    this.wsService.cerrarSesionWS().then(()=>{
+      localStorage.removeItem('usuario_auth');
+      localStorage.removeItem('usuario_meta');
+    })
     this.tokenDesencriptado = new tokenDesencriptado();
   }
   public estaAutenticado():boolean{

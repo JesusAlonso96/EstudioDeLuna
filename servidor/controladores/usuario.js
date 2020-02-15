@@ -58,7 +58,7 @@ exports.obtenerDatosEstudio = function (req, res) {
 exports.crearAsistencia = function (req, res) {
     var hoy = new Date();
     hoy = momento(hoy).format('YYYY-MM-DD');
-    asistencia = new Asistencia({
+    const asistencia = new Asistencia({
         fecha: hoy,
         asistencia: true
     })

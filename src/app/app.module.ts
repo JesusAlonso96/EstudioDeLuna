@@ -24,6 +24,12 @@ import { AutenticacionComponent } from './autenticacion/autenticacion.component'
 //guardias
 import { AutenticacionGuard } from './autenticacion/compartido/autenticacion.guard';
 
+//sockets
+import { SocketIoModule, SocketIoConfig, Socket } from 'ngx-socket-io';
+import { environment } from 'src/environments/environment';
+const config: SocketIoConfig = {
+  url: environment.wsUrl, options: {}
+}
 
 @NgModule({
   declarations: [
@@ -44,8 +50,8 @@ import { AutenticacionGuard } from './autenticacion/compartido/autenticacion.gua
     SupervisorModule,
     ComunModule,
     NgxPrintModule,
-    ToastrModule.forRoot() // ToastrModule added
-
+    ToastrModule.forRoot(),
+    SocketIoModule.forRoot(config)
   ],
   providers: [
     AutenticacionGuard,

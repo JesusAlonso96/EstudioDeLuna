@@ -71,18 +71,23 @@ export class BuscadorService {
   }
   /*Eliminacion de usuarios */
   private eliminarUsuario(tabla: MatTableDataSource<Usuario>, listaUsuarios: Usuario[], usuario: Usuario) {
-    this.abrirSnackBar('Eliminando usuario...', '');
-    this.adminService.eliminarUsuario(usuario).subscribe(
-      (eliminado: Mensaje) => {
-        this.cerrarSnackBar();
-        this.toastr.success(eliminado.detalles, eliminado.titulo, { closeButton: true });
-        this.quitarElementoTabla(tabla, listaUsuarios, usuario);
-      },
-      (err: any) => {
-        this.cerrarSnackBar();
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
-      }
-    );
+    if (!usuario.ocupado) {
+      this.abrirSnackBar('Eliminando usuario...', '');
+      this.adminService.eliminarUsuario(usuario).subscribe(
+        (eliminado: Mensaje) => {
+          this.cerrarSnackBar();
+          this.toastr.success(eliminado.detalles, eliminado.titulo, { closeButton: true });
+          this.quitarElementoTabla(tabla, listaUsuarios, usuario);
+        },
+        (err: any) => {
+          this.cerrarSnackBar();
+          this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        }
+      );
+    } else {
+      this.toastr.info('No se puede eliminar este usuario', 'Usuario ocupado..', { closeButton: true });
+    }
+
   }
   /*Eliminacion de empresas */
   private eliminarEmpresa(tabla: MatTableDataSource<EmpresaCot>, listaEmpresas: EmpresaCot[], empresa: EmpresaCot) {
