@@ -78,9 +78,7 @@ exports.numPedidosFotografo = function (req, res) {
             } else {
                 return res.status(422).send({ titulo: 'Sin fotografo', detalles: 'No hay ningun fotografo disponible' })
             }
-
-        })
-
+        });
 }
 exports.tieneAsistenciaTrabajador = function (req, res) {
     var fecha = new Date(req.params.fecha);
@@ -114,7 +112,7 @@ exports.tieneAsistenciaTrabajador = function (req, res) {
                 return res.json({ titulo: 'No asistio' })
 
             }
-        })
+        });
 }
 exports.crearPedido = function (req, res) {
     if (req.body.fotografo._id == undefined) {
@@ -151,7 +149,6 @@ exports.crearPedido = function (req, res) {
     });
 }
 exports.crearFoto = function (req, res) {
-    console.log(req.file)
     var path = req.file.path.split('\\', 2)[1];
     Pedido.updateOne({ _id: req.params.id }, {
         $set: {
@@ -181,7 +178,7 @@ exports.realizarVenta = function (req, res) {
         }
         return res.json(exito);
     })
-    actualizarCaja(req.params.cantidadACaja, req.params.metodoPago)
+    actualizarCaja(req.params.cantidadACaja, req.params.metodoPago);
 }
 exports.obtenerPedidosPorEmpleado = function (req, res) {
     Usuario.aggregate()
@@ -263,7 +260,7 @@ exports.obtenerPedidosPorEmpleado = function (req, res) {
                 return res.status(422).send({ titulo: 'No existen pedidos', detalles: 'El usuario no cuenta con ningun pedido realizado' })
             }
 
-        })
+        });
 }
 exports.obtenerNumPedidosPorEmpleado = function (req, res) {
     Usuario.aggregate()
@@ -303,7 +300,7 @@ exports.obtenerNumPedidosPorEmpleado = function (req, res) {
                 return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al cargar los pedidos' })
             }
             return res.json(pedidos);
-        })
+        });
 }
 exports.obtenerPedidosEnProceso = function (req, res) {
     Usuario.aggregate()
@@ -394,7 +391,7 @@ exports.obtenerPedidosEnProceso = function (req, res) {
                 return res.status(422).send({ titulo: 'No existen pedidos', detalles: 'El usuario no cuenta con ningun pedido realizandose' })
             }
 
-        })
+        });
 }
 exports.obtenerNumPedidosEnProceso = function (req, res) {
     Usuario.aggregate()
@@ -436,14 +433,14 @@ exports.obtenerNumPedidosEnProceso = function (req, res) {
                 return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al cargar los pedidos' })
             }
             return res.json(pedidos);
-        })
+        });
 }
 exports.obtenerProductosPorPedido = function (req, res) {
     Pedido.findById(req.params.id)
         .populate('productos')
         .exec(function (err, pedidos) {
             return res.json(pedidos.productos);
-        })
+        });
 }
 exports.obtenerFotografos = function (req, res) {
     Usuario.find({ rol: 0, rol_sec: 1 }).exec(function (err, fotografosEncontrados) {
@@ -459,7 +456,7 @@ exports.obtenerFotografo = function (req, res) {
             return res.status(422).send({ titulo: 'Error', detalles: 'No se encontro al fotografo' })
         }
         return res.json(fotografo);
-    })
+    });
 }
 exports.obtenerNotificaciones = function (req, res) {
     var fecha = new Date(req.params.fecha);
@@ -470,7 +467,7 @@ exports.obtenerNotificaciones = function (req, res) {
                 return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al cargar a las notificaciones' })
             }
             return res.json(notificaciones);
-        })
+        });
 }
 exports.obtenerPedidosEnCola = function (req, res) {
     Pedido.find({ fotografo: null })
@@ -481,7 +478,7 @@ exports.obtenerPedidosEnCola = function (req, res) {
                 return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al cargar a los pedidos' })
             }
             return res.json(pedidosEncontrados)
-        })
+        });
 }
 exports.obtenerNumPedidosEnCola = function (req, res) {
     Pedido.find({ fotografo: null })
@@ -491,7 +488,7 @@ exports.obtenerNumPedidosEnCola = function (req, res) {
                 return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al cargar a los pedidos' })
             }
             return res.json(pedidosEncontrados);
-        })
+        });
 }
 exports.tomarPedido = function (req, res) {
     Pedido.findOneAndUpdate({ _id: req.params.idPedido }, {
@@ -520,9 +517,8 @@ exports.tomarPedido = function (req, res) {
             }
             io.emit('quitar-pedido-cola', pedidoActualizado)
             return res.json(pedidos);
-        })
-    })
-
+        });
+    });
 }
 exports.actualizarEstadoPedido = function (req, res) {
     Pedido.findOneAndUpdate({ _id: req.body._id }, {
@@ -535,8 +531,8 @@ exports.actualizarEstadoPedido = function (req, res) {
         }
         Pedido.findById(pedidoActualizado._id).exec(function (err, pedido) {
             return res.json(pedido)
-        })
-    })
+        });
+    });
 }
 exports.actualizarAnticipoPedido = function (req, res) {
     Pedido.findOneAndUpdate({ _id: req.params.id }, {
@@ -549,8 +545,8 @@ exports.actualizarAnticipoPedido = function (req, res) {
         }
         Pedido.findById(pedidoActualizado._id).exec(function (err, pedido) {
             return res.json(pedido)
-        })
-    })
+        });
+    });
 }
 exports.eliminarNotificacion = function (req, res) {
     Notificacion.findById(req.params.id)
@@ -562,7 +558,7 @@ exports.eliminarNotificacion = function (req, res) {
                     return res.json({ titulo: 'Notificacion eliminada', detalles: 'Notificacion eliminada exitosamente' });
                 });
             }
-        })
+        });
 }
 exports.eliminarNotificacionPorPedido = function (req, res) {
     Notificacion.findOne({ num_pedido: req.params.num })
@@ -574,7 +570,7 @@ exports.eliminarNotificacionPorPedido = function (req, res) {
                     return res.json({ titulo: 'Notificacion eliminada', detalles: 'Notificacion eliminada exitosamente' });
                 });
             }
-        })
+        });
 }
 exports.eliminarNotificaciones = function () {
     Notificacion.deleteMany({}).exec(function (err, eliminadas) { if (err) { } })
@@ -588,7 +584,7 @@ exports.actualizarOcupado = function (req, res) {
         if (err) {
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar el estado del fotografo' })
         }
-    })
+    });
 }
 exports.obtenerPedidos = function (req, res) {
     Pedido.find().exec(function (err, pedidos) {
@@ -596,7 +592,7 @@ exports.obtenerPedidos = function (req, res) {
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener todos los pedidos' })
         }
         return res.json(pedidos);
-    })
+    });
 }
 exports.actualizarCaja = function (req, res) {
     actualizarCaja(req.params.cantidadACaja, req.params.metodoPago)

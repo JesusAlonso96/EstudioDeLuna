@@ -3,15 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const usuario_model_1 = require("../modelos/usuario.model");
 const moment_1 = __importDefault(require("moment"));
-const venta_model_1 = require("../modelos/venta.model");
-const producto_model_1 = require("../modelos/producto.model");
-const corte_caja_model_1 = require("../modelos/corte_caja.model");
 const caja_model_1 = require("../modelos/caja.model");
-const proveedor_model_1 = require("../modelos/proveedor.model");
-const producto_proveedor_model_1 = require("../modelos/producto_proveedor.model");
+const corte_caja_model_1 = require("../modelos/corte_caja.model");
 const empresa_cot_model_1 = require("../modelos/empresa_cot.model");
+const producto_model_1 = require("../modelos/producto.model");
+const producto_proveedor_model_1 = require("../modelos/producto_proveedor.model");
+const proveedor_model_1 = require("../modelos/proveedor.model");
+const usuario_model_1 = require("../modelos/usuario.model");
+const venta_model_1 = require("../modelos/venta.model");
 exports.altaUsuario = (req, res) => {
     const usuarioAlta = new usuario_model_1.Usuario(req.body);
     usuarioAlta.save((err, usuarioCreado) => {
@@ -171,9 +171,12 @@ exports.obtenerVentasDia = (req, res) => {
         .exec((err, ventas) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las ventas del dia' });
-        if (ventas.length == 0)
+        if (ventas.length == 0) {
             return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas en este dia', tipo: 0 });
-        return res.json(ventas);
+        }
+        else {
+            return res.json(ventas);
+        }
     });
 };
 exports.obtenerVentasRango = (req, res) => {
@@ -208,11 +211,15 @@ exports.obtenerVentasRango = (req, res) => {
         _id: 1
     })
         .exec((err, ventas) => {
-        if (err)
+        if (err) {
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las ventas', tipo: 0 });
-        if (ventas.length == 0)
+        }
+        else if (ventas.length == 0) {
             return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas', tipo: 0 });
-        return res.json(ventas);
+        }
+        else {
+            return res.json(ventas);
+        }
     });
 };
 exports.obtenerProductosRango = (req, res) => {
@@ -591,7 +598,10 @@ exports.restaurarEmpresaEliminada = (req, res) => {
     });
 };
 exports.adminMiddleware = (req, res, next) => {
-    if (res.locals.usuario.rol == 2 && res.locals.usuario.rol_sec == 0)
+    if (res.locals.usuario.rol == 2 && res.locals.usuario.rol_sec == 0) {
         next();
-    return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' });
+    }
+    else {
+        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' });
+    }
 };

@@ -246,7 +246,7 @@
                         <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
                         <mat-row *matRowDef="let row;columns: columnas;"></mat-row>
                         <mat-footer-row *matFooterRowDef="['noData']"
-                            [ngClass]="{'hide':!(listData!=null && listData.data.length == 0)}"></mat-footer-row>
+                            [ngClass]="{'hide':!(datosTabla!=null && datosTabla.data.length == 0)}"></mat-footer-row>
                     </mat-table>
                 </ng-container>
             </ng-container>

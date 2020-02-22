@@ -200,7 +200,7 @@ exports.obtenerFotografos = function (req, res) {
         .exec(function (err, fotografos) {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los empleados' });
             return res.json(fotografos);
-        })
+        });
 }
 exports.obtenerPedidosRealizadosPorFotografo = function (req, res) {
     Pedido.aggregate()
@@ -228,7 +228,7 @@ exports.obtenerPedidosRealizadosPorFotografo = function (req, res) {
         .exec(function (err, pedidos) {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los pedidos' });
             return res.json(pedidos);
-        })
+        });
 
 }
 exports.obtenerPedidosVendidosPorFotografo = function (req, res) {
@@ -359,7 +359,7 @@ exports.agregarProductoProveedor = function (req, res) {
                     return res.json({ titulo: 'Producto guardado', detalles: 'Producto guardado exitosamente' });
                 })
         }
-    })
+    });
 }
 exports.obtenerListaProveedores = function (req, res) {
     Proveedor.find({ activo: 1 }, { rfc: 0, email: 0, ciudad: 0, estado: 0, telefono: 0, direccion: 0, colonia: 0, cp: 0, num_ext: 0, num_int: 0, activo: 0, __v: 0 })
@@ -372,7 +372,7 @@ exports.obtenerListaProveedores = function (req, res) {
                 }
             }
             return res.json(lista);
-        })
+        });
 }
 exports.obtenerProductosProveedor = function (req, res) {
     ProductoProveedor.find({ proveedor: req.params.id, activo: 1 })
@@ -381,7 +381,7 @@ exports.obtenerProductosProveedor = function (req, res) {
                 return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los productos' });
             }
             return res.json(productos);
-        })
+        });
 }
 //modulo de cotizaciones
 exports.obtenerEmpresas = function (req, res) {
@@ -429,7 +429,7 @@ exports.nuevaCotizacion = function (req, res) {
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la cotizacion' });
         }
         if (guardada) return res.json({ titulo: 'Cotizacion guardada', detalles: 'Cotizacion guardada exitosamente' })
-    })
+    });
 }
 exports.obtenerCotizaciones = function (req, res) {
     Cotizacion.find({}, { __v: 0 })
@@ -441,7 +441,7 @@ exports.obtenerCotizaciones = function (req, res) {
         .exec(function (err, cotizaciones) {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la cotizacion' });
             return res.json(cotizaciones);
-        })
+        });
 }
 //middlewares
 exports.autenticacionMiddleware = function (req, res, next) {
@@ -605,5 +605,5 @@ function pedidosVendidosPorEmpleado(res, id) {
                 pedidos[i] = ventas[i].pedido;
             }
             return res.json(pedidos);
-        })
+        });
 }

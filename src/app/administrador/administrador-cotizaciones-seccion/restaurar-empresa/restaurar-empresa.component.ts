@@ -10,7 +10,7 @@ import { AdministradorService } from '../../servicio-administrador/servicio-admi
 })
 export class RestaurarEmpresaComponent implements OnInit {
   empresas: EmpresaCot[];
-  displayedColumns: string[] = ['nombre', 'contacto', 'email', 'restaurar'];
+  columnas: string[] = ['nombre', 'contacto', 'email', 'restaurar'];
   cargando: boolean = false;
 
   constructor(private adminService: AdministradorService, private toastr: ToastrService) { }

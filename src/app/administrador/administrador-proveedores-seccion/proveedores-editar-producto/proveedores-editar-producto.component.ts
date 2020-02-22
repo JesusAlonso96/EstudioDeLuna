@@ -19,7 +19,7 @@ export interface ListaProveedores {
 })
 export class ProveedoresEditarProductoComponent implements OnInit {
   cargando: boolean = false;
-  listaProveedores: ListaProveedores[];
+  listaProveedores: ListaProveedores[] = [];
   productosProveedor: ProductoProveedor[] = [];
   pestanasActivas: boolean[] = [];
   titulo: string = 'Selecciona un proveedor para ver los productos';
@@ -37,7 +37,9 @@ export class ProveedoresEditarProductoComponent implements OnInit {
       (listaProveedores: ListaProveedores[]) => {
         this.cargando = false;
         this.listaProveedores = listaProveedores;
-        this.activarPestana(0);
+        if(this.listaProveedores.length > 0){
+          this.activarPestana(0);
+        }
       },
       (err) => {
         this.cargando = false;

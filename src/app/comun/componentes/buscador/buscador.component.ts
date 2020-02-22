@@ -23,6 +23,7 @@ export class BuscadorComponent implements OnInit, AfterViewInit {
   @Input() accion: string;
   busquedaElemento: string = '';
   datosTabla: MatTableDataSource<any>;
+  cargando: boolean = false;
 
   constructor(private buscadorService: BuscadorService, private autService: ServicioAutenticacionService) { }
 

@@ -1,5 +1,5 @@
 <app-barra-cargando [cargando]="cargando"></app-barra-cargando>
-<app-buscador *ngIf="clientes" 
+<app-buscador #buscador *ngIf="clientes" 
     [elementos]="clientes" 
     [columnas]="columnas" 
     nombre="cliente"

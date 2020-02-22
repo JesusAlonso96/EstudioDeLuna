@@ -28,7 +28,6 @@ export class PedidosCompletadosComponent implements OnInit {
       (pedidos: Pedido[]) => {
         this.cargando = false;
         this.pedidos = pedidos;
-        console.log(this.pedidos);
       },
       (err) => {
         this.cargando = false;

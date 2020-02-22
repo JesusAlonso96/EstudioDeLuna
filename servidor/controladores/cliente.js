@@ -92,7 +92,7 @@ exports.obtenerPedidosCliente = function (req, res) {
         .exec(function (err, clientes) {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los pedidos del cliente' });
             return res.json(clientes.pedidos)
-        })
+        });
 }
 exports.editarCliente = function (req, res) {
     Cliente.findByIdAndUpdate({ _id: req.body._id }, {

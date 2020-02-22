@@ -18,7 +18,7 @@
             <mat-card class="margin-top mb-4">
                 <mat-drawer-container class="example-container" >
                     <mat-drawer #drawer class="example-sidenav" mode="side" [opened]="true">
-                        <mat-list>
+                        <mat-list *ngIf="listaProveedores.length > 0">
                             <ng-container *ngFor="let proveedor of listaProveedores; let i = index">
                                 <mat-list-item class="items" (click)="activarPestana(i)"
                                     [ngClass]="{'activa':pestanasActivas[i] == true }">{{proveedor.nombre}}
@@ -26,6 +26,9 @@
                                 <mat-divider></mat-divider>
                             </ng-container>
                         </mat-list>
+                            <div class="alert alert-info alerta-info sin-borde" role="alert">
+                               No hay proveedores registrados.
+                            </div>
                     </mat-drawer>
 
                     <div class="contentido">

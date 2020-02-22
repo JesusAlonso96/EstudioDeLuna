@@ -9,7 +9,7 @@
         <h3 mat-subheader>Secciones</h3>
         <mat-list-item *ngFor="let pestana of pestanas; let i=index" (click)="activarPestana(i)" [ngClass]="{'activa':pestanasActivas[i] == true }"
           [routerLink]="pestana.ruta">
-          <mat-icon mat-list-icon>{{pestana.icono}}</mat-icon>
+          <!--<mat-icon mat-list-icon>{{pestana.icono}}</mat-icon>-->
           <h5 mat-line>{{pestana.nombre}}</h5>
         </mat-list-item>
       </mat-list>

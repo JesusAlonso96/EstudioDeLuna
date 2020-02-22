@@ -2,6 +2,13 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const environment_1 = require("../global/environment");
@@ -13,6 +20,8 @@ const cliente_1 = __importDefault(require("../rutas/cliente"));
 const estados_1 = __importDefault(require("../rutas/estados"));
 const productos_1 = __importDefault(require("../rutas/productos"));
 const empleado_1 = __importDefault(require("../rutas/empleado"));
+const Socket = __importStar(require("../sockets/socket"));
+const path_1 = __importDefault(require("path"));
 class Servidor {
     constructor() {
         this.app = express_1.default();
@@ -28,15 +37,15 @@ class Servidor {
         console.log('Escuchando sockets');
         this.io.on('connection', cliente => {
             console.log('Cliente conectado');
-            cliente.on('disconnect', () => {
-                console.log('Cliente desconectado');
-            });
+            Socket.conectarCliente(cliente);
+            Socket.desconectar(cliente);
+            Socket.cerrarSesion(cliente);
+            Socket.configurarUsuario(cliente, this.io);
         });
     }
-    iniciar() {
-        this.httpServidor.listen(this.puerto, () => {
-            console.log('Servidor funcionando..');
-        });
+    obtenerUsuariosConectados() {
+        var usuarios = Socket.obtenerUsuariosConectados();
+        console.log(usuarios);
     }
     inicializarRutas() {
         this.app.use('/api/v1/admins', admin_1.default);
@@ -45,6 +54,29 @@ class Servidor {
         this.app.use('/api/v1/estados', estados_1.default);
         this.app.use('/api/v1/productos', productos_1.default);
         this.app.use('/api/v1/empleados', empleado_1.default);
+    }
+    iniciar() {
+        /*
+        new Usuario({
+            nombre: 'admin',
+            ape_pat: 'admin',
+            ape_mat:'admin',
+            username:'admin',
+            email:'admin@admin',
+            telefono:1234567893,
+            contrasena:'hola',
+            rol:2,
+            rol_sec:0,
+
+        }).save()*/
+        const appPath = path_1.default.join(__dirname, '../../../', 'dist/cliente');
+        this.app.use(express_1.default.static(appPath));
+        this.app.get('*', (req, res) => {
+            res.sendFile(path_1.default.resolve(appPath, 'index.html'));
+        });
+        this.httpServidor.listen(this.puerto, () => {
+            console.log('Servidor funcionando..');
+        });
     }
 }
 exports.default = Servidor;

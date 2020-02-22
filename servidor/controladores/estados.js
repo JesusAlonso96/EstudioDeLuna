@@ -8,7 +8,7 @@ exports.obtenerEstados = function (req, res) {
                 return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron cargar los estados' });
             }
             return res.json(estados);
-        })
+        });
 }
 exports.obtenerMunicipios = function (req, res) {
     Municipio.find({ estado: req.params.id })

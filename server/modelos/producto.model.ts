@@ -32,4 +32,4 @@ const productoSchema = new Schema({
     activo: { type: Number }
 });
 
-export const Producto = mongoose.model<IProducto>('producto', productoSchema);
+export const Producto = mongoose.model<IProducto>('Producto', productoSchema);

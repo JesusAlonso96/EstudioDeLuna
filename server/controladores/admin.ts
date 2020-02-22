@@ -1,13 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
-import { Usuario, IUsuario } from '../modelos/usuario.model';
+import { NextFunction, Request, Response } from 'express';
 import moment from 'moment';
-import { Venta } from '../modelos/venta.model';
-import { Producto } from '../modelos/producto.model';
-import { CorteCaja, ICorteCaja } from '../modelos/corte_caja.model';
 import { Caja, ICaja } from '../modelos/caja.model';
-import { Proveedor, IProveedor } from '../modelos/proveedor.model';
-import { ProductoProveedor, IProductoProveedor } from '../modelos/producto_proveedor.model';
+import { CorteCaja, ICorteCaja } from '../modelos/corte_caja.model';
 import { EmpresaCot, IEmpresaCot } from '../modelos/empresa_cot.model';
+import { Producto } from '../modelos/producto.model';
+import { IProductoProveedor, ProductoProveedor } from '../modelos/producto_proveedor.model';
+import { IProveedor, Proveedor } from '../modelos/proveedor.model';
+import { IUsuario, Usuario } from '../modelos/usuario.model';
+import { Venta } from '../modelos/venta.model';
 
 export let altaUsuario = (req: Request, res: Response) => {
     const usuarioAlta = new Usuario(req.body);
@@ -164,10 +164,14 @@ export let obtenerVentasDia = (req: Request, res: Response) => {
                 }
             }
         })
-        .exec((err: any, ventas: any) => {
+        .exec((err: any, ventas: any[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las ventas del dia' })
-            if (ventas.length == 0) return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas en este dia', tipo: 0 })
-            return res.json(ventas);
+            if (ventas.length == 0) {
+                return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas en este dia', tipo: 0 })
+            } else {
+                return res.json(ventas);
+
+            }
         })
 }
 export let obtenerVentasRango = (req: Request, res: Response) => {
@@ -202,9 +206,14 @@ export let obtenerVentasRango = (req: Request, res: Response) => {
             _id: 1
         })
         .exec((err: any, ventas: any) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las ventas', tipo: 0 })
-            if (ventas.length == 0) return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas', tipo: 0 })
-            return res.json(ventas);
+            if (err) {
+                return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las ventas', tipo: 0 })
+            } else if (ventas.length == 0) {
+                return res.status(422).send({ titulo: 'Sin ventas', detalles: 'No existen ventas', tipo: 0 })
+            } else {
+                return res.json(ventas);
+
+            }
         });
 }
 export let obtenerProductosRango = (req: Request, res: Response) => {
@@ -548,6 +557,9 @@ export let restaurarEmpresaEliminada = (req: Request, res: Response) => {
         })
 }
 export let adminMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    if (res.locals.usuario.rol == 2 && res.locals.usuario.rol_sec == 0) next();
-    return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' })
+    if (res.locals.usuario.rol == 2 && res.locals.usuario.rol_sec == 0) {
+        next();
+    } else {
+        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' })
+    }
 }

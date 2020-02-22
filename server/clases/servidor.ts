@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import { environment } from '../global/environment';
 import SocketIO from 'socket.io';
 import http from 'http';
@@ -8,6 +8,9 @@ import rutasCliente from '../rutas/cliente';
 import rutasEstados from '../rutas/estados';
 import rutasProductos from '../rutas/productos';
 import rutasEmpleado from '../rutas/empleado';
+import * as Socket from '../sockets/socket';
+import { Usuario } from '../modelos/usuario.model';
+import path from 'path';
 
 export default class Servidor {
     private static _instance: Servidor;
@@ -31,16 +34,16 @@ export default class Servidor {
         console.log('Escuchando sockets');
         this.io.on('connection', cliente => {
             console.log('Cliente conectado');
-            cliente.on('disconnect', () => {
-                console.log('Cliente desconectado');
-            })
+            Socket.conectarCliente(cliente);
+            Socket.desconectar(cliente);
+            Socket.cerrarSesion(cliente);
+            Socket.configurarUsuario(cliente, this.io);
         });
     }
 
-    iniciar() {
-        this.httpServidor.listen(this.puerto, () => {
-            console.log('Servidor funcionando..')
-        });
+    public obtenerUsuariosConectados() {
+        var usuarios: any = Socket.obtenerUsuariosConectados();
+        console.log(usuarios);
     }
     inicializarRutas() {
         this.app.use('/api/v1/admins', rutasAdmin);
@@ -49,5 +52,29 @@ export default class Servidor {
         this.app.use('/api/v1/estados', rutasEstados);
         this.app.use('/api/v1/productos', rutasProductos);
         this.app.use('/api/v1/empleados', rutasEmpleado);
+    }
+    iniciar() {
+        /*
+        new Usuario({
+            nombre: 'admin',
+            ape_pat: 'admin',
+            ape_mat:'admin',
+            username:'admin',
+            email:'admin@admin',
+            telefono:1234567893,
+            contrasena:'hola',
+            rol:2,
+            rol_sec:0,
+
+        }).save()*/
+        const appPath = path.join(__dirname, '../../../', 'dist/cliente');
+        this.app.use(express.static(appPath));
+
+        this.app.get('*', (req: Request, res: Response) => {
+            res.sendFile(path.resolve(appPath, 'index.html'));
+        });
+        this.httpServidor.listen(this.puerto, () => {
+            console.log('Servidor funcionando..')
+        });
     }
 }

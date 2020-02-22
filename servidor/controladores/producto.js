@@ -93,11 +93,10 @@ exports.buscarProductoPorTam = function (req, res) {
                 return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un problema intentando obtener los productos' });
             }
             return res.json(productos);
-        })
+        });
 }
 exports.buscarProducto = function (req, res) {
     const { b_n, c_r, familia, num_fotos } = req.body;
-
     Producto.aggregate()
         .lookup({
             from: 'familias',
@@ -122,5 +121,4 @@ exports.buscarProducto = function (req, res) {
                 return res.status(422).send({ titulo: 'Error', detalles: 'No existe un producto con estas especificaciones' });
             }
         })
-
 }

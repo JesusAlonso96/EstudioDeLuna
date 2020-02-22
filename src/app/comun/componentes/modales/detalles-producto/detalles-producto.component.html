@@ -4,8 +4,8 @@
         <img mat-card-avatar *ngIf="!data.pedido.foto" class="img" src="../../../../assets/imagenes/profile_user.gif"
             alt="">
         <mat-card-title>Pedido {{data.pedido.num_pedido}}</mat-card-title>
-        <mat-card-subtitle *ngIf="data.tipo == 0">{{data.pedido.cliente}}</mat-card-subtitle>
-        <mat-card-subtitle *ngIf="data.tipo == 1">{{data.pedido.cliente.nombre}} {{data.pedido.cliente.ape_pat}}
+        <mat-card-subtitle *ngIf="data.pedido.cliente  && data.tipo == 0">{{data.pedido.cliente}}</mat-card-subtitle>
+        <mat-card-subtitle *ngIf="data.pedido.cliente && data.tipo == 1">{{data.pedido.cliente.nombre}} {{data.pedido.cliente.ape_pat}}
             {{data.pedido.cliente.ape_mat}}</mat-card-subtitle>
     </mat-card-header>
 </div>

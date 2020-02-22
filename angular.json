@@ -144,5 +144,8 @@
       }
     }
   },
-  "defaultProject": "cliente"
+  "defaultProject": "cliente",
+  "cli": {
+    "analytics": false
+  }
 }

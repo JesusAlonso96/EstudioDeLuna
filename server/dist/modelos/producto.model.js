@@ -22,4 +22,4 @@ const productoSchema = new mongoose_1.Schema({
     alto: { type: Number },
     activo: { type: Number }
 });
-exports.Producto = mongoose_1.default.model('producto', productoSchema);
+exports.Producto = mongoose_1.default.model('Producto', productoSchema);
