@@ -3,19 +3,21 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import { NativeError, Types } from 'mongoose';
+import Servidor from '../clases/servidor';
 import { environment } from '../global/environment';
 import { Asistencia, IAsistencia } from '../modelos/asistencia.model';
+import { Cotizacion, ICotizacion } from '../modelos/cotizacion.model';
 import { DatosEstudio, IDatosEstudio } from '../modelos/datos_estudio.model';
+import { EmpresaCot, IEmpresaCot } from '../modelos/empresa_cot.model';
 import { Familia, IFamilia } from '../modelos/familia.model';
 import { IPedido, Pedido } from '../modelos/pedido.model';
 import { IPestana, Pestana } from '../modelos/pestana.model';
 import { IProducto, Producto } from '../modelos/producto.model';
+import { IProductoProveedor, ProductoProveedor } from '../modelos/producto_proveedor.model';
 import { IProveedor, Proveedor } from '../modelos/proveedor.model';
 import { IUsuario, Usuario } from '../modelos/usuario.model';
 import { IVenta, Venta } from '../modelos/venta.model';
-import { ProductoProveedor, IProductoProveedor } from '../modelos/producto_proveedor.model';
-import { EmpresaCot, IEmpresaCot } from '../modelos/empresa_cot.model';
-import { Cotizacion, ICotizacion } from '../modelos/cotizacion.model';
+import * as Socket from '../sockets/socket';
 
 export let login = (req: Request, res: Response) => {
     const { username, contrasena } = req.body;
@@ -310,7 +312,8 @@ export let nuevoProveedor = (req: Request, res: Response) => {
     const proveedor = new Proveedor(req.body);
     proveedor.save((err: NativeError, registrado: IProveedor) => {
         if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo registrar al proveedor' });
-        if (registrado) return res.json({ titulo: 'Proveedor registrado', detalles: 'El proveedor fue registrado exitosamente' });
+        obtenerNuevoElementoAdminOSupervisor(registrado, res, 0);
+        return res.json({ titulo: 'Proveedor registrado', detalles: 'El proveedor fue registrado exitosamente' });
     });
 }
 export let obtenerProveedores = (req: Request, res: Response) => {
@@ -508,7 +511,6 @@ function pedidosVendidos(res: Response) {
             for (let i = 0; i < ventas.length; i++) {
                 pedidos[i] = ventas[i].pedido;
             }
-            console.log("SOY LA PETICION", pedidos)
             return res.json(pedidos);
         })
 }
@@ -582,4 +584,19 @@ function pedidosVendidosPorEmpleado(res: Response, id: string) {
             }
             return res.json(pedidos);
         });
+}
+/* Funciones para sockets */
+function obtenerNuevoElementoAdminOSupervisor(elemento: any, res: Response, tipo: number) {
+    const servidor = Servidor.instance;
+    for (let usuarioConectado of Socket.usuariosConectados.lista) {//|| (usuarioConectado.rol == 1 && usuarioConectado.rol_sec == 0)
+        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0) {
+            console.log('entre al ifff')
+            switch (tipo) {
+                case 0: 
+                console.log('si envie el socket');
+                servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor', elemento); break;
+
+            }
+        }
+    }
 }

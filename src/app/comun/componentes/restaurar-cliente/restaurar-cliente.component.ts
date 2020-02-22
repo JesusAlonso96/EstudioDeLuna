@@ -24,6 +24,7 @@ export class RestaurarClienteComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.obtenerClientesEliminados();
     this.obtenerNuevosClientesEliminados();
+    this.obtenerNuevoClienteRestaurado();
   }
   obtenerClientesEliminados() {
     this.cargando = true;
@@ -49,6 +50,21 @@ export class RestaurarClienteComponent implements OnInit, OnDestroy {
           this.clientes.push(cliente);
           this.buscador.datosTabla.data = this.clientes;
           this.toastr.warning('Nuevo cliente eliminado', 'Se ha eliminado un cliente', { closeButton: true });
+        }
+      )
+  }
+  obtenerNuevoClienteRestaurado() {
+    this.clienteService.escucharNuevoClienteRestaurado()
+      .pipe(
+        takeUntil(this.onDestroy$)
+      )
+      .subscribe(
+        (cliente: Cliente) => {
+          const clienteRestaurado = this.clientes.find(clienteFil => { clienteFil._id == cliente._id });
+          const indice = this.clientes.indexOf(clienteRestaurado);
+          this.clientes.splice(indice, 1);
+          this.buscador.datosTabla.data = this.clientes;
+          this.toastr.warning('Se ha restaurado un cliente', 'Cliente restaurado', { closeButton: true });
         }
       )
   }

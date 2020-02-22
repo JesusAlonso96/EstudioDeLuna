@@ -9,13 +9,14 @@ import { ProductoProveedor } from '../modelos/producto_proveedor.model';
 import { EmpresaCot } from '../modelos/empresa_cot.model';
 import { Cotizacion } from '../modelos/cotizacion.model';
 import { ProductoCot } from '../modelos/producto_cot.model';
+import { WebSocketService } from './websocket.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UsuarioService {
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private wsService: WebSocketService) { }
     //post
     public agregarNuevoProducto(producto: Producto): Observable<any> {
         return this.http.post('/api/v1/usuarios/agregarProducto', producto);
@@ -104,8 +105,27 @@ export class UsuarioService {
     public actualizarEmpresa(empresa: EmpresaCot): Observable<any> {
         return this.http.patch('/api/v1/usuarios/actualizarEmpresa', empresa);
     }
+    /* Peticiones para sockets */
+    public escucharNuevoUsuario(){
+        return this.wsService.escuchar('nuevo-usuario');
+    }
+    public escucharNuevoUsuarioEliminado(){
+        return this.wsService.escuchar('nuevo-usuario-eliminado');
+    }
+    public escucharNuevoUsuarioEditado(){
+        return this.wsService.escuchar('nuevo-usuario-editado');
+    }
+    public escucharNuevoUsuarioRestaurado(){
+        return this.wsService.escuchar('nuevo-usuario-restaurado')
+    }
+    public escucharNuevoProveedor(){
+        return this.wsService.escuchar('nuevo-proveedor');
+    }
+    public escucharNuevoProveedorEditado(){
+        return this.wsService.escuchar('nuevo-proveedor-editado');
+    }
     //FUNCIONES AUXILIARES
-    obtenerSubtotalPorProducto(producto: ProductoCot): number {
+    public obtenerSubtotalPorProducto(producto: ProductoCot): number {
         return producto.cantidad * <number>producto.producto.precio;
     }
 }

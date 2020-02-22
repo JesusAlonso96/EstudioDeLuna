@@ -2,6 +2,13 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment_1 = __importDefault(require("moment"));
 const caja_model_1 = require("../modelos/caja.model");
@@ -12,14 +19,8 @@ const producto_proveedor_model_1 = require("../modelos/producto_proveedor.model"
 const proveedor_model_1 = require("../modelos/proveedor.model");
 const usuario_model_1 = require("../modelos/usuario.model");
 const venta_model_1 = require("../modelos/venta.model");
-exports.altaUsuario = (req, res) => {
-    const usuarioAlta = new usuario_model_1.Usuario(req.body);
-    usuarioAlta.save((err, usuarioCreado) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al guardar el usuario' });
-        return res.json({ titulo: 'Usuario guardado con exito', detalles: usuarioCreado });
-    });
-};
+const servidor_1 = __importDefault(require("../clases/servidor"));
+const Socket = __importStar(require("../sockets/socket"));
 exports.obtenerVentasMes = (req, res) => {
     var fechaInicio = new Date(moment_1.default(req.params.fechaInicio).format('YYYY-MM-DD'));
     var fechaFin = new Date(moment_1.default(req.params.fechaFin).format('YYYY-MM-DD'));
@@ -399,6 +400,15 @@ exports.obtenerCortesCaja = (req, res) => {
     });
 };
 /* Modulo usuarios */
+exports.altaUsuario = (req, res) => {
+    const usuarioAlta = new usuario_model_1.Usuario(req.body);
+    usuarioAlta.save((err, usuarioCreado) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al guardar el usuario' });
+        obtenerNuevoElemento(usuarioCreado, res, 0);
+        return res.json({ titulo: 'Usuario guardado con exito', detalles: usuarioCreado });
+    });
+};
 exports.cambiarPermisos = (req, res) => {
     usuario_model_1.Usuario.findByIdAndUpdate(req.body._id, {
         rol: req.body.rol,
@@ -425,6 +435,8 @@ exports.restaurarUsuarioEliminado = (req, res) => {
         .exec((err, usuarioRestaurado) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo restaurar el usuario' });
+        obtenerNuevoElemento(usuarioRestaurado, res, 0);
+        obtenerNuevoElemento(usuarioRestaurado, res, 3);
         return res.json({ titulo: 'Usuario restaurado', detalles: 'Usuario restaurado exitosmente' });
     });
 };
@@ -434,13 +446,13 @@ exports.registrarUsuario = (req, res) => {
         .exec((err, usuarioEncontrado) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo registrar el usuario' });
-        if (usuarioEncontrado) {
+        if (usuarioEncontrado)
             return res.status(422).send({ titulo: 'Nombre de usuario repetido', detalles: 'Ya existe un usuario registrado' });
-        }
         else {
             usuario.save((err, usuarioRegistrado) => {
                 if (err)
                     return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo registrar el usuario' });
+                obtenerNuevoElemento(usuarioRegistrado, res, 0);
                 return res.json({ titulo: 'Usuario registrado', detalles: 'Registro completado exitosamente' });
             });
         }
@@ -453,22 +465,28 @@ exports.eliminarUsuario = (req, res) => {
         .exec((err, usuarioEliminado) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo eliminar el usuario' });
+        obtenerNuevoElemento(usuarioEliminado, res, 1);
         return res.json({ titulo: 'Usuario elimnado', detalles: 'Usuario eliminado exitosamente' });
     });
 };
 exports.editarUsuario = (req, res) => {
+    const usuario = new usuario_model_1.Usuario(req.body);
     usuario_model_1.Usuario.findByIdAndUpdate(req.body._id, {
-        nombre: req.body.nombre,
-        ape_pat: req.body.ape_pat,
-        ape_mat: req.body.ape_mat,
-        username: req.body.username,
-        email: req.body.email,
-        telefono: req.body.telefono
+        nombre: usuario.nombre,
+        ape_pat: usuario.ape_pat,
+        ape_mat: usuario.ape_mat,
+        username: usuario.username,
+        email: usuario.email,
+        telefono: usuario.telefono
     })
-        .exec((err, actualizado) => {
+        .exec((err, usuarioActualizado) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar el usuario' });
-        return res.json({ titulo: 'Usuario actualizado', detalles: 'Los datos fueron actualizados correctamente' });
+        usuario_model_1.Usuario.findById(usuarioActualizado._id)
+            .exec((err, usuario) => {
+            obtenerNuevoElemento(usuario, res, 2);
+            return res.json({ titulo: 'Usuario actualizado', detalles: 'Los datos fueron actualizados correctamente' });
+        });
     });
 };
 /* Modulo proveedores */
@@ -489,6 +507,7 @@ exports.editarProveedor = (req, res) => {
         .exec((err, proveedorActualizado) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar al proveedor' });
+        obtenerNuevoElemento(proveedorActualizado, res, 5);
         return res.json({ titulo: 'Datos actualizados', detalles: 'Datos del proveedor actualizados correctamente' });
     });
 };
@@ -605,3 +624,31 @@ exports.adminMiddleware = (req, res, next) => {
         return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' });
     }
 };
+/* Funciones para sockets */
+function obtenerNuevoElemento(elemento, res, tipo) {
+    const servidor = servidor_1.default.instance;
+    for (let usuarioConectado of Socket.usuariosConectados.lista) {
+        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0) {
+            switch (tipo) {
+                case 0:
+                    servidor.io.in(usuarioConectado.id).emit('nuevo-usuario', elemento);
+                    break;
+                case 1:
+                    servidor.io.in(usuarioConectado.id).emit('nuevo-usuario-eliminado', elemento);
+                    break;
+                case 2:
+                    servidor.io.in(usuarioConectado.id).emit('nuevo-usuario-editado', elemento);
+                    break;
+                case 3:
+                    servidor.io.in(usuarioConectado.id).emit('nuevo-usuario-restaurado', elemento);
+                    break;
+                case 4:
+                    servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor', elemento);
+                    break;
+                case 5:
+                    servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor-editado', elemento);
+                    break;
+            }
+        }
+    }
+}

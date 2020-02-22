@@ -84,8 +84,8 @@ export let editarCliente = (req: Request, res: Response) => {
     })
         .exec((err: NativeError, cliente: ICliente) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar el perfil del cliente' });
-            Cliente.findById(cliente.id).exec((err: NativeError, cliente: ICliente)=> {
-                obtenerNuevoClienteEditado(cliente,res);
+            Cliente.findById(cliente.id).exec((err: NativeError, cliente: ICliente) => {
+                obtenerNuevoCliente(cliente, res, 2);
                 return res.json({ titulo: 'Cliente actualizado', detalles: 'Datos guardados exitosamente' });
             })
         })
@@ -102,6 +102,7 @@ export let restaurarClienteEliminado = (req: Request, res: Response) => {
         .exec(function (err: NativeError, clienteRestaurado: ICliente) {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo restaurar al cliente' });
             obtenerNuevoCliente(clienteRestaurado, res, 0);
+            obtenerNuevoCliente(clienteRestaurado, res, 3);
             return res.json({ titulo: 'Cliente restaurado', detalles: 'Cliente restaurado exitosamente' });
         });
 }
@@ -110,16 +111,12 @@ function obtenerNuevoCliente(cliente: ICliente, res: Response, tipo: number) {
     const servidor = Servidor.instance;
     for (let usuarioConectado of Socket.usuariosConectados.lista) {
         if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0) {
-            if (tipo == 0) servidor.io.in(usuarioConectado.id).emit('nuevo-cliente', cliente);//0 = nuevo cliente
-            if (tipo == 1) servidor.io.in(usuarioConectado.id).emit('nuevo-cliente-eliminado', cliente);//1 = nuevo eliminado
-        }
-    }
-}
-function obtenerNuevoClienteEditado(cliente: ICliente, res: Response) {
-    const servidor = Servidor.instance;
-    for (let usuarioConectado of Socket.usuariosConectados.lista) {
-        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0) {
-            servidor.io.in(usuarioConectado.id).emit('nuevo-cliente-editado', cliente);
+            switch (tipo) {
+                case 0: servidor.io.in(usuarioConectado.id).emit('nuevo-cliente', cliente); break;
+                case 1: servidor.io.in(usuarioConectado.id).emit('nuevo-cliente-eliminado', cliente); break;
+                case 2: servidor.io.in(usuarioConectado.id).emit('nuevo-cliente-editado', cliente); break;
+                case 3: servidor.io.in(usuarioConectado.id).emit('nuevo-cliente-restaurado', cliente); break;
+            }
         }
     }
 }

@@ -7,10 +7,10 @@ import { WebSocketService } from './websocket.service';
 @Injectable({
     providedIn: 'root'
 })
-export class ClienteService  {
+export class ClienteService {
 
-    constructor(private http: HttpClient, public wsService: WebSocketService) { }
-    
+    constructor(private http: HttpClient, private wsService: WebSocketService) { }
+
     //post
     public registrarCliente(cliente: Cliente): Observable<any> {
         return this.http.post('/api/v1/clientes/registrar', cliente);
@@ -42,14 +42,16 @@ export class ClienteService  {
         return this.http.patch('/api/v1/clientes/restaurarCliente', cliente);
     }
     /* Seccion de clientes para sockets */
-    public escucharNuevoCliente(){
+    public escucharNuevoCliente() {
         return this.wsService.escuchar('nuevo-cliente');
     }
-    public escucharNuevoClienteEliminado(){
+    public escucharNuevoClienteEliminado() {
         return this.wsService.escuchar('nuevo-cliente-eliminado');
     }
-    public escucharNuevoClienteEditado(){
+    public escucharNuevoClienteEditado() {
         return this.wsService.escuchar('nuevo-cliente-editado');
     }
-
+    public escucharNuevoClienteRestaurado() {
+        return this.wsService.escuchar('nuevo-cliente-restaurado');
+    }
 }

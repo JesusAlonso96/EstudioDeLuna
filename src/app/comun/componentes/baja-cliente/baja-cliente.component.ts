@@ -49,7 +49,7 @@ export class BajaClienteComponent implements OnInit, OnDestroy {
         (cliente: Cliente) => {
           this.clientes.push(cliente);
           this.buscador.datosTabla.data = this.clientes;
-          this.toastr.info('Nuevo cliente', 'Se ha agregado un nuevo cliente', { closeButton: true });
+          this.toastr.info('Se ha agregado un nuevo cliente', 'Nuevo cliente', { closeButton: true });
         }
       );
   }
@@ -62,15 +62,12 @@ export class BajaClienteComponent implements OnInit, OnDestroy {
         (cliente: Cliente) => {
           const clienteEncontrado = this.clientes.find(clienteFil => { return clienteFil._id == cliente._id })
           const indice = this.clientes.indexOf(clienteEncontrado);
-          
           this.clientes[indice] = cliente;
-          console.log(cliente);
           this.buscador.datosTabla.data = this.clientes;
-          this.toastr.info('Nuevo cliente', 'Se ha editado un nuevo cliente', { closeButton: true });
+          this.toastr.info('Se ha editado un nuevo cliente', 'Nuevo cliente', { closeButton: true });
         }
       );
   }
-  
   ngOnDestroy(): void {
     this.onDestroy$.next(true);
     this.onDestroy$.complete();

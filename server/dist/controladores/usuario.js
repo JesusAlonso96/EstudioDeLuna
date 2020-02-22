@@ -14,19 +14,21 @@ const bcrypt = __importStar(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const moment_1 = __importDefault(require("moment"));
 const mongoose_1 = require("mongoose");
+const servidor_1 = __importDefault(require("../clases/servidor"));
 const environment_1 = require("../global/environment");
 const asistencia_model_1 = require("../modelos/asistencia.model");
+const cotizacion_model_1 = require("../modelos/cotizacion.model");
 const datos_estudio_model_1 = require("../modelos/datos_estudio.model");
+const empresa_cot_model_1 = require("../modelos/empresa_cot.model");
 const familia_model_1 = require("../modelos/familia.model");
 const pedido_model_1 = require("../modelos/pedido.model");
 const pestana_model_1 = require("../modelos/pestana.model");
 const producto_model_1 = require("../modelos/producto.model");
+const producto_proveedor_model_1 = require("../modelos/producto_proveedor.model");
 const proveedor_model_1 = require("../modelos/proveedor.model");
 const usuario_model_1 = require("../modelos/usuario.model");
 const venta_model_1 = require("../modelos/venta.model");
-const producto_proveedor_model_1 = require("../modelos/producto_proveedor.model");
-const empresa_cot_model_1 = require("../modelos/empresa_cot.model");
-const cotizacion_model_1 = require("../modelos/cotizacion.model");
+const Socket = __importStar(require("../sockets/socket"));
 exports.login = (req, res) => {
     const { username, contrasena } = req.body;
     usuario_model_1.Usuario.findOne({ username })
@@ -343,8 +345,8 @@ exports.nuevoProveedor = (req, res) => {
     proveedor.save((err, registrado) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo registrar al proveedor' });
-        if (registrado)
-            return res.json({ titulo: 'Proveedor registrado', detalles: 'El proveedor fue registrado exitosamente' });
+        obtenerNuevoElementoAdminOSupervisor(registrado, res, 0);
+        return res.json({ titulo: 'Proveedor registrado', detalles: 'El proveedor fue registrado exitosamente' });
     });
 };
 exports.obtenerProveedores = (req, res) => {
@@ -563,7 +565,6 @@ function pedidosVendidos(res) {
         for (let i = 0; i < ventas.length; i++) {
             pedidos[i] = ventas[i].pedido;
         }
-        console.log("SOY LA PETICION", pedidos);
         return res.json(pedidos);
     });
 }
@@ -639,4 +640,19 @@ function pedidosVendidosPorEmpleado(res, id) {
         }
         return res.json(pedidos);
     });
+}
+/* Funciones para sockets */
+function obtenerNuevoElementoAdminOSupervisor(elemento, res, tipo) {
+    const servidor = servidor_1.default.instance;
+    for (let usuarioConectado of Socket.usuariosConectados.lista) { //|| (usuarioConectado.rol == 1 && usuarioConectado.rol_sec == 0)
+        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0) {
+            console.log('entre al ifff');
+            switch (tipo) {
+                case 0:
+                    console.log('si envie el socket');
+                    servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor', elemento);
+                    break;
+            }
+        }
+    }
 }

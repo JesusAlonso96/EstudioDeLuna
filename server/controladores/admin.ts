@@ -8,14 +8,11 @@ import { IProductoProveedor, ProductoProveedor } from '../modelos/producto_prove
 import { IProveedor, Proveedor } from '../modelos/proveedor.model';
 import { IUsuario, Usuario } from '../modelos/usuario.model';
 import { Venta } from '../modelos/venta.model';
+import Servidor from '../clases/servidor';
+import * as Socket from '../sockets/socket';
+import { NativeError } from 'mongoose';
 
-export let altaUsuario = (req: Request, res: Response) => {
-    const usuarioAlta = new Usuario(req.body);
-    usuarioAlta.save((err, usuarioCreado) => {
-        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al guardar el usuario' });
-        return res.json({ titulo: 'Usuario guardado con exito', detalles: usuarioCreado });
-    })
-}
+
 export let obtenerVentasMes = (req: Request, res: Response) => {
     var fechaInicio = new Date(moment(req.params.fechaInicio).format('YYYY-MM-DD'));
     var fechaFin = new Date(moment(req.params.fechaFin).format('YYYY-MM-DD'));
@@ -381,6 +378,14 @@ export let obtenerCortesCaja = (req: Request, res: Response) => {
         });
 }
 /* Modulo usuarios */
+export let altaUsuario = (req: Request, res: Response) => {
+    const usuarioAlta = new Usuario(req.body);
+    usuarioAlta.save((err, usuarioCreado) => {
+        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al guardar el usuario' });
+        obtenerNuevoElemento(usuarioCreado, res, 0);
+        return res.json({ titulo: 'Usuario guardado con exito', detalles: usuarioCreado });
+    })
+}
 export let cambiarPermisos = (req: Request, res: Response) => {
     Usuario.findByIdAndUpdate(req.body._id, {
         rol: req.body.rol,
@@ -404,6 +409,8 @@ export let restaurarUsuarioEliminado = (req: Request, res: Response) => {
     })
         .exec((err: any, usuarioRestaurado: IUsuario) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo restaurar el usuario' });
+            obtenerNuevoElemento(usuarioRestaurado, res, 0);
+            obtenerNuevoElemento(usuarioRestaurado, res, 3);
             return res.json({ titulo: 'Usuario restaurado', detalles: 'Usuario restaurado exitosmente' });
         })
 }
@@ -412,11 +419,11 @@ export let registrarUsuario = (req: Request, res: Response) => {
     Usuario.findOne({ username: req.body.username })
         .exec((err: any, usuarioEncontrado: IUsuario) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo registrar el usuario' });
-            if (usuarioEncontrado) {
-                return res.status(422).send({ titulo: 'Nombre de usuario repetido', detalles: 'Ya existe un usuario registrado' });
-            } else {
+            if (usuarioEncontrado) return res.status(422).send({ titulo: 'Nombre de usuario repetido', detalles: 'Ya existe un usuario registrado' });
+            else {
                 usuario.save((err: any, usuarioRegistrado: IUsuario) => {
                     if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo registrar el usuario' });
+                    obtenerNuevoElemento(usuarioRegistrado, res, 0);
                     return res.json({ titulo: 'Usuario registrado', detalles: 'Registro completado exitosamente' });
                 });
             }
@@ -428,21 +435,28 @@ export let eliminarUsuario = (req: Request, res: Response) => {
     })
         .exec((err: any, usuarioEliminado: IUsuario) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo eliminar el usuario' });
+            obtenerNuevoElemento(usuarioEliminado, res, 1);
             return res.json({ titulo: 'Usuario elimnado', detalles: 'Usuario eliminado exitosamente' });
         })
 }
 export let editarUsuario = (req: Request, res: Response) => {
+    const usuario = new Usuario(req.body);
     Usuario.findByIdAndUpdate(req.body._id, {
-        nombre: req.body.nombre,
-        ape_pat: req.body.ape_pat,
-        ape_mat: req.body.ape_mat,
-        username: req.body.username,
-        email: req.body.email,
-        telefono: req.body.telefono
+        nombre: usuario.nombre,
+        ape_pat: usuario.ape_pat,
+        ape_mat: usuario.ape_mat,
+        username: usuario.username,
+        email: usuario.email,
+        telefono: usuario.telefono
     })
-        .exec((err: any, actualizado: IUsuario) => {
+        .exec((err: NativeError, usuarioActualizado: IUsuario) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar el usuario' });
-            return res.json({ titulo: 'Usuario actualizado', detalles: 'Los datos fueron actualizados correctamente' });
+            Usuario.findById(usuarioActualizado._id)
+                .exec((err: NativeError, usuario: IUsuario) => {
+                    obtenerNuevoElemento(usuario, res, 2)
+                    return res.json({ titulo: 'Usuario actualizado', detalles: 'Los datos fueron actualizados correctamente' });
+                })
+
         })
 }
 /* Modulo proveedores */
@@ -462,6 +476,7 @@ export let editarProveedor = (req: Request, res: Response) => {
     })
         .exec((err: any, proveedorActualizado: IProveedor) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar al proveedor' });
+            obtenerNuevoElemento(proveedorActualizado, res, 5);
             return res.json({ titulo: 'Datos actualizados', detalles: 'Datos del proveedor actualizados correctamente' });
         });
 }
@@ -561,5 +576,21 @@ export let adminMiddleware = (req: Request, res: Response, next: NextFunction) =
         next();
     } else {
         return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' })
+    }
+}
+/* Funciones para sockets */
+function obtenerNuevoElemento(elemento: any, res: Response, tipo: number) {
+    const servidor = Servidor.instance;
+    for (let usuarioConectado of Socket.usuariosConectados.lista) {
+        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0) {
+            switch (tipo) {
+                case 0: servidor.io.in(usuarioConectado.id).emit('nuevo-usuario', elemento); break;
+                case 1: servidor.io.in(usuarioConectado.id).emit('nuevo-usuario-eliminado', elemento); break;
+                case 2: servidor.io.in(usuarioConectado.id).emit('nuevo-usuario-editado', elemento); break;
+                case 3: servidor.io.in(usuarioConectado.id).emit('nuevo-usuario-restaurado', elemento); break;
+                case 4: servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor', elemento); break;
+                case 5: servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor-editado', elemento); break;
+            }
+        }
     }
 }
