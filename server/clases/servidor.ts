@@ -9,8 +9,8 @@ import rutasEmpleado from '../rutas/empleado';
 import rutasEstados from '../rutas/estados';
 import rutasProductos from '../rutas/productos';
 import rutasUsuario from '../rutas/usuario';
+import rutasDatos from '../rutas/datos_estudio';
 import * as Socket from '../sockets/socket';
-import * as bcrypt from 'bcrypt';
 
 export default class Servidor {
     private static _instance: Servidor;
@@ -52,11 +52,12 @@ export default class Servidor {
         this.app.use('/api/v1/estados', rutasEstados);
         this.app.use('/api/v1/productos', rutasProductos);
         this.app.use('/api/v1/empleados', rutasEmpleado);
+        this.app.use('/api/v1/datos', rutasDatos);
     }
     iniciar() {
+        this.inicializarRutas();
         const appPath = path.join(__dirname, '../../../', 'dist/cliente');
         this.app.use(express.static(appPath));
-
         this.app.get('*', (req: Request, res: Response) => {
             res.sendFile(path.resolve(appPath, 'index.html'));
         });

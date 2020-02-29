@@ -22,8 +22,7 @@ servidor.app.use(body_parser_1.default.json());
 servidor.app.use(cors_1.default({ origin: true, credentials: true }));
 /* Rutas de imagenes */
 servidor.app.use(express_1.default.static('subidas'));
-/* Rutas */
-servidor.inicializarRutas(); /*
+/* Rutas */ /*
 const pest = new Pestana({
     rol: 'Administrador',
     nombre: 'Sucursales',

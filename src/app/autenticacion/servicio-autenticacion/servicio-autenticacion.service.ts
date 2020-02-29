@@ -64,9 +64,8 @@ export class ServicioAutenticacionService {
         break;
       case 2:
         //Administrador
-        this.rutas.navigate(['/admin/perfil']);
+        this.rutas.navigate(['/admin/dashboard']);
         break;
-
     }
   }
   public getIdUsuario(): any{

@@ -21,6 +21,7 @@ const empleado_1 = __importDefault(require("../rutas/empleado"));
 const estados_1 = __importDefault(require("../rutas/estados"));
 const productos_1 = __importDefault(require("../rutas/productos"));
 const usuario_1 = __importDefault(require("../rutas/usuario"));
+const datos_estudio_1 = __importDefault(require("../rutas/datos_estudio"));
 const Socket = __importStar(require("../sockets/socket"));
 class Servidor {
     constructor() {
@@ -54,8 +55,10 @@ class Servidor {
         this.app.use('/api/v1/estados', estados_1.default);
         this.app.use('/api/v1/productos', productos_1.default);
         this.app.use('/api/v1/empleados', empleado_1.default);
+        this.app.use('/api/v1/datos', datos_estudio_1.default);
     }
     iniciar() {
+        this.inicializarRutas();
         const appPath = path_1.default.join(__dirname, '../../../', 'dist/cliente');
         this.app.use(express_1.default.static(appPath));
         this.app.get('*', (req, res) => {

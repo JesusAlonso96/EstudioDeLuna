@@ -19,6 +19,7 @@ import { AdministradorTableroSeccionComponent } from './administrador-tablero-se
 import { AdministradorAyudaSeccionComponent } from './administrador-ayuda-seccion/administrador-ayuda-seccion.component';
 import { AdministradorCotizacionesSeccionComponent } from './administrador-cotizaciones-seccion/administrador-cotizaciones-seccion.component';
 import { AdministradorFacturacionSeccionComponent } from './administrador-facturacion-seccion/administrador-facturacion-seccion.component';
+import { AdministradorConfiguracionSistemaComponent } from './administrador-configuracion-sistema/administrador-configuracion-sistema.component';
 
 
 
@@ -86,6 +87,10 @@ const routes: Routes = [
             {
                 path: 'ayuda',
                 component: AdministradorAyudaSeccionComponent
+            },
+            {
+                path:'configuracion',
+                component: AdministradorConfiguracionSistemaComponent
             }
         ]
 

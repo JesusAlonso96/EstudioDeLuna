@@ -46,6 +46,7 @@ import { EstadosService } from './servicios/estados.service';
 import { ClienteService } from './servicios/cliente.service';
 import { UsuarioService } from './servicios/usuario.service';
 import { BuscadorService } from './servicios/buscador.service';
+import { DatosService } from './servicios/datos.service';
 //pipes
 import { FiltroPedidosPipe } from './pipes/filtro-pedidos.pipe';
 import { FormatoFechaPipe } from './pipes/formato-fecha.pipe';
@@ -152,7 +153,8 @@ import { FiltroCotizacionPipe } from './pipes/filtro-cotizacion.pipe';
         EstadosService,
         ClienteService,
         UsuarioService,
-        BuscadorService
+        BuscadorService,
+        DatosService
     ],
 })
 export class ComunModule { }

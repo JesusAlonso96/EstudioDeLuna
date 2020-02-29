@@ -1,1 +1,81 @@
-<p>administrador-configuracion-sistema works!</p>
+<app-encabezado-titulo titulo="Configuracion del sistema"></app-encabezado-titulo>
+<app-barra-cargando [cargando]="cargando"></app-barra-cargando>
+<div class="container">
+    <div class="row margin-top">
+        <div class="col-lg-12">
+            <mat-card class="full-width card sin-borde" style="padding: 0%;">
+                <mat-toolbar class="toolbar-header">
+                    <span>Datos de la empresa</span>
+                </mat-toolbar>
+                <form #datosForm="ngForm">
+                    <div class="container mt-4">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6">
+                                <mat-form-field class="full-width input" appearance="outline">
+                                    <mat-label>Nombre</mat-label>
+                                    <mat-icon matPrefix>domain &nbsp; </mat-icon>
+                                    <input type="text" matInput placeholder="Nombre de empresa" required>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <mat-form-field class="full-width input" appearance="outline">
+                                    <mat-label>Correo electronico</mat-label>
+                                    <mat-icon matPrefix>email&nbsp;</mat-icon>
+                                    <input type="tel" matInput placeholder="555-555-1234">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6">
+                                <mat-form-field class="full-width input" appearance="outline">
+                                    <mat-label>Telefono</mat-label>
+                                    <mat-icon matPrefix>phone&nbsp;</mat-icon>
+                                    <input type="tel" matInput placeholder="555-555-1234">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <mat-form-field class="full-width input" appearance="outline">
+                                    <mat-label>Rubro</mat-label>
+                                    <mat-icon matPrefix>storefront&nbsp;</mat-icon>
+                                    <input type="tel" matInput placeholder="555-555-1234">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6">
+                                <mat-form-field class="full-width input" appearance="outline">
+                                    <mat-label>Direccion</mat-label>
+                                    <mat-icon matPrefix>apartment&nbsp;</mat-icon>
+                                    <input type="tel" matInput placeholder="555-555-1234">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-lg-6 col-md-6 btn-contenedor">
+                                <button mat-raised-button mat-button class="btn-actualizar" color="primary">
+                                    <mat-icon>save</mat-icon>
+                                    Guardar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </mat-card>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-lg-6 col-md-6">
+            <mat-card class="full-width card sin-borde" style="padding: 0%;">
+                <mat-toolbar class="toolbar-header">
+                    <span>Datos otros</span>
+                </mat-toolbar>
+            </mat-card>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <mat-card class="full-width card sin-borde" style="padding: 0%;">
+                <mat-toolbar class="toolbar-header">
+                    <span>Otros</span>
+                </mat-toolbar>
+            </mat-card>
+        </div>
+    </div>
+</div>
