@@ -27,6 +27,7 @@ import { AutenticacionGuard } from './autenticacion/compartido/autenticacion.gua
 //sockets
 import { SocketIoModule, SocketIoConfig, Socket } from 'ngx-socket-io';
 import { environment } from 'src/environments/environment';
+import { RecuperarContrasenaComponent } from './autenticacion/recuperar-contrasena/recuperar-contrasena.component';
 const config: SocketIoConfig = {
   url: environment.wsUrl, options: {}
 }
@@ -35,7 +36,8 @@ const config: SocketIoConfig = {
   declarations: [
     AppComponent,
     LoginComponent,
-    AutenticacionComponent
+    AutenticacionComponent,
+    RecuperarContrasenaComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,6 +63,9 @@ const config: SocketIoConfig = {
       useClass: TokenInterceptor,
       multi: true
     }
+  ],
+  entryComponents: [
+    RecuperarContrasenaComponent
   ],
   bootstrap: [AppComponent]
 })

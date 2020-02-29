@@ -11,17 +11,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const environment_1 = require("../global/environment");
-const socket_io_1 = __importDefault(require("socket.io"));
 const http_1 = __importDefault(require("http"));
+const path_1 = __importDefault(require("path"));
+const socket_io_1 = __importDefault(require("socket.io"));
+const environment_1 = require("../global/environment");
 const admin_1 = __importDefault(require("../rutas/admin"));
-const usuario_1 = __importDefault(require("../rutas/usuario"));
 const cliente_1 = __importDefault(require("../rutas/cliente"));
+const empleado_1 = __importDefault(require("../rutas/empleado"));
 const estados_1 = __importDefault(require("../rutas/estados"));
 const productos_1 = __importDefault(require("../rutas/productos"));
-const empleado_1 = __importDefault(require("../rutas/empleado"));
+const usuario_1 = __importDefault(require("../rutas/usuario"));
 const Socket = __importStar(require("../sockets/socket"));
-const path_1 = __importDefault(require("path"));
 class Servidor {
     constructor() {
         this.app = express_1.default();
@@ -56,19 +56,6 @@ class Servidor {
         this.app.use('/api/v1/empleados', empleado_1.default);
     }
     iniciar() {
-        /*
-        new Usuario({
-            nombre: 'admin',
-            ape_pat: 'admin',
-            ape_mat:'admin',
-            username:'admin',
-            email:'admin@admin',
-            telefono:1234567893,
-            contrasena:'hola',
-            rol:2,
-            rol_sec:0,
-
-        }).save()*/
         const appPath = path_1.default.join(__dirname, '../../../', 'dist/cliente');
         this.app.use(express_1.default.static(appPath));
         this.app.get('*', (req, res) => {

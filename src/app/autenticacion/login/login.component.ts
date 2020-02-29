@@ -4,6 +4,9 @@ import { UsuarioLogin } from '../compartido/usuarioLogin.model';
 import { ServicioAutenticacionService } from '../servicio-autenticacion/servicio-autenticacion.service';
 import { ToastrService } from 'ngx-toastr';
 import { WebSocketService } from 'src/app/comun/servicios/websocket.service';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { RecuperarContrasenaComponent } from '../recuperar-contrasena/recuperar-contrasena.component';
 
 @Component({
   selector: 'app-login',
@@ -13,8 +16,10 @@ import { WebSocketService } from 'src/app/comun/servicios/websocket.service';
 export class LoginComponent implements OnInit {
   cargando: boolean = false;
   datosUsuario: UsuarioLogin = new UsuarioLogin();
-
-  constructor(public autServicio: ServicioAutenticacionService, private usuarioService: UsuarioService, private toastr: ToastrService, public wsService: WebSocketService) { }
+  constructor(public autServicio: ServicioAutenticacionService, private usuarioService: UsuarioService,
+    private toastr: ToastrService,
+    public wsService: WebSocketService,
+    private dialog: MatDialog) { }
 
   ngOnInit() { }
   login() {
@@ -23,6 +28,7 @@ export class LoginComponent implements OnInit {
       (usr) => {
         this.usuarioService.crearAsistencia(this.autServicio.getIdUsuario()).subscribe((ok) => { }, (err) => { });
         this.cargando = false;
+        localStorage.removeItem('c-rec');
         this.toastr.success('', 'Bienvenido', { closeButton: true });
         const usuariows = { id: '', _id: this.autServicio.getIdUsuario(), nombre: this.autServicio.getNombreUsuario(), rol: this.autServicio.getTipoUsuario(), rol_sec: this.autServicio.getTipoTrabajador() };
         this.wsService.iniciarSesionWS(usuariows).then(() => {
@@ -35,5 +41,9 @@ export class LoginComponent implements OnInit {
       }
     )
   }
-
+  abrirRecuperarContrasena() {
+    this.dialog.open(RecuperarContrasenaComponent,{
+      width: '50%'
+    })
+  }
 }

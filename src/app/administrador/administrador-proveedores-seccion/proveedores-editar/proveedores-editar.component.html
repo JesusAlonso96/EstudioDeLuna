@@ -1,7 +1,7 @@
 <app-barra-cargando [cargando]="cargando"></app-barra-cargando>
-<app-buscador *ngIf="proveedores" 
+<app-buscador #buscador *ngIf="proveedores" 
     [elementos]="proveedores" 
     [columnas]="columnas" 
     nombre="proveedor"
-    accion="editar" >
+    accion="editar">
 </app-buscador>

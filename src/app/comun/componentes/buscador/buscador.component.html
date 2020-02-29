@@ -249,6 +249,53 @@
                             [ngClass]="{'hide':!(datosTabla!=null && datosTabla.data.length == 0)}"></mat-footer-row>
                     </mat-table>
                 </ng-container>
+                <ng-container *ngSwitchCase="'familia'">
+                    <mat-table [dataSource]="datosTabla" matSort>
+                        <ng-container matColumnDef="id">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element._id}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="nombre">
+                            <mat-header-cell *matHeaderCellDef>Nombre</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.nombre}}</mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="accion == 'editar'" matColumnDef="editar">
+                            <mat-header-cell *matHeaderCellDef>Editar empresa</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <button mat-icon-button color="accent" (click)="confirmarEdicionEmpresa(element)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="accion == 'editar'" matColumnDef="eliminar">
+                            <mat-header-cell *matHeaderCellDef>Eliminar empresa</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <button mat-icon-button color="warn"
+                                    (click)="confirmarEliminacionElemento(element,'empresa',3)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="accion == 'restaurar'" matColumnDef="restaurar">
+                            <mat-header-cell *matHeaderCellDef>Restaurar familia</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <a (click)="confirmarRestauracionElemento(element,'familia',4)" mat-icon-button
+                                    color="primary">
+                                    <mat-icon>restore_from_trash</mat-icon>
+                                </a>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="noData">
+                            <mat-footer-cell *matFooterCellDef colspan="6">
+                                No hay empresas registradas
+                            </mat-footer-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+                        <mat-row *matRowDef="let row;columns: columnas;"></mat-row>
+                        <mat-footer-row *matFooterRowDef="['noData']"
+                            [ngClass]="{'hide':!(datosTabla!=null && datosTabla.data.length == 0)}"></mat-footer-row>
+                    </mat-table>
+                </ng-container>
             </ng-container>
             <mat-paginator #paginator [pageSizeOptions]="[5,10,15,20]" [pageSize]="10"></mat-paginator>
         </div>

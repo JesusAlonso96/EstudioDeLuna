@@ -1,16 +1,16 @@
-import express, {Request, Response} from 'express';
-import { environment } from '../global/environment';
-import SocketIO from 'socket.io';
+import express, { Request, Response } from 'express';
 import http from 'http';
+import path from 'path';
+import SocketIO from 'socket.io';
+import { environment } from '../global/environment';
 import rutasAdmin from '../rutas/admin';
-import rutasUsuario from '../rutas/usuario';
 import rutasCliente from '../rutas/cliente';
+import rutasEmpleado from '../rutas/empleado';
 import rutasEstados from '../rutas/estados';
 import rutasProductos from '../rutas/productos';
-import rutasEmpleado from '../rutas/empleado';
+import rutasUsuario from '../rutas/usuario';
 import * as Socket from '../sockets/socket';
-import { Usuario } from '../modelos/usuario.model';
-import path from 'path';
+import * as bcrypt from 'bcrypt';
 
 export default class Servidor {
     private static _instance: Servidor;
@@ -54,19 +54,6 @@ export default class Servidor {
         this.app.use('/api/v1/empleados', rutasEmpleado);
     }
     iniciar() {
-        /*
-        new Usuario({
-            nombre: 'admin',
-            ape_pat: 'admin',
-            ape_mat:'admin',
-            username:'admin',
-            email:'admin@admin',
-            telefono:1234567893,
-            contrasena:'hola',
-            rol:2,
-            rol_sec:0,
-
-        }).save()*/
         const appPath = path.join(__dirname, '../../../', 'dist/cliente');
         this.app.use(express.static(appPath));
 

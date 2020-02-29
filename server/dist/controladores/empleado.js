@@ -11,6 +11,15 @@ const moment_1 = __importDefault(require("moment"));
 const venta_model_1 = require("../modelos/venta.model");
 const caja_model_1 = require("../modelos/caja.model");
 const notificacion_model_1 = require("../modelos/notificacion.model");
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const transporter = nodemailer_1.default.createTransport({
+    service: 'Gmail',
+    secure: false,
+    auth: {
+        user: 'j.alonso.jacl2@gmail.com',
+        pass: 'papanatas.123'
+    }
+});
 exports.asignarFotografo = (req, res) => {
     var fecha = new Date(req.params.fecha);
     usuario_model_1.Usuario.aggregate()
@@ -120,6 +129,7 @@ exports.crearPedido = (req, res) => {
     let pedidoAlta = new pedido_model_1.Pedido(req.body);
     pedidoAlta.save((err, pedidoGuardado) => {
         if (err) {
+            console.log(err);
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear el pedido' });
         }
         if (pedidoAlta.fotografo) {
@@ -134,7 +144,24 @@ exports.crearPedido = (req, res) => {
                 $push: {
                     pedidos: pedidoAlta
                 }
-            }, (err, ok) => { if (err) { } });
+            }, (err, cliente) => {
+                if (err)
+                    return res.status(422).send({ titulo: 'Error al crear pedido', detalles: 'No se pudo crear el pedido' });
+                if (cliente) {
+                    let opciones = {
+                        from: '"Estudio de Luna" <j.alonso.jacl2@gmail.com>',
+                        to: cliente.email,
+                        subject: 'Nuevo pedido creado',
+                        html: `<b>Tu pedido ha sido creado, fecha de entrega estimada: ${pedidoAlta.fecha_entrega}</b>` // html body
+                    };
+                    transporter.sendMail(opciones, (err, info) => {
+                        if (err)
+                            res.status(422).send({ titulo: 'Error al enviar correo', detalles: 'Ocurrio un error al enviar el correo electronico, por favor intentalo de nuevo mas tarde' });
+                        console.log("Message sent: %s", info.messageId);
+                        console.log("Preview URL: %s", nodemailer_1.default.getTestMessageUrl(info));
+                    });
+                }
+            });
         }
         pedido_model_1.Pedido.findById(pedidoGuardado._id)
             .populate('productos')
@@ -159,8 +186,8 @@ exports.crearFoto = (req, res) => {
     });
 };
 exports.realizarVenta = (req, res) => {
-    var hora = moment_1.default(new Date(Date.now())).format('YYYY-MM-DD');
-    var fecha = moment_1.default(new Date(Date.now())).format('h:mm:ss a');
+    var fecha = moment_1.default(new Date(Date.now())).format('YYYY-MM-DD');
+    var hora = moment_1.default(new Date(Date.now())).format('h:mm:ss a');
     const venta = new venta_model_1.Venta({
         pedido: req.body,
         fecha: fecha,
@@ -168,12 +195,11 @@ exports.realizarVenta = (req, res) => {
         vendedor: res.locals.usuario._id
     });
     venta.save((err, exito) => {
-        if (err) {
+        if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear la venta' });
-        }
+        actualizarCantidadesCaja(Number(req.params.cantidadACaja), req.params.metodoPago, res);
         return res.json(exito);
     });
-    actualizarCantidadesCaja(Number(req.params.cantidadACaja), req.params.metodoPago, res);
 };
 exports.obtenerPedidosPorEmpleado = (req, res) => {
     usuario_model_1.Usuario.aggregate()
@@ -509,8 +535,27 @@ exports.actualizarEstadoPedido = (req, res) => {
     }).exec((err, pedidoActualizado) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al actualizar el pedido' });
-        pedido_model_1.Pedido.findById(pedidoActualizado._id).exec(function (err, pedido) {
-            return res.json(pedido);
+        pedido_model_1.Pedido
+            .findById(pedidoActualizado._id)
+            .populate('cliente')
+            .exec((err, pedido) => {
+            if (pedido) {
+                if (pedido.cliente && pedido.status == 'Finalizado') {
+                    let opciones = {
+                        from: '"Estudio de Luna" <j.alonso.jacl2@gmail.com>',
+                        to: pedido.cliente.email,
+                        subject: 'Pedido listo',
+                        html: `<b>Tu pedido ya esta disponible para ser recogido</b>` // html body
+                    };
+                    transporter.sendMail(opciones, (err, info) => {
+                        if (err)
+                            res.status(422).send({ titulo: 'Error al enviar correo', detalles: 'Ocurrio un error al enviar el correo electronico, por favor intentalo de nuevo mas tarde' });
+                        console.log("Message sent: %s", info.messageId);
+                        console.log("Preview URL: %s", nodemailer_1.default.getTestMessageUrl(info));
+                    });
+                }
+                return res.json(pedido);
+            }
         });
     });
 };

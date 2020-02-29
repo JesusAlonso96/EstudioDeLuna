@@ -22,6 +22,7 @@ const usuarioSchema = new mongoose_1.Schema({
     ocupado: { type: Boolean, required: false, default: false },
     asistencia: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Asistencia', default: [] }],
     pedidosTomados: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Pedido', default: [] }],
+    codigoRecuperacion: { type: String, required: false, default: '' },
     activo: { type: Number, default: 1 }
 });
 //funcion para verificar la contrasena encriptada

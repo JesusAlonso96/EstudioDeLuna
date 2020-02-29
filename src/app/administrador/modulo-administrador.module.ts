@@ -82,6 +82,8 @@ import { ComunModule } from 'src/app/comun/comun.module';
 import { AdministradorRoutingModule } from './administrador-routing.module';
 //guardia
 import { AutenticacionGuard } from 'src/app/autenticacion/compartido/autenticacion.guard';
+import { FamiliasProductoRestaurarComponent } from './familias-productos-seccion/familias-producto-restaurar/familias-producto-restaurar.component';
+import { AdministradorConfiguracionSistemaComponent } from './administrador-configuracion-sistema/administrador-configuracion-sistema.component';
 
 
 
@@ -139,7 +141,9 @@ import { AutenticacionGuard } from 'src/app/autenticacion/compartido/autenticaci
     AgregarSucursalComponent,
     EliminarSucursalComponent,
     EditarSucursalComponent,
-    RestaurarSucursalComponent
+    RestaurarSucursalComponent,
+    FamiliasProductoRestaurarComponent,
+    AdministradorConfiguracionSistemaComponent
   ],
   imports: [
     CommonModule,

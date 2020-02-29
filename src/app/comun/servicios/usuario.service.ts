@@ -37,7 +37,7 @@ export class UsuarioService {
     public agregarEmpresa(empresa: EmpresaCot): Observable<any> {
         return this.http.post('/api/v1/usuarios/agregarEmpresa', empresa);
     }
-    public agregarCotizacion(cotizacion: Cotizacion): Observable<any>{
+    public agregarCotizacion(cotizacion: Cotizacion): Observable<any> {
         return this.http.post('/api/v1/usuarios/agregarCotizacion', cotizacion);
     }
     //get
@@ -83,10 +83,10 @@ export class UsuarioService {
     public obtenerDatosEstudio(): Observable<any> {
         return this.http.get('/api/v1/usuarios/obtenerDatosEstudio');
     }
-    public obtenerCotizacionesRealizadas(): Observable<any>{
+    public obtenerCotizacionesRealizadas(): Observable<any> {
         return this.http.get('/api/v1/usuarios/obtenerCotizaciones');
     }
-    public obtenerPestanas(rol: string): Observable<any>{
+    public obtenerPestanas(rol: string): Observable<any> {
         return this.http.get(`/api/v1/usuarios/obtenerPestanas/${rol}`)
     }
     //patch
@@ -105,24 +105,48 @@ export class UsuarioService {
     public actualizarEmpresa(empresa: EmpresaCot): Observable<any> {
         return this.http.patch('/api/v1/usuarios/actualizarEmpresa', empresa);
     }
+    public generarCodigoRecuperacion(body: { email: string }): Observable<any> {
+        return this.http.patch('/api/v1/usuarios/generarCodigoRecuperacion', body);
+    }
+    public cambiarContrasena(email: string, body: { contrasena: string, codigo: string }): Observable<any> {
+        return this.http.patch(`/api/v1/usuarios/recuperarContrasena/${email}`, body);
+    }
+    public eliminarCodigoRecuperacion(body: { email: string }): Observable<any> {
+        return this.http.patch('/api/v1/usuarios/eliminarCodigoRecuperacion', body);
+    }
     /* Peticiones para sockets */
-    public escucharNuevoUsuario(){
+    public escucharNuevoUsuario() {
         return this.wsService.escuchar('nuevo-usuario');
     }
-    public escucharNuevoUsuarioEliminado(){
+    public escucharNuevoUsuarioEliminado() {
         return this.wsService.escuchar('nuevo-usuario-eliminado');
     }
-    public escucharNuevoUsuarioEditado(){
+    public escucharNuevoUsuarioEditado() {
         return this.wsService.escuchar('nuevo-usuario-editado');
     }
-    public escucharNuevoUsuarioRestaurado(){
+    public escucharNuevoUsuarioRestaurado() {
         return this.wsService.escuchar('nuevo-usuario-restaurado')
     }
-    public escucharNuevoProveedor(){
+    public escucharNuevoProveedor() {
         return this.wsService.escuchar('nuevo-proveedor');
     }
-    public escucharNuevoProveedorEditado(){
+    public escucharNuevoProveedorEliminado() {
+        return this.wsService.escuchar('nuevo-proveedor-eliminado');
+    }
+    public escucharNuevoProveedorEditado() {
         return this.wsService.escuchar('nuevo-proveedor-editado');
+    }
+    public escucharNuevoProveedorRestaurado() {
+        return this.wsService.escuchar('nuevo-proveedor-restaurado');
+    }
+    public escucharNuevaFamilia() {
+        return this.wsService.escuchar('nueva-familia');
+    }
+    public escucharNuevaFamiliaEliminada() {
+        return this.wsService.escuchar('nueva-familia-eliminada');
+    }
+    public escucharNuevaFamiliaRestaurada() {
+        return this.wsService.escuchar('nueva-familia-restaurada');
     }
     //FUNCIONES AUXILIARES
     public obtenerSubtotalPorProducto(producto: ProductoCot): number {

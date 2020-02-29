@@ -17,6 +17,7 @@ export interface IUsuario extends Document {
     ocupado: boolean;
     asistencia: Types.Array<IAsistencia>;
     pedidosTomados: Types.Array<IPedido>;
+    codigoRecuperacion: string;
     activo: number;
 }
 const usuarioSchema = new Schema({
@@ -32,6 +33,7 @@ const usuarioSchema = new Schema({
     ocupado: { type: Boolean, required: false, default: false },
     asistencia: [{ type: Schema.Types.ObjectId, ref: 'Asistencia', default: [] }],
     pedidosTomados: [{ type: Schema.Types.ObjectId, ref: 'Pedido', default: [] }],
+    codigoRecuperacion: { type: String, required: false, default: '' },
     activo: { type: Number, default: 1 }
 });
 //funcion para verificar la contrasena encriptada

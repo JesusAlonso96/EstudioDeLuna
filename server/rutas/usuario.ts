@@ -35,12 +35,8 @@ rutasUsuario.patch('/eliminarProducto/:id/:idFamilia', UsuarioCtrl.autenticacion
 rutasUsuario.patch('/eliminarFamilia/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.eliminarFamilia);
 rutasUsuario.patch('/eliminarEmpresa', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.eliminarEmpresa);
 rutasUsuario.patch('/actualizarEmpresa', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.editarEmpresa);
-
-
-
-
-
-
-
+rutasUsuario.patch('/generarCodigoRecuperacion', UsuarioCtrl.generarCodigoRecuperacion);
+rutasUsuario.patch('/recuperarContrasena/:email', UsuarioCtrl.recuperarContrasena);
+rutasUsuario.patch('/eliminarCodigoRecuperacion', UsuarioCtrl.eliminarCodigoRecuperacion);
 
 export default rutasUsuario;

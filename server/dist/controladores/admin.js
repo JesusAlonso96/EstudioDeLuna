@@ -21,6 +21,7 @@ const usuario_model_1 = require("../modelos/usuario.model");
 const venta_model_1 = require("../modelos/venta.model");
 const servidor_1 = __importDefault(require("../clases/servidor"));
 const Socket = __importStar(require("../sockets/socket"));
+const familia_model_1 = require("../modelos/familia.model");
 exports.obtenerVentasMes = (req, res) => {
     var fechaInicio = new Date(moment_1.default(req.params.fechaInicio).format('YYYY-MM-DD'));
     var fechaFin = new Date(moment_1.default(req.params.fechaFin).format('YYYY-MM-DD'));
@@ -507,8 +508,11 @@ exports.editarProveedor = (req, res) => {
         .exec((err, proveedorActualizado) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar al proveedor' });
-        obtenerNuevoElemento(proveedorActualizado, res, 5);
-        return res.json({ titulo: 'Datos actualizados', detalles: 'Datos del proveedor actualizados correctamente' });
+        proveedor_model_1.Proveedor.findById(proveedorActualizado._id)
+            .exec((err, proveedor) => {
+            obtenerNuevoElemento(proveedor, res, 5);
+            return res.json({ titulo: 'Datos actualizados', detalles: 'Datos del proveedor actualizados correctamente' });
+        });
     });
 };
 exports.eliminarProveedor = (req, res) => {
@@ -518,6 +522,7 @@ exports.eliminarProveedor = (req, res) => {
         .exec((err, eliminado) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo eliminar al proveedor' });
+        obtenerNuevoElemento(eliminado, res, 7);
         return res.json({ titulo: 'Proveedor eliminado', detalles: 'Proveedor eliminado exitosamente' });
     });
 };
@@ -528,6 +533,8 @@ exports.restaurarProveedor = (req, res) => {
         .exec((err, proveedorActualizado) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo restaurar al proveedor' });
+        obtenerNuevoElemento(proveedorActualizado, res, 4);
+        obtenerNuevoElemento(proveedorActualizado, res, 6);
         return res.json({ titulo: 'Proveedor restaurado', detalles: 'Proveedor eliminado restaurado correctamente' });
     });
 };
@@ -624,6 +631,26 @@ exports.adminMiddleware = (req, res, next) => {
         return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' });
     }
 };
+exports.obtenerFamiliasEliminadas = (req, res) => {
+    familia_model_1.Familia.find({ activa: 0 })
+        .exec((err, familias) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las familias eliminadas' });
+        return res.json(familias);
+    });
+};
+exports.restaurarFamiliaEliminada = (req, res) => {
+    familia_model_1.Familia.findByIdAndUpdate(req.body._id, {
+        activa: 1
+    })
+        .exec((err, restaurada) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo restaurar la familia de productos' });
+        obtenerNuevoElemento(restaurada, res, 8);
+        obtenerNuevoElemento(restaurada, res, 9);
+        return res.json({ titulo: 'Familia restaurada', detalles: 'Familia restaurada exitosamente' });
+    });
+};
 /* Funciones para sockets */
 function obtenerNuevoElemento(elemento, res, tipo) {
     const servidor = servidor_1.default.instance;
@@ -647,6 +674,18 @@ function obtenerNuevoElemento(elemento, res, tipo) {
                     break;
                 case 5:
                     servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor-editado', elemento);
+                    break;
+                case 6:
+                    servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor-restaurado', elemento);
+                    break;
+                case 7:
+                    servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor-eliminado', elemento);
+                    break;
+                case 8:
+                    servidor.io.in(usuarioConectado.id).emit('nueva-familia', elemento);
+                    break;
+                case 9:
+                    servidor.io.in(usuarioConectado.id).emit('nueva-familia-restaurada', elemento);
                     break;
             }
         }

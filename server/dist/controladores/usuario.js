@@ -29,6 +29,15 @@ const proveedor_model_1 = require("../modelos/proveedor.model");
 const usuario_model_1 = require("../modelos/usuario.model");
 const venta_model_1 = require("../modelos/venta.model");
 const Socket = __importStar(require("../sockets/socket"));
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const transporter = nodemailer_1.default.createTransport({
+    service: 'Gmail',
+    secure: false,
+    auth: {
+        user: 'j.alonso.jacl2@gmail.com',
+        pass: 'papanatas.123'
+    }
+});
 exports.login = (req, res) => {
     const { username, contrasena } = req.body;
     usuario_model_1.Usuario.findOne({ username })
@@ -74,7 +83,6 @@ exports.obtenerDatosEstudio = (req, res) => {
         return res.json(datos);
     });
 };
-//posible error
 exports.crearAsistencia = (req, res) => {
     let hoy = new Date(moment_1.default(Date.now()).format('YYYY-MM-DD'));
     const asistencia = new asistencia_model_1.Asistencia({ fecha: hoy, asistencia: true });
@@ -91,6 +99,73 @@ exports.crearAsistencia = (req, res) => {
                 return res.json(actualizado);
             });
         }
+    });
+};
+exports.generarCodigoRecuperacion = (req, res) => {
+    const codigo = generarCodigo();
+    const email = req.body.email;
+    usuario_model_1.Usuario.findOne({ email }).exec((err, usuario) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error al generar codigo', detalles: 'Ocurrio un error al generar el codigo de recuperacion de contrasena' });
+        if (!usuario) {
+            return res.status(422).send({ titulo: 'Error al generar codigo', detalles: 'No existe un usuario con este correo electronico' });
+        }
+    });
+    usuario_model_1.Usuario.findOneAndUpdate({ email }, {
+        codigoRecuperacion: codigo
+    })
+        .exec((err, actualizado) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error al generar codigo', detalles: 'Ocurrio un error al generar el codigo de recuperacion de contrasena' });
+        if (actualizado) {
+            let opciones = {
+                from: '"Estudio de Luna" <j.alonso.jacl2@gmail.com>',
+                to: email,
+                subject: 'Recuperacion de contrasena',
+                html: `<b>El codigo de recuperacion es ${codigo}</b>` // html body
+            };
+            transporter.sendMail(opciones, (err, info) => {
+                if (err)
+                    res.status(422).send({ titulo: 'Error al enviar correo', detalles: 'Ocurrio un error al enviar el correo electronico, por favor intentalo de nuevo mas tarde' });
+                console.log("Message sent: %s", info.messageId);
+                console.log("Preview URL: %s", nodemailer_1.default.getTestMessageUrl(info));
+                return res.json({ titulo: 'Correo enviado', detalles: 'Se ha enviado un correo para actualizar tu contrasena' });
+            });
+        }
+    });
+};
+exports.recuperarContrasena = (req, res) => {
+    const { contrasena, codigo } = req.body;
+    usuario_model_1.Usuario.findOne({ email: req.params.email })
+        .exec((err, usuarioEncontrado) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error al obtener', detalles: 'Error al obtener datos del usuario, intentelo de nuevo mas tarde' });
+        if (codigo !== usuarioEncontrado.codigoRecuperacion)
+            return res.status(422).send({ titulo: 'Codigo erroneo', detalles: 'El codigo ingresado no coincide con el generado' });
+        else {
+            bcrypt.genSalt(10, function (err, salt) {
+                bcrypt.hash(contrasena, salt, function (err, hash) {
+                    usuario_model_1.Usuario.findOneAndUpdate({ email: req.params.email }, {
+                        $set: { contrasena: hash, codigoRecuperacion: '' }
+                    })
+                        .exec((err, usuarioActualizado) => {
+                        if (err)
+                            return res.status(422).send({ titulo: 'Error al actualizar contrasena', detalles: 'Ocurrio un error al actualizar la contrasena, intentalo de nuevo mas tarde' });
+                        return res.status(200).send({ titulo: 'Contrasena actualizada', detalles: 'Se actualizo satisfactoriamente la contrasena' });
+                    });
+                });
+            });
+        }
+    });
+};
+exports.eliminarCodigoRecuperacion = (req, res) => {
+    usuario_model_1.Usuario.findOneAndUpdate({ email: req.body.email }, {
+        codigoRecuperacion: ''
+    })
+        .exec((err, usuarioActualizado) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error al actualizar', detalles: 'Error al actualizar el codigo de recuperacion' });
+        return res.status(200).json({ titulo: 'Codigo eliminado', detalles: 'El codigo de recuperacion ha sido eliminado' });
     });
 };
 exports.obtenerUsuario = (req, res) => {
@@ -165,18 +240,20 @@ exports.agregarFamilia = (req, res) => {
             familia.save((err, guardada) => {
                 if (err)
                     return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo agregar la familia' });
+                obtenerNuevoElementoAdminOSupervisor(guardada, res, 2);
                 return res.json(guardada);
             });
         }
     });
 };
 exports.eliminarFamilia = (req, res) => {
-    familia_model_1.Familia.update({ _id: req.params.id }, {
+    familia_model_1.Familia.findByIdAndUpdate(req.params.id, {
         activa: 0
     })
         .exec((err, eliminada) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo eliminar la familia' });
+        obtenerNuevoElementoAdminOSupervisor(eliminada, res, 1);
         return res.json(eliminada);
     });
 };
@@ -505,6 +582,14 @@ exports.adminOSupervisorORecepcionistaMiddleware = (req, res, next) => {
 function parseToken(token) {
     return jsonwebtoken_1.default.verify(token.split(' ')[1], environment_1.environment.SECRET);
 }
+function encriptarContrasena(contrasena) {
+    bcrypt.genSalt(10, function (err, salt) {
+        bcrypt.hash(contrasena, salt, function (err, hash) {
+            contrasena = hash;
+        });
+    });
+}
+exports.encriptarContrasena = encriptarContrasena;
 function verificarContrasena(contrasena, contrasenaModel) {
     return bcrypt.compareSync(contrasena, contrasenaModel);
 }
@@ -641,16 +726,29 @@ function pedidosVendidosPorEmpleado(res, id) {
         return res.json(pedidos);
     });
 }
+function generarCodigo() {
+    const tamCodigo = 8;
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let codigo = '';
+    for (let i = 0; i < tamCodigo; i++) {
+        codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    return codigo;
+}
 /* Funciones para sockets */
 function obtenerNuevoElementoAdminOSupervisor(elemento, res, tipo) {
     const servidor = servidor_1.default.instance;
-    for (let usuarioConectado of Socket.usuariosConectados.lista) { //|| (usuarioConectado.rol == 1 && usuarioConectado.rol_sec == 0)
-        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0) {
-            console.log('entre al ifff');
+    for (let usuarioConectado of Socket.usuariosConectados.lista) { //
+        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && ((usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0) || (usuarioConectado.rol == 1 && usuarioConectado.rol_sec == 0))) {
             switch (tipo) {
                 case 0:
-                    console.log('si envie el socket');
                     servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor', elemento);
+                    break;
+                case 1:
+                    servidor.io.in(usuarioConectado.id).emit('nueva-familia-eliminada', elemento);
+                    break;
+                case 2:
+                    servidor.io.in(usuarioConectado.id).emit('nueva-familia', elemento);
                     break;
             }
         }

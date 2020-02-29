@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { ProductosService } from '../../servicios/productos.service';
-import { Familia } from '../../modelos/familia.model';
-import { ToastrService } from 'ngx-toastr';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { AgregarFamiliaComponent } from './agregar-familia/agregar-familia.component';
+import { ToastrService } from 'ngx-toastr';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { Familia } from '../../modelos/familia.model';
+import { ProductosService } from '../../servicios/productos.service';
 import { UsuarioService } from '../../servicios/usuario.service';
+import { AgregarFamiliaComponent } from './agregar-familia/agregar-familia.component';
 import { EliminarFamiliaComponent } from './eliminar-familia/eliminar-familia.component';
 
 @Component({
@@ -12,29 +14,64 @@ import { EliminarFamiliaComponent } from './eliminar-familia/eliminar-familia.co
   templateUrl: './catalogo-familias.component.html',
   styleUrls: ['./catalogo-familias.component.scss']
 })
-export class CatalogoFamiliasComponent implements OnInit {
+export class CatalogoFamiliasComponent implements OnInit, OnDestroy {
   familias: Familia[];
   cargando: boolean = false;
   cargandoAgregar: boolean = false;
-  constructor(private productosService: ProductosService, private toastr: ToastrService, public dialog: MatDialog, private usuarioService: UsuarioService) {
-    this.familias = [];
-  }
+  private onDestroy$ = new Subject<boolean>();
+
+  constructor(private productosService: ProductosService,
+    private toastr: ToastrService,
+    public dialog: MatDialog,
+    private usuarioService: UsuarioService) { }
 
   ngOnInit() {
     this.obtenerFamilias();
+    this.obtenerNuevaFamiliaAgregada();
+    this.obtenerNuevaFamiliaEliminada();
   }
   obtenerFamilias() {
     this.cargando = true;
     this.productosService.obtenerFamiliasProductos().subscribe(
       (familias) => {
         this.familias = familias;
-        console.log(this.familias);
         this.cargando = false;
       },
       (err) => {
-        this.toastr.error(err.error.detalles, err.error.titulo)
+        this.toastr.error(err.error.detalles, err.error.titulo);
+        this.cargando = false;
       }
     );
+  }
+
+  obtenerNuevaFamiliaAgregada() {
+    this.usuarioService.escucharNuevaFamilia()
+      .pipe(
+        takeUntil(this.onDestroy$)
+      )
+      .subscribe(
+        (familia: Familia) => {
+          this.familias.push(familia);
+          this.toastr.info('Se ha agregado una nueva familia', 'Familia agregada', { closeButton: true });
+        }
+      )
+  }
+  obtenerNuevaFamiliaEliminada() {
+    this.usuarioService.escucharNuevaFamiliaEliminada()
+      .pipe(
+        takeUntil(this.onDestroy$)
+      )
+      .subscribe(
+        (familia: Familia) => {
+          const familiaEliminada = this.familias.find(familiaFil => { return familiaFil._id == familia._id })
+          const indice = this.familias.indexOf(familiaEliminada);
+          this.familias.splice(indice, 1);
+          this.toastr.warning('Nueva familia eliminado', 'Se ha eliminado una familia de productos', { closeButton: true });
+        }
+      )
+  }
+  obtenerNuevaFamiliaRestaurada() {
+
   }
   abrirAgregarFamilia() {
     const dialogRef = this.dialog.open(AgregarFamiliaComponent);
@@ -82,5 +119,9 @@ export class CatalogoFamiliasComponent implements OnInit {
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );
+  }
+  ngOnDestroy() {
+    this.onDestroy$.next(true);
+    this.onDestroy$.complete();
   }
 }

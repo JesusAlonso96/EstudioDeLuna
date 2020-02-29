@@ -26,7 +26,7 @@ import { AdministradorFacturacionSeccionComponent } from './administrador-factur
 const routes: Routes = [
     {
         path: 'admin',
-        redirectTo: 'admin/perfil',
+        redirectTo: 'admin/dashboard',
         pathMatch: 'full'
     },
     {

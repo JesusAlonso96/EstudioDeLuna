@@ -24,6 +24,7 @@ rutasAdmin.get('/obtenerUsuariosEliminados', UsuarioCtrl.autenticacionMiddleware
 rutasAdmin.get('/obtenerProveedoresEliminados', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.obtenerProveedoresEliminados);
 rutasAdmin.get('/obtenerProductosProveedorEliminados', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.obtenerProductosProveedorEliminados);
 rutasAdmin.get('/obtenerEmpresasEliminadas', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.obtenerEmpresasEliminadas);
+rutasAdmin.get('/obtenerFamiliasEliminadas', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.obtenerFamiliasEliminadas);
 //post
 rutasAdmin.post('/empleado', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.altaUsuario);
 rutasAdmin.post('/crearCorteCaja', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.crearCorteCaja);
@@ -41,4 +42,5 @@ rutasAdmin.patch('/eliminarProductoProveedor', UsuarioCtrl.autenticacionMiddlewa
 rutasAdmin.patch('/editarProductoProveedor', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.editarProductoProveedor);
 rutasAdmin.patch('/restaurarProductoProveedorEliminado', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.restaurarProductoProveedorEliminado);
 rutasAdmin.patch('/restaurarEmpresaEliminada', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.restaurarEmpresaEliminada);
+rutasAdmin.patch('/restaurarFamiliaEliminada', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.restaurarFamiliaEliminada);
 exports.default = rutasAdmin;

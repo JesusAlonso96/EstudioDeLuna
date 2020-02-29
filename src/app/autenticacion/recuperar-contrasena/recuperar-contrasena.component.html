@@ -1,0 +1,64 @@
+<h2 mat-dialog-title>Recuperar contraseña</h2>
+<ng-container *ngIf="!generado">
+    <div mat-dialog-content>
+        <mat-progress-bar *ngIf="cargando" mode="indeterminate"></mat-progress-bar>
+        <form #emailForm="ngForm" class="mt-4">
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Correo electronico</mat-label>
+                <input matInput [(ngModel)]="email" name="email2" #email2="ngModel" type="text"
+                    placeholder="Correo electronico"
+                    pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" required>
+                <mat-error *ngIf="(email2.invalid && (email2.dirty || email2.touched)) &&  email2.errors.required">
+                    Por favor ingresa tu correo electronico</mat-error>
+                <mat-error *ngIf="(email2.invalid && (email2.dirty || email2.touched)) &&  email2.errors.pattern">
+                    Por favor ingresa un formato de correo valido</mat-error>
+            </mat-form-field>
+        </form>
+        <div *ngIf="generado == false" class="alert alert-danger alert-dismissible fade show full-width sin-borde"
+            role="alert">
+            <strong>Ocurrio un error!</strong> {{mensaje}}.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div mat-dialog-actions align="end">
+        <ng-container *ngIf="!generado">
+            <button mat-raised-button [disabled]="!emailForm.valid" color="primary"
+                (click)="generarCodigoRecuperacion()">Enviar código</button>
+            <button mat-raised-button [mat-dialog-close]="false">Cancelar</button>
+        </ng-container>
+    </div>
+</ng-container>
+<ng-container *ngIf="generado == true">
+    <div mat-dialog-content>
+        <div class="alert alert-success alert-dismissible fade show full-width sin-borde" role="alert">
+            <strong>Código enviado!</strong> Se ha enviado un codigo al correo {{correoIngresado}}.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form #recuperarForm="ngForm">
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Nueva contraseña</mat-label>
+                <input matInput [(ngModel)]="datosRecuperacion.contrasena" name="contrasena" #contrasena="ngModel" type="text"
+                    placeholder="Nueva contraseña">
+                <mat-error *ngIf="(contrasena.invalid && (contrasena.dirty || contrasena.touched)) &&  contrasena.errors.required">
+                    Por favor ingresa tu nueva contraseña</mat-error>
+            </mat-form-field>
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Codigo de seguridad</mat-label>
+                <input matInput [(ngModel)]="datosRecuperacion.codigo" name="codigo" #codigo="ngModel" type="text"
+                    required>
+                <mat-error *ngIf="(codigo.invalid && (codigo.dirty || codigo.touched)) &&  codigo.errors.required">
+                    Por favor ingresa el codigo de seguridad</mat-error>
+            </mat-form-field>
+        </form>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button mat-raised-button [disabled]="!recuperarForm.valid" color="primary"
+            (click)="cambiarContrasena()">Cambiar contraseña</button>
+        <button mat-raised-button (click)="cancelarRecuperacion()">Cancelar</button>
+    </div>
+
+</ng-container>

@@ -6,6 +6,7 @@ import { CorteCaja } from 'src/app/comun/modelos/corte_caja.model';
 import { Proveedor } from 'src/app/comun/modelos/proveedor.model';
 import { ProductoProveedor } from 'src/app/comun/modelos/producto_proveedor.model';
 import { EmpresaCot } from 'src/app/comun/modelos/empresa_cot.model';
+import { Familia } from 'src/app/comun/modelos/familia.model';
 
 @Injectable({
   providedIn: 'root'
@@ -61,6 +62,9 @@ export class AdministradorService {
   public obtenerEmpresasEliminadas(): Observable<any>{
     return this.http.get('/api/v1/admins/obtenerEmpresasEliminadas');
   }
+  public obtenerFamiliasEliminadas(): Observable<any>{
+    return this.http.get('/api/v1/admins/obtenerFamiliasEliminadas');
+  }
   //patch
   public actualizarCaja(caja): Observable<any> {
     return this.http.patch('/api/v1/admins/actualizarCaja', caja);
@@ -97,6 +101,9 @@ export class AdministradorService {
   }
   public restaurarEmpresa(empresa: EmpresaCot): Observable<any>{
     return this.http.patch('/api/v1/admins/restaurarEmpresaEliminada', empresa);
+  }
+  public restaurarFamilia(familia: Familia): Observable<any> {
+    return this.http.patch('/api/v1/admins/restaurarFamiliaEliminada', familia);
   }
 
 }

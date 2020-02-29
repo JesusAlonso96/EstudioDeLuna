@@ -15,6 +15,7 @@ import { ClienteService } from './cliente.service';
 import { EmpresaCot } from '../modelos/empresa_cot.model';
 import { UsuarioService } from './usuario.service';
 import { EditarEmpresaComponent } from '../componentes/modales/editar-empresa/editar-empresa.component';
+import { Familia } from '../modelos/familia.model';
 
 @Injectable({
   providedIn: 'root'
@@ -116,6 +117,7 @@ export class BuscadorService {
           case 1: this.restaurarClienteEliminado(tabla, listaElementos, elemento); break;
           case 2: this.restaurarUsuarioEliminado(tabla, listaElementos, elemento); break;
           case 3: this.restaurarEmpresaEliminada(tabla, listaElementos, elemento); break;
+          case 4: this.restaurarFamiliaEliminada(tabla, listaElementos, elemento); break;
         }
       }
     })
@@ -179,6 +181,22 @@ export class BuscadorService {
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );
+  }
+  /*Restauracion de familias */
+  private restaurarFamiliaEliminada(tabla: MatTableDataSource<Familia>, listaFamilias: Familia[], familia: Familia) {
+    this.abrirSnackBar('Restaurando familia...', '');
+    this.adminService.restaurarFamilia(familia).subscribe(
+      (familiaRestaurada: Mensaje) => {
+        this.cerrarSnackBar();
+        this.toastr.success(familiaRestaurada.detalles, familiaRestaurada.titulo, { closeButton: true });
+        this.quitarElementoTabla(tabla, listaFamilias, familia);
+      },
+      (err) => {
+        this.cerrarSnackBar();
+        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      }
+    );
+
   }
   //editar
   /*Edicion de proveedores */
