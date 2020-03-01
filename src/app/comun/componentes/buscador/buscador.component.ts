@@ -6,6 +6,7 @@ import { EmpresaCot } from '../../modelos/empresa_cot.model';
 import { Proveedor } from '../../modelos/proveedor.model';
 import { Usuario } from '../../modelos/usuario.model';
 import { BuscadorService } from '../../servicios/buscador.service';
+import { Almacen } from '../../modelos/almacen.model';
 
 @Component({
   selector: 'app-buscador',
@@ -66,6 +67,10 @@ export class BuscadorComponent implements OnInit, AfterViewInit {
   //empresas
   confirmarEdicionEmpresa(empresa: EmpresaCot) {
     this.buscadorService.confirmarEditarEmpresa(this.datosTabla, this.elementos, empresa);
+  }
+  //almacenes
+  confirmarEdicionAlmacen(almacen: Almacen) {
+    this.buscadorService.confirmarEditarAlmacen(this.datosTabla, this.elementos, almacen);
   }
   //Funcion general para restaurar cualquier elemento
   confirmarRestauracionElemento(elemento: any, nombre: string, tipo: number) {

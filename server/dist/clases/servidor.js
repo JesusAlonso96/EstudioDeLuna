@@ -23,6 +23,7 @@ const productos_1 = __importDefault(require("../rutas/productos"));
 const usuario_1 = __importDefault(require("../rutas/usuario"));
 const datos_estudio_1 = __importDefault(require("../rutas/datos_estudio"));
 const Socket = __importStar(require("../sockets/socket"));
+const almacen_1 = __importDefault(require("../rutas/almacen"));
 class Servidor {
     constructor() {
         this.app = express_1.default();
@@ -56,6 +57,7 @@ class Servidor {
         this.app.use('/api/v1/productos', productos_1.default);
         this.app.use('/api/v1/empleados', empleado_1.default);
         this.app.use('/api/v1/datos', datos_estudio_1.default);
+        this.app.use('/api/v1/almacenes', almacen_1.default);
     }
     iniciar() {
         this.inicializarRutas();

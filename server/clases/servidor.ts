@@ -11,6 +11,7 @@ import rutasProductos from '../rutas/productos';
 import rutasUsuario from '../rutas/usuario';
 import rutasDatos from '../rutas/datos_estudio';
 import * as Socket from '../sockets/socket';
+import rutasAlmacen from '../rutas/almacen';
 
 export default class Servidor {
     private static _instance: Servidor;
@@ -53,6 +54,7 @@ export default class Servidor {
         this.app.use('/api/v1/productos', rutasProductos);
         this.app.use('/api/v1/empleados', rutasEmpleado);
         this.app.use('/api/v1/datos', rutasDatos);
+        this.app.use('/api/v1/almacenes', rutasAlmacen);
     }
     iniciar() {
         this.inicializarRutas();

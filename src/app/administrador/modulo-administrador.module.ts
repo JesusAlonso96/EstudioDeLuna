@@ -18,6 +18,13 @@ import { PedidosVendidosComponent } from './administrador-tablero-seccion/pedido
 import { PedidosCompletadosComponent } from './administrador-tablero-seccion/pedidos-completados/pedidos-completados.component';
 //seccion de inventario
 import { AdministradorInventarioSeccionComponent } from './administrador-inventario-seccion/administrador-inventario-seccion.component';
+import { InventariosOrdenCompraComponent } from './administrador-inventario-seccion/inventarios-orden-compra/inventarios-orden-compra.component';
+import { InventariosCompraComponent } from './administrador-inventario-seccion/inventarios-compra/inventarios-compra.component';
+import { InventariosInvFisicoComponent } from './administrador-inventario-seccion/inventarios-inv-fisico/inventarios-inv-fisico.component';
+import { InventariosAlmacenesComponent } from './administrador-inventario-seccion/inventarios-almacenes/inventarios-almacenes.component';
+import { InventariosAlmacenesTraspasosComponent } from './administrador-inventario-seccion/inventarios-almacenes-traspasos/inventarios-almacenes-traspasos.component';
+import { InventariosEntradasSalidasComponent } from './administrador-inventario-seccion/inventarios-entradas-salidas/inventarios-entradas-salidas.component';
+
 //seccion de productos
 import { ProductosSeccionComponent } from './productos-seccion/productos-seccion.component';
 //seccion de familias de productos
@@ -143,7 +150,13 @@ import { AdministradorConfiguracionSistemaComponent } from './administrador-conf
     EditarSucursalComponent,
     RestaurarSucursalComponent,
     FamiliasProductoRestaurarComponent,
-    AdministradorConfiguracionSistemaComponent
+    AdministradorConfiguracionSistemaComponent,
+    InventariosOrdenCompraComponent,
+    InventariosCompraComponent,
+    InventariosInvFisicoComponent,
+    InventariosAlmacenesComponent,
+    InventariosAlmacenesTraspasosComponent,
+    InventariosEntradasSalidasComponent
   ],
   imports: [
     CommonModule,

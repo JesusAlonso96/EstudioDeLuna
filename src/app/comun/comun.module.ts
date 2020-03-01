@@ -53,6 +53,9 @@ import { FormatoFechaPipe } from './pipes/formato-fecha.pipe';
 import { PaginacionPipe } from './pipes/paginacion.pipe';
 import { FiltroProductosPipe } from './pipes/filtro-productos.pipe';
 import { FiltroCotizacionPipe } from './pipes/filtro-cotizacion.pipe';
+import { AlmacenService } from './servicios/almacen.service';
+import { AltaAlmacenComponent } from './componentes/modales/alta-almacen/alta-almacen.component';
+import { EditarAlmacenComponent } from './componentes/modales/editar-almacen/editar-almacen.component';
 
 @NgModule({
     declarations: [
@@ -93,6 +96,8 @@ import { FiltroCotizacionPipe } from './pipes/filtro-cotizacion.pipe';
         BarraCargandoComponent,
         EditarProductoProveedorComponent,
         AltaEmpresaComponent,
+        AltaAlmacenComponent,
+        EditarAlmacenComponent,
         EditarEmpresaComponent,
         VerCotizacionComponent,
         BuscadorComponent
@@ -148,13 +153,16 @@ import { FiltroCotizacionPipe } from './pipes/filtro-cotizacion.pipe';
         AltaEmpresaComponent,
         EditarEmpresaComponent,
         VerCotizacionComponent,
+        AltaAlmacenComponent,
+        EditarAlmacenComponent
     ],
     providers: [
         EstadosService,
         ClienteService,
         UsuarioService,
         BuscadorService,
-        DatosService
+        DatosService,
+        AlmacenService
     ],
 })
 export class ComunModule { }

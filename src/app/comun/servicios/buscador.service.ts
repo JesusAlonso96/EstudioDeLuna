@@ -16,13 +16,22 @@ import { EmpresaCot } from '../modelos/empresa_cot.model';
 import { UsuarioService } from './usuario.service';
 import { EditarEmpresaComponent } from '../componentes/modales/editar-empresa/editar-empresa.component';
 import { Familia } from '../modelos/familia.model';
+import { Almacen } from '../modelos/almacen.model';
+import { AlmacenService } from './almacen.service';
+import { EditarAlmacenComponent } from '../componentes/modales/editar-almacen/editar-almacen.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BuscadorService {
 
-  constructor(private dialog: MatDialog, private adminService: AdministradorService, private clienteService: ClienteService, private usuarioService: UsuarioService, private toastr: ToastrService, private _snackBar: MatSnackBar) { }
+  constructor(private dialog: MatDialog,
+    private adminService: AdministradorService,
+    private clienteService: ClienteService,
+    private usuarioService: UsuarioService,
+    private toastr: ToastrService,
+    private almacenService: AlmacenService,
+    private _snackBar: MatSnackBar) { }
   //eliminaciones
   public confirmarEliminacionElemento(tabla: MatTableDataSource<any>, listaElementos: any[], elemento: any, nombre: string, tipo: number) {
     const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
@@ -35,6 +44,7 @@ export class BuscadorService {
           case 1: this.eliminarCliente(tabla, listaElementos, elemento); break;
           case 2: this.eliminarUsuario(tabla, listaElementos, elemento); break;
           case 3: this.eliminarEmpresa(tabla, listaElementos, elemento); break;
+          case 4: this.eliminarAlmacen(tabla, listaElementos, elemento); break;
         }
       }
     })
@@ -104,6 +114,20 @@ export class BuscadorService {
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );
+  }
+  /*Eliminacion de almacenes */
+  private eliminarAlmacen(tabla: MatTableDataSource<Almacen>, listaAlmacenes: Almacen[], almacen: Almacen) {
+    this.abrirSnackBar('Eliminando empresa...', '');
+    this.almacenService.eliminarAlmacen(almacen._id).subscribe(
+      (eliminada: Mensaje) => {
+        this.cerrarSnackBar();
+        this.toastr.success(eliminada.detalles, eliminada.titulo, { closeButton: true });
+        this.quitarElementoTabla(tabla, listaAlmacenes, almacen);
+      },
+      (err: any) => {
+        this.cerrarSnackBar();
+        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      });
   }
   //restauraciones
   public confirmarRestauracionElemento(tabla: MatTableDataSource<any>, listaElementos: any[], elemento: any, nombre: string, tipo: number) {
@@ -198,6 +222,7 @@ export class BuscadorService {
     );
 
   }
+  /*Restauracion de almacenes */
   //editar
   /*Edicion de proveedores */
   public confirmarEditarProveedor(tabla: MatTableDataSource<Proveedor>, listaProveedores: Proveedor[], proveedor: Proveedor) {
@@ -286,7 +311,7 @@ export class BuscadorService {
       data: usuario
     });
   }
-  /*Edicion de usuarios */
+  /*Edicion de empresas */
   public confirmarEditarEmpresa(tabla: MatTableDataSource<EmpresaCot>, listaEmpresas: EmpresaCot[], empresa: EmpresaCot) {
     const empresaAux: EmpresaCot = EmpresaCot.prototype.nuevaEmpresa(empresa._id, empresa.nombre, empresa.direccion, empresa.contacto, empresa.telefono, empresa.email, empresa.activa);
     const dialogRef = this.dialog.open(EditarEmpresaComponent, { data: empresa });
@@ -312,6 +337,34 @@ export class BuscadorService {
         this.restablecerDatosElemento(tabla, listaEmpresas, empresa, empresaAuxiliar);
       }
     );
+  }
+  /*Edicion de almacenes */
+  public confirmarEditarAlmacen(tabla: MatTableDataSource<Almacen>, listaAlmacenes: Almacen[], almacen: Almacen) {
+    const almacenAux: Almacen = Almacen.prototype.nuevoAlmacen(almacen._id, almacen.id, almacen.nombre, almacen.direccion.calle, almacen.direccion.colonia, almacen.direccion.num_ext, almacen.direccion.num_int, almacen.direccion.cp, almacen.direccion.ciudad, almacen.direccion.estado);
+    const dialogRef = this.dialog.open(EditarAlmacenComponent, { data: almacen });
+    dialogRef.afterClosed().subscribe(respuesta => {
+      if (respuesta) {
+        this.editarAlmacen(tabla, listaAlmacenes, almacen, almacenAux);
+      } else {
+        this.restablecerDatosElemento(tabla, listaAlmacenes, almacen, almacenAux);
+      }
+    }
+    );
+  }
+  private editarAlmacen(tabla: MatTableDataSource<Almacen>, listaAlmacenes: Almacen[], almacen: Almacen, almacenAuxiliar: Almacen) {
+    this.abrirSnackBar('Guardando cambios...', '');
+    this.almacenService.actualizarAlmacen(almacen, almacen._id).subscribe(
+      (actualizada: Mensaje) => {
+        this.cerrarSnackBar();
+        this.toastr.success(actualizada.detalles, actualizada.titulo, { closeButton: true });
+      },
+      (err: any) => {
+        this.cerrarSnackBar();
+        this.toastr.error(err.error.titulo, err.error.detalles, { closeButton: true });
+        this.restablecerDatosElemento(tabla, listaAlmacenes, almacen, almacenAuxiliar);
+      }
+    );
+
   }
   //auxiliares
   private quitarElementoTabla(tabla: MatTableDataSource<any>, listaElementos: any[], elemento: any) {

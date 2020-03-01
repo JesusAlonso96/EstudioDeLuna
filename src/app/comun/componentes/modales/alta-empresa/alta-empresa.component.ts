@@ -11,7 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class AltaEmpresaComponent implements OnInit {
   nuevaEmpresa: EmpresaCot = new EmpresaCot();
-  constructor(public dialogRef: MatDialogRef<AltaEmpresaComponent>, private usuarioService: UsuarioService, private toastr: ToastrService) { }
+  constructor(public dialogRef: MatDialogRef<AltaEmpresaComponent>) { }
 
   ngOnInit() {
   }
