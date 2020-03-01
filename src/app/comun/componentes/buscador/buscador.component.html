@@ -308,9 +308,10 @@
                         </ng-container>
                         <ng-container matColumnDef="direccion">
                             <mat-header-cell *matHeaderCellDef>Direccion</mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.direccion.calle}} {{element.direccion.colonia}} #{{element.direccion.num_ext}}</mat-cell>
-                        </ng-container>                       
-                         <ng-container matColumnDef="editar">
+                            <mat-cell *matCellDef="let element">{{element.direccion.calle}}
+                                {{element.direccion.colonia}} #{{element.direccion.num_ext}}</mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="accion == 'administrar'" matColumnDef="editar">
                             <mat-header-cell *matHeaderCellDef>Editar almacen</mat-header-cell>
                             <mat-cell *matCellDef="let element">
                                 <button mat-icon-button color="accent" (click)="confirmarEdicionAlmacen(element)">
@@ -318,8 +319,8 @@
                                 </button>
                             </mat-cell>
                         </ng-container>
-                        <ng-container matColumnDef="eliminar">
-                            <mat-header-cell *matHeaderCellDef>Eliminar empresa</mat-header-cell>
+                        <ng-container *ngIf="accion == 'administrar'" matColumnDef="eliminar">
+                            <mat-header-cell *matHeaderCellDef>Eliminar almacen</mat-header-cell>
                             <mat-cell *matCellDef="let element">
                                 <button mat-icon-button color="warn"
                                     (click)="confirmarEliminacionElemento(element,'almacen',4)">
@@ -328,9 +329,9 @@
                             </mat-cell>
                         </ng-container>
                         <ng-container *ngIf="accion == 'restaurar'" matColumnDef="restaurar">
-                            <mat-header-cell *matHeaderCellDef>Restaurar familia</mat-header-cell>
+                            <mat-header-cell *matHeaderCellDef>Restaurar almacen</mat-header-cell>
                             <mat-cell *matCellDef="let element">
-                                <a (click)="confirmarRestauracionElemento(element,'familia',4)" mat-icon-button
+                                <a (click)="confirmarRestauracionElemento(element,'almacen',5)" mat-icon-button
                                     color="primary">
                                     <mat-icon>restore_from_trash</mat-icon>
                                 </a>

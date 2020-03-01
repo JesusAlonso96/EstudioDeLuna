@@ -3,7 +3,6 @@ import { BuscadorComponent } from 'src/app/comun/componentes/buscador/buscador.c
 import { Almacen } from 'src/app/comun/modelos/almacen.model';
 import { AlmacenService } from 'src/app/comun/servicios/almacen.service';
 import { ToastrService } from 'ngx-toastr';
-import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
 import { MatDialog } from '@angular/material';
 import { AltaAlmacenComponent } from 'src/app/comun/componentes/modales/alta-almacen/alta-almacen.component';
 

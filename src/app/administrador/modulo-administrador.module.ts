@@ -22,6 +22,7 @@ import { InventariosOrdenCompraComponent } from './administrador-inventario-secc
 import { InventariosCompraComponent } from './administrador-inventario-seccion/inventarios-compra/inventarios-compra.component';
 import { InventariosInvFisicoComponent } from './administrador-inventario-seccion/inventarios-inv-fisico/inventarios-inv-fisico.component';
 import { InventariosAlmacenesComponent } from './administrador-inventario-seccion/inventarios-almacenes/inventarios-almacenes.component';
+import { InventariosAlmacenesRestaurarComponent } from './administrador-inventario-seccion/inventarios-almacenes/inventarios-almacenes-restaurar/inventarios-almacenes-restaurar.component';
 import { InventariosAlmacenesTraspasosComponent } from './administrador-inventario-seccion/inventarios-almacenes-traspasos/inventarios-almacenes-traspasos.component';
 import { InventariosEntradasSalidasComponent } from './administrador-inventario-seccion/inventarios-entradas-salidas/inventarios-entradas-salidas.component';
 
@@ -156,7 +157,8 @@ import { AdministradorConfiguracionSistemaComponent } from './administrador-conf
     InventariosInvFisicoComponent,
     InventariosAlmacenesComponent,
     InventariosAlmacenesTraspasosComponent,
-    InventariosEntradasSalidasComponent
+    InventariosEntradasSalidasComponent,
+    InventariosAlmacenesRestaurarComponent
   ],
   imports: [
     CommonModule,

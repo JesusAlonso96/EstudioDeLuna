@@ -12,8 +12,9 @@ const AlmacenCtrl = __importStar(require("../controladores/almacen"));
 const UsuarioCtrl = __importStar(require("../controladores/usuario"));
 const rutasAlmacen = express_1.Router();
 /* GET */
-rutasAlmacen.get('', UsuarioCtrl.autenticacionMiddleware, AlmacenCtrl.obtenerAlmacenes);
+rutasAlmacen.get('/eliminados', UsuarioCtrl.autenticacionMiddleware, AlmacenCtrl.obtenerAlmacenesEliminados);
 rutasAlmacen.get('/:id', UsuarioCtrl.autenticacionMiddleware, AlmacenCtrl.obtenerAlmacenPorId);
+rutasAlmacen.get('', UsuarioCtrl.autenticacionMiddleware, AlmacenCtrl.obtenerAlmacenes);
 /* POST */
 rutasAlmacen.post('', UsuarioCtrl.autenticacionMiddleware, AlmacenCtrl.nuevoAlmacen);
 /* PUT */

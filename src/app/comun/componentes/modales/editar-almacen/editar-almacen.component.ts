@@ -19,9 +19,7 @@ export class EditarAlmacenComponent implements OnInit {
     public dialogRef: MatDialogRef<EditarAlmacenComponent>,
     @Inject(MAT_DIALOG_DATA) public almacen: Almacen,
     private estadosService: EstadosService,
-    private toastr: ToastrService) {
-    console.log(almacen)
-  }
+    private toastr: ToastrService) { }
 
   ngOnInit() {
     this.obtenerEstados();
@@ -57,5 +55,7 @@ export class EditarAlmacenComponent implements OnInit {
       }
     );
   }
-
+  onNoClick() {
+    this.dialogRef.close();
+  }
 }

@@ -9,6 +9,14 @@ exports.obtenerAlmacenes = (req, res) => {
         return res.status(200).json(almacenes);
     });
 };
+exports.obtenerAlmacenesEliminados = (req, res) => {
+    almacen_model_1.Almacen.find({ activo: false })
+        .exec((err, almacenes) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error al obtener', detalles: 'No se pudieron obtener los almacenes, intentalo de nuevo mas tarde' });
+        return res.status(200).json(almacenes);
+    });
+};
 exports.obtenerAlmacenPorId = (req, res) => {
     almacen_model_1.Almacen.findById(req.params.id)
         .exec((err, almacen) => {

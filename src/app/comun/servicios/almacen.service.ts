@@ -14,6 +14,9 @@ export class AlmacenService {
   public obtenerAlmacenes(): Observable<any> {
     return this.http.get('/api/v1/almacenes');
   }
+  public obtenerAlmacenesEliminados(): Observable<any>{
+    return this.http.get('/api/v1/almacenes/eliminados');
+  }
   public obtenerAlmacenPorId(id: string): Observable<any> {
     return this.http.get(`/api/v1/almacenes/${id}`)
   }

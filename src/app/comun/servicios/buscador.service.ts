@@ -142,6 +142,7 @@ export class BuscadorService {
           case 2: this.restaurarUsuarioEliminado(tabla, listaElementos, elemento); break;
           case 3: this.restaurarEmpresaEliminada(tabla, listaElementos, elemento); break;
           case 4: this.restaurarFamiliaEliminada(tabla, listaElementos, elemento); break;
+          case 5: this.restaurarAlmacenEliminado(tabla, listaElementos, elemento); break;
         }
       }
     })
@@ -223,6 +224,20 @@ export class BuscadorService {
 
   }
   /*Restauracion de almacenes */
+  private restaurarAlmacenEliminado(tabla: MatTableDataSource<Almacen>, listaAlmacenes: Almacen[], almacen: Almacen) {
+    this.abrirSnackBar('Restaurando familia...', '');
+    this.almacenService.restaurarAlmacen(almacen._id).subscribe(
+      (familiaRestaurada: Mensaje) => {
+        this.cerrarSnackBar();
+        this.toastr.success(familiaRestaurada.detalles, familiaRestaurada.titulo, { closeButton: true });
+        this.quitarElementoTabla(tabla, listaAlmacenes, almacen);
+      },
+      (err) => {
+        this.cerrarSnackBar();
+        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      }
+    );
+  }
   //editar
   /*Edicion de proveedores */
   public confirmarEditarProveedor(tabla: MatTableDataSource<Proveedor>, listaProveedores: Proveedor[], proveedor: Proveedor) {
