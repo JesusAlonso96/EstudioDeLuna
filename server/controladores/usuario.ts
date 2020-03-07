@@ -19,6 +19,7 @@ import { IUsuario, Usuario } from '../modelos/usuario.model';
 import { IVenta, Venta } from '../modelos/venta.model';
 import * as Socket from '../sockets/socket';
 import nodemailer from 'nodemailer';
+import { OrdenCompra, IOrdenCompra } from '../modelos/orden_compra.model';
 
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -124,7 +125,7 @@ export let recuperarContrasena = (req: Request, res: Response) => {
             else {
                 bcrypt.genSalt(10, function (err, salt) {
                     bcrypt.hash(contrasena, salt, function (err, hash) {
-                        Usuario.findOneAndUpdate({email: req.params.email}, {
+                        Usuario.findOneAndUpdate({ email: req.params.email }, {
                             $set: { contrasena: hash, codigoRecuperacion: '' }
                         })
                             .exec((err: NativeError, usuarioActualizado: IUsuario) => {
@@ -137,14 +138,14 @@ export let recuperarContrasena = (req: Request, res: Response) => {
             }
         })
 }
-export let eliminarCodigoRecuperacion = (req: Request, res: Response)=> {
-    Usuario.findOneAndUpdate({email: req.body.email},{
+export let eliminarCodigoRecuperacion = (req: Request, res: Response) => {
+    Usuario.findOneAndUpdate({ email: req.body.email }, {
         codigoRecuperacion: ''
     })
-    .exec((err:NativeError, usuarioActualizado: IUsuario)=>{
-        if(err) return res.status(422).send({titulo: 'Error al actualizar', detalles: 'Error al actualizar el codigo de recuperacion'});
-        return res.status(200).json({titulo:'Codigo eliminado', detalles: 'El codigo de recuperacion ha sido eliminado'});
-    })
+        .exec((err: NativeError, usuarioActualizado: IUsuario) => {
+            if (err) return res.status(422).send({ titulo: 'Error al actualizar', detalles: 'Error al actualizar el codigo de recuperacion' });
+            return res.status(200).json({ titulo: 'Codigo eliminado', detalles: 'El codigo de recuperacion ha sido eliminado' });
+        })
 }
 export let obtenerUsuario = (req: Request, res: Response) => {
     Usuario.findById(req.params.id)
@@ -493,6 +494,25 @@ export let obtenerCotizaciones = (req: Request, res: Response) => {
             return res.json(cotizaciones);
         });
 }
+
+/* Modulo de inventarios */
+export let obtenerOrdenesCompra = (req: Request, res: Response) => {
+    OrdenCompra.find({ activa: true })
+        .populate('usuario')
+        .exec((err: NativeError, ordenes: IOrdenCompra[]) => {
+            if (err) return res.status(422).send({ titulo: 'Error al obtener ordenes', detalles: 'Ocurrio un error al obtener las ordenes de compra, intentalo de nuevo mas tarde' });
+            return res.status(200).json(ordenes);
+        })
+}
+export let nuevaOrdenCompra = (req: Request, res: Response) => {
+    const orden = new OrdenCompra(req.body);
+    orden.usuario = res.locals.usuario;
+    orden.save((err: any, ordenGuardada: IOrdenCompra) => {
+        if (err) return res.status(422).send({ titulo: 'Error al crear orden', detalles: 'Ocurrio un error al crear la orden de compra, intentalo de nuevo mas tarde' });
+        return res.status(200).json(ordenGuardada);
+    })
+}
+
 /* Middlewares */
 export let autenticacionMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;

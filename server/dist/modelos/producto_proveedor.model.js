@@ -18,6 +18,7 @@ var conexion = mongoose_1.default.createConnection(environment_1.environment.DB_
 mongoose_auto_increment_1.default.initialize(conexion);
 const productoProveedorSchema = new mongoose_1.Schema({
     id: { type: Number, required: false },
+    codigoBarras: { type: String, required: true },
     nombre: { type: String, required: true },
     costo: { type: Number, required: true },
     proveedor: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Proveedor' },

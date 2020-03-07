@@ -6,6 +6,7 @@ import { SeleccionarProveedorComponent } from 'src/app/comun/componentes/modales
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { ToastrService } from 'ngx-toastr';
 import { OrdenCompra, ProductoOrdenCompra } from 'src/app/comun/modelos/orden_compra.model';
+import { SeleccionarProductoProveedorComponent } from 'src/app/comun/componentes/modales/seleccionar-producto-proveedor/seleccionar-producto-proveedor.component';
 
 @Component({
   selector: 'app-generar-orden-compra',
@@ -24,8 +25,9 @@ export class GenerarOrdenCompraComponent implements OnInit {
   productos: ProductoProveedor[];
   productoSeleccionado: ProductoProveedor = new ProductoProveedor();
   cargando: boolean = false;
-  columnas: string[] = ['cantidad', 'existencia', 'nombre', 'descripcion', 'costo'];
+  columnas: string[] = ['cantidad', 'existencia', 'nombre', 'descripcion', 'eliminar', 'costo'];
   iva: boolean;
+  //FORMULARIO
   constructor(private dialog: MatDialog,
     private toastr: ToastrService,
     private usuarioService: UsuarioService) { }
@@ -36,12 +38,18 @@ export class GenerarOrdenCompraComponent implements OnInit {
   }
   inicializarTabla() {
     this.dataSource = new MatTableDataSource(this.ordenCompra.productosOrdenCompra);
-
   }
   seleccionaProveedor() {
     const dialogRef = this.dialog.open(SeleccionarProveedorComponent);
     dialogRef.afterClosed().subscribe(proveedor => {
       if (proveedor) {
+        if (this.ordenCompra.proveedor.nombre != 'Sin proveedor seleccionado') {
+          if (this.ordenCompra.proveedor._id != proveedor._id) {
+            this.productos = [];
+            this.ordenCompra.productosOrdenCompra = [];
+            this.dataSource.data = this.ordenCompra.productosOrdenCompra;
+          }
+        }
         this.ordenCompra.proveedor = proveedor;
         this.obtenerProductosProveedor(this.ordenCompra.proveedor._id);
       }
@@ -53,7 +61,6 @@ export class GenerarOrdenCompraComponent implements OnInit {
       (productos: ProductoProveedor[]) => {
         this.cargando = false;
         this.productos = productos;
-        console.log(this.productos);
       },
       (err: any) => {
         this.cargando = false;
@@ -97,18 +104,91 @@ export class GenerarOrdenCompraComponent implements OnInit {
     }
   }
   generarOrdenCompra() {
-    this.ordenCompra.fechaEntrega = this.fechaEntrega._d;
-    this.ordenCompra.fechaPedido = this.fechaPedido._d;
-
+    let error: boolean = false;
+    console.log(this.ordenCompra.proveedor)
+    if (this.ordenCompra.proveedor.nombre == 'Sin proveedor seleccionado') {
+      this.toastr.error('Por favor, ingresa el proveedor', 'Proveedor requerido', { closeButton: true });
+      error = true;
+    }
+    if (!this.fechaPedido) {
+      this.toastr.error('Por favor, ingresa la fecha del pedido', 'Fecha del pedido requerida', { closeButton: true });
+      error = true;
+    }
+    if (!this.fechaEntrega) {
+      this.toastr.error('Por favor, ingresa la fecha de entrega', 'Fecha de entrega requerida', { closeButton: true });
+      error = true;
+    }
+    if (this.ordenCompra.productosOrdenCompra.length == 0 || !this.ordenCompra.productosOrdenCompra) {
+      this.toastr.error('Por favor, ingresa productos a la orden', 'Productos requeridos', { closeButton: true });
+      error = true;
+    }
+    if (!error) {
+      this.ordenCompra.fechaEntrega = this.fechaEntrega._d;
+      this.ordenCompra.fechaPedido = this.fechaPedido._d;
+      this.ordenCompra.subtotal = this.calcularSubtotalOrden();
+      this.ordenCompra.total = this.calcularTotalOrden();
+      this.guardarOrdenCompra(this.ordenCompra);
+    }
+  }
+  resetearFormulario() {
+    this.ordenCompra = new OrdenCompra();
+    this.ordenCompra.productosOrdenCompra = [];
+    this.fechaPedido = null;
+    this.fechaEntrega = null;
+    this.ordenCompra.proveedor.nombre = 'Sin proveedor seleccionado';
+    this.dataSource.data = this.ordenCompra.productosOrdenCompra;
+  }
+  guardarOrdenCompra(ordenCompra: OrdenCompra) {
+    this.cargando = true;
+    this.usuarioService.agregarOrdenCompra(ordenCompra).subscribe(
+      (ordenGuardada: OrdenCompra) => {
+        console.log(ordenGuardada);
+        this.cargando = false;
+        this.toastr.success('Se ha creado exitosamente la orden de compra', 'Orden de compra creada', { closeButton: true });
+        this.resetearFormulario();
+      },
+      (err: any) => {
+        this.cargando = false;
+        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      }
+    );
+  }
+  buscarProductosProveedor() {
+    let productosOrdenCompra: ProductoOrdenCompra[] = [];
+    for (let i = 0; i < this.productos.length; i++) {
+      productosOrdenCompra.push({
+        insumo: this.productos[i],
+        cantidadOrden: 0
+      })
+    }
+    const dialogRef = this.dialog.open(SeleccionarProductoProveedorComponent, { data: productosOrdenCompra });
+    dialogRef.afterClosed().subscribe(productos => {
+      if (productos) {
+        this.importarProductosSeleccionados(productos);
+      }
+    })
+  }
+  importarProductosSeleccionados(productos: ProductoOrdenCompra[]) {
+    this.ordenCompra.productosOrdenCompra = productos;
+    this.dataSource.data = this.ordenCompra.productosOrdenCompra;
   }
   importarTodosLosProductos() {
     this.ordenCompra.productosOrdenCompra = [];
-    for (let i = 0; i < this.productos.length; i++) {
-     this.ordenCompra.productosOrdenCompra.push({
-       insumo: this.productos[i],
-       cantidadOrden: 1
-     })
+    if (this.productos.length == 0) {
+      this.toastr.info('Este proveedor no cuenta con productos', 'Sin productos', { closeButton: true });
+    } else {
+      for (let i = 0; i < this.productos.length; i++) {
+        this.ordenCompra.productosOrdenCompra.push({
+          insumo: this.productos[i],
+          cantidadOrden: 1
+        })
+      }
+      this.dataSource.data = this.ordenCompra.productosOrdenCompra;
     }
+  }
+  eliminarProducto(producto: ProductoOrdenCompra) {
+    const indice = this.ordenCompra.productosOrdenCompra.indexOf(producto);
+    this.ordenCompra.productosOrdenCompra.splice(indice, 1);
     this.dataSource.data = this.ordenCompra.productosOrdenCompra;
   }
   existeEnOrdenCompra(producto: ProductoOrdenCompra): [ProductoOrdenCompra, number] {
@@ -134,7 +214,11 @@ export class GenerarOrdenCompraComponent implements OnInit {
       for (let prod of this.ordenCompra.productosOrdenCompra) {
         subtotal = subtotal + (prod.insumo.costo * prod.cantidadOrden);
       }
-      if (this.iva) subtotal = subtotal + (subtotal * .16);
+      if (this.iva) {
+        this.ordenCompra.iva = (subtotal * .16);
+        subtotal = subtotal + this.ordenCompra.iva;
+      }
+      else this.ordenCompra.iva = 0;
       if (this.ordenCompra.costoEnvio) subtotal = subtotal + this.ordenCompra.costoEnvio;
       return subtotal;
     } else return 0;

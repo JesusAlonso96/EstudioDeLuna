@@ -1,5 +1,6 @@
 import { Proveedor } from './proveedor.model';
 import { ProductoProveedor } from './producto_proveedor.model';
+import Usuario from 'server/clases/usuario';
 
 export class ProductoOrdenCompra {
     insumo: ProductoProveedor = new ProductoProveedor();
@@ -20,5 +21,7 @@ export class OrdenCompra {
     total: number;
     costoEnvio: number;
     productosOrdenCompra: ProductoOrdenCompra[] = [];
-    constructor(){} 
+    usuario: Usuario;
+    activa: boolean;
+    constructor() { }
 }

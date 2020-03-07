@@ -37,7 +37,7 @@ export class ProveedoresEditarProductoComponent implements OnInit {
       (listaProveedores: ListaProveedores[]) => {
         this.cargando = false;
         this.listaProveedores = listaProveedores;
-        if(this.listaProveedores.length > 0){
+        if (this.listaProveedores.length > 0) {
           this.activarPestana(0);
         }
       },
@@ -99,7 +99,7 @@ export class ProveedoresEditarProductoComponent implements OnInit {
   }
   //editar producto
   abrirEditarProducto(producto: ProductoProveedor) {
-    const productoAux: ProductoProveedor = ProductoProveedor.prototype.nuevoProducto(producto._id, producto.nombre, producto.costo, producto.proveedor, producto.detalles, producto.existencias, producto.activo);
+    const productoAux: ProductoProveedor = ProductoProveedor.prototype.nuevoProducto(producto._id, producto.id, producto.codigoBarras, producto.nombre, producto.costo, producto.proveedor, producto.detalles, producto.existencias, producto.activo);
     const dialogRef = this.dialog.open(EditarProductoProveedorComponent, {
       data: productoAux
     })

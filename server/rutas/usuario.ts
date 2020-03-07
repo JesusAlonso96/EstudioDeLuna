@@ -20,6 +20,7 @@ rutasUsuario.get('/obtenerProductosProveedor/:id', UsuarioCtrl.autenticacionMidd
 rutasUsuario.get('/obtenerEmpresas', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerEmpresas);
 rutasUsuario.get('/obtenerDatosEstudio', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.obtenerDatosEstudio);
 rutasUsuario.get('/obtenerCotizaciones', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerCotizaciones);
+rutasUsuario.get('/ordenCompra', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerOrdenesCompra);
 //post
 rutasUsuario.post('/login', UsuarioCtrl.login);
 rutasUsuario.post('/crearAsistencia/:id', UsuarioCtrl.crearAsistencia);
@@ -28,7 +29,8 @@ rutasUsuario.post('/agregarFamilia', UsuarioCtrl.autenticacionMiddleware, Usuari
 rutasUsuario.post('/nuevoProveedor', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.nuevoProveedor);
 rutasUsuario.post('/agregarProductoProveedor', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.agregarProductoProveedor);
 rutasUsuario.post('/agregarEmpresa', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.nuevaEmpresa);
-rutasUsuario.post('/agregarCotizacion', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.nuevaCotizacion)
+rutasUsuario.post('/agregarCotizacion', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.nuevaCotizacion);
+rutasUsuario.post('/ordenCompra', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.nuevaOrdenCompra);
 //patch
 rutasUsuario.patch('/actualizarProducto', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.actualizarProducto);
 rutasUsuario.patch('/eliminarProducto/:id/:idFamilia', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.eliminarProducto);

@@ -11,6 +11,7 @@ class HistorialMov {
 export class ProductoProveedor {
     _id: string;
     id: number;
+    codigoBarras: string;
     nombre: string;
     costo: number;
     proveedor: Proveedor;
@@ -22,9 +23,11 @@ export class ProductoProveedor {
     activo: number;
     constructor() { }
 
-    nuevoProducto(_id: string, nombre: string, costo: number, proveedor: any, detalles: string, existencias: number, activo: number) {
+    nuevoProducto(_id: string, id: number, codigoBarras: string, nombre: string, costo: number, proveedor: any, detalles: string, existencias: number, activo: number) {
         let nuevoProducto = new ProductoProveedor();
         nuevoProducto._id = _id;
+        nuevoProducto.id = id;
+        nuevoProducto.codigoBarras = codigoBarras;
         nuevoProducto.nombre = nombre;
         nuevoProducto.costo = costo;
         nuevoProducto.proveedor = proveedor;

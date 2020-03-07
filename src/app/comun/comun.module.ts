@@ -39,6 +39,8 @@ import { AltaEmpresaComponent } from './componentes/modales/alta-empresa/alta-em
 import { EditarEmpresaComponent } from './componentes/modales/editar-empresa/editar-empresa.component';
 import { VerCotizacionComponent } from './componentes/modales/ver-cotizacion/ver-cotizacion.component';
 import { BuscadorComponent } from './componentes/buscador/buscador.component';
+import { SeleccionarProductoProveedorComponent } from './componentes/modales/seleccionar-producto-proveedor/seleccionar-producto-proveedor.component';
+
 //modulos
 import { MaterialModule } from './material.module';
 //servicios
@@ -100,7 +102,8 @@ import { EditarAlmacenComponent } from './componentes/modales/editar-almacen/edi
         EditarAlmacenComponent,
         EditarEmpresaComponent,
         VerCotizacionComponent,
-        BuscadorComponent
+        BuscadorComponent,
+        SeleccionarProductoProveedorComponent
     ],
     imports: [
         CommonModule,
@@ -154,7 +157,8 @@ import { EditarAlmacenComponent } from './componentes/modales/editar-almacen/edi
         EditarEmpresaComponent,
         VerCotizacionComponent,
         AltaAlmacenComponent,
-        EditarAlmacenComponent
+        EditarAlmacenComponent,
+        SeleccionarProductoProveedorComponent
     ],
     providers: [
         EstadosService,

@@ -30,6 +30,7 @@ const usuario_model_1 = require("../modelos/usuario.model");
 const venta_model_1 = require("../modelos/venta.model");
 const Socket = __importStar(require("../sockets/socket"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
+const orden_compra_model_1 = require("../modelos/orden_compra.model");
 const transporter = nodemailer_1.default.createTransport({
     service: 'Gmail',
     secure: false,
@@ -544,6 +545,25 @@ exports.obtenerCotizaciones = (req, res) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la cotizacion' });
         return res.json(cotizaciones);
+    });
+};
+/* Modulo de inventarios */
+exports.obtenerOrdenesCompra = (req, res) => {
+    orden_compra_model_1.OrdenCompra.find({ activa: true })
+        .populate('usuario')
+        .exec((err, ordenes) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error al obtener ordenes', detalles: 'Ocurrio un error al obtener las ordenes de compra, intentalo de nuevo mas tarde' });
+        return res.status(200).json(ordenes);
+    });
+};
+exports.nuevaOrdenCompra = (req, res) => {
+    const orden = new orden_compra_model_1.OrdenCompra(req.body);
+    orden.usuario = res.locals.usuario;
+    orden.save((err, ordenGuardada) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error al crear orden', detalles: 'Ocurrio un error al crear la orden de compra, intentalo de nuevo mas tarde' });
+        return res.status(200).json(ordenGuardada);
     });
 };
 /* Middlewares */

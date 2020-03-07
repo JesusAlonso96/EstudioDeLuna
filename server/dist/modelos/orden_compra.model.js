@@ -35,7 +35,9 @@ const ordenCompraSchema = new mongoose_1.Schema({
                 cantidadOrden: { type: Number, required: true }
             }
         ], required: true
-    }
+    },
+    usuario: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Usuario' },
+    activa: { type: Boolean, required: false, default: true }
 });
 ordenCompraSchema.plugin(mongoose_auto_increment_1.default.plugin, { model: 'OrdenCompra', field: 'id' });
 exports.OrdenCompra = mongoose_1.default.model('OrdenCompra', ordenCompraSchema);

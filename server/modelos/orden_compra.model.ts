@@ -26,7 +26,9 @@ export interface IOrdenCompra extends Document {
             insumo: IProductoProveedor['_id'];
             cantidadOrden: number
         }
-    ]
+    ];
+    usuario: IUsuario['_id'];
+    activa: boolean;
 }
 const ordenCompraSchema = new Schema({
     id: { type: Number, required: false },
@@ -36,19 +38,20 @@ const ordenCompraSchema = new Schema({
     terminosEntrega: { type: String, required: false },
     terminosPago: { type: String, required: false },
     lugarEntrega: { type: String, required: false },
-    subtotal: {type: Number, required:true},
-    iva: {type: Number, required:true},
-    total:{type: Number, required:true},
-    costoEnvio: {type: Number, required:false},
+    subtotal: { type: Number, required: true },
+    iva: { type: Number, required: true },
+    total: { type: Number, required: true },
+    costoEnvio: { type: Number, required: false },
     productosOrdenCompra: {
         type: [
             {
-                insumo: {type: Schema.Types.ObjectId, ref: 'ProductoProveedor', required:true},
-                cantidadOrden: {type: Number, required:true}
+                insumo: { type: Schema.Types.ObjectId, ref: 'ProductoProveedor', required: true },
+                cantidadOrden: { type: Number, required: true }
             }
-        ] , required: true
-    }
-
+        ], required: true
+    },
+    usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' },
+    activa: { type: Boolean, required: false, default: true }
 });
 
 ordenCompraSchema.plugin(autoIncrement.plugin, { model: 'OrdenCompra', field: 'id' });

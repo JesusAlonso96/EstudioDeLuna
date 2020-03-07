@@ -11,6 +11,7 @@ autoIncrement.initialize(conexion);
 
 export interface IProductoProveedor extends Document {
     id: number;
+    codigoBarras: string;
     nombre: string;
     costo: number;
     proveedor: IProveedor['_id'];
@@ -21,6 +22,7 @@ export interface IProductoProveedor extends Document {
 }
 const productoProveedorSchema = new Schema({
     id: { type: Number, required: false },
+    codigoBarras: { type: String, required: true },
     nombre: { type: String, required: true },
     costo: { type: Number, required: true },
     proveedor: { type: Schema.Types.ObjectId, ref: 'Proveedor' },
