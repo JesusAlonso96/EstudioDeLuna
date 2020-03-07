@@ -1,0 +1,10 @@
+<app-barra-cargando [cargando]="cargando"></app-barra-cargando>
+<mat-toolbar>
+    <button mat-raised-button color="primary" (click)="nuevoAlmacen()">
+        <mat-icon>add</mat-icon>
+        Nuevo almacen
+    </button>
+</mat-toolbar>
+<app-buscador #buscador *ngIf="almacenes" [elementos]="almacenes" [columnas]="columnas" nombre="almacen"
+    accion="administrar">
+</app-buscador>

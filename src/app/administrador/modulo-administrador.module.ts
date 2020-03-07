@@ -25,7 +25,9 @@ import { InventariosAlmacenesComponent } from './administrador-inventario-seccio
 import { InventariosAlmacenesRestaurarComponent } from './administrador-inventario-seccion/inventarios-almacenes/inventarios-almacenes-restaurar/inventarios-almacenes-restaurar.component';
 import { InventariosAlmacenesTraspasosComponent } from './administrador-inventario-seccion/inventarios-almacenes-traspasos/inventarios-almacenes-traspasos.component';
 import { InventariosEntradasSalidasComponent } from './administrador-inventario-seccion/inventarios-entradas-salidas/inventarios-entradas-salidas.component';
-
+import { GenerarOrdenCompraComponent } from './administrador-inventario-seccion/inventarios-orden-compra/generar-orden-compra/generar-orden-compra.component';
+import { HistorialOrdenesCompraComponent } from './administrador-inventario-seccion/inventarios-orden-compra/historial-ordenes-compra/historial-ordenes-compra.component';
+import { InventariosAlmacenesDetallesComponent } from './administrador-inventario-seccion/inventarios-almacenes/inventarios-almacenes-detalles/inventarios-almacenes-detalles.component';
 //seccion de productos
 import { ProductosSeccionComponent } from './productos-seccion/productos-seccion.component';
 //seccion de familias de productos
@@ -95,6 +97,7 @@ import { AdministradorConfiguracionSistemaComponent } from './administrador-conf
 
 
 
+
 @NgModule({
   declarations: [
     AdministradorComponent,
@@ -158,7 +161,10 @@ import { AdministradorConfiguracionSistemaComponent } from './administrador-conf
     InventariosAlmacenesComponent,
     InventariosAlmacenesTraspasosComponent,
     InventariosEntradasSalidasComponent,
-    InventariosAlmacenesRestaurarComponent
+    InventariosAlmacenesRestaurarComponent,
+    GenerarOrdenCompraComponent,
+    HistorialOrdenesCompraComponent,
+    InventariosAlmacenesDetallesComponent
   ],
   imports: [
     CommonModule,

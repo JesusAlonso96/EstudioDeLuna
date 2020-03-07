@@ -1,19 +1,7 @@
-<app-barra-cargando [cargando]="cargando"></app-barra-cargando>
 <mat-tab-group color="accent" mat-stretch-tabs>
     <mat-tab label="Administrar">
         <ng-template matTabContent>
-            <mat-toolbar>
-                <button mat-raised-button color="primary" (click)="nuevoAlmacen()">
-                    <mat-icon>add</mat-icon>
-                    Nuevo almacen
-                </button>
-            </mat-toolbar>
-            <app-buscador #buscador *ngIf="almacenes" 
-                [elementos]="almacenes" 
-                [columnas]="columnas" 
-                nombre="almacen"
-                accion="administrar">
-            </app-buscador>
+            <app-inventarios-almacenes-detalles></app-inventarios-almacenes-detalles>
         </ng-template>
     </mat-tab>
     <mat-tab label="Restaurar">

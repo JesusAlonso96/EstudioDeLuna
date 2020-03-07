@@ -1,0 +1,19 @@
+.input{
+    font-size: 14px;
+}
+.centrado{
+    display: flex;
+    align-items: center; 
+}
+.producto-titulo{
+    font-weight: 500;
+}
+.agregar{
+    position: absolute;
+    right: 0;
+    margin-right: 1%;
+    .btn-agregar{
+        position: relative;
+        height: 65%;
+    }
+}

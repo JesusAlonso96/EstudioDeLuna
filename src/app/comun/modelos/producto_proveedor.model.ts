@@ -1,16 +1,28 @@
 import { Proveedor } from './proveedor.model';
-
+import { Almacen } from './almacen.model';
+import Usuario from 'server/clases/usuario';
+class HistorialMov {
+    fecha: Date;
+    numFactura: number;
+    usuario: Usuario;
+    tipo: string;
+    constructor() { }
+}
 export class ProductoProveedor {
-    _id:string;
+    _id: string;
+    id: number;
     nombre: string;
     costo: number;
     proveedor: Proveedor;
     detalles: string;
     existencias: number;
-    activo:number;
+    almacen: Almacen;
+    historialMov: HistorialMov[];
+    //traspasos
+    activo: number;
     constructor() { }
 
-    nuevoProducto(_id: string,nombre:string,costo:number,proveedor: any, detalles:string, existencias:number,activo:number){
+    nuevoProducto(_id: string, nombre: string, costo: number, proveedor: any, detalles: string, existencias: number, activo: number) {
         let nuevoProducto = new ProductoProveedor();
         nuevoProducto._id = _id;
         nuevoProducto.nombre = nombre;
