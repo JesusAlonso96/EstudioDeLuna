@@ -11,6 +11,7 @@ import { Cotizacion } from '../modelos/cotizacion.model';
 import { ProductoCot } from '../modelos/producto_cot.model';
 import { WebSocketService } from './websocket.service';
 import { OrdenCompra } from '../modelos/orden_compra.model';
+import { Compra } from '../modelos/compra.model';
 
 @Injectable({
     providedIn: 'root'
@@ -43,6 +44,9 @@ export class UsuarioService {
     }
     public agregarOrdenCompra(ordenCompra: OrdenCompra): Observable<any> {
         return this.http.post('/api/v1/usuarios/ordenCompra', ordenCompra);
+    }
+    public generarCompra(compra: Compra): Observable<any>{
+        return this.http.post('/api/v1/usuarios/compra', compra);
     }
     //get
     public obtenerUsuario(id: string): Observable<any> {

@@ -19,7 +19,12 @@ export interface IAlmacen extends Document {
         ciudad: string;
         estado: string;
     }
-    insumos: Types.Array<IProductoProveedor>;
+    insumos: [
+        {
+            insumo: IProductoProveedor;
+            existencia: number;
+        }
+    ]
     sucursal: ISucursal['_id'];
     fechaRegistro: Date;
     activo: boolean;
@@ -39,8 +44,15 @@ const almacenSchema = new Schema({
             estado: { type: String, required: true }
         }
     },
-    insumos: [{ type: Schema.Types.ObjectId, ref: 'ProductoProveedor' }],
-    sucursal: {type: Schema.Types.ObjectId, ref: 'Sucursal'},
+    insumos: {
+        type: [
+            {
+                insumo: { type: Schema.Types.ObjectId, ref: 'ProductoProveedor' },
+                existencia: { type: Number }
+            }
+        ]
+    },
+    sucursal: { type: Schema.Types.ObjectId, ref: 'Sucursal' },
     fechaRegistro: { type: Date, required: false, default: new Date(Date.now()) },
     activo: { type: Boolean, required: true, default: true }
 });

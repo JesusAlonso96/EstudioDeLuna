@@ -31,6 +31,8 @@ const venta_model_1 = require("../modelos/venta.model");
 const Socket = __importStar(require("../sockets/socket"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const orden_compra_model_1 = require("../modelos/orden_compra.model");
+const compra_model_1 = require("../modelos/compra.model");
+const almacen_model_1 = require("../modelos/almacen.model");
 const transporter = nodemailer_1.default.createTransport({
     service: 'Gmail',
     secure: false,
@@ -566,6 +568,51 @@ exports.nuevaOrdenCompra = (req, res) => {
         if (err)
             return res.status(422).send({ titulo: 'Error al crear orden', detalles: 'Ocurrio un error al crear la orden de compra, intentalo de nuevo mas tarde' });
         return res.status(200).json(ordenGuardada);
+    });
+};
+exports.registrarCompra = (req, res) => {
+    const compra = new compra_model_1.Compra(req.body);
+    let agregar = true;
+    let productosAlmacen = [];
+    almacen_model_1.Almacen.findById(compra.almacen._id)
+        .populate('insumos.insumo')
+        .exec((err, almacen) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
+        if (almacen.insumos.length > 0) {
+            for (let i = 0; i < compra.insumosCompra.length; i++) {
+                for (let j = 0; j < almacen.insumos.length; j++) {
+                    if (mongoose_1.Types.ObjectId(compra.insumosCompra[i].insumo._id).equals(almacen.insumos[j].insumo._id)) {
+                        if (agregar) {
+                            almacen.insumos[j].existencia = almacen.insumos[j].existencia + compra.insumosCompra[i].cantidad;
+                            agregar = true;
+                        }
+                    }
+                    else {
+                        almacen.insumos.push({
+                            insumo: compra.insumosCompra[i].insumo,
+                            existencia: compra.insumosCompra[i].cantidad
+                        });
+                        agregar = false;
+                    }
+                }
+            }
+        }
+        else {
+            for (let i = 0; i < compra.insumosCompra.length; i++) {
+                almacen.insumos.push({
+                    insumo: compra.insumosCompra[i].insumo,
+                    existencia: compra.insumosCompra[i].cantidad
+                });
+            }
+        }
+        almacen_model_1.Almacen.findByIdAndUpdate(almacen._id, {
+            insumos: almacen.insumos
+        }).exec((err, almacen) => {
+            if (err)
+                return res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
+            return res.json(almacen);
+        });
     });
 };
 /* Middlewares */

@@ -27,6 +27,7 @@ export class InventariosCompraComponent implements OnInit {
   almacenes: Almacen[] = [];
   dataSource: MatTableDataSource<InsumoCompra>;
   columnas: string[] = ['cantidad', 'existencia', 'nombre', 'descripcion', 'eliminar', 'costo'];
+  ordenDeCompraSeleccionada: boolean = false;
   constructor(private dialog: MatDialog,
     private usuarioService: UsuarioService,
     private almacenesService: AlmacenService,
@@ -73,16 +74,30 @@ export class InventariosCompraComponent implements OnInit {
     const dialogRef = this.dialog.open(SeleccionarOrdenDeCompraComponent);
     dialogRef.afterClosed().subscribe(ordenDeCompra => {
       if (ordenDeCompra) {
-        console.log(ordenDeCompra); //pc-respaldo\usuario
+        if (ordenDeCompra.costoEnvio) {
+          this.compra.costoEnvio = ordenDeCompra.costoEnvio;
+        }
+        if (ordenDeCompra.iva) {
+          this.compra.iva = ordenDeCompra.iva;
+          this.iva = true;
+        }
+        this.ordenDeCompraSeleccionada = true;
         this.compra.proveedor = ordenDeCompra.proveedor;
         this.obtenerProductosDeOrden(ordenDeCompra.productosOrdenCompra);
       }
     })
   }
   obtenerProductosDeOrden(productosOrden: ProductoOrdenCompra[]) {
+    this.compra.insumosCompra = [];
     for (let producto of productosOrden) {
       this.productos.push(producto.insumo);
+      this.compra.insumosCompra.push({
+        insumo: producto.insumo,
+        cantidad: producto.cantidadOrden,
+        subtotal: producto.cantidadOrden * producto.insumo.costo
+      })
     }
+    this.dataSource.data = this.compra.insumosCompra;
   }
   obtenerProductosProveedor(idProveedor: string) {
     this.cargando = true;
@@ -99,10 +114,31 @@ export class InventariosCompraComponent implements OnInit {
   }
 
   resetearFormulario() {
-
+    this.compra = new Compra();
+    this.compra.insumosCompra = [];
+    this.compra.proveedor.nombre = 'Sin proveedor seleccionado';
+    this.dataSource.data = this.compra.insumosCompra;
+    this.ordenDeCompraSeleccionada = false;
   }
   generarCompra() {
-    console.log(this.compra.almacen)
+    console.log(this.compra);
+    this.cargando = true;
+    this.usuarioService.generarCompra(this.compra).subscribe(
+      (compraGuardada: any) => {
+        console.log(compraGuardada)
+        this.cargando = false;
+        this.toastr.success('Se ha registrado exitosamente la compra, los productos se han agregado al almacen', 'Compra registrada', { closeButton: true });
+        this.resetearFormulario();
+      },
+      (err: any) => {
+        this.cargando = false;
+        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      }
+    );
+
+  }
+  existenProductosEnCompra(): boolean {
+    return this.compra.insumosCompra.length > 0 ? true : false;
   }
   proveedorSeleccionado(): boolean {
     return this.compra.proveedor.nombre == 'Sin proveedor seleccionado' ? false : true;

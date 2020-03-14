@@ -9,12 +9,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-8">
+                <form class="col-lg-8" #compraForm="ngForm">
                     <div class="row">
                         <div class="col-lg-6">
                             <mat-form-field appearance="outline" class="full-width input">
                                 <mat-label>Proveedor</mat-label>
-                                <input matInput type="text" [(ngModel)]="compra.proveedor.nombre" disabled>
+                                <input matInput type="text" [(ngModel)]="compra.proveedor.nombre" name="proveedor"
+                                    #proveedor="ngModel" disabled>
                                 <button mat-icon-button matSuffix color="primary" (click)="seleccionaProveedor()">
                                     <mat-icon>add</mat-icon>
                                 </button>
@@ -23,8 +24,10 @@
                         <div class="col-lg-6">
                             <mat-form-field appearance="outline" class="full-width input">
                                 <mat-label>Numero de factura</mat-label>
-                                <input matInput type="text" [(ngModel)]="compra.numFactura" name="numFactura" #numFactura="ngModel" required>
-                                <mat-error *ngIf="(numFactura.invalid && (numFactura.dirty || numFactura.touched) && numFactura.errors.required)">
+                                <input matInput type="text" [(ngModel)]="compra.numFactura" name="numFactura"
+                                    #numFactura="ngModel" required>
+                                <mat-error
+                                    *ngIf="(numFactura.invalid && (numFactura.dirty || numFactura.touched) && numFactura.errors.required)">
                                     Porfavor ingresa el numero de factura
                                 </mat-error>
                             </mat-form-field>
@@ -34,35 +37,40 @@
                                 <div class="col-lg-5">
                                     <mat-form-field appearance="outline" class="full-width input">
                                         <mat-label>Enviar al almacen </mat-label>
-                                       <mat-select [(ngModel)]="compra.almacen" name="almacen" #almacen="ngModel" required>
-                                           <mat-option  *ngFor="let almacen of almacenes" [value]="almacen">
-                                               {{almacen.nombre}}
-                                           </mat-option>
-                                       </mat-select>
-                                        <mat-error *ngIf="(almacen.invalid && (almacen.dirty || almacen.touched) && almacen.errors.required)">
+                                        <mat-select [(ngModel)]="compra.almacen" name="almacen" #almacen="ngModel"
+                                            required>
+                                            <mat-option *ngFor="let almacen of almacenes" [value]="almacen">
+                                                {{almacen.nombre}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error
+                                            *ngIf="(almacen.invalid && (almacen.dirty || almacen.touched) && almacen.errors.required)">
                                             Porfavor ingresa el almacen destino
                                         </mat-error>
                                     </mat-form-field>
-                                
+
                                 </div>
                                 <div class="col-lg-4">
                                     <mat-form-field appearance="outline" class="full-width input">
                                         <mat-label>Metodo de pago</mat-label>
-                                        <mat-select [(ngModel)]="compra.metodoPago" name="metodoPago" #metodoPago="ngModel" required>
-                                          <mat-option value="Efectivo">
-                                            Efectivo
-                                          </mat-option>
-                                          <mat-option value="Tarjeta">
-                                            Tarjeta
-                                          </mat-option>
+                                        <mat-select [(ngModel)]="compra.metodoPago" name="metodoPago"
+                                            #metodoPago="ngModel" required>
+                                            <mat-option value="Efectivo">
+                                                Efectivo
+                                            </mat-option>
+                                            <mat-option value="Tarjeta">
+                                                Tarjeta
+                                            </mat-option>
                                         </mat-select>
-                                        <mat-error *ngIf="(metodoPago.invalid && (metodoPago.dirty || metodoPago.touched) && metodoPago.errors.required)">
+                                        <mat-error
+                                            *ngIf="(metodoPago.invalid && (metodoPago.dirty || metodoPago.touched) && metodoPago.errors.required)">
                                             Porfavor ingresa el metodo de pago
                                         </mat-error>
-                                      </mat-form-field>
+                                    </mat-form-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <button mat-raised-button class="mr-auto p-2" (click)="seleccionarOrdenDeCompra()" color="primary">Ordenes de compra</button>
+                                    <button mat-raised-button class="mr-auto p-2" (click)="seleccionarOrdenDeCompra()"
+                                        color="primary">Ordenes de compra</button>
                                 </div>
                             </div>
                         </div>
@@ -70,7 +78,8 @@
                             <div class="row">
                                 <div class="col-lg-6 ml-auto">
                                     <button class="full-width  p-2" mat-raised-button mat-button color="primary"
-                                        (click)="buscarProductosProveedor()" [disabled]="!proveedorSeleccionado()">
+                                        (click)="buscarProductosProveedor()"
+                                        [disabled]="!proveedorSeleccionado() || ordenDeCompraSeleccionada">
                                         <mat-icon>search</mat-icon>
                                         Buscar productos por proveedor
                                     </button>
@@ -78,10 +87,19 @@
                                 <div class="col-lg-6 mr-auto">
                                     <button class="full-width p-2" mat-raised-button mat-button
                                         (click)="importarTodosLosProductos()" color="primary"
-                                        [disabled]="!proveedorSeleccionado()">
+                                        [disabled]="!proveedorSeleccionado() || ordenDeCompraSeleccionada">
                                         <mat-icon></mat-icon>
                                         Importar todos los productos
                                     </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 mt-4">
+                                    <div *ngIf="ordenDeCompraSeleccionada"
+                                        class="alert alert-info alerta-info sin-borde" role="alert">
+                                        Compra generada a traves de orden de compra. Para agregar mas productos haz clic
+                                        en <strong (click)="resetearFormulario()" class="deshacer">deshacer</strong>.
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -119,22 +137,29 @@
                             </mat-form-field>
                         </div>
                     </div>-->
-                </div>
+                </form>
                 <div class="col-lg-4">
                     <div class="row">
                         <div class="col-lg-12 mb-2">
                             <div class="card">
                                 <div class="card-body">
-                                    <span>Subtotal: ${{calcularSubtotalCompra()}}</span>
+                                    <div class="d-flex">
+                                        <span class="mr-auto p-2">Subtotal: ${{calcularSubtotalCompra()}}</span>
+                                        <span class="p-2" *ngIf="compra.costoEnvio">Costo de envio:
+                                            ${{compra.costoEnvio}}</span>
+                                    </div>
                                     <hr>
                                     <div class="d-flex">
                                         <span class="mr-auto p-2">Total: ${{calcularTotalCompra()}}</span>
-                                        <mat-checkbox class=" p-2" [(ngModel)]="iva">Agregar iva</mat-checkbox>
+                                        <mat-checkbox class="p-2" [(ngModel)]="iva"
+                                            [disabled]="ordenDeCompraSeleccionada">Agregar iva</mat-checkbox>
                                     </div>
                                     <hr>
                                     <div class="d-flex">
                                         <button mat-raised-button class="mr-auto p-2" color="primary"
-                                            (click)="generarCompra()">Generar compra</button>
+                                            (click)="generarCompra()"
+                                            [disabled]="!compraForm.valid || !existenProductosEnCompra()">Generar
+                                            compra</button>
                                         <button mat-raised-button class="p-2" color="warn"
                                             (click)="resetearFormulario()">Limpiar formulario</button>
                                     </div>
@@ -171,12 +196,13 @@
                 <div class="col-lg-2 centrado">
                     <mat-form-field appearance="outline" class="full-width input">
                         <mat-label>Cantidad</mat-label>
-                        <input matInput type="number" [(ngModel)]="insumoCompra.cantidad" [disabled]="!proveedorSeleccionado()">
+                        <input matInput type="number" [(ngModel)]="insumoCompra.cantidad"
+                            [disabled]="!proveedorSeleccionado()">
                     </mat-form-field>
                 </div>
                 <div class="col-lg-2 agregar centrado">
                     <button mat-raised-button mat-button class="btn-agregar mt-1" color="primary"
-                        (click)="agregarProducto()" [disabled]="!proveedorSeleccionado()">
+                        (click)="agregarProducto()" [disabled]="!proveedorSeleccionado() || ordenDeCompraSeleccionada">
                         <mat-icon>add</mat-icon>
                         Agregar
                     </button>

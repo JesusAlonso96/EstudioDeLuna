@@ -20,6 +20,8 @@ import { IVenta, Venta } from '../modelos/venta.model';
 import * as Socket from '../sockets/socket';
 import nodemailer from 'nodemailer';
 import { OrdenCompra, IOrdenCompra } from '../modelos/orden_compra.model';
+import { Compra } from '../modelos/compra.model';
+import { Almacen, IAlmacen } from '../modelos/almacen.model';
 
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -514,7 +516,47 @@ export let nuevaOrdenCompra = (req: Request, res: Response) => {
         return res.status(200).json(ordenGuardada);
     })
 }
-
+export let registrarCompra = (req: Request, res: Response) => {
+    const compra = new Compra(req.body);
+    let agregar: boolean = true;
+    let productosAlmacen: Array<any> = [];
+    Almacen.findById(compra.almacen._id)
+        .populate('insumos.insumo')
+        .exec((err: NativeError, almacen: IAlmacen) => {
+            if (err) return res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
+            if (almacen.insumos.length > 0) {
+                for (let i = 0; i < compra.insumosCompra.length; i++) {
+                    for (let j = 0; j < almacen.insumos.length; j++) {
+                        if (Types.ObjectId(compra.insumosCompra[i].insumo._id).equals(almacen.insumos[j].insumo._id)) {
+                            if (agregar) {
+                                almacen.insumos[j].existencia = almacen.insumos[j].existencia + compra.insumosCompra[i].cantidad;
+                                agregar = true;
+                            }
+                        } else {
+                            almacen.insumos.push({
+                                insumo: compra.insumosCompra[i].insumo,
+                                existencia: compra.insumosCompra[i].cantidad
+                            })
+                            agregar = false;
+                        }
+                    }
+                }
+            } else {
+                for (let i = 0; i < compra.insumosCompra.length; i++) {
+                    almacen.insumos.push({
+                        insumo: compra.insumosCompra[i].insumo,
+                        existencia: compra.insumosCompra[i].cantidad
+                    })
+                }
+            }
+            Almacen.findByIdAndUpdate(almacen._id, {
+                insumos: almacen.insumos
+            }).exec((err: NativeError, almacen: IAlmacen) => {
+                if (err) return res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
+                return res.json(almacen)
+            });
+        })
+}
 /* Middlewares */
 export let autenticacionMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;

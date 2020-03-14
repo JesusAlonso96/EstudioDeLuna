@@ -99,7 +99,7 @@ export class ProveedoresEditarProductoComponent implements OnInit {
   }
   //editar producto
   abrirEditarProducto(producto: ProductoProveedor) {
-    const productoAux: ProductoProveedor = ProductoProveedor.prototype.nuevoProducto(producto._id, producto.id, producto.codigoBarras, producto.nombre, producto.costo, producto.proveedor, producto.detalles, producto.existencias, producto.activo);
+    const productoAux: ProductoProveedor = ProductoProveedor.prototype.nuevoProducto(producto._id, producto.id, producto.codigoBarras, producto.nombre, producto.costo, producto.proveedor, producto.detalles, producto.activo);
     const dialogRef = this.dialog.open(EditarProductoProveedorComponent, {
       data: productoAux
     })

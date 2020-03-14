@@ -16,14 +16,13 @@ export class ProductoProveedor {
     costo: number;
     proveedor: Proveedor;
     detalles: string;
-    existencias: number;
     almacen: Almacen;
     historialMov: HistorialMov[];
     //traspasos
     activo: number;
     constructor() { }
 
-    nuevoProducto(_id: string, id: number, codigoBarras: string, nombre: string, costo: number, proveedor: any, detalles: string, existencias: number, activo: number) {
+    nuevoProducto(_id: string, id: number, codigoBarras: string, nombre: string, costo: number, proveedor: any, detalles: string, activo: number) {
         let nuevoProducto = new ProductoProveedor();
         nuevoProducto._id = _id;
         nuevoProducto.id = id;
@@ -32,7 +31,6 @@ export class ProductoProveedor {
         nuevoProducto.costo = costo;
         nuevoProducto.proveedor = proveedor;
         nuevoProducto.detalles = detalles;
-        nuevoProducto.existencias = existencias;
         nuevoProducto.activo = activo;
         return nuevoProducto;
     }

@@ -142,7 +142,6 @@ export class GenerarOrdenCompraComponent implements OnInit {
     this.cargando = true;
     this.usuarioService.agregarOrdenCompra(ordenCompra).subscribe(
       (ordenGuardada: OrdenCompra) => {
-        console.log(ordenGuardada);
         this.cargando = false;
         this.toastr.success('Se ha creado exitosamente la orden de compra', 'Orden de compra creada', { closeButton: true });
         this.resetearFormulario();

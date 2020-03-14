@@ -9,12 +9,16 @@ class Direccion {
     estado: string;
     constructor() { }
 }
+export class InsumoAlmacen {
+    insumo: ProductoProveedor;
+    existencia: number;
+}
 export class Almacen {
     _id: string;
     id: number;
     nombre: string;
     direccion: Direccion = new Direccion();
-    insumos: ProductoProveedor[];
+    insumos: InsumoAlmacen[];
     constructor() { }
     nuevoAlmacen(_id: string, id: number, nombre: string, calle: string, colonia: string, num_ext: number, num_int: number, cp: number, ciudad: string, estado: string) {
         let nuevoAlmacen = new Almacen();

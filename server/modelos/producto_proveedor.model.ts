@@ -3,6 +3,7 @@ import autoIncrement from 'mongoose-auto-increment';
 import { environment } from '../global/environment';
 import { IAlmacen } from './almacen.model';
 import { IProveedor } from './proveedor.model';
+import { IUsuario } from './usuario.model';
 
 
 mongoose.set('useUnifiedTopology', true);
@@ -16,8 +17,15 @@ export interface IProductoProveedor extends Document {
     costo: number;
     proveedor: IProveedor['_id'];
     detalles: string;
-    existencias: number;
     almacen: IAlmacen['_id'];
+    historialMov: [
+        {
+            fecha: Date;
+            numFactura: Number;
+            usuario: IUsuario['_id'];
+            tipo: String;
+        }
+    ];
     activo: number;
 }
 const productoProveedorSchema = new Schema({
