@@ -551,6 +551,8 @@ exports.obtenerCotizaciones = (req, res) => {
 exports.obtenerOrdenesCompra = (req, res) => {
     orden_compra_model_1.OrdenCompra.find({ activa: true })
         .populate('usuario')
+        .populate('proveedor')
+        .populate('productosOrdenCompra.insumo')
         .exec((err, ordenes) => {
         if (err)
             return res.status(422).send({ titulo: 'Error al obtener ordenes', detalles: 'Ocurrio un error al obtener las ordenes de compra, intentalo de nuevo mas tarde' });

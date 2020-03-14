@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Productos</h2>
+<div mat-dialog-content>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12" *ngFor="let producto of productos">
+                <div class="card mb-4 sin-borde">
+                    <div class="card-body">
+                      <h4 class="card-title">Producto {{producto.insumo.nombre}}</h4>
+                      <p class="card-text">{{producto.insumo.detalles}}, ${{producto.insumo.costo}} MXN. Cantidad: {{producto.cantidadOrden}}</p>
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-raised-button (click)="onNoClick()">Cerrar</button>
+</div>

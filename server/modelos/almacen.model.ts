@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Types } from 'mongoose';
 import { IProductoProveedor } from './producto_proveedor.model';
 import autoIncrement from 'mongoose-auto-increment';
 import { environment } from '../global/environment';
+import { ISucursal } from './sucursal.model';
 
 mongoose.set('useUnifiedTopology', true);
 var conexion = mongoose.createConnection(environment.DB_URL, { useNewUrlParser: true });
@@ -19,6 +20,7 @@ export interface IAlmacen extends Document {
         estado: string;
     }
     insumos: Types.Array<IProductoProveedor>;
+    sucursal: ISucursal['_id'];
     fechaRegistro: Date;
     activo: boolean;
 }
@@ -38,6 +40,7 @@ const almacenSchema = new Schema({
         }
     },
     insumos: [{ type: Schema.Types.ObjectId, ref: 'ProductoProveedor' }],
+    sucursal: {type: Schema.Types.ObjectId, ref: 'Sucursal'},
     fechaRegistro: { type: Date, required: false, default: new Date(Date.now()) },
     activo: { type: Boolean, required: true, default: true }
 });

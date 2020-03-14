@@ -20,7 +20,7 @@ rutasUsuario.get('/obtenerProductosProveedor/:id', UsuarioCtrl.autenticacionMidd
 rutasUsuario.get('/obtenerEmpresas', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerEmpresas);
 rutasUsuario.get('/obtenerDatosEstudio', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.obtenerDatosEstudio);
 rutasUsuario.get('/obtenerCotizaciones', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerCotizaciones);
-rutasUsuario.get('/ordenCompra', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerOrdenesCompra);
+rutasUsuario.get('/ordenesCompra', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerOrdenesCompra);
 //post
 rutasUsuario.post('/login', UsuarioCtrl.login);
 rutasUsuario.post('/crearAsistencia/:id', UsuarioCtrl.crearAsistencia);

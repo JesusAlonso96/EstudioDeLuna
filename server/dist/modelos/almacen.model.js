@@ -31,6 +31,7 @@ const almacenSchema = new mongoose_1.Schema({
         }
     },
     insumos: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'ProductoProveedor' }],
+    sucursal: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal' },
     fechaRegistro: { type: Date, required: false, default: new Date(Date.now()) },
     activo: { type: Boolean, required: true, default: true }
 });

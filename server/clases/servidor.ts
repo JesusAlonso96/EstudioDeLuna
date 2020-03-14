@@ -12,6 +12,9 @@ import rutasUsuario from '../rutas/usuario';
 import rutasDatos from '../rutas/datos_estudio';
 import * as Socket from '../sockets/socket';
 import rutasAlmacen from '../rutas/almacen';
+import { Usuario } from '../modelos/usuario.model';
+import { Estado } from '../modelos/estado.model';
+import { Municipio } from '../modelos/municipio.model';
 
 export default class Servidor {
     private static _instance: Servidor;
@@ -57,6 +60,7 @@ export default class Servidor {
         this.app.use('/api/v1/almacenes', rutasAlmacen);
     }
     iniciar() {
+       
         this.inicializarRutas();
         const appPath = path.join(__dirname, '../../../', 'dist/cliente');
         this.app.use(express.static(appPath));

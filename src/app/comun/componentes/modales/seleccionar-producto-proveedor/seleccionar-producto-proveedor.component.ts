@@ -14,7 +14,6 @@ export class SeleccionarProductoProveedorComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public productos: ProductoOrdenCompra[]) { }
 
   ngOnInit() {
-    console.log(this.productos)
   }
   agregarCantidadProducto(producto: ProductoOrdenCompra) {
     producto.cantidadOrden += 1;

@@ -499,6 +499,8 @@ export let obtenerCotizaciones = (req: Request, res: Response) => {
 export let obtenerOrdenesCompra = (req: Request, res: Response) => {
     OrdenCompra.find({ activa: true })
         .populate('usuario')
+        .populate('proveedor')
+        .populate('productosOrdenCompra.insumo')
         .exec((err: NativeError, ordenes: IOrdenCompra[]) => {
             if (err) return res.status(422).send({ titulo: 'Error al obtener ordenes', detalles: 'Ocurrio un error al obtener las ordenes de compra, intentalo de nuevo mas tarde' });
             return res.status(200).json(ordenes);

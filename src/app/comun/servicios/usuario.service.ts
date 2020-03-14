@@ -93,6 +93,9 @@ export class UsuarioService {
     public obtenerPestanas(rol: string): Observable<any> {
         return this.http.get(`/api/v1/usuarios/obtenerPestanas/${rol}`)
     }
+    public obtenerOrdenesCompra(): Observable<any>{
+        return this.http.get('/api/v1/usuarios/ordenesCompra');
+    }
     //patch
     public actualizarProducto(producto: Producto): Observable<any> {
         return this.http.patch('/api/v1/usuarios/actualizarProducto', producto);

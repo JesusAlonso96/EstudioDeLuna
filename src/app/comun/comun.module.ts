@@ -40,6 +40,9 @@ import { EditarEmpresaComponent } from './componentes/modales/editar-empresa/edi
 import { VerCotizacionComponent } from './componentes/modales/ver-cotizacion/ver-cotizacion.component';
 import { BuscadorComponent } from './componentes/buscador/buscador.component';
 import { SeleccionarProductoProveedorComponent } from './componentes/modales/seleccionar-producto-proveedor/seleccionar-producto-proveedor.component';
+import { SeleccionarInsumoCompraComponent } from './componentes/modales/seleccionar-insumo-compra/seleccionar-insumo-compra.component';
+import { SeleccionarOrdenDeCompraComponent } from './componentes/modales/seleccionar-orden-de-compra/seleccionar-orden-de-compra.component';
+import { VerInsumosOrdenDeCompraComponent } from './componentes/modales/ver-insumos-orden-de-compra/ver-insumos-orden-de-compra.component';
 
 //modulos
 import { MaterialModule } from './material.module';
@@ -103,7 +106,10 @@ import { EditarAlmacenComponent } from './componentes/modales/editar-almacen/edi
         EditarEmpresaComponent,
         VerCotizacionComponent,
         BuscadorComponent,
-        SeleccionarProductoProveedorComponent
+        SeleccionarProductoProveedorComponent,
+        SeleccionarInsumoCompraComponent,
+        SeleccionarOrdenDeCompraComponent,
+        VerInsumosOrdenDeCompraComponent
     ],
     imports: [
         CommonModule,
@@ -158,7 +164,10 @@ import { EditarAlmacenComponent } from './componentes/modales/editar-almacen/edi
         VerCotizacionComponent,
         AltaAlmacenComponent,
         EditarAlmacenComponent,
-        SeleccionarProductoProveedorComponent
+        SeleccionarProductoProveedorComponent,
+        SeleccionarInsumoCompraComponent,
+        SeleccionarOrdenDeCompraComponent,
+        VerInsumosOrdenDeCompraComponent
     ],
     providers: [
         EstadosService,

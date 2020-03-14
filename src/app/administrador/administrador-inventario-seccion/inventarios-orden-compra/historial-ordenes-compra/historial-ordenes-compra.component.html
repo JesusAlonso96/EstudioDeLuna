@@ -1,1 +1,52 @@
-<p>historial-ordenes-compra works!</p>
+<div class="container-fluid mt-4 mb-4">
+    <div class="row" *ngIf="ordenes.length == 0">
+        <div class="col-lg-12">
+            <div class="alert alerta-info sin-borde" role="alert">
+                No existen <a class="alert-link">ordenes de compra realizadas</a> realizados hasta el momento.
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="ordenes.length > 0">
+        <div class="col-lg-12">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h4>Historial</h4>
+                        <ul class="timeline">
+                            <li *ngFor="let orden of ordenes; let i=index">
+                                <a href=""></a>
+                                <a href="" class="float-right">Proveedor {{orden.proveedor.nombre}}</a>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6">
+                                            <h6>Orden de compra {{orden.id}} </h6>
+                                            <span>Subtotal: ${{orden.subtotal}}</span> <br>
+                                            <span *ngIf="orden.costoEnvio">Costo de envio: ${{orden.costoEnvio}}</span>
+                                            <br *ngIf="orden.costoEnvio">
+                                            <span>IVA: ${{orden.iva}}</span> <br>
+                                            <span>Total: ${{orden.total}}</span> <br>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <h6>Fechas</h6>
+                                            <span>Entrega: {{orden.fechaEntrega | formatoFecha:1}}</span> <br>
+                                            <span>Pedido: {{orden.fechaPedido | formatoFecha:1}}</span> <br>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <h6>Ver productos</h6>
+                                            <button mat-raised-button color="primary">Ver </button>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <h6>Hecha por</h6>
+                                            <span>{{orden.usuario.nombre}} {{orden.usuario.ape_pat}}
+                                                {{orden.usuario.ape_mat}}</span><br>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
