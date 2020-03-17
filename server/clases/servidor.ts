@@ -15,6 +15,7 @@ import rutasAlmacen from '../rutas/almacen';
 import { Usuario } from '../modelos/usuario.model';
 import { Estado } from '../modelos/estado.model';
 import { Municipio } from '../modelos/municipio.model';
+import rutasRoot from '../rutas/root';
 
 export default class Servidor {
     private static _instance: Servidor;
@@ -58,6 +59,7 @@ export default class Servidor {
         this.app.use('/api/v1/empleados', rutasEmpleado);
         this.app.use('/api/v1/datos', rutasDatos);
         this.app.use('/api/v1/almacenes', rutasAlmacen);
+        this.app.use('/api/v2/root', rutasRoot);
     }
     iniciar() {
        

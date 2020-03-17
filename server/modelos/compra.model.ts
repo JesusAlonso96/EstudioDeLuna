@@ -22,14 +22,14 @@ export interface ICompra extends Document {
     subtotal: number;
     iva: number;
     costoEnvio: number;
-    metodoPago: number;
+    metodoPago: string;
     total: number;
     sucursal: ISucursal['_id'];
 }
 
 const compraSchema = new Schema({
     id: { type: Number, required: false },
-    fecha: { type: Date, required: false },
+    fecha: { type: Date, required: false, default: new Date(Date.now()) },
     usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' },
     proveedor: { type: Schema.Types.ObjectId, ref: 'Proveedor' },
     almacen: { type: Schema.Types.ObjectId, ref: 'Almancen' },
@@ -46,7 +46,7 @@ const compraSchema = new Schema({
     subtotal: { type: Number, required: true },
     iva: { type: Number, required: true },
     costoEnvio: { type: Number, required: true },
-    metodoPago: { type: Number, required: false },
+    metodoPago: { type: String, required: false },
     total: { type: Number, required: true },
     sucursal: { type: Schema.Types.ObjectId, ref: 'Sucursal' }
 });

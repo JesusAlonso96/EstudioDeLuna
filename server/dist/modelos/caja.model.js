@@ -20,6 +20,8 @@ const CajaSchema = new mongoose_1.Schema({
                 usuario: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Usuario' },
                 tipo: { type: String, required: true },
                 descripcion: { type: String, required: true },
+                cantidadSalida: { type: Number, required: false },
+                cantidadEntrada: { type: Number, required: false },
                 sucursal: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal' }
             }
         ]

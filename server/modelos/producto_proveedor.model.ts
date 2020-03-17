@@ -24,6 +24,7 @@ export interface IProductoProveedor extends Document {
             numFactura: Number;
             usuario: IUsuario['_id'];
             tipo: String;
+            cantidadMovimiento: Number;
         }
     ];
     activo: number;
@@ -40,10 +41,11 @@ const productoProveedorSchema = new Schema({
     historialMov: {
         type: [
             {
-                fecha: { type: Date, required: false },
+                fecha: { type: Date, required: false, default: new Date(Date.now()) },
                 numFactura: { type: Number, required: false },
                 usuario: { type: Schema.Types.ObjectId, ref: 'Usuario', required: true },
-                tipo: { type: String, required: true }
+                tipo: { type: String, required: true },
+                cantidadMovimiento: {type: Number, required:false}
             }
         ]
     },

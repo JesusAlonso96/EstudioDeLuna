@@ -4,6 +4,7 @@ import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Servidor from './clases/servidor';
 import { environment } from './global/environment';
+import {Usuario} from './modelos/usuario.model';
 
 const servidor = Servidor.instance;
 

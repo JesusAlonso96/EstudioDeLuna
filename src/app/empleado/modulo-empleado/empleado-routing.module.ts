@@ -18,26 +18,21 @@ import { EmpleadoPuntoVentaComponent } from '../empleado-punto-venta/empleado-pu
 
 
 
-const routes: Routes = [
-    {
-        path: 'usuario',
-        component: EmpleadoComponent,
-        canActivate: [AutenticacionGuard],
-        children: [
-            { path: 'perfil', component: EmpleadoPerfilComponent },
-            { path: 'dashboard', component: EmpleadoDashboardFotografoComponent},
-            { path: 'registrar', component: RegistroUsuarioComponent },
-            { path: 'nuevaVenta', component: EmpleadoVentaComponent },
-            { path: 'pedidos-realizados', component: EmpleadoPedidosRealizadosComponent },
-            { path: 'pedidos-proceso', component:EmpleadoPedidosProcesoComponent},
-            { path: 'pedidos-cola', component: EmpleadoPedidosColaComponent},
-            { path: 'pedidos', component: EmpleadoPedidosComponent},
-            { path: 'punto-venta', component: EmpleadoPuntoVentaComponent}
-        ]
-    }
+export const empleadoRoutes: Routes = [
+    { path: 'perfil', component: EmpleadoPerfilComponent },
+    { path: 'dashboard', component: EmpleadoDashboardFotografoComponent },
+    { path: 'registrar', component: RegistroUsuarioComponent },
+    { path: 'nuevaVenta', component: EmpleadoVentaComponent },
+    { path: 'pedidos-realizados', component: EmpleadoPedidosRealizadosComponent },
+    { path: 'pedidos-proceso', component: EmpleadoPedidosProcesoComponent },
+    { path: 'pedidos-cola', component: EmpleadoPedidosColaComponent },
+    { path: 'pedidos', component: EmpleadoPedidosComponent },
+    { path: 'punto-venta', component: EmpleadoPuntoVentaComponent }
+
+
 ]
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
+    imports: [RouterModule.forRoot(empleadoRoutes)],
     exports: [RouterModule]
 })
 export class EmpleadoRoutingModule { }

@@ -9,7 +9,7 @@ import { ProductoProveedor } from 'src/app/comun/modelos/producto_proveedor.mode
 import { AlmacenService } from 'src/app/comun/servicios/almacen.service';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { SeleccionarOrdenDeCompraComponent } from 'src/app/comun/componentes/modales/seleccionar-orden-de-compra/seleccionar-orden-de-compra.component';
-import { ProductoOrdenCompra } from 'src/app/comun/modelos/orden_compra.model';
+import { ProductoOrdenCompra, OrdenCompra } from 'src/app/comun/modelos/orden_compra.model';
 
 @Component({
   selector: 'app-inventarios-compra',
@@ -21,6 +21,7 @@ export class InventariosCompraComponent implements OnInit {
   iva: boolean = false;
   idBusqueda: number;
   nombreProductoSeleccionado: string;
+  idOrdenCompra: string = '';
   compra: Compra = new Compra();
   insumoCompra: InsumoCompra = new InsumoCompra();
   productos: ProductoProveedor[] = [];
@@ -74,6 +75,7 @@ export class InventariosCompraComponent implements OnInit {
     const dialogRef = this.dialog.open(SeleccionarOrdenDeCompraComponent);
     dialogRef.afterClosed().subscribe(ordenDeCompra => {
       if (ordenDeCompra) {
+        this.idOrdenCompra = ordenDeCompra._id;
         if (ordenDeCompra.costoEnvio) {
           this.compra.costoEnvio = ordenDeCompra.costoEnvio;
         }
@@ -121,12 +123,28 @@ export class InventariosCompraComponent implements OnInit {
     this.ordenDeCompraSeleccionada = false;
   }
   generarCompra() {
-    console.log(this.compra);
+    this.compra.subtotal = this.calcularSubtotalCompra();
+    this.compra.total = this.calcularTotalCompra();
     this.cargando = true;
+    console.log(this.compra);
     this.usuarioService.generarCompra(this.compra).subscribe(
       (compraGuardada: any) => {
         console.log(compraGuardada)
         this.cargando = false;
+        if (this.idOrdenCompra !== '') {
+          this.cargando = true;
+          this.usuarioService.desactivarOrdenCompra(this.idOrdenCompra).subscribe(
+            (desactivada: OrdenCompra) => {
+              this.cargando = false;
+              this.toastr.info('La orden de compra no puede volver a usarse', 'Se ha desactivado la orden de compra', { closeButton: true });
+            },
+            (err: any) => {
+              this.cargando = false;
+              this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+            }
+          );
+        }
+
         this.toastr.success('Se ha registrado exitosamente la compra, los productos se han agregado al almacen', 'Compra registrada', { closeButton: true });
         this.resetearFormulario();
       },

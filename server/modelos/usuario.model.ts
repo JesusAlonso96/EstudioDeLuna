@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import express from 'express';
 import { IAsistencia } from './asistencia.model';
 import { IPedido } from './pedido.model';
+import { ISucursal } from './sucursal.model';
 
 export interface IUsuario extends Document {
     nombre: string;
@@ -17,6 +18,7 @@ export interface IUsuario extends Document {
     ocupado: boolean;
     asistencia: Types.Array<IAsistencia>;
     pedidosTomados: Types.Array<IPedido>;
+    sucursal: ISucursal['_id'];
     codigoRecuperacion: string;
     activo: number;
 }
@@ -33,6 +35,7 @@ const usuarioSchema = new Schema({
     ocupado: { type: Boolean, required: false, default: false },
     asistencia: [{ type: Schema.Types.ObjectId, ref: 'Asistencia', default: [] }],
     pedidosTomados: [{ type: Schema.Types.ObjectId, ref: 'Pedido', default: [] }],
+    sucursal: [{ type: Schema.Types.ObjectId, ref: 'Sucursal' }],
     codigoRecuperacion: { type: String, required: false, default: '' },
     activo: { type: Number, default: 1 }
 });

@@ -66,6 +66,9 @@ export class ServicioAutenticacionService {
         //Administrador
         this.rutas.navigate(['/admin/dashboard']);
         break;
+      case 3:
+        this.rutas.navigate(['/root/dashboard']);
+        break;
     }
   }
   public getIdUsuario(): any{

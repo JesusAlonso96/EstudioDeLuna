@@ -4,16 +4,33 @@ import { IAlmacen } from './almacen.model';
 
 export interface ISucursal extends Document {
     nombre: string;
-    direccion: string;
-    almacen: IAlmacen['_id'];
-    activa: number;
+    direccion: {
+        calle: string;
+        colonia: string;
+        num_ext: number;
+        num_int: number;
+        cp: number;
+        ciudad: string;
+        estado: string;
+    }
+    activa: boolean;
+    
 }
 
 const sucursalSchema = new Schema({
     nombre: { type: String, required: true },
-    direccion: { type: String, required: true },
-    almacen: { type: Schema.Types.ObjectId, ref: 'Almacen' },
-    activa: { type: Boolean, required: true, default: 1 }
+    direccion: {
+        type: {
+            calle: { type: String, required: true },
+            colonia: { type: String, required: true },
+            num_ext: { type: Number, required: true },
+            num_int: { type: Number, required: false },
+            cp: { type: Number, required: true },
+            ciudad: { type: String, required: true },
+            estado: { type: String, required: true }
+        }
+    },
+    activa: { type: Boolean, required: true, default: 1 },
 });
 
 export const Sucursal = mongoose.model<ISucursal>('Sucursal', sucursalSchema);

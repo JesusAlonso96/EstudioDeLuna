@@ -24,6 +24,7 @@ const usuario_1 = __importDefault(require("../rutas/usuario"));
 const datos_estudio_1 = __importDefault(require("../rutas/datos_estudio"));
 const Socket = __importStar(require("../sockets/socket"));
 const almacen_1 = __importDefault(require("../rutas/almacen"));
+const root_1 = __importDefault(require("../rutas/root"));
 class Servidor {
     constructor() {
         this.app = express_1.default();
@@ -58,6 +59,7 @@ class Servidor {
         this.app.use('/api/v1/empleados', empleado_1.default);
         this.app.use('/api/v1/datos', datos_estudio_1.default);
         this.app.use('/api/v1/almacenes', almacen_1.default);
+        this.app.use('/api/v2/root', root_1.default);
     }
     iniciar() {
         this.inicializarRutas();

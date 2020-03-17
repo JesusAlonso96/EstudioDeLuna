@@ -28,10 +28,11 @@ const productoProveedorSchema = new mongoose_1.Schema({
     historialMov: {
         type: [
             {
-                fecha: { type: Date, required: false },
+                fecha: { type: Date, required: false, default: new Date(Date.now()) },
                 numFactura: { type: Number, required: false },
                 usuario: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Usuario', required: true },
-                tipo: { type: String, required: true }
+                tipo: { type: String, required: true },
+                cantidadMovimiento: { type: Number, required: false }
             }
         ]
     },

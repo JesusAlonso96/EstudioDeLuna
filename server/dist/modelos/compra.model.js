@@ -10,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const compraSchema = new mongoose_1.Schema({
     id: { type: Number, required: false },
-    fecha: { type: Date, required: false },
+    fecha: { type: Date, required: false, default: new Date(Date.now()) },
     usuario: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Usuario' },
     proveedor: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Proveedor' },
     almacen: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Almancen' },
@@ -27,7 +27,7 @@ const compraSchema = new mongoose_1.Schema({
     subtotal: { type: Number, required: true },
     iva: { type: Number, required: true },
     costoEnvio: { type: Number, required: true },
-    metodoPago: { type: Number, required: false },
+    metodoPago: { type: String, required: false },
     total: { type: Number, required: true },
     sucursal: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal' }
 });

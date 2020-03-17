@@ -14,12 +14,14 @@ import { AdministradorModule } from './administrador/modulo-administrador.module
 import { EmpleadoModule } from './empleado/modulo-empleado/modulo-empleado.module';
 import { SupervisorModule } from './supervisor/modulo-supervisor/modulo-supervisor.module';
 import { ComunModule } from './comun/comun.module';
+import { RootModule } from './root/root.module';
 import { ToastrModule } from 'ngx-toastr';
 
 //componentes
 import { LoginComponent } from './autenticacion/login/login.component';
 import { TokenInterceptor } from './autenticacion/compartido/token.interceptor';
 import { AutenticacionComponent } from './autenticacion/autenticacion.component';
+import { NavComponent } from './comun/componentes/nav/nav.component';
 
 //guardias
 import { AutenticacionGuard } from './autenticacion/compartido/autenticacion.guard';
@@ -36,6 +38,7 @@ const config: SocketIoConfig = {
   declarations: [
     AppComponent,
     LoginComponent,
+    NavComponent,
     AutenticacionComponent,
     RecuperarContrasenaComponent,
   ],
@@ -50,6 +53,7 @@ const config: SocketIoConfig = {
     AdministradorModule,
     EmpleadoModule,
     SupervisorModule,
+    RootModule,
     ComunModule,
     NgxPrintModule,
     ToastrModule.forRoot(),

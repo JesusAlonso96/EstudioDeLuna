@@ -21,7 +21,14 @@ export class LoginComponent implements OnInit {
     public wsService: WebSocketService,
     private dialog: MatDialog) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    if(this.autServicio.estaAutenticado()){
+      console.log('holaaaaa')
+      this.autServicio.redireccionarUsuario();
+    } else {
+      console.log('...')
+    }
+   }
   login() {
     this.cargando = true;
     this.autServicio.login(this.datosUsuario).subscribe(

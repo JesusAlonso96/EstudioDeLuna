@@ -33,6 +33,7 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 const orden_compra_model_1 = require("../modelos/orden_compra.model");
 const compra_model_1 = require("../modelos/compra.model");
 const almacen_model_1 = require("../modelos/almacen.model");
+const caja_model_1 = require("../modelos/caja.model");
 const transporter = nodemailer_1.default.createTransport({
     service: 'Gmail',
     secure: false,
@@ -570,10 +571,17 @@ exports.nuevaOrdenCompra = (req, res) => {
         return res.status(200).json(ordenGuardada);
     });
 };
+exports.desactivarOrdenComra = (req, res) => {
+    orden_compra_model_1.OrdenCompra.findByIdAndUpdate(req.params.id, {
+        activa: false
+    }).exec((err, ordenEliminada) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error al actualizar orden de compra', detalles: 'Ocurrio un error al desactivar la orden de compra, intentalo de nuevo mas tarde' });
+        return res.json(ordenEliminada);
+    });
+};
 exports.registrarCompra = (req, res) => {
     const compra = new compra_model_1.Compra(req.body);
-    let agregar = true;
-    let productosAlmacen = [];
     almacen_model_1.Almacen.findById(compra.almacen._id)
         .populate('insumos.insumo')
         .exec((err, almacen) => {
@@ -581,20 +589,16 @@ exports.registrarCompra = (req, res) => {
             return res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
         if (almacen.insumos.length > 0) {
             for (let i = 0; i < compra.insumosCompra.length; i++) {
-                for (let j = 0; j < almacen.insumos.length; j++) {
-                    if (mongoose_1.Types.ObjectId(compra.insumosCompra[i].insumo._id).equals(almacen.insumos[j].insumo._id)) {
-                        if (agregar) {
-                            almacen.insumos[j].existencia = almacen.insumos[j].existencia + compra.insumosCompra[i].cantidad;
-                            agregar = true;
-                        }
-                    }
-                    else {
-                        almacen.insumos.push({
-                            insumo: compra.insumosCompra[i].insumo,
-                            existencia: compra.insumosCompra[i].cantidad
-                        });
-                        agregar = false;
-                    }
+                const insumoEncontrado = almacen.insumos.find(insumo => mongoose_1.Types.ObjectId(insumo.insumo._id).equals(compra.insumosCompra[i].insumo._id));
+                if (insumoEncontrado) {
+                    const indice = almacen.insumos.indexOf(insumoEncontrado);
+                    almacen.insumos[indice].existencia = almacen.insumos[indice].existencia + compra.insumosCompra[i].cantidad;
+                }
+                else {
+                    almacen.insumos.push({
+                        insumo: compra.insumosCompra[i].insumo,
+                        existencia: compra.insumosCompra[i].cantidad
+                    });
                 }
             }
         }
@@ -609,9 +613,80 @@ exports.registrarCompra = (req, res) => {
         almacen_model_1.Almacen.findByIdAndUpdate(almacen._id, {
             insumos: almacen.insumos
         }).exec((err, almacen) => {
-            if (err)
+            if (err) {
+                console.log(err);
                 return res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
-            return res.json(almacen);
+            }
+            const historialEgreso = {
+                usuario: res.locals.usuario,
+                tipo: 'Salida',
+                descripcion: 'Se realizo una compra a proveedor',
+                cantidadSalida: compra.total,
+                cantidadEntrada: 0
+            };
+            caja_model_1.Caja.findOne().exec((err, caja) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
+                }
+                let cajaCantidad = 0;
+                let cajaEfectivo = 0;
+                let cajaTarjetas = 0;
+                if (compra.metodoPago === 'Efectivo') {
+                    if (compra.total > caja.cantidadEfectivo)
+                        return res.status(422).send({ titulo: 'No se puede registrar la compra', detalles: 'No existen fondos suficientes en caja para realizar la compra' });
+                    cajaCantidad = caja.cantidadTotal - compra.total;
+                    cajaEfectivo = caja.cantidadEfectivo - compra.total;
+                    cajaTarjetas = caja.cantidadTarjetas;
+                }
+                if (compra.metodoPago === 'Tarjeta') {
+                    if (compra.total > caja.cantidadTarjetas)
+                        return res.status(422).send({ titulo: 'No se puede registrar la compra', detalles: 'No existen fondos suficientes en caja para realizar la compra' });
+                    cajaCantidad = caja.cantidadTotal - compra.total;
+                    cajaTarjetas = caja.cantidadTarjetas - compra.total;
+                    cajaEfectivo = caja.cantidadEfectivo;
+                }
+                caja_model_1.Caja.updateOne({ _id: caja._id }, {
+                    cantidadTotal: cajaCantidad,
+                    cantidadEfectivo: cajaEfectivo,
+                    cantidadTarjetas: cajaTarjetas,
+                    $push: {
+                        historialEgresosIngresos: historialEgreso
+                    }
+                }).exec((err, actualizada) => {
+                    if (err) {
+                        console.log(err);
+                        return res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
+                    }
+                    if (!actualizada)
+                        res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al actualizar la caja, intentalo de nuevo mas tarde' });
+                    else {
+                        for (let producto of compra.insumosCompra) {
+                            producto_proveedor_model_1.ProductoProveedor.findByIdAndUpdate(producto.insumo._id, {
+                                $push: {
+                                    historialMov: {
+                                        numFactura: compra.numFactura,
+                                        usuario: res.locals.usuario,
+                                        tipo: 'Ingreso',
+                                        cantidadMovimiento: producto.cantidad
+                                    }
+                                }
+                            }).exec((err, producto) => {
+                                if (err)
+                                    res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
+                                if (!producto)
+                                    res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
+                            });
+                        }
+                        compra.usuario = res.locals.usuario;
+                        compra.save((err, compra) => {
+                            if (err)
+                                res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
+                            return res.json(compra);
+                        });
+                    }
+                });
+            });
         });
     });
 };

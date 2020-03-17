@@ -48,4 +48,5 @@ rutasUsuario.patch('/actualizarEmpresa', UsuarioCtrl.autenticacionMiddleware, Us
 rutasUsuario.patch('/generarCodigoRecuperacion', UsuarioCtrl.generarCodigoRecuperacion);
 rutasUsuario.patch('/recuperarContrasena/:email', UsuarioCtrl.recuperarContrasena);
 rutasUsuario.patch('/eliminarCodigoRecuperacion', UsuarioCtrl.eliminarCodigoRecuperacion);
+rutasUsuario.patch('/ordenCompra/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.desactivarOrdenComra);
 exports.default = rutasUsuario;

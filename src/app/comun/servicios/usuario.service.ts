@@ -45,7 +45,7 @@ export class UsuarioService {
     public agregarOrdenCompra(ordenCompra: OrdenCompra): Observable<any> {
         return this.http.post('/api/v1/usuarios/ordenCompra', ordenCompra);
     }
-    public generarCompra(compra: Compra): Observable<any>{
+    public generarCompra(compra: Compra): Observable<any> {
         return this.http.post('/api/v1/usuarios/compra', compra);
     }
     //get
@@ -97,7 +97,7 @@ export class UsuarioService {
     public obtenerPestanas(rol: string): Observable<any> {
         return this.http.get(`/api/v1/usuarios/obtenerPestanas/${rol}`)
     }
-    public obtenerOrdenesCompra(): Observable<any>{
+    public obtenerOrdenesCompra(): Observable<any> {
         return this.http.get('/api/v1/usuarios/ordenesCompra');
     }
     //patch
@@ -124,6 +124,9 @@ export class UsuarioService {
     }
     public eliminarCodigoRecuperacion(body: { email: string }): Observable<any> {
         return this.http.patch('/api/v1/usuarios/eliminarCodigoRecuperacion', body);
+    }
+    public desactivarOrdenCompra(id: string): Observable<any> {
+        return this.http.patch(`/api/v1/usuarios/ordenCompra/${id}`, null);
     }
     /* Peticiones para sockets */
     public escucharNuevoUsuario() {

@@ -1,30 +1,22 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './autenticacion/login/login.component';
-import { RecuperarContrasenaComponent } from './autenticacion/recuperar-contrasena/recuperar-contrasena.component';
 //guardias
 import { AutenticacionGuard } from './autenticacion/compartido/autenticacion.guard';
+import { AdministradorComponent } from './administrador/administrador.component';
+import { adminRoutes } from './administrador/administrador-routing.module';
+import { EmpleadoComponent } from './empleado/empleado.component';
+import { empleadoRoutes } from './empleado/modulo-empleado/empleado-routing.module';
+import { RootComponent } from './root/root.component';
+import { rootRoutes } from './root/root-routing.module';
 
 
 const routes: Routes = [
-  {
-    path: '',
-    redirectTo: '/login',
-    pathMatch: 'full'
-  },
-  //{
-    //path: '**',
-    //redirectTo: '',
-  //},
-  {
-    path: 'login',
-    component: LoginComponent,
-    canActivate: [AutenticacionGuard]
-  },
-  {
-    path:'recuperar',
-    component: RecuperarContrasenaComponent
-  }
+  {path:'', component: LoginComponent},
+  { path: 'login', component: LoginComponent },
+  { path: 'admin', component: AdministradorComponent, children: adminRoutes, canActivate: [AutenticacionGuard] },
+  { path: 'usuario', component: EmpleadoComponent, children: empleadoRoutes, canActivate: [AutenticacionGuard] },
+  { path: 'root', component: RootComponent, children: rootRoutes ,canActivate: [AutenticacionGuard] }
 ];
 
 @NgModule({

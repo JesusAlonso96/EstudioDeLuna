@@ -24,80 +24,81 @@ import { AdministradorConfiguracionSistemaComponent } from './administrador-conf
 
 
 
-const routes: Routes = [
-    {
-        path: 'admin',
-        redirectTo: 'admin/dashboard',
-        pathMatch: 'full'
-    },
-    {
-        path: 'admin',
-        component: AdministradorComponent,
-        canActivate: [AutenticacionGuard],
-        children: [
-            { path: 'dashboard', component: AdministradorTableroSeccionComponent },
-            { path: 'perfil', component: AdministradorPerfilComponent },
+export const adminRoutes: Routes = [
+    
+            { path: 'dashboard', component: AdministradorTableroSeccionComponent, canActivate: [AutenticacionGuard] },
+            { path: 'perfil', component: AdministradorPerfilComponent, canActivate: [AutenticacionGuard] },
             {
                 path: 'ventas',
                 component: AdministradorVentasSeccionComponent,
+                canActivate: [AutenticacionGuard],
                 children: [
-                    { path: 'reportes-ventas', component: AdministradorReporteVentasComponent },
+                    { path: 'reportes-ventas', component: AdministradorReporteVentasComponent, canActivate: [AutenticacionGuard] },
                 ]
             },
             {
                 path: 'compras',
-                component: AdministradorComprasSeccionComponent
+                component: AdministradorComprasSeccionComponent,
+                canActivate: [AutenticacionGuard]
             },
             {
                 path: 'clientes',
-                component: AdministradorClientesSeccionComponent
+                component: AdministradorClientesSeccionComponent,
+                canActivate: [AutenticacionGuard]
             },
             {
                 path: 'familias-productos',
-                component: FamiliasProductosSeccionComponent
+                component: FamiliasProductosSeccionComponent,
+                canActivate: [AutenticacionGuard]
             },
             {
                 path: 'productos',
-                component: ProductosSeccionComponent
+                component: ProductosSeccionComponent,
+                canActivate: [AutenticacionGuard]
             },
             {
                 path: 'usrs',
-                component: AdministradorUsuariosSeccionComponent
+                component: AdministradorUsuariosSeccionComponent,
+                canActivate: [AutenticacionGuard]
             },
             {
                 path: 'inventarios',
-                component: AdministradorInventarioSeccionComponent
+                component: AdministradorInventarioSeccionComponent,
+                canActivate: [AutenticacionGuard]
             },
             {
                 path: 'proveedores',
-                component: AdministradorProveedoresSeccionComponent
+                component: AdministradorProveedoresSeccionComponent,
+                canActivate: [AutenticacionGuard]
             },
             {
                 path: 'cotizaciones',
-                component: AdministradorCotizacionesSeccionComponent
+                component: AdministradorCotizacionesSeccionComponent,
+                canActivate: [AutenticacionGuard]
             },
             {
                 path: 'facturacion',
-                component: AdministradorFacturacionSeccionComponent
+                component: AdministradorFacturacionSeccionComponent,
+                canActivate: [AutenticacionGuard]
             },
             {
                 path: 'sucursales',
-                component: AdministradorSucursalesSeccionComponent
+                component: AdministradorSucursalesSeccionComponent,
+                canActivate: [AutenticacionGuard]
             },
             {
                 path: 'ayuda',
-                component: AdministradorAyudaSeccionComponent
+                component: AdministradorAyudaSeccionComponent,
+                canActivate: [AutenticacionGuard]
             },
             {
-                path:'configuracion',
-                component: AdministradorConfiguracionSistemaComponent
+                path: 'configuracion',
+                component: AdministradorConfiguracionSistemaComponent,
+                canActivate: [AutenticacionGuard]
             }
-        ]
-
-    }
 ]
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
+    imports: [RouterModule.forRoot(adminRoutes)],
     exports: [RouterModule]
 })
 export class AdministradorRoutingModule { }

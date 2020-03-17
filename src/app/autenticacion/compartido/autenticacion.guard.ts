@@ -23,24 +23,29 @@ export class AutenticacionGuard implements CanActivate {
 
     private loginOHomeOCuentaInvalida(): boolean {
         const usuario = this.getTipoUsuario();
+        console.log("entre al guardiaa", usuario)
         switch (usuario) {
             case 0:
-                //const trabajador = this.getTipoTrabajador();
-                //si trabajador es un fotografo no puede ver lo de recepcionista
-                if (this.url.includes('login') || this.url.includes('admin') || this.url.includes('supervisor')) {
+                if (this.url.includes('login') || this.url.includes('admin') || this.url.includes('supervisor') || this.url.includes('root')) {
                     this.router.navigate(['/usuario/dashboard']);
                     return true;
                 }
                 return false;
             case 1:
-                if (this.url.includes('login') || this.url.includes('admin') || this.url.includes('usuario')) {
+                if (this.url.includes('login') || this.url.includes('admin') || this.url.includes('usuario') || this.url.includes('root')) {
                     this.router.navigate(['/supervisor/dashboard']);
                     return true;
                 }
                 return false;
             case 2:
-                if (this.url.includes('login') || this.url.includes('supervisor') || this.url.includes('usuario')) {
+                if (this.url.includes('login') || this.url.includes('supervisor') || this.url.includes('usuario') || this.url.includes('root')) {
                     this.router.navigate(['/admin/dashboard']);
+                    return true;
+                }
+                return false;
+            case 3:
+                if (this.url.includes('login') || this.url.includes('supervisor') || this.url.includes('usuario') || this.url.includes('admin')) {
+                    this.router.navigate(['/root']);
                     return true;
                 }
                 return false;
@@ -52,7 +57,7 @@ export class AutenticacionGuard implements CanActivate {
         return false;
     }
     private noManejarAutenticacion(): boolean {
-        if (this.urlInvalida()) {
+        if (this.urlInvalida() || !this.authService.estaAutenticado()) {
             this.router.navigate(['/login']);
             return true;
         }
@@ -60,10 +65,13 @@ export class AutenticacionGuard implements CanActivate {
     }
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         this.url = state.url;
+        console.log(this.url);
         if (this.authService.estaAutenticado()) {
             return this.manejarAutenticacion();
         }
+        localStorage.removeItem('usuario_meta');
+        localStorage.removeItem('usuario_auth')
+        localStorage.removeItem('usuario-ws')
         return this.noManejarAutenticacion()
-
     }
 }
