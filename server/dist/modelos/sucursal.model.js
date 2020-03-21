@@ -21,6 +21,6 @@ const sucursalSchema = new mongoose_1.Schema({
             estado: { type: String, required: true }
         }
     },
-    activa: { type: Boolean, required: true, default: 1 },
+    activa: { type: Boolean, required: true, default: true },
 });
 exports.Sucursal = mongoose_1.default.model('Sucursal', sucursalSchema);

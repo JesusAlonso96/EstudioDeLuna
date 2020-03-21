@@ -100,6 +100,9 @@ export class UsuarioService {
     public obtenerOrdenesCompra(): Observable<any> {
         return this.http.get('/api/v1/usuarios/ordenesCompra');
     }
+    public obtenerSucursales(): Observable<any> {
+        return this.http.get('/api/v1/usuarios/sucursales');
+    }
     //patch
     public actualizarProducto(producto: Producto): Observable<any> {
         return this.http.patch('/api/v1/usuarios/actualizarProducto', producto);

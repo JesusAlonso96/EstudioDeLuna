@@ -28,7 +28,7 @@ rutasAdmin.get('/obtenerFamiliasEliminadas', UsuarioCtrl.autenticacionMiddleware
 //post
 rutasAdmin.post('/empleado', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.altaUsuario);
 rutasAdmin.post('/crearCorteCaja', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.crearCorteCaja);
-rutasAdmin.post('/registrar', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.registrarUsuario);
+rutasAdmin.post('/registrar', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminORootMiddleware, AdminCtrl.registrarUsuario);
 //patch
 rutasAdmin.patch('/actualizarCaja', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.actualizarCaja);
 rutasAdmin.patch('/cambiarPermisos', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, AdminCtrl.cambiarPermisos);

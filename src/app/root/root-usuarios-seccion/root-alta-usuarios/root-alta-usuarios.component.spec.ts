@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AgregarSucursalesComponent } from './agregar-sucursales.component';
+import { RootAltaUsuariosComponent } from './root-alta-usuarios.component';
 
-describe('AgregarSucursalesComponent', () => {
-  let component: AgregarSucursalesComponent;
-  let fixture: ComponentFixture<AgregarSucursalesComponent>;
+describe('RootAltaUsuariosComponent', () => {
+  let component: RootAltaUsuariosComponent;
+  let fixture: ComponentFixture<RootAltaUsuariosComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AgregarSucursalesComponent ]
+      declarations: [ RootAltaUsuariosComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AgregarSucursalesComponent);
+    fixture = TestBed.createComponent(RootAltaUsuariosComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

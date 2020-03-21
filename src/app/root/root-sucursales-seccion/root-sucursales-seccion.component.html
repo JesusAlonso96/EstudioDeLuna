@@ -1,1 +1,13 @@
-<p>root-sucursales-seccion works!</p>
+<app-encabezado-titulo titulo="Sucursales"></app-encabezado-titulo>
+<mat-tab-group class="root">
+    <mat-tab label="Nueva sucursal">
+        <ng-template matTabContent>
+            <app-agregar-sucursales></app-agregar-sucursales>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Asignar usuarios">
+        <ng-template matTabContent>
+            <app-asignar-usuarios-sucursales></app-asignar-usuarios-sucursales>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>

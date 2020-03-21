@@ -26,7 +26,7 @@ const compraSchema = new mongoose_1.Schema({
     },
     subtotal: { type: Number, required: true },
     iva: { type: Number, required: true },
-    costoEnvio: { type: Number, required: true },
+    costoEnvio: { type: Number, required: false },
     metodoPago: { type: String, required: false },
     total: { type: Number, required: true },
     sucursal: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal' }

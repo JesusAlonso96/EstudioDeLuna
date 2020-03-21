@@ -1,3 +1,7 @@
+@import 'variables';
 mat-toolbar{
     height: 7%;
+}
+.color-root{
+    background-color: $root;
 }

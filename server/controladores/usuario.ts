@@ -23,6 +23,7 @@ import { OrdenCompra, IOrdenCompra } from '../modelos/orden_compra.model';
 import { Compra, ICompra } from '../modelos/compra.model';
 import { Almacen, IAlmacen } from '../modelos/almacen.model';
 import { Caja, ICaja } from '../modelos/caja.model';
+import { Sucursal, ISucursal } from '../modelos/sucursal.model';
 
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -233,7 +234,7 @@ export let eliminarFamilia = (req: Request, res: Response) => {
         });
 }
 export let obtenerUsuarios = (req: Request, res: Response) => {
-    Usuario.find({ activo: 1 }, { contrasena: 0 })
+    Usuario.find({ activo: 1, sucursal: res.locals.usuario.sucursal }, { contrasena: 0 })
         .exec((err: NativeError, usuariosEncontrados: IUsuario[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los usuarios' });
             return res.json(usuariosEncontrados);
@@ -500,7 +501,7 @@ export let obtenerCotizaciones = (req: Request, res: Response) => {
 
 /* Modulo de inventarios */
 export let obtenerOrdenesCompra = (req: Request, res: Response) => {
-    OrdenCompra.find({ activa: true })
+    OrdenCompra.find({ activa: true, sucursal: res.locals.usuario.sucursal })
         .populate('usuario')
         .populate('proveedor')
         .populate('productosOrdenCompra.insumo')
@@ -511,6 +512,7 @@ export let obtenerOrdenesCompra = (req: Request, res: Response) => {
 }
 export let nuevaOrdenCompra = (req: Request, res: Response) => {
     const orden = new OrdenCompra(req.body);
+    orden.sucursal = res.locals.usuario.sucursal;
     orden.usuario = res.locals.usuario;
     orden.save((err: any, ordenGuardada: IOrdenCompra) => {
         if (err) return res.status(422).send({ titulo: 'Error al crear orden', detalles: 'Ocurrio un error al crear la orden de compra, intentalo de nuevo mas tarde' });
@@ -527,6 +529,7 @@ export let desactivarOrdenComra = (req: Request, res: Response) => {
 }
 export let registrarCompra = (req: Request, res: Response) => {
     const compra = new Compra(req.body);
+    compra.sucursal = res.locals.usuario.sucursal;
     Almacen.findById(compra.almacen._id)
         .populate('insumos.insumo')
         .exec((err: NativeError, almacen: IAlmacen) => {
@@ -616,7 +619,11 @@ export let registrarCompra = (req: Request, res: Response) => {
                             }
                             compra.usuario = res.locals.usuario;
                             compra.save((err: any, compra: ICompra) => {
-                                if (err) res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
+                                if (err) {
+                                    console.log(err);
+                                    res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
+                                    
+                                }
                                 return res.json(compra);
                             })
                         }
@@ -625,6 +632,12 @@ export let registrarCompra = (req: Request, res: Response) => {
                 });
             });
         })
+}
+export let obtenerSucursales = (req: Request, res: Response) => {
+    Sucursal.find({ activa: true, _id:res.locals.usuario.sucursal }).exec((err: NativeError, sucursales: ISucursal[]) => {
+        if (err) res.status(422).send({ titulo: 'Error al obtener sucursales', detalles: 'Ocurrio un error al obtener sucursales, intentalo de nuevo mas tarde' });
+        return res.json(sucursales);
+    })
 }
 /* Middlewares */
 export let autenticacionMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -639,6 +652,15 @@ export let autenticacionMiddleware = (req: Request, res: Response, next: NextFun
                 return res.status(422).send({ titulo: 'No autorizado', detalles: 'Necesitar iniciar sesion para tener acceso' })
             }
         });
+    } else {
+        return res.status(422).send({ titulo: 'No autorizado', detalles: 'Necesitar iniciar sesion para tener acceso' })
+    }
+}
+export let adminORootMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    if ((res.locals.usuario.rol == 2 && res.locals.usuario.rol_sec == 0) || (res.locals.usuario.rol == 3)) {
+        next();
+    } else {
+        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' })
     }
 }
 export let adminOSupervisorMiddleware = (req: Request, res: Response, next: NextFunction) => {

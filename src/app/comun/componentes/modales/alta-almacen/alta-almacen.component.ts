@@ -5,6 +5,8 @@ import { EstadosService } from 'src/app/comun/servicios/estados.service';
 import { Estado } from 'src/app/comun/modelos/estado.model';
 import { Municipio } from 'src/app/comun/modelos/municipio.model';
 import { ToastrService } from 'ngx-toastr';
+import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
+import { Sucursal } from 'src/app/comun/modelos/sucursal.model';
 
 @Component({
   selector: 'app-alta-almacen',
@@ -19,6 +21,7 @@ export class AltaAlmacenComponent implements OnInit {
   municipio: Municipio;
   cargando: boolean = false;
   constructor(public dialogRef: MatDialogRef<AltaAlmacenComponent>,
+    private usuarioService: UsuarioService,
     private estadosService: EstadosService,
     private toastr: ToastrService) { }
 

@@ -57,13 +57,6 @@ import { ProveedoresAgregarProductoComponent } from './administrador-proveedores
 import { ProveedoresEditarProductoComponent } from './administrador-proveedores-seccion/proveedores-editar-producto/proveedores-editar-producto.component';
 import { ProveedoresRestaurarComponent } from './administrador-proveedores-seccion/proveedores-restaurar/proveedores-restaurar.component';
 import { ProveedoresRestaurarProductoComponent } from './administrador-proveedores-seccion/proveedores-restaurar-producto/proveedores-restaurar-producto.component';
-//seccion de sucursales
-import { AdministradorSucursalesSeccionComponent } from './administrador-sucursales-seccion/administrador-sucursales-seccion.component';
-import { VerSucursalesComponent } from './administrador-sucursales-seccion/ver-sucursales/ver-sucursales.component';
-import { AgregarSucursalComponent } from './administrador-sucursales-seccion/agregar-sucursal/agregar-sucursal.component';
-import { EliminarSucursalComponent } from './administrador-sucursales-seccion/eliminar-sucursal/eliminar-sucursal.component';
-import { EditarSucursalComponent } from './administrador-sucursales-seccion/editar-sucursal/editar-sucursal.component';
-import { RestaurarSucursalComponent } from './administrador-sucursales-seccion/restaurar-sucursal/restaurar-sucursal.component';
 //seccion de cotizaciones
 import { AdministradorCotizacionesSeccionComponent } from './administrador-cotizaciones-seccion/administrador-cotizaciones-seccion.component';
 import { GenerarCotizacionComponent } from './administrador-cotizaciones-seccion/generar-cotizacion/generar-cotizacion.component';
@@ -94,6 +87,8 @@ import { AdministradorRoutingModule } from './administrador-routing.module';
 import { AutenticacionGuard } from 'src/app/autenticacion/compartido/autenticacion.guard';
 import { FamiliasProductoRestaurarComponent } from './familias-productos-seccion/familias-producto-restaurar/familias-producto-restaurar.component';
 import { AdministradorConfiguracionSistemaComponent } from './administrador-configuracion-sistema/administrador-configuracion-sistema.component';
+import { AdministradorCajaSeccionComponent } from './administrador-caja-seccion/administrador-caja-seccion.component';
+import { CajaDetallesComponent } from './administrador-caja-seccion/caja-detalles/caja-detalles.component';
 
 
 
@@ -120,7 +115,6 @@ import { AdministradorConfiguracionSistemaComponent } from './administrador-conf
     AdministradorUsuariosSeccionComponent,
     AdministradorInventarioSeccionComponent,
     AdministradorProveedoresSeccionComponent,
-    AdministradorSucursalesSeccionComponent,
     ClientesAltaComponent,
     ClientesBajaComponent,
     ClientesConsultaComponent,
@@ -148,11 +142,6 @@ import { AdministradorConfiguracionSistemaComponent } from './administrador-conf
     RestaurarEmpresaComponent,
     HistorialCotizacionesComponent,
     AdministradorFacturacionSeccionComponent,
-    VerSucursalesComponent,
-    AgregarSucursalComponent,
-    EliminarSucursalComponent,
-    EditarSucursalComponent,
-    RestaurarSucursalComponent,
     FamiliasProductoRestaurarComponent,
     AdministradorConfiguracionSistemaComponent,
     InventariosOrdenCompraComponent,
@@ -164,7 +153,9 @@ import { AdministradorConfiguracionSistemaComponent } from './administrador-conf
     InventariosAlmacenesRestaurarComponent,
     GenerarOrdenCompraComponent,
     HistorialOrdenesCompraComponent,
-    InventariosAlmacenesDetallesComponent
+    InventariosAlmacenesDetallesComponent,
+    AdministradorCajaSeccionComponent,
+    CajaDetallesComponent
   ],
   imports: [
     CommonModule,

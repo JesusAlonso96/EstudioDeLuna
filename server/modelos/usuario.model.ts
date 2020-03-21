@@ -35,7 +35,7 @@ const usuarioSchema = new Schema({
     ocupado: { type: Boolean, required: false, default: false },
     asistencia: [{ type: Schema.Types.ObjectId, ref: 'Asistencia', default: [] }],
     pedidosTomados: [{ type: Schema.Types.ObjectId, ref: 'Pedido', default: [] }],
-    sucursal: [{ type: Schema.Types.ObjectId, ref: 'Sucursal' }],
+    sucursal: { type: Schema.Types.ObjectId, ref: 'Sucursal' },
     codigoRecuperacion: { type: String, required: false, default: '' },
     activo: { type: Number, default: 1 }
 });

@@ -1,5 +1,4 @@
-import mongoose, { Schema, Document, Types } from 'mongoose';
-import { IAlmacen } from './almacen.model';
+import mongoose, { Document, Schema } from 'mongoose';
 
 
 export interface ISucursal extends Document {
@@ -30,7 +29,7 @@ const sucursalSchema = new Schema({
             estado: { type: String, required: true }
         }
     },
-    activa: { type: Boolean, required: true, default: 1 },
+    activa: { type: Boolean, required: true, default: true },
 });
 
 export const Sucursal = mongoose.model<ISucursal>('Sucursal', sucursalSchema);

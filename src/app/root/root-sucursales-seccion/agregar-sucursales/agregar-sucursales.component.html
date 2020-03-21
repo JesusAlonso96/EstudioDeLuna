@@ -1,1 +1,117 @@
-<p>agregar-sucursales works!</p>
+<app-barra-cargando [cargando]="cargando"></app-barra-cargando>
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <mat-card class="mt-4 mb-4">
+                <form #sucursalForm="ngForm">
+                    <h3 class="text-center">Nueva sucursal</h3>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <mat-form-field appearance="outline" class="full-width input">
+                                <mat-label>Nombre</mat-label>
+                                <input matInput type="text" [(ngModel)]="sucursal.nombre" #nombre="ngModel"
+                                    name="nombre" required>
+                                <mat-error
+                                    *ngIf="(nombre.invalid && (nombre.dirty || nombre.touched)) && nombre.errors.required">
+                                    Por favor ingresa un nombre</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <mat-form-field appearance="outline" class="full-width input">
+                                <mat-label>Calle</mat-label>
+                                <input matInput type="text" [(ngModel)]="sucursal.direccion.calle" #calle="ngModel"
+                                    name="calle" required>
+                                <mat-error
+                                    *ngIf="(calle.invalid && (calle.dirty || calle.touched)) && calle.errors.required">
+                                    Por favor ingresa la calle</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-lg-6">
+                            <mat-form-field appearance="outline" class="full-width input">
+                                <mat-label>Colonia</mat-label>
+                                <input matInput type="text" [(ngModel)]="sucursal.direccion.colonia" #colonia="ngModel"
+                                    name="colonia" required>
+                                <mat-error
+                                    *ngIf="(colonia.invalid && (colonia.dirty || colonia.touched)) && colonia.errors.required">
+                                    Por favor ingresa la colonia</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <mat-form-field appearance="outline" class="full-width input">
+                                <mat-label>Numero exterior</mat-label>
+                                <input matInput type="number" [(ngModel)]="sucursal.direccion.num_ext" #num_ext="ngModel"
+                                    name="num_ext" required>
+                                <mat-error
+                                    *ngIf="(num_ext.invalid && (num_ext.dirty || num_ext.touched)) && num_ext.errors.required">
+                                    Por favor ingresa el numero exterior</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-lg-4">
+                            <mat-form-field appearance="outline" class="full-width input">
+                                <mat-label>Numero interior</mat-label>
+                                <input matInput type="number" [(ngModel)]="sucursal.direccion.num_int" #num_int="ngModel"
+                                    name="num_int">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-lg-4">
+                            <mat-form-field appearance="outline" class="full-width input">
+                                <mat-label>Codigo postal</mat-label>
+                                <input matInput type="number" [(ngModel)]="sucursal.direccion.cp" #cp="ngModel"
+                                    name="cp" required>
+                                <mat-error
+                                    *ngIf="(cp.invalid && (cp.dirty || cp.touched)) && cp.errors.required">
+                                    Por favor ingresa el codigo postal</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Estado</mat-label>
+                                <mat-select [(ngModel)]="sucursal.direccion.estado" name="estado" #estado="ngModel" required>
+                                    <mat-option (click)="buscarMunicipios(estado)"
+                                        *ngFor="let estado of estados" [value]="estado.nombre">
+                                        {{estado.nombre}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error
+                                    *ngIf="(estado.invalid && (estado.dirty || estado.touched)) && estado.errors.required">
+                                    Por favor ingresa el estado</mat-error>
+                            </mat-form-field> 
+                        </div>
+                        <div class="col-lg-6">
+                            <mat-progress-bar *ngIf="cargando2" mode="indeterminate"></mat-progress-bar>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Municipio</mat-label>
+                                <mat-select  [(ngModel)]="sucursal.direccion.municipio"
+                                    #municipio="ngModel" name="municipio" required>
+                                    <mat-option  *ngFor="let municipio of municipios"
+                                        [value]="municipio.nombre">
+                                        {{municipio.nombre}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error
+                                    *ngIf="(municipio.invalid && (municipio.dirty || municipio.touched)) && municipio.errors.required">
+                                    Por favor ingresa el municipio</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button mat-raised-button [disabled]="!sucursalForm.valid" color="primary" class="float-right" (click)="agregarSucursal(sucursalForm)">Registrar</button>
+                        </div>
+                    </div>
+                </form>
+            </mat-card>
+        </div>
+    </div>
+</div>

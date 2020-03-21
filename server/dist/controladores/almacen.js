@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const almacen_model_1 = require("../modelos/almacen.model");
 exports.obtenerAlmacenes = (req, res) => {
-    almacen_model_1.Almacen.find({ activo: true })
+    almacen_model_1.Almacen.find({ activo: true, sucursal: res.locals.usuario.sucursal })
         .exec((err, almacenes) => {
         if (err)
             return res.status(422).send({ titulo: 'Error al obtener', detalles: 'No se pudieron obtener los almacenes, intentalo de nuevo mas tarde' });
@@ -10,7 +10,7 @@ exports.obtenerAlmacenes = (req, res) => {
     });
 };
 exports.obtenerAlmacenesEliminados = (req, res) => {
-    almacen_model_1.Almacen.find({ activo: false })
+    almacen_model_1.Almacen.find({ activo: false, sucursal: res.locals.usuario.sucursal })
         .exec((err, almacenes) => {
         if (err)
             return res.status(422).send({ titulo: 'Error al obtener', detalles: 'No se pudieron obtener los almacenes, intentalo de nuevo mas tarde' });
@@ -27,6 +27,7 @@ exports.obtenerAlmacenPorId = (req, res) => {
 };
 exports.nuevoAlmacen = (req, res) => {
     const nuevoAlmacen = new almacen_model_1.Almacen(req.body);
+    nuevoAlmacen.sucursal = res.locals.usuario.sucursal;
     nuevoAlmacen.save((err, almacen) => {
         if (err)
             return res.status(422).send({ titulo: 'Error al guardar', detalles: 'No se pudo guardar el almacen, intentalo de nuevo mas tarde' });

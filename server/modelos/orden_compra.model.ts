@@ -4,6 +4,7 @@ import { environment } from '../global/environment';
 import { IUsuario } from './usuario.model';
 import { IProveedor } from './proveedor.model';
 import { IProductoProveedor } from './producto_proveedor.model';
+import { ISucursal } from './sucursal.model';
 
 mongoose.set('useUnifiedTopology', true);
 var conexion = mongoose.createConnection(environment.DB_URL, { useNewUrlParser: true });
@@ -27,6 +28,7 @@ export interface IOrdenCompra extends Document {
             cantidadOrden: number
         }
     ];
+    sucursal: ISucursal['_id'];
     usuario: IUsuario['_id'];
     activa: boolean;
 }
@@ -50,6 +52,7 @@ const ordenCompraSchema = new Schema({
             }
         ], required: true
     },
+    sucursal: { type: Schema.Types.ObjectId, ref: 'Sucursal' },
     usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' },
     activa: { type: Boolean, required: false, default: true }
 });

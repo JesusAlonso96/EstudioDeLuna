@@ -34,6 +34,7 @@ const orden_compra_model_1 = require("../modelos/orden_compra.model");
 const compra_model_1 = require("../modelos/compra.model");
 const almacen_model_1 = require("../modelos/almacen.model");
 const caja_model_1 = require("../modelos/caja.model");
+const sucursal_model_1 = require("../modelos/sucursal.model");
 const transporter = nodemailer_1.default.createTransport({
     service: 'Gmail',
     secure: false,
@@ -262,7 +263,7 @@ exports.eliminarFamilia = (req, res) => {
     });
 };
 exports.obtenerUsuarios = (req, res) => {
-    usuario_model_1.Usuario.find({ activo: 1 }, { contrasena: 0 })
+    usuario_model_1.Usuario.find({ activo: 1, sucursal: res.locals.usuario.sucursal }, { contrasena: 0 })
         .exec((err, usuariosEncontrados) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los usuarios' });
@@ -552,7 +553,7 @@ exports.obtenerCotizaciones = (req, res) => {
 };
 /* Modulo de inventarios */
 exports.obtenerOrdenesCompra = (req, res) => {
-    orden_compra_model_1.OrdenCompra.find({ activa: true })
+    orden_compra_model_1.OrdenCompra.find({ activa: true, sucursal: res.locals.usuario.sucursal })
         .populate('usuario')
         .populate('proveedor')
         .populate('productosOrdenCompra.insumo')
@@ -564,6 +565,7 @@ exports.obtenerOrdenesCompra = (req, res) => {
 };
 exports.nuevaOrdenCompra = (req, res) => {
     const orden = new orden_compra_model_1.OrdenCompra(req.body);
+    orden.sucursal = res.locals.usuario.sucursal;
     orden.usuario = res.locals.usuario;
     orden.save((err, ordenGuardada) => {
         if (err)
@@ -582,6 +584,7 @@ exports.desactivarOrdenComra = (req, res) => {
 };
 exports.registrarCompra = (req, res) => {
     const compra = new compra_model_1.Compra(req.body);
+    compra.sucursal = res.locals.usuario.sucursal;
     almacen_model_1.Almacen.findById(compra.almacen._id)
         .populate('insumos.insumo')
         .exec((err, almacen) => {
@@ -680,14 +683,23 @@ exports.registrarCompra = (req, res) => {
                         }
                         compra.usuario = res.locals.usuario;
                         compra.save((err, compra) => {
-                            if (err)
+                            if (err) {
+                                console.log(err);
                                 res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
+                            }
                             return res.json(compra);
                         });
                     }
                 });
             });
         });
+    });
+};
+exports.obtenerSucursales = (req, res) => {
+    sucursal_model_1.Sucursal.find({ activa: true, _id: res.locals.usuario.sucursal }).exec((err, sucursales) => {
+        if (err)
+            res.status(422).send({ titulo: 'Error al obtener sucursales', detalles: 'Ocurrio un error al obtener sucursales, intentalo de nuevo mas tarde' });
+        return res.json(sucursales);
     });
 };
 /* Middlewares */
@@ -704,6 +716,17 @@ exports.autenticacionMiddleware = (req, res, next) => {
                 return res.status(422).send({ titulo: 'No autorizado', detalles: 'Necesitar iniciar sesion para tener acceso' });
             }
         });
+    }
+    else {
+        return res.status(422).send({ titulo: 'No autorizado', detalles: 'Necesitar iniciar sesion para tener acceso' });
+    }
+};
+exports.adminORootMiddleware = (req, res, next) => {
+    if ((res.locals.usuario.rol == 2 && res.locals.usuario.rol_sec == 0) || (res.locals.usuario.rol == 3)) {
+        next();
+    }
+    else {
+        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' });
     }
 };
 exports.adminOSupervisorMiddleware = (req, res, next) => {

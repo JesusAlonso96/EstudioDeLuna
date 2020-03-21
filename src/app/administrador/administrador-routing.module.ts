@@ -14,7 +14,6 @@ import { AdministradorClientesSeccionComponent } from './administrador-clientes-
 import { AdministradorUsuariosSeccionComponent } from './administrador-usuarios-seccion/administrador-usuarios-seccion.component';
 import { AdministradorInventarioSeccionComponent } from './administrador-inventario-seccion/administrador-inventario-seccion.component';
 import { AdministradorProveedoresSeccionComponent } from './administrador-proveedores-seccion/administrador-proveedores-seccion.component';
-import { AdministradorSucursalesSeccionComponent } from './administrador-sucursales-seccion/administrador-sucursales-seccion.component';
 import { AdministradorTableroSeccionComponent } from './administrador-tablero-seccion/administrador-tablero-seccion.component';
 import { AdministradorAyudaSeccionComponent } from './administrador-ayuda-seccion/administrador-ayuda-seccion.component';
 import { AdministradorCotizacionesSeccionComponent } from './administrador-cotizaciones-seccion/administrador-cotizaciones-seccion.component';
@@ -25,7 +24,6 @@ import { AdministradorConfiguracionSistemaComponent } from './administrador-conf
 
 
 export const adminRoutes: Routes = [
-    
             { path: 'dashboard', component: AdministradorTableroSeccionComponent, canActivate: [AutenticacionGuard] },
             { path: 'perfil', component: AdministradorPerfilComponent, canActivate: [AutenticacionGuard] },
             {
@@ -79,11 +77,6 @@ export const adminRoutes: Routes = [
             {
                 path: 'facturacion',
                 component: AdministradorFacturacionSeccionComponent,
-                canActivate: [AutenticacionGuard]
-            },
-            {
-                path: 'sucursales',
-                component: AdministradorSucursalesSeccionComponent,
                 canActivate: [AutenticacionGuard]
             },
             {

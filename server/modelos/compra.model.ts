@@ -45,7 +45,7 @@ const compraSchema = new Schema({
     },
     subtotal: { type: Number, required: true },
     iva: { type: Number, required: true },
-    costoEnvio: { type: Number, required: true },
+    costoEnvio: { type: Number, required: false },
     metodoPago: { type: String, required: false },
     total: { type: Number, required: true },
     sucursal: { type: Schema.Types.ObjectId, ref: 'Sucursal' }

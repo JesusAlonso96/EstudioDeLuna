@@ -1,4 +1,5 @@
 import { ProductoProveedor } from './producto_proveedor.model';
+import { Sucursal } from './sucursal.model';
 class Direccion {
     calle: string;
     colonia: string;
@@ -19,6 +20,7 @@ export class Almacen {
     nombre: string;
     direccion: Direccion = new Direccion();
     insumos: InsumoAlmacen[];
+    sucursal: Sucursal = new Sucursal();
     constructor() { }
     nuevoAlmacen(_id: string, id: number, nombre: string, calle: string, colonia: string, num_ext: number, num_int: number, cp: number, ciudad: string, estado: string) {
         let nuevoAlmacen = new Almacen();

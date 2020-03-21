@@ -36,6 +36,7 @@ const ordenCompraSchema = new mongoose_1.Schema({
             }
         ], required: true
     },
+    sucursal: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal' },
     usuario: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Usuario' },
     activa: { type: Boolean, required: false, default: true }
 });

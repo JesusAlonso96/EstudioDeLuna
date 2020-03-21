@@ -28,6 +28,7 @@ rutasUsuario.get('/obtenerEmpresas', UsuarioCtrl.autenticacionMiddleware, Usuari
 rutasUsuario.get('/obtenerDatosEstudio', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.obtenerDatosEstudio);
 rutasUsuario.get('/obtenerCotizaciones', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerCotizaciones);
 rutasUsuario.get('/ordenesCompra', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerOrdenesCompra);
+rutasUsuario.get('/sucursales', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.obtenerSucursales);
 //post
 rutasUsuario.post('/login', UsuarioCtrl.login);
 rutasUsuario.post('/crearAsistencia/:id', UsuarioCtrl.crearAsistencia);

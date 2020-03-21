@@ -11,6 +11,10 @@ import { RootTableroSeccionComponent } from './root-tablero-seccion/root-tablero
 import { RootSucursalesSeccionComponent } from './root-sucursales-seccion/root-sucursales-seccion.component';
 import { AgregarSucursalesComponent } from './root-sucursales-seccion/agregar-sucursales/agregar-sucursales.component';
 import { AsignarUsuariosSucursalesComponent } from './root-sucursales-seccion/asignar-usuarios-sucursales/asignar-usuarios-sucursales.component';
+import { ComunModule } from '../comun/comun.module';
+import { RootUsuariosSeccionComponent } from './root-usuarios-seccion/root-usuarios-seccion.component';
+import { RootAltaUsuariosComponent } from './root-usuarios-seccion/root-alta-usuarios/root-alta-usuarios.component';
+import { RootAdministrarUsuariosComponent } from './root-usuarios-seccion/root-administrar-usuarios/root-administrar-usuarios.component';
 
 
 
@@ -21,7 +25,10 @@ import { AsignarUsuariosSucursalesComponent } from './root-sucursales-seccion/as
     RootTableroSeccionComponent,
     RootSucursalesSeccionComponent,
     AgregarSucursalesComponent,
-    AsignarUsuariosSucursalesComponent
+    AsignarUsuariosSucursalesComponent,
+    RootUsuariosSeccionComponent,
+    RootAltaUsuariosComponent,
+    RootAdministrarUsuariosComponent
   ],
   imports: [
     CommonModule,
@@ -29,7 +36,8 @@ import { AsignarUsuariosSucursalesComponent } from './root-sucursales-seccion/as
     MaterialModule,
     ReactiveFormsModule,
     FormsModule,
-    RootRoutingModule
+    RootRoutingModule,
+    ComunModule
   ]
 })
 export class RootModule { }

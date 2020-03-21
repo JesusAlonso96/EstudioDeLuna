@@ -6,14 +6,14 @@ import { NativeError } from 'mongoose';
 
 
 export let obtenerAlmacenes = (req: Request, res: Response) => {
-    Almacen.find({ activo: true })
+    Almacen.find({ activo: true, sucursal:res.locals.usuario.sucursal  })
         .exec((err: NativeError, almacenes: IAlmacen[]) => {
             if (err) return res.status(422).send({ titulo: 'Error al obtener', detalles: 'No se pudieron obtener los almacenes, intentalo de nuevo mas tarde' });
             return res.status(200).json(almacenes);
         })
 }
 export let obtenerAlmacenesEliminados = (req: Request, res: Response) => {
-    Almacen.find({ activo: false })
+    Almacen.find({ activo: false , sucursal:res.locals.usuario.sucursal })
         .exec((err: NativeError, almacenes: IAlmacen[]) => {
             if (err) return res.status(422).send({ titulo: 'Error al obtener', detalles: 'No se pudieron obtener los almacenes, intentalo de nuevo mas tarde' });
             return res.status(200).json(almacenes);
@@ -28,6 +28,7 @@ export let obtenerAlmacenPorId = (req: Request, res: Response) => {
 }
 export let nuevoAlmacen = (req: Request, res: Response) => {
     const nuevoAlmacen = new Almacen(req.body);
+    nuevoAlmacen.sucursal = res.locals.usuario.sucursal;
     nuevoAlmacen.save((err: any, almacen: IAlmacen) => {
         if (err) return res.status(422).send({ titulo: 'Error al guardar', detalles: 'No se pudo guardar el almacen, intentalo de nuevo mas tarde' });
         return res.status(200).send(almacen);
