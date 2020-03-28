@@ -3,8 +3,9 @@ import { BuscadorComponent } from 'src/app/comun/componentes/buscador/buscador.c
 import { Almacen } from 'src/app/comun/modelos/almacen.model';
 import { AltaAlmacenComponent } from 'src/app/comun/componentes/modales/alta-almacen/alta-almacen.component';
 import { AlmacenService } from 'src/app/comun/servicios/almacen.service';
-import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-inventarios-almacenes-detalles',
@@ -17,7 +18,7 @@ export class InventariosAlmacenesDetallesComponent implements OnInit {
   almacenes: Almacen[];
   cargando: boolean = false;
   constructor(private almacenService: AlmacenService,
-    private toastr: ToastrService,
+    private toastr: NgToastrService,
     private dialog: MatDialog) { }
 
   ngOnInit() {
@@ -29,11 +30,10 @@ export class InventariosAlmacenesDetallesComponent implements OnInit {
       (almacenes: Almacen[]) => {
         this.cargando = false;
         this.almacenes = almacenes;
-        console.log(this.almacenes);
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )
   }
@@ -51,13 +51,13 @@ export class InventariosAlmacenesDetallesComponent implements OnInit {
     this.almacenService.nuevoAlmacen(almacen).subscribe(
       (almacen: Almacen) => {
         this.cargando = false;
-        this.toastr.success(`Se ha agregado exitosamente el almacen ${almacen.id}`, 'Almacen agregado exitosamente', { closeButton: true });
+        this.toastr.abrirToastr('exito',`Se ha agregado exitosamente el almacen ${almacen.id}`, 'Almacen agregado exitosamente');
         this.almacenes.push(almacen);
         this.buscador.datosTabla.data = this.almacenes;
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     )
   }

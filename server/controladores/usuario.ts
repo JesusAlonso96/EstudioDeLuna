@@ -50,7 +50,9 @@ export let login = (req: Request, res: Response) => {
                         id: usuarioEncontrado._id,
                         nombre: usuarioEncontrado.nombre,
                         rol: usuarioEncontrado.rol,
-                        rol_sec: usuarioEncontrado.rol_sec
+                        rol_sec: usuarioEncontrado.rol_sec,
+                        configuracion: usuarioEncontrado.configuracion,
+                        sucursal: usuarioEncontrado.sucursal
                     }, environment.SECRET, { expiresIn: '8h' });
                     return res.json(token);
                 } else {
@@ -61,6 +63,7 @@ export let login = (req: Request, res: Response) => {
 }
 export let obtenerPestanas = (req: Request, res: Response) => {
     Pestana.find({ rol: req.params.rol })
+        .sort({ nombre: 1 })
         .exec((err: NativeError, pestanas: IPestana[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: `Error al obtener los módulos de ${req.params.rol}` });
             if (pestanas) return res.json(pestanas);
@@ -209,6 +212,7 @@ export let actualizarProducto = (req: Request, res: Response) => {
 }
 export let agregarFamilia = (req: Request, res: Response) => {
     const familia = new Familia(req.body);
+    familia.sucursal = res.locals.usuario.sucursal;
     Familia.findOne({ nombre: familia.nombre })
         .exec((err: NativeError, familiaEncontrada: IFamilia) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo agregar la familia' });
@@ -443,7 +447,7 @@ export let obtenerProductosProveedor = (req: Request, res: Response) => {
 }
 /* Modulo cotizaciones */
 export let obtenerEmpresas = (req: Request, res: Response) => {
-    EmpresaCot.find({ activa: 1 })
+    EmpresaCot.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
         .exec((err: NativeError, empresas: IEmpresaCot[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las empresas' });
             return res.json(empresas);
@@ -451,6 +455,7 @@ export let obtenerEmpresas = (req: Request, res: Response) => {
 }
 export let nuevaEmpresa = (req: Request, res: Response) => {
     const nuevaEmpresa = new EmpresaCot(req.body);
+    nuevaEmpresa.sucursal = res.locals.usuario.sucursal;
     nuevaEmpresa.save((err: NativeError, guardada: IEmpresaCot) => {
         if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la empresa' });
         if (guardada) return res.json({ titulo: 'Empresa agregada', detalles: 'Empresa agregada exitosamente' });
@@ -481,13 +486,14 @@ export let editarEmpresa = (req: Request, res: Response) => {
 }
 export let nuevaCotizacion = (req: Request, res: Response) => {
     const cotizacion = new Cotizacion(req.body);
+    cotizacion.sucursal = res.locals.usuario.sucursal;
     cotizacion.save((err: NativeError, guardada: ICotizacion) => {
         if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la cotizacion' });
         if (guardada) return res.json({ titulo: 'Cotizacion guardada', detalles: 'Cotizacion guardada exitosamente' })
     });
 }
 export let obtenerCotizaciones = (req: Request, res: Response) => {
-    Cotizacion.find({}, { __v: 0 })
+    Cotizacion.find({sucursal: res.locals.usuario.sucursal}, { __v: 0 })
         .populate('productos.producto', '-activo -caracteristicas -__v -familia -c_ad -c_r -b_n -nombre -num_fotos')
         .populate('asesor', '-_id -__v -ape_mat -asistencia -ocupado -pedidosTomados -activo -username -contrasena -rol -rol_sec')
         .populate('empresa', '-_id -activa -__v')
@@ -622,7 +628,7 @@ export let registrarCompra = (req: Request, res: Response) => {
                                 if (err) {
                                     console.log(err);
                                     res.status(422).send({ titulo: 'Error al registrar compra', detalles: 'Ocurrio un error al registrar la compra, intentalo de nuevo mas tarde' });
-                                    
+
                                 }
                                 return res.json(compra);
                             })
@@ -634,7 +640,7 @@ export let registrarCompra = (req: Request, res: Response) => {
         })
 }
 export let obtenerSucursales = (req: Request, res: Response) => {
-    Sucursal.find({ activa: true, _id:res.locals.usuario.sucursal }).exec((err: NativeError, sucursales: ISucursal[]) => {
+    Sucursal.find({ activa: true, _id: res.locals.usuario.sucursal }).exec((err: NativeError, sucursales: ISucursal[]) => {
         if (err) res.status(422).send({ titulo: 'Error al obtener sucursales', detalles: 'Ocurrio un error al obtener sucursales, intentalo de nuevo mas tarde' });
         return res.json(sucursales);
     })

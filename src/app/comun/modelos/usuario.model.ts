@@ -1,6 +1,16 @@
 import { Pedido } from './pedido.model';
 import { Sucursal } from './sucursal.model';
 
+export class Configuracion {
+    notificaciones: Notificaciones = new Notificaciones();
+}
+export class Notificaciones {
+    botonCerrar: boolean;
+    tiempo: number;
+    posicion: string;
+    barraProgreso: boolean;
+    constructor(){}
+}
 export class Usuario {
     _id: String;
     nombre: String;
@@ -15,6 +25,7 @@ export class Usuario {
     ocupado: Boolean;
     asistencia: any[];
     sucursal: Sucursal;
+    configuracion: Configuracion = new Configuracion();
     pedidosTomados: Pedido[];
     activo: Number;
     constructor();

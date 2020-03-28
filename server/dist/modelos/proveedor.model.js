@@ -21,6 +21,7 @@ const proveedorSchema = new mongoose_1.Schema({
     num_ext: { type: Number, required: true },
     num_int: { type: Number, required: false },
     productos: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'ProductoProveedor', default: [] }],
+    sucursal: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal' },
     activo: { type: Number, default: 1 }
 });
 exports.Proveedor = mongoose_1.default.model('Proveedor', proveedorSchema);

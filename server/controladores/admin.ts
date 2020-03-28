@@ -10,7 +10,7 @@ import { IUsuario, Usuario } from '../modelos/usuario.model';
 import { Venta } from '../modelos/venta.model';
 import Servidor from '../clases/servidor';
 import * as Socket from '../sockets/socket';
-import { NativeError } from 'mongoose';
+import { NativeError, Types } from 'mongoose';
 import { Familia, IFamilia } from '../modelos/familia.model';
 
 
@@ -38,6 +38,7 @@ export let obtenerVentasMes = (req: Request, res: Response) => {
             as: "cliente",
         })
         .match({
+            sucursal: Types.ObjectId(res.locals.usuario.sucursal),
             $and: [
                 { fecha: { $gte: fechaInicio } },
                 { fecha: { $lte: fechaFin } }
@@ -117,6 +118,7 @@ export let obtenerVentasDia = (req: Request, res: Response) => {
             as: "cliente",
         })
         .match({
+            sucursal: Types.ObjectId(res.locals.usuario.sucursal),
             fecha: fecha2
         })
         .project({
@@ -190,6 +192,7 @@ export let obtenerVentasRango = (req: Request, res: Response) => {
             as: "productos",
         })
         .match({
+            sucursal: Types.ObjectId(res.locals.usuario.sucursal),
             $and: [
                 { fecha: { $gte: fechaInicio } },
                 { fecha: { $lte: fechaFin } }
@@ -219,6 +222,7 @@ export let obtenerProductosRango = (req: Request, res: Response) => {
     var fechaFin = new Date(moment(req.params.fechaFin).format('YYYY-MM-DD'));
     Producto.aggregate()
         .match({
+            sucursal: Types.ObjectId(res.locals.usuario.sucursal),
             $and: [
                 { fecha: { $gte: fechaInicio } },
                 { fecha: { $lte: fechaFin } }
@@ -239,6 +243,7 @@ export let obtener10ProductosMasVendidos = (req: Request, res: Response) => {
     var fechaFin = new Date(moment(req.params.fechaFin).format('YYYY-MM-DD'));
     Venta.aggregate()
         .match({
+            sucursal: Types.ObjectId(res.locals.usuario.sucursal),
             $and: [
                 { fecha: { $gte: fechaInicio } },
                 { fecha: { $lte: fechaFin } }
@@ -278,6 +283,7 @@ export let obtenerVentasPorFamilias = (req: Request, res: Response) => {
     var fechaFin = new Date(moment(req.params.fechaFin).format('YYYY-MM-DD'));
     Venta.aggregate()
         .match({
+            sucursal: Types.ObjectId(res.locals.usuario.sucursal),
             $and: [
                 { fecha: { $gte: fechaInicio } },
                 { fecha: { $lte: fechaFin } }
@@ -318,69 +324,27 @@ export let obtenerVentasPorFamilias = (req: Request, res: Response) => {
         });
 }
 /* Corte de caja */
-export let existeCorte = (req: Request, res: Response) => {
-    const fecha = new Date(moment(Date.now()).format('YYYY-MM-DD'));
-    CorteCaja.findOne({ fecha })
-        .exec((err: any, corte: ICorteCaja) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo verificar la existencia del corte de caja', tipo: 2 })
-            if (corte) {
-                return res.json({ encontrado: true });
-            } else {
-                return res.json({ encontrado: false });
-            }
-        })
-}
-//posible error
-export let crearCorteCaja = (req: Request, res: Response) => {
-    var fecha = new Date(moment(Date.now()).format('YYYY-MM-DD'));
-    var hora = new Date(moment(Date.now()).format('h:mm:ss a'));
-    const corte = new CorteCaja({
-        fecha,
-        hora,
-        usuario: res.locals.usuario,
-        efectivoEsperado: req.body.efectivoEsperado,
-        tarjetaEsperado: req.body.tarjetaEsperado,
-        efectivoContado: req.body.efectivoContado,
-        tarjetaContado: req.body.tarjetaContado,
-        fondoEfectivo: req.body.fondoEfectivo,
-        fondoTarjetas: req.body.fondoTarjetas
-    });
-    corte.save((err: any, guardado: any) => {
-        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al guardar el corte de caja', tipo: 2 })
-        return res.json(guardado);
-    });
-}
+
 export let obtenerCaja = (req: Request, res: Response) => {
-    Caja.findOne()
+    Caja.findOne({_id: req.params.id})
         .exec((err: any, caja: ICaja) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al obtener las cantidades', tipo: 2 });
             return res.json(caja);
         });
 }
-export let actualizarCaja = (req: Request, res: Response) => {
-    Caja.findOneAndUpdate({}, {
-        cantidadTotal: req.body.cantidadTotal,
-        cantidadEfectivo: req.body.cantidadEfectivo,
-        cantidadTarjetas: req.body.cantidadTarjetas
-    })
-        .exec((err: any, cajaActualizada: ICaja) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al actualizar la caja', tipo: 2 });
-            return res.json(cajaActualizada);
-        })
-}
-export let obtenerCortesCaja = (req: Request, res: Response) => {
-    CorteCaja.find()
-        .sort({
-            num_corte: 'desc'
-        })
-        .exec((err: any, cortes: ICorteCaja[]) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al obtener el historial', tipo: 2 })
-            return res.json(cortes);
-        });
-}
+
 /* Modulo usuarios */
 export let altaUsuario = (req: Request, res: Response) => {
     const usuarioAlta = new Usuario(req.body);
+    usuarioAlta.sucursal = res.locals.usuario.sucursal;
+    usuarioAlta.configuracion = {
+        notificaciones: {
+            botonCerrar:true,
+            tiempo:2000,
+            posicion:'toast-top-right',
+            barraProgreso: false
+        }
+    }
     usuarioAlta.save((err, usuarioCreado) => {
         if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al guardar el usuario' });
         obtenerNuevoElemento(usuarioCreado, res, 0);
@@ -398,7 +362,7 @@ export let cambiarPermisos = (req: Request, res: Response) => {
         })
 }
 export let obtenerUsuariosEliminados = (req: Request, res: Response) => {
-    Usuario.find({ activo: 0 })
+    Usuario.find({ activo: 0 , sucursal: res.locals.usuario.sucursal})
         .exec((err: any, usuariosEncontrados: IUsuario[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los usuarios eliminados' });
             return res.json(usuariosEncontrados);
@@ -417,6 +381,7 @@ export let restaurarUsuarioEliminado = (req: Request, res: Response) => {
 }
 export let registrarUsuario = (req: Request, res: Response) => {
     const usuario = new Usuario(req.body);
+    usuario.sucursal = res.locals.usuario.sucursal;
     Usuario.findOne({ username: req.body.username })
         .exec((err: any, usuarioEncontrado: IUsuario) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo registrar el usuario' });
@@ -506,7 +471,7 @@ export let restaurarProveedor = (req: Request, res: Response) => {
         })
 }
 export let obtenerProveedoresEliminados = (req: Request, res: Response) => {
-    Proveedor.find({ activo: 0 })
+    Proveedor.find({ activo: 0, sucursal: res.locals.usuario.sucursal })
         .exec((err: any, usuariosEncontrados: IProveedor) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los proveedores eliminados' });
             return res.json(usuariosEncontrados);
@@ -563,7 +528,7 @@ export let restaurarProductoProveedorEliminado = (req: Request, res: Response) =
 }
 /* Modulo cotizaciones */
 export let obtenerEmpresasEliminadas = (req: Request, res: Response) => {
-    EmpresaCot.find({ activa: 0 })
+    EmpresaCot.find({ activa: 0, sucursal: res.locals.usuario.sucursal })
         .exec((err: any, empresasEliminadas: IEmpresaCot) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las empresas eliminadas' });
             if (empresasEliminadas) return res.json(empresasEliminadas);
@@ -586,7 +551,7 @@ export let adminMiddleware = (req: Request, res: Response, next: NextFunction) =
     }
 }
 export let obtenerFamiliasEliminadas = (req: Request, res: Response) => {
-    Familia.find({ activa: 0 })
+    Familia.find({ activa: 0, sucursal: res.locals.usuario.sucursal })
         .exec((err: NativeError, familias: IFamilia[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las familias eliminadas' });
             return res.json(familias);
@@ -607,7 +572,7 @@ export let restaurarFamiliaEliminada = (req: Request, res: Response) => {
 function obtenerNuevoElemento(elemento: any, res: Response, tipo: number) {
     const servidor = Servidor.instance;
     for (let usuarioConectado of Socket.usuariosConectados.lista) {
-        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0) {
+        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0 && usuarioConectado.sucursal == res.locals.usuario.sucursal) {
             switch (tipo) {
                 case 0: servidor.io.in(usuarioConectado.id).emit('nuevo-usuario', elemento); break;
                 case 1: servidor.io.in(usuarioConectado.id).emit('nuevo-usuario-eliminado', elemento); break;

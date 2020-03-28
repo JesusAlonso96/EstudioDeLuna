@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const familia_model_1 = require("../modelos/familia.model");
+const mongoose_1 = require("mongoose");
 const producto_model_1 = require("../modelos/producto.model");
 exports.obtenerFamilias = (req, res) => {
-    familia_model_1.Familia.find({ activa: 1 })
+    familia_model_1.Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
         .exec((err, familias) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron cargar las familias' });
@@ -19,7 +20,7 @@ exports.obtenerProductos = (req, res) => {
     });
 };
 exports.obtenerFamiliasYProductos = (req, res) => {
-    familia_model_1.Familia.find({ activa: 1 })
+    familia_model_1.Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
         .populate({
         path: 'productos',
         match: { activo: 1 }
@@ -41,7 +42,7 @@ exports.obtenerProductosPorTam = (req, res) => {
         as: "familia"
     })
         .match({
-        "familia.nombre": req.params.nombre,
+        "familia._id": mongoose_1.Types.ObjectId(req.params.id),
         activo: 1
     })
         .group({
@@ -69,7 +70,7 @@ exports.obtenerProductosPorCantidad = (req, res) => {
         as: "familia"
     })
         .match({
-        "familia.nombre": req.params.nombre,
+        "familia._id": mongoose_1.Types.ObjectId(req.params.id),
         activo: 1
     })
         .group({

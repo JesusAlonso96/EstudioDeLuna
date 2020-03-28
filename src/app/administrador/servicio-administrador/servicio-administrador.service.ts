@@ -18,9 +18,6 @@ export class AdministradorService {
   public crearUsuario(usuario: Usuario): Observable<any> {
     return this.http.post('/api/v1/admins/empleado', usuario);
   }
-  public crearCorteCaja(corteCaja: CorteCaja): Observable<any> {
-    return this.http.post('/api/v1/admins/crearCorteCaja', corteCaja);
-  }
   public registrarUsuario(usuario: Usuario): Observable<any> {
     return this.http.post('/api/v1/admins/registrar', usuario);
   }
@@ -40,15 +37,8 @@ export class AdministradorService {
   public obtenerVentasMes(fechaInicio: string, fechaFin: string): Observable<any> {
     return this.http.get(`/api/v1/admins/obtenerVentasMes/${fechaInicio}/${fechaFin}`);
   }
-  public existeCorte(): Observable<any> {
-    return this.http.get('/api/v1/admins/existeCorte');
-  }
   public obtenerTotalCaja(): Observable<any> {
     return this.http.get('/api/v1/admins/obtenerTotalCaja');
-
-  }
-  public obtenerHistorialCortes(): Observable<any> {
-    return this.http.get('/api/v1/admins/obtenerCortesCaja');
   }
   public obtenerUsuariosEliminados(): Observable<any> {
     return this.http.get('/api/v1/admins/obtenerUsuariosEliminados');
@@ -66,9 +56,7 @@ export class AdministradorService {
     return this.http.get('/api/v1/admins/obtenerFamiliasEliminadas');
   }
   //patch
-  public actualizarCaja(caja): Observable<any> {
-    return this.http.patch('/api/v1/admins/actualizarCaja', caja);
-  }
+  
   public cambiarPermisos(usuario: Usuario): Observable<any> {
     return this.http.patch('/api/v1/admins/cambiarPermisos', usuario);
   }

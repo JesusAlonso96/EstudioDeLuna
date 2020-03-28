@@ -89,6 +89,7 @@ import { FamiliasProductoRestaurarComponent } from './familias-productos-seccion
 import { AdministradorConfiguracionSistemaComponent } from './administrador-configuracion-sistema/administrador-configuracion-sistema.component';
 import { AdministradorCajaSeccionComponent } from './administrador-caja-seccion/administrador-caja-seccion.component';
 import { CajaDetallesComponent } from './administrador-caja-seccion/caja-detalles/caja-detalles.component';
+import { CajaRestaurarComponent } from './administrador-caja-seccion/caja-restaurar/caja-restaurar.component';
 
 
 
@@ -155,7 +156,8 @@ import { CajaDetallesComponent } from './administrador-caja-seccion/caja-detalle
     HistorialOrdenesCompraComponent,
     InventariosAlmacenesDetallesComponent,
     AdministradorCajaSeccionComponent,
-    CajaDetallesComponent
+    CajaDetallesComponent,
+    CajaRestaurarComponent
   ],
   imports: [
     CommonModule,

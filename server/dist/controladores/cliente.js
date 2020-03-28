@@ -15,6 +15,7 @@ const servidor_1 = __importDefault(require("../clases/servidor"));
 const Socket = __importStar(require("../sockets/socket"));
 exports.registrarCliente = (req, res) => {
     const clienteNuevo = new cliente_model_1.Cliente(req.body);
+    clienteNuevo.sucursal = res.locals.usuario.sucursal;
     clienteNuevo.save((err, cliente) => {
         if (err)
             return res.status(422).send({ titulo: 'No se pudo crear el registro' });
@@ -23,7 +24,7 @@ exports.registrarCliente = (req, res) => {
     });
 };
 exports.obtenerClientes = (req, res) => {
-    cliente_model_1.Cliente.find({ activo: 1 }, { _id: 1, nombre: 1, ape_mat: 1, ape_pat: 1, email: 1 })
+    cliente_model_1.Cliente.find({ activo: 1, sucursal: res.locals.usuario.sucursal }, { _id: 1, nombre: 1, ape_mat: 1, ape_pat: 1, email: 1 })
         .exec((err, clientes) => {
         if (err)
             return res.status(422).send({ titulo: 'No se pudieron obtener los clientes' });
@@ -31,7 +32,7 @@ exports.obtenerClientes = (req, res) => {
     });
 };
 exports.obtenerDatosClientes = (req, res) => {
-    cliente_model_1.Cliente.find({ activo: 1 })
+    cliente_model_1.Cliente.find({ activo: 1, sucursal: res.locals.usuario.sucursal })
         .exec((err, clientes) => {
         if (err)
             return res.status(422).send({ titulo: 'No se pudieron obtener los clientes' });
@@ -107,7 +108,7 @@ exports.editarCliente = (req, res) => {
     });
 };
 exports.obtenerClientesEliminados = (req, res) => {
-    cliente_model_1.Cliente.find({ activo: 0 })
+    cliente_model_1.Cliente.find({ activo: 0, sucursal: res.locals.usuario.sucursal })
         .exec((err, clientesEliminados) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los clientes eliminados' });
@@ -128,7 +129,7 @@ exports.restaurarClienteEliminado = (req, res) => {
 function obtenerNuevoCliente(cliente, res, tipo) {
     const servidor = servidor_1.default.instance;
     for (let usuarioConectado of Socket.usuariosConectados.lista) {
-        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0) {
+        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0 && usuarioConectado.sucursal == res.locals.usuario.sucursal) {
             switch (tipo) {
                 case 0:
                     servidor.io.in(usuarioConectado.id).emit('nuevo-cliente', cliente);

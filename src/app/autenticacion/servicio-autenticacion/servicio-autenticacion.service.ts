@@ -71,6 +71,9 @@ export class ServicioAutenticacionService {
         break;
     }
   }
+  public getConfiguracionNotificaciones(): any {
+    return this.tokenDesencriptado.configuracion.notificaciones;
+  }
   public getIdUsuario(): any{
     return this.tokenDesencriptado.id;
   }

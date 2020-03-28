@@ -1,1 +1,10 @@
-<p>caja-detalles works!</p>
+<app-cargando *ngIf="cargando" texto="Cargando..."></app-cargando>
+<mat-toolbar>
+    <button mat-raised-button color="primary" (click)="nuevaCaja()">
+        <mat-icon>add</mat-icon>
+        Nueva caja
+    </button>
+</mat-toolbar>
+<app-buscador #buscador *ngIf="cajas" [elementos]="cajas" [columnas]="columnas" nombre="cajas" accion="administrar">
+
+</app-buscador>

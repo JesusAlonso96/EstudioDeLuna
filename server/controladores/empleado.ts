@@ -30,6 +30,7 @@ export let asignarFotografo = (req: Request, res: Response) => {
         .match({
             "asistencia.asistencia": true,
             "asistencia.fecha": fecha,
+            sucursal: Types.ObjectId(res.locals.usuario.sucursal),
             rol: 0,
             rol_sec: 1,
             ocupado: false
@@ -61,6 +62,7 @@ export let numPedidosFotografo = (req: Request, res: Response) => {
             as: "pedidosTomados"
         })
         .match({
+            sucursal: Types.ObjectId(res.locals.usuario.sucursal),
             rol: 0,
             rol_sec: 1
         })
@@ -120,6 +122,7 @@ export let crearPedido = (req: Request, res: Response) => {
         req.body.fotografo = null;
     }
     let pedidoAlta = new Pedido(req.body);
+    pedidoAlta.sucursal = res.locals.usuario.sucursal;
     pedidoAlta.save((err: NativeError, pedidoGuardado: IPedido) => {
         if (err) {
             console.log(err)
@@ -182,11 +185,12 @@ export let realizarVenta = (req: Request, res: Response) => {
         pedido: req.body,
         fecha: fecha,
         hora: hora,
-        vendedor: res.locals.usuario._id
+        vendedor: res.locals.usuario._id,
+        sucursal: res.locals.usuario.sucursal
     })
     venta.save((err: NativeError, exito: IVenta) => {
         if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear la venta' });
-        actualizarCantidadesCaja(Number(req.params.cantidadACaja), req.params.metodoPago, res);
+        actualizarCantidadesCaja(req.params.id, Number(req.params.cantidadACaja), req.params.metodoPago, res);
         return res.json(exito);
     })
 }
@@ -446,7 +450,7 @@ export let obtenerProductosPorPedido = (req: Request, res: Response) => {
         });
 }
 export let obtenerFotografos = (req: Request, res: Response) => {
-    Usuario.find({ rol: 0, rol_sec: 1 })
+    Usuario.find({ rol: 0, rol_sec: 1, sucursal: res.locals.usuario.sucursal })
         .exec((err: NativeError, fotografosEncontrados: IUsuario[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al cargar a los fotografos' })
             return res.json(fotografosEncontrados);
@@ -469,7 +473,7 @@ export let obtenerNotificaciones = (req: Request, res: Response) => {
         });
 }
 export let obtenerPedidosEnCola = (req: Request, res: Response) => {
-    Pedido.find({ fotografo: null })
+    Pedido.find({ fotografo: null, sucursal: res.locals.usuario.sucursal })
         .populate('productos')
         .populate('cliente')
         .exec((err: NativeError, pedidosEncontrados: IPedido[]) => {
@@ -478,7 +482,7 @@ export let obtenerPedidosEnCola = (req: Request, res: Response) => {
         });
 }
 export let obtenerNumPedidosEnCola = (req: Request, res: Response) => {
-    Pedido.find({ fotografo: null })
+    Pedido.find({ fotografo: null, sucursal: res.locals.usuario.sucursal })
         .countDocuments()
         .exec((err: NativeError, pedidosEncontrados: IPedido[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al cargar a los pedidos' })
@@ -510,7 +514,6 @@ export let tomarPedido = (req: Request, res: Response) => {
     });
 }
 export let actualizarEstadoPedido = (req: Request, res: Response) => {
-    
     Pedido.findOneAndUpdate({ _id: req.body._id }, {
         $set: {
             status: req.body.status
@@ -518,27 +521,27 @@ export let actualizarEstadoPedido = (req: Request, res: Response) => {
     }).exec((err: NativeError, pedidoActualizado: IPedido) => {
         if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al actualizar el pedido' });
         Pedido
-        .findById(pedidoActualizado._id)
-        .populate('cliente')
-        .exec( (err: NativeError, pedido: IPedido | null)=> {
-            if(pedido) {
-                if(pedido.cliente && pedido.status == 'Finalizado') {
-                    let opciones = {
-                        from: '"Estudio de Luna" <j.alonso.jacl2@gmail.com>',
-                        to: pedido.cliente.email,
-                        subject: 'Pedido listo',
-                        html: `<b>Tu pedido ya esta disponible para ser recogido</b>` // html body
-                
+            .findById(pedidoActualizado._id)
+            .populate('cliente')
+            .exec((err: NativeError, pedido: IPedido | null) => {
+                if (pedido) {
+                    if (pedido.cliente && pedido.status == 'Finalizado') {
+                        let opciones = {
+                            from: '"Estudio de Luna" <j.alonso.jacl2@gmail.com>',
+                            to: pedido.cliente.email,
+                            subject: 'Pedido listo',
+                            html: `<b>Tu pedido ya esta disponible para ser recogido</b>` // html body
+
+                        }
+                        transporter.sendMail(opciones, (err: Error | null, info: any) => {
+                            if (err) res.status(422).send({ titulo: 'Error al enviar correo', detalles: 'Ocurrio un error al enviar el correo electronico, por favor intentalo de nuevo mas tarde' });
+                            console.log("Message sent: %s", info.messageId);
+                            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+                        })
                     }
-                    transporter.sendMail(opciones, (err: Error | null, info: any) => {
-                        if (err) res.status(422).send({ titulo: 'Error al enviar correo', detalles: 'Ocurrio un error al enviar el correo electronico, por favor intentalo de nuevo mas tarde' });
-                        console.log("Message sent: %s", info.messageId);
-                        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-                    })
+                    return res.json(pedido);
                 }
-                return res.json(pedido);
-            }
-        });
+            });
     });
 }
 export let actualizarAnticipoPedido = (req: Request, res: Response) => {
@@ -594,13 +597,13 @@ export let actualizarOcupado = (req: Request, res: Response) => {
     });
 }
 export let obtenerPedidos = (req: Request, res: Response) => {
-    Pedido.find().exec((err: NativeError, pedidos: IPedido[]) => {
+    Pedido.find({ sucursal: res.locals.usuario.sucursal }).exec((err: NativeError, pedidos: IPedido[]) => {
         if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener todos los pedidos' })
         return res.json(pedidos);
     });
 }
 export let actualizarCaja = (req: Request, res: Response) => {
-    actualizarCantidadesCaja(Number(req.params.cantidadACaja), req.params.metodoPago, res);
+    actualizarCantidadesCaja(req.params.id, Number(req.params.cantidadACaja), req.params.metodoPago, res);
 }
 export let fotografoMiddleware = (req: Request, res: Response, next: NextFunction) => {
     if (res.locals.usuario.rol !== 0 && res.locals.rol_sec !== 1) {
@@ -617,11 +620,11 @@ export let recepcionistaMiddleware = (req: Request, res: Response, next: NextFun
     }
 }
 /* Funciones auxiliares */
-function actualizarCantidadesCaja(cantidad: number, metodoPago: string, res: Response) {
+function actualizarCantidadesCaja(idCaja: string, cantidad: number, metodoPago: string, res: Response) {
     let cantidadSuma = cantidad;
     switch (metodoPago) {
         case 'efectivo':
-            Caja.findOne().exec((err: NativeError, caja: ICaja) => {
+            Caja.findById(idCaja).exec((err: NativeError, caja: ICaja) => {
                 if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear la venta' });
                 let cajaCantidad = caja.cantidadTotal + cantidadSuma;
                 let cajaEfectivo = caja.cantidadEfectivo + cantidadSuma;
@@ -633,7 +636,7 @@ function actualizarCantidadesCaja(cantidad: number, metodoPago: string, res: Res
             break;
 
         case 'tarjeta':
-            Caja.findOne().exec((err: NativeError, caja: ICaja) => {
+            Caja.findById(idCaja).exec((err: NativeError, caja: ICaja) => {
                 if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear la venta' });
                 let cajaCantidad = caja.cantidadTotal + cantidadSuma;
                 let cajaTarjetas = caja.cantidadTarjetas + cantidadSuma;

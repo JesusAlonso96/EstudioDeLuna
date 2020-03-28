@@ -12,6 +12,7 @@ const ventaSchema = new mongoose_1.Schema({
     pedido: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Pedido' },
     fecha: { type: Date, required: true },
     hora: { type: String, required: true },
-    vendedor: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Usuario' }
+    vendedor: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Usuario' },
+    sucursal: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal' }
 });
 exports.Venta = mongoose_1.default.model('Venta', ventaSchema);

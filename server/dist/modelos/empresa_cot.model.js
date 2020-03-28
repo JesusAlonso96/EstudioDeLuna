@@ -14,6 +14,9 @@ const empresa_cotSchema = new mongoose_1.Schema({
     contacto: { type: String, required: true },
     telefono: { type: Number, required: true },
     email: { type: String, required: true },
+    sucursal: { type: mongoose_1.default.Types.ObjectId, ref: 'Sucursal' },
     activa: { type: Number, required: true, default: 1 }
+}, {
+    collection: 'empresas'
 });
 exports.EmpresaCot = mongoose_1.default.model('Empresa_cot', empresa_cotSchema);

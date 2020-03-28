@@ -7,6 +7,7 @@ class Usuario {
         this.sala = 'sin-sala';
         this._id = '';
         this.rol = this.rol_sec = -1;
+        this.sucursal = '';
     }
     reiniciarUsuario(id) {
         this.id = id;
@@ -14,6 +15,7 @@ class Usuario {
         this.sala = 'sin-sala';
         this._id = '';
         this.rol = this.rol_sec = -1;
+        this.sucursal = '';
     }
 }
 exports.default = Usuario;

@@ -1,56 +1,75 @@
 <app-encabezado-titulo titulo="Configuracion del sistema"></app-encabezado-titulo>
 <app-barra-cargando [cargando]="cargando"></app-barra-cargando>
-<div class="container">
+<div class="container tema-prueba2">
     <div class="row margin-top">
-        <div class="col-lg-12">
-            <mat-card class="full-width card sin-borde" style="padding: 0%;">
-                <mat-toolbar class="toolbar-header">
-                    <span>Datos de la empresa</span>
+        <div class="col-lg-6 col-md-12">
+            <mat-card class="full-width card" style="padding: 0%;">
+                <mat-toolbar color="primary" class="toolbar-header">
+                    <span>Notificaciones</span>
                 </mat-toolbar>
                 <form #datosForm="ngForm">
                     <div class="container mt-4">
                         <div class="row">
-                            <div class="col-lg-6 col-md-6">
-                                <mat-form-field class="full-width input" appearance="outline">
-                                    <mat-label>Nombre</mat-label>
-                                    <mat-icon matPrefix>domain &nbsp; </mat-icon>
-                                    <input type="text" matInput placeholder="Nombre de empresa" required>
-                                </mat-form-field>
+                            <div class="col-lg-12">
+                                <h6>Escoge las opciones con las cuales se mostraran las notificaciones.</h6>
+                                <hr>
                             </div>
-                            <div class="col-lg-6 col-md-6">
-                                <mat-form-field class="full-width input" appearance="outline">
-                                    <mat-label>Correo electronico</mat-label>
-                                    <mat-icon matPrefix>email&nbsp;</mat-icon>
-                                    <input type="tel" matInput placeholder="555-555-1234">
-                                </mat-form-field>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-12">
+                                <mat-checkbox [(ngModel)]="configuracion.notificaciones.botonCerrar" name="botonCerrar"
+                                    #botonCerrar="ngModel">Boton de cerrar</mat-checkbox>
+                                <hr>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <mat-checkbox [(ngModel)]="configuracion.notificaciones.barraProgreso"
+                                    name="barraProgreso" #barraProgreso="ngModel">Barra de progreso</mat-checkbox>
+                                <hr>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-6 col-md-6">
                                 <mat-form-field class="full-width input" appearance="outline">
-                                    <mat-label>Telefono</mat-label>
-                                    <mat-icon matPrefix>phone&nbsp;</mat-icon>
-                                    <input type="tel" matInput placeholder="555-555-1234">
+                                    <mat-label>Tiempo de visualizacion</mat-label>
+                                    <mat-icon matPrefix>alarm_add&nbsp;</mat-icon>
+                                    <input type="number" [(ngModel)]="configuracion.notificaciones.tiempo" name="tiempo"
+                                        #tiempo="ngModel" matInput required>
                                 </mat-form-field>
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <mat-form-field class="full-width input" appearance="outline">
-                                    <mat-label>Rubro</mat-label>
-                                    <mat-icon matPrefix>storefront&nbsp;</mat-icon>
-                                    <input type="tel" matInput placeholder="555-555-1234">
+                                    <mat-label>Posicion</mat-label>
+                                    <mat-icon matPrefix>aspect_ratio&nbsp;</mat-icon>
+                                    <mat-select [(ngModel)]="configuracion.notificaciones.posicion" name="posicion"
+                                        #posicion="ngModel" required>
+                                        <mat-option value="toast-top-right">
+                                            Arriba y a la derecha
+                                        </mat-option>
+                                        <mat-option value="toast-top-left">
+                                            Arriba y a la izquierda
+                                        </mat-option>
+                                        <mat-option value="toast-bottom-right">
+                                            Abajo y a la derecha
+                                        </mat-option>
+                                        <mat-option value="toast-bottom-left">
+                                            Abajo y a la izquierda
+                                        </mat-option>
+                                    </mat-select>
                                 </mat-form-field>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row mb-4">
                             <div class="col-lg-6 col-md-6">
-                                <mat-form-field class="full-width input" appearance="outline">
-                                    <mat-label>Direccion</mat-label>
-                                    <mat-icon matPrefix>apartment&nbsp;</mat-icon>
-                                    <input type="tel" matInput placeholder="555-555-1234">
-                                </mat-form-field>
+                                <button mat-raised-button mat-button class="btn-actualizar" color="primary"
+                                    (click)="abrirToastr()">
+                                    <mat-icon>play_arrow</mat-icon>
+                                    Probar configuracion
+                                </button>
                             </div>
-                            <div class="col-lg-6 col-md-6 btn-contenedor">
-                                <button mat-raised-button mat-button class="btn-actualizar" color="primary">
+                            <div class="col-lg-6 col-md-6">
+                                <button class="float-right" mat-raised-button mat-button class="btn-actualizar"
+                                    [disabled]="!datosForm.valid" (click)="guardarConfiguracionNotificaciones()"
+                                    color="primary">
                                     <mat-icon>save</mat-icon>
                                     Guardar
                                 </button>
@@ -58,7 +77,37 @@
                         </div>
                     </div>
                 </form>
-
+            </mat-card>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <mat-card class="full-width card" style="padding: 0%;">
+                <mat-toolbar color="primary" class="toolbar-header">
+                    <span>Temas</span>
+                </mat-toolbar>
+                <div>
+                    <div class="container mt-4">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h6>Escoge el tema de tu preferencia.</h6>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 ">
+                                <div class="row">
+                                    <div class="col-lg-5">
+                                        <mat-card class="mb-4" style="text-align: center;">
+                                            <span class="dot mr-4"></span>
+                                            <span class="dot"></span> <br>
+                                            <span class="dot mr-4"></span>
+                                            <span class="dot"></span>
+                                        </mat-card>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </mat-card>
         </div>
     </div>

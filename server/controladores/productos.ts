@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { Familia, IFamilia } from '../modelos/familia.model';
-import { NativeError } from 'mongoose';
+import { NativeError, Types } from 'mongoose';
 import { Producto, IProducto } from '../modelos/producto.model';
 
 export let obtenerFamilias = (req: Request, res: Response) => {
-    Familia.find({ activa: 1 })
+    Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
         .exec((err: NativeError, familias: IFamilia[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron cargar las familias' });
             return res.json(familias);
@@ -18,7 +18,7 @@ export let obtenerProductos = (req: Request, res: Response) => {
         })
 }
 export let obtenerFamiliasYProductos = (req: Request, res: Response) => {
-    Familia.find({ activa: 1 })
+    Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
         .populate({
             path: 'productos',
             match: { activo: 1 }
@@ -40,7 +40,7 @@ export let obtenerProductosPorTam = (req: Request, res: Response) => {
             as: "familia"
         })
         .match({
-            "familia.nombre": req.params.nombre,
+            "familia._id": Types.ObjectId(req.params.id),
             activo: 1
         })
         .group({
@@ -68,7 +68,7 @@ export let obtenerProductosPorCantidad = (req: Request, res: Response) => {
             as: "familia"
         })
         .match({
-            "familia.nombre": req.params.nombre,
+            "familia._id": Types.ObjectId(req.params.id),
             activo: 1
         })
         .group({

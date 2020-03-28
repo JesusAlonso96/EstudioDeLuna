@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, NgForm } from '@angular/forms';
 import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
 import { AdministradorService } from 'src/app/administrador/servicio-administrador/servicio-administrador.service';
 import * as momento from 'moment';
@@ -7,6 +7,11 @@ import { ToastrService } from 'ngx-toastr';
 import { CorteCaja } from 'src/app/comun/modelos/corte_caja.model';
 import { MatDialog } from '@angular/material/dialog';
 import { EditarCantidadComponent } from './editar-cantidad/editar-cantidad.component';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { CajaService } from 'src/app/comun/servicios/caja.service';
+import { Caja } from 'src/app/comun/modelos/caja.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatStepper } from '@angular/material';
 
 
 export interface Cantidades {
@@ -23,7 +28,7 @@ export class CorteCajaComponent implements OnInit {
   fecha: Date = new Date(Date.now());
   corte: CorteCaja = new CorteCaja();
   step = 0;
-  caja: any;
+  caja: Caja;
   tabla: any[];
   displayedColumns: string[] = ['metodopago', 'esperado', 'ok', 'editar', 'contado'];
   editar: boolean[] = [];
@@ -33,18 +38,38 @@ export class CorteCajaComponent implements OnInit {
   tarjetaADejar: number = 0;
   cargandoCorte: boolean = false;
   corteRealizado: boolean = false;
+  cajas: Caja[] = [];
   constructor(public authService: ServicioAutenticacionService,
     private adminService: AdministradorService,
-    private toastr: ToastrService,
-    public dialog: MatDialog) {
+    private toastr: NgToastrService,
+    public dialog: MatDialog,
+    private cajasService: CajaService) {
 
   }
 
   ngOnInit() {
-    this.obtenerTotalCaja();
-    this.existeCorte();
+    this.obtenerCajasSucursal();
   }
+  obtenerCajasSucursal() {
+    this.cargandoCorte = true;
+    this.cajasService.obtenerCajas().subscribe(
+      (cajas: Caja[]) => {
+        this.cargandoCorte = false;
+        this.cajas = cajas;
+        console.log(this.cajas);
+      },
+      (err: HttpErrorResponse) => {
+        this.cargandoCorte = false;
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+      }
+    );
+  }
+  inicializarCaja() {
+    this.inicializarTablaCantidades(<Caja>this.corte.caja);
+    this.inicializarBotonesEditar();
+    this.sumarTotal();
 
+  }
   obtenerTotalCaja() {
     this.adminService.obtenerTotalCaja().subscribe(
       (caja) => {
@@ -54,29 +79,24 @@ export class CorteCajaComponent implements OnInit {
         this.sumarTotal();
       },
       (err) => {
-        this.toastr.error(err.error.detalles, err.error.titulo)
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     );
   }
 
-  setStep(index: number) {
-    this.step = index;
-  }
-
-  nextStep() {
-    this.step++;
-  }
-
-  prevStep() {
-    this.step--;
-  }
-  existeCorte() {
-    this.adminService.existeCorte().subscribe(
-      (existe) => {
-        this.corteRealizado = existe.encontrado;
+  existeCorte(idCaja: string) {
+    this.corteRealizado = false;
+    this.cargandoCorte = true;
+    this.cajasService.existeCorteCaja(idCaja).subscribe(
+      (resp: any) => {
+        this.cargandoCorte = false;
+        if (resp.encontrado) {
+          this.corteRealizado = true;
+        }
       },
-      (err) => {
-        this.toastr.error(err.error.detalles, err.error.titulo);
+      (err: HttpErrorResponse) => {
+        this.cargandoCorte = false;
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
@@ -92,14 +112,14 @@ export class CorteCajaComponent implements OnInit {
         switch (tipo) {
           case 0:
             if (result > this.tabla[0].contado) {
-              this.toastr.warning('No puedes dejar mas efectivo del contado, ingresa otra cantidad', '', { closeButton: true })
+              this.toastr.abrirToastr('advertencia', 'No puedes dejar mas efectivo del contado, ingresa otra cantidad', '')
             } else {
               this.efectivoADejar = result;
             }
             break;
           case 1:
             if (result > this.tabla[1].contado) {
-              this.toastr.warning('No puedes dejar mas efectivo del contado, ingresa otra cantidad', '', { closeButton: true })
+              this.toastr.abrirToastr('advertencia', 'No puedes dejar mas efectivo del contado, ingresa otra cantidad', '')
             } else {
               this.tarjetaADejar = result;
             }
@@ -107,32 +127,29 @@ export class CorteCajaComponent implements OnInit {
       }
     });
   }
-  hacerCorte() {
-    //actualizar caja
+  hacerCorte(cajaForm: NgForm, contarCajaForm: NgForm, cantidadMantenerForm: NgForm) {
     this.actualizarCaja();
-    //hacer el historial de corte
-    this.crearCorteCaja();
+    this.crearCorteCaja(cajaForm, contarCajaForm, cantidadMantenerForm);
     this.corteRealizado = true;
 
   }
   actualizarCaja() {
-    this.caja.cantidadTotal = this.efectivoADejar + this.tarjetaADejar;
-    this.caja.cantidadEfectivo = this.efectivoADejar;
-    this.caja.cantidadTarjetas = this.tarjetaADejar;
+    this.corte.caja.cantidadTotal = this.efectivoADejar + this.tarjetaADejar;
+    this.corte.caja.cantidadEfectivo = this.efectivoADejar;
+    this.corte.caja.cantidadTarjetas = this.tarjetaADejar;
     this.cargandoCorte = true;
-    this.adminService.actualizarCaja(this.caja).subscribe(
-      (actualizada) => {
+    this.cajasService.actualizarCaja(this.corte.caja).subscribe(
+      (cajaActualizada: Caja) => {
         this.cargandoCorte = false;
-        this.toastr.success('Caja actualizada correctamente', 'Exito', { closeButton: true })
+        this.toastr.abrirToastr('exito', 'Caja actualizada correctamente', 'Exito')
       },
-      (err) => {
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
         this.cargandoCorte = false;
       }
     );
   }
-  crearCorteCaja() {
-    //crear fecha y hora en backend
+  crearCorteCaja(cajaForm: NgForm, contarCajaForm: NgForm, cantidadMantenerForm: NgForm) {
     this.corte.efectivoEsperado = this.tabla[0].esperado;
     this.corte.tarjetaEsperado = this.tabla[1].esperado;
     this.corte.efectivoContado = this.tabla[0].contado;
@@ -140,13 +157,19 @@ export class CorteCajaComponent implements OnInit {
     this.corte.fondoEfectivo = this.efectivoADejar;
     this.corte.fondoTarjetas = this.tarjetaADejar;
     this.cargandoCorte = true;
-    this.adminService.crearCorteCaja(this.corte).subscribe(
-      (creado) => {
-        this.toastr.success('Corte creado exitosamente', 'Exito', { closeButton: true });
+    this.cajasService.crearCorteCaja(this.corte).subscribe(
+      (creado: CorteCaja) => {
+        this.toastr.abrirToastr('exito', 'Exito', 'Corte creado exitosamente');
         this.cargandoCorte = false;
+        this.tabla = null;
+        this.corteRealizado = false;
+        cajaForm.resetForm();
+        contarCajaForm.resetForm();
+        cantidadMantenerForm.resetForm();
+
       },
-      (err) => {
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
         this.cargandoCorte = false;
       }
     );
@@ -168,14 +191,14 @@ export class CorteCajaComponent implements OnInit {
     for (let i = 0; i < this.tabla.length; i++) {
       contado = contado + this.tabla[i].contado;
     }
-    this.totalContado = contado - this.caja.cantidadTotal;
+    this.totalContado = contado - this.corte.caja.cantidadTotal;
   }
   inicializarBotonesEditar() {
     for (let i = 0; i < this.tabla.length; i++) {
       this.editar[i] = true;
     }
   }
-  inicializarTablaCantidades(caja) {
+  inicializarTablaCantidades(caja: Caja) {
     this.tabla = [
       {
         metodo: 'Efectivo',

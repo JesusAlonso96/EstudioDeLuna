@@ -11,6 +11,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 const familiaSchema = new mongoose_1.Schema({
     nombre: { type: String, required: true },
     productos: [{ type: mongoose_1.default.Types.ObjectId, ref: 'Producto' }],
+    sucursal: { type: mongoose_1.default.Types.ObjectId, ref: 'Sucursal' },
     activa: { type: Number, default: 1 }
 });
 exports.Familia = mongoose_1.default.model('familia', familiaSchema);

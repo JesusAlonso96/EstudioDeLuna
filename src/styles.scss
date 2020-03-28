@@ -9,28 +9,28 @@
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 @include mat-core();
-
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
+//TEMA 1
 $cliente-primary: mat-palette($mat-indigo, 700);
 $cliente-accent: mat-palette($mat-yellow, 600);
-
-// The warn palette is optional (defaults to red).
 $cliente-warn: mat-palette($mat-red);
-
-// Create the theme object (a Sass map containing all of the palettes).
 $cliente-theme: mat-light-theme($cliente-primary, $cliente-accent, $cliente-warn);
+//TEMA 2
+$cliente2-primary: mat-palette($mat-red, 800);
+$cliente2-accent: mat-palette($mat-yellow, 600);
+$cliente2-warn: mat-palette($mat-red);
+$cliente2-theme: mat-light-theme($cliente2-primary, $cliente2-accent, $cliente2-warn);
 
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include angular-material-theme($cliente-theme);
+ .tema-prueba{
+  @include angular-material-theme($cliente-theme);
+ }
+ .tema-prueba2{
+  @include angular-material-theme($cliente2-theme);
 
+ }
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; overflow: hidden;  overflow-y: hidden; }
 .sin-borde{
     border-radius: 0% !important;
 }
@@ -73,24 +73,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background-color: $primary;
   border-radius: 5px;
 }
-.cargando{
-  position: absolute ;
-  height: 100% ;
-  width: 100% ;
-  background: rgba(0,0,0,.6) ;
-  z-index: 1000000000000000000000000000000 ;
-  .spinner{
-      margin-left: auto ;
-      margin-right: auto ;
-      margin-top: 20% ;
-  }
-  h3{
-      z-index: 100000 ;
-      color: #ffffff ;
-      margin-top: 2% ;
-      text-align: center ;
-  }
-}
+
 //no mostrar
 .hide{
   display: none;

@@ -61,7 +61,9 @@ exports.login = (req, res) => {
                     id: usuarioEncontrado._id,
                     nombre: usuarioEncontrado.nombre,
                     rol: usuarioEncontrado.rol,
-                    rol_sec: usuarioEncontrado.rol_sec
+                    rol_sec: usuarioEncontrado.rol_sec,
+                    configuracion: usuarioEncontrado.configuracion,
+                    sucursal: usuarioEncontrado.sucursal
                 }, environment_1.environment.SECRET, { expiresIn: '8h' });
                 return res.json(token);
             }
@@ -73,6 +75,7 @@ exports.login = (req, res) => {
 };
 exports.obtenerPestanas = (req, res) => {
     pestana_model_1.Pestana.find({ rol: req.params.rol })
+        .sort({ nombre: 1 })
         .exec((err, pestanas) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: `Error al obtener los módulos de ${req.params.rol}` });
@@ -234,6 +237,7 @@ exports.actualizarProducto = (req, res) => {
 };
 exports.agregarFamilia = (req, res) => {
     const familia = new familia_model_1.Familia(req.body);
+    familia.sucursal = res.locals.usuario.sucursal;
     familia_model_1.Familia.findOne({ nombre: familia.nombre })
         .exec((err, familiaEncontrada) => {
         if (err)
@@ -486,7 +490,7 @@ exports.obtenerProductosProveedor = (req, res) => {
 };
 /* Modulo cotizaciones */
 exports.obtenerEmpresas = (req, res) => {
-    empresa_cot_model_1.EmpresaCot.find({ activa: 1 })
+    empresa_cot_model_1.EmpresaCot.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
         .exec((err, empresas) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las empresas' });
@@ -495,6 +499,7 @@ exports.obtenerEmpresas = (req, res) => {
 };
 exports.nuevaEmpresa = (req, res) => {
     const nuevaEmpresa = new empresa_cot_model_1.EmpresaCot(req.body);
+    nuevaEmpresa.sucursal = res.locals.usuario.sucursal;
     nuevaEmpresa.save((err, guardada) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la empresa' });
@@ -531,6 +536,7 @@ exports.editarEmpresa = (req, res) => {
 };
 exports.nuevaCotizacion = (req, res) => {
     const cotizacion = new cotizacion_model_1.Cotizacion(req.body);
+    cotizacion.sucursal = res.locals.usuario.sucursal;
     cotizacion.save((err, guardada) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la cotizacion' });
@@ -539,7 +545,7 @@ exports.nuevaCotizacion = (req, res) => {
     });
 };
 exports.obtenerCotizaciones = (req, res) => {
-    cotizacion_model_1.Cotizacion.find({}, { __v: 0 })
+    cotizacion_model_1.Cotizacion.find({ sucursal: res.locals.usuario.sucursal }, { __v: 0 })
         .populate('productos.producto', '-activo -caracteristicas -__v -familia -c_ad -c_r -b_n -nombre -num_fotos')
         .populate('asesor', '-_id -__v -ape_mat -asistencia -ocupado -pedidosTomados -activo -username -contrasena -rol -rol_sec')
         .populate('empresa', '-_id -activa -__v')

@@ -10,19 +10,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const bcrypt = __importStar(require("bcrypt"));
 const usuarioSchema = new mongoose_1.Schema({
-    nombre: { type: String, required: true },
-    username: { type: String, required: true },
-    ape_pat: { type: String, required: true },
-    ape_mat: { type: String, required: true },
+    nombre: { type: String, required: false },
+    username: { type: String, required: false },
+    ape_pat: { type: String, required: false },
+    ape_mat: { type: String, required: false },
     email: { type: String, required: false },
     telefono: { type: Number, required: false },
-    contrasena: { type: String, required: true },
-    rol: { type: Number, required: true },
+    contrasena: { type: String, required: false },
+    rol: { type: Number, required: false },
     rol_sec: { type: Number, required: false },
     ocupado: { type: Boolean, required: false, default: false },
     asistencia: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Asistencia', default: [] }],
     pedidosTomados: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Pedido', default: [] }],
     sucursal: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal' },
+    configuracion: {
+        type: {
+            notificaciones: {
+                type: {
+                    botonCerrar: { type: Boolean, default: true },
+                    tiempo: { type: Number, default: 2000 },
+                    posicion: { type: String, default: 'toast-top-right' },
+                    barraProgreso: { type: Boolean, default: false }
+                }
+            }
+        }
+    },
     codigoRecuperacion: { type: String, required: false, default: '' },
     activo: { type: Number, default: 1 }
 });

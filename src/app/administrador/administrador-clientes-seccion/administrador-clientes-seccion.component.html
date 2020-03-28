@@ -1,31 +1,23 @@
 <app-encabezado-titulo titulo="Clientes"></app-encabezado-titulo>
-<mat-tab-group>
+<mat-tab-group class="w-100 h-100">
     <mat-tab label="Dar de alta">
         <ng-template matTabContent>
-            <div class="col-lg-12 ">
-                <app-clientes-alta></app-clientes-alta>
-            </div>
+            <app-clientes-alta></app-clientes-alta>
         </ng-template>
     </mat-tab>
     <mat-tab label="Dar de baja">
         <ng-template matTabContent>
-            <div class="col-lg-12 ">
-                <app-clientes-baja></app-clientes-baja>
-            </div>
+            <app-clientes-baja></app-clientes-baja>
         </ng-template>
     </mat-tab>
     <mat-tab label="Consultar cliente">
         <ng-template matTabContent>
-            <div class="col-lg-12 ">
-                <app-clientes-consulta></app-clientes-consulta>
-            </div>
+            <app-clientes-consulta></app-clientes-consulta>
         </ng-template>
     </mat-tab>
     <mat-tab label="Restaurar clientes eliminados">
         <ng-template matTabContent>
-            <div class="col-lg-12 ">
-                <app-clientes-restaurar></app-clientes-restaurar>
-            </div>
+            <app-clientes-restaurar></app-clientes-restaurar>
         </ng-template>
     </mat-tab>
 </mat-tab-group>

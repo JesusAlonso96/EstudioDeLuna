@@ -32,6 +32,7 @@ exports.asignarFotografo = (req, res) => {
         .match({
         "asistencia.asistencia": true,
         "asistencia.fecha": fecha,
+        sucursal: mongoose_1.Types.ObjectId(res.locals.usuario.sucursal),
         rol: 0,
         rol_sec: 1,
         ocupado: false
@@ -65,6 +66,7 @@ exports.numPedidosFotografo = (req, res) => {
         as: "pedidosTomados"
     })
         .match({
+        sucursal: mongoose_1.Types.ObjectId(res.locals.usuario.sucursal),
         rol: 0,
         rol_sec: 1
     })
@@ -127,6 +129,7 @@ exports.crearPedido = (req, res) => {
         req.body.fotografo = null;
     }
     let pedidoAlta = new pedido_model_1.Pedido(req.body);
+    pedidoAlta.sucursal = res.locals.usuario.sucursal;
     pedidoAlta.save((err, pedidoGuardado) => {
         if (err) {
             console.log(err);
@@ -192,12 +195,13 @@ exports.realizarVenta = (req, res) => {
         pedido: req.body,
         fecha: fecha,
         hora: hora,
-        vendedor: res.locals.usuario._id
+        vendedor: res.locals.usuario._id,
+        sucursal: res.locals.usuario.sucursal
     });
     venta.save((err, exito) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear la venta' });
-        actualizarCantidadesCaja(Number(req.params.cantidadACaja), req.params.metodoPago, res);
+        actualizarCantidadesCaja(req.params.id, Number(req.params.cantidadACaja), req.params.metodoPago, res);
         return res.json(exito);
     });
 };
@@ -456,7 +460,7 @@ exports.obtenerProductosPorPedido = (req, res) => {
     });
 };
 exports.obtenerFotografos = (req, res) => {
-    usuario_model_1.Usuario.find({ rol: 0, rol_sec: 1 })
+    usuario_model_1.Usuario.find({ rol: 0, rol_sec: 1, sucursal: res.locals.usuario.sucursal })
         .exec((err, fotografosEncontrados) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al cargar a los fotografos' });
@@ -482,7 +486,7 @@ exports.obtenerNotificaciones = (req, res) => {
     });
 };
 exports.obtenerPedidosEnCola = (req, res) => {
-    pedido_model_1.Pedido.find({ fotografo: null })
+    pedido_model_1.Pedido.find({ fotografo: null, sucursal: res.locals.usuario.sucursal })
         .populate('productos')
         .populate('cliente')
         .exec((err, pedidosEncontrados) => {
@@ -492,7 +496,7 @@ exports.obtenerPedidosEnCola = (req, res) => {
     });
 };
 exports.obtenerNumPedidosEnCola = (req, res) => {
-    pedido_model_1.Pedido.find({ fotografo: null })
+    pedido_model_1.Pedido.find({ fotografo: null, sucursal: res.locals.usuario.sucursal })
         .countDocuments()
         .exec((err, pedidosEncontrados) => {
         if (err)
@@ -621,14 +625,14 @@ exports.actualizarOcupado = (req, res) => {
     });
 };
 exports.obtenerPedidos = (req, res) => {
-    pedido_model_1.Pedido.find().exec((err, pedidos) => {
+    pedido_model_1.Pedido.find({ sucursal: res.locals.usuario.sucursal }).exec((err, pedidos) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener todos los pedidos' });
         return res.json(pedidos);
     });
 };
 exports.actualizarCaja = (req, res) => {
-    actualizarCantidadesCaja(Number(req.params.cantidadACaja), req.params.metodoPago, res);
+    actualizarCantidadesCaja(req.params.id, Number(req.params.cantidadACaja), req.params.metodoPago, res);
 };
 exports.fotografoMiddleware = (req, res, next) => {
     if (res.locals.usuario.rol !== 0 && res.locals.rol_sec !== 1) {
@@ -647,11 +651,11 @@ exports.recepcionistaMiddleware = (req, res, next) => {
     }
 };
 /* Funciones auxiliares */
-function actualizarCantidadesCaja(cantidad, metodoPago, res) {
+function actualizarCantidadesCaja(idCaja, cantidad, metodoPago, res) {
     let cantidadSuma = cantidad;
     switch (metodoPago) {
         case 'efectivo':
-            caja_model_1.Caja.findOne().exec((err, caja) => {
+            caja_model_1.Caja.findById(idCaja).exec((err, caja) => {
                 if (err)
                     return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear la venta' });
                 let cajaCantidad = caja.cantidadTotal + cantidadSuma;
@@ -664,7 +668,7 @@ function actualizarCantidadesCaja(cantidad, metodoPago, res) {
             });
             break;
         case 'tarjeta':
-            caja_model_1.Caja.findOne().exec((err, caja) => {
+            caja_model_1.Caja.findById(idCaja).exec((err, caja) => {
                 if (err)
                     return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear la venta' });
                 let cajaCantidad = caja.cantidadTotal + cantidadSuma;

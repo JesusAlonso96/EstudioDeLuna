@@ -16,11 +16,11 @@ export class ProductosService {
     public obtenerProductos(id: string): Observable<any>{
         return this.http.get(`/api/v1/productos/obtenerProductos/${id}`);
     }
-    public obtenerProductosPorCantidad(nombre): Observable<any>{
-        return this.http.get(`/api/v1/productos/obtenerProductosPorCantidad/${nombre}`)
+    public obtenerProductosPorCantidad(idFamilia: string): Observable<any>{
+        return this.http.get(`/api/v1/productos/obtenerProductosPorCantidad/${idFamilia}`)
     }
-    public obtenerProductosPorTam(nombre): Observable<any>{
-        return this.http.get(`/api/v1/productos/obtenerProductosPorTam/${nombre}`)
+    public obtenerProductosPorTam(id: string): Observable<any>{
+        return this.http.get(`/api/v1/productos/obtenerProductosPorTam/${id}`)
     }
     public obtenerProductosPorFamilia(): Observable<any>{
         return this.http.get('/api/v1/productos/obtenerFamiliasYProductos')

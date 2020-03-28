@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Usuario } from 'src/app/comun/modelos/usuario.model';
 import { AdministradorService } from 'src/app/administrador/servicio-administrador/servicio-administrador.service';
 import { Mensaje } from '../../modelos/mensaje.model';
+import { NgToastrService } from '../../servicios/ng-toastr.service';
 
 @Component({
   selector: 'app-alta-usuario',
@@ -17,7 +18,7 @@ export class AltaUsuarioComponent implements OnInit {
   confirmarContra: string;
   cargando: boolean = false;
 
-  constructor(private toastr: ToastrService, private adminService: AdministradorService) { }
+  constructor(private toastr: NgToastrService, private adminService: AdministradorService) { }
 
   ngOnInit() {
     this.valoresPorDefecto();
@@ -25,16 +26,16 @@ export class AltaUsuarioComponent implements OnInit {
   registrarUsuario(formulario: NgForm) {
     this.cargando = true;
     if (!this.rolValido()) {
-      this.toastr.error('Favor de elegir el rol', '', { closeButton: true });
+      this.toastr.abrirToastr('error', 'Favor de elegir el rol', '');
       return false;
     }
     if (!this.contrasenaValida()) {
-      this.toastr.error('Las contraseñas no coinciden', '', { closeButton: true });
+      this.toastr.abrirToastr('error', 'Las contraseñas no coinciden', '');
       return false;
     }
     this.adminService.registrarUsuario(this.usuario).subscribe(
       (registrado: Mensaje) => {
-        this.toastr.success(registrado.detalles, registrado.titulo, { closeButton: true });
+        this.toastr.abrirToastr('exito', registrado.detalles, registrado.titulo);
         this.cargando = false;
         this.usuario = new Usuario();
         this.valoresPorDefecto();
@@ -42,12 +43,13 @@ export class AltaUsuarioComponent implements OnInit {
         formulario.resetForm();
       },
       (err) => {
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
         this.cargando = false;
       }
     );
 
   }
+  
   valoresPorDefecto() {
     this.usuario.rol_sec = 0;
   }

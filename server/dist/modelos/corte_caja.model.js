@@ -26,7 +26,9 @@ const CorteCajaSchema = new mongoose_1.Schema({
     efectivoContado: { type: Number, required: true },
     tarjetaContado: { type: Number, required: true },
     fondoEfectivo: { type: Number, required: true },
-    fondoTarjetas: { type: Number, required: true }
+    fondoTarjetas: { type: Number, required: true },
+    sucursal: { type: mongoose_1.default.Types.ObjectId, ref: 'Sucursal' },
+    caja: { type: mongoose_1.default.Types.ObjectId, ref: 'Caja' }
 });
 CorteCajaSchema.plugin(mongoose_auto_increment_1.default.plugin, { model: 'Corte_caja', field: 'num_corte' });
 exports.CorteCaja = mongoose_1.default.model('CorteCaja', CorteCajaSchema);

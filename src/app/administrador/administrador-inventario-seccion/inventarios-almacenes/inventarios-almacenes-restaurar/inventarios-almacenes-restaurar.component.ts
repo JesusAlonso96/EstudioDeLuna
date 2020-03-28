@@ -3,6 +3,8 @@ import { BuscadorComponent } from 'src/app/comun/componentes/buscador/buscador.c
 import { Almacen } from 'src/app/comun/modelos/almacen.model';
 import { AlmacenService } from 'src/app/comun/servicios/almacen.service';
 import { ToastrService } from 'ngx-toastr';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-inventarios-almacenes-restaurar',
@@ -15,7 +17,7 @@ export class InventariosAlmacenesRestaurarComponent implements OnInit {
   almacenes: Almacen[];
   cargando: boolean = false;
   constructor(private almacenService: AlmacenService,
-    private toastr: ToastrService) { }
+    private toastr: NgToastrService) { }
 
   ngOnInit() {
     this.obtenerAlmacenes();
@@ -28,9 +30,9 @@ export class InventariosAlmacenesRestaurarComponent implements OnInit {
         this.almacenes = almacenes;
         console.log(this.almacenes);
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     )
   }

@@ -4,6 +4,7 @@ import { environment } from '../global/environment';
 import { IUsuario } from './usuario.model';
 import { ICliente } from './cliente.model';
 import { IProducto } from './producto.model';
+import { ISucursal } from './sucursal.model';
 
 mongoose.set('useUnifiedTopology', true);
 var conexion = mongoose.createConnection(environment.DB_URL, { useNewUrlParser: true });
@@ -25,6 +26,7 @@ export interface IPedido extends Document {
     anticipo: number;
     foto: string;
     metodoPago: string;
+    sucursal: ISucursal['_id']
 }
 const pedidoSchema = new Schema({
     num_pedido: { type: Number },//
@@ -41,7 +43,9 @@ const pedidoSchema = new Schema({
     importante: { type: Boolean },//
     anticipo: { type: Number },//
     foto: { type: String },
-    metodoPago: { type: String }
+    metodoPago: { type: String },
+    sucursal: [{ type: Schema.Types.ObjectId, ref: 'Sucursal' }],//
+
 });
 
 pedidoSchema.plugin(autoIncrement.plugin, { model: 'Pedido', field: 'num_pedido' });

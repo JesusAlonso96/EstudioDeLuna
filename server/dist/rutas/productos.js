@@ -8,14 +8,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const UsuarioCtrl = __importStar(require("../controladores/usuario"));
 const ProductoCtrl = __importStar(require("../controladores/productos"));
 const rutasProductos = express_1.Router();
-rutasProductos.get('/obtenerProductos/:id', ProductoCtrl.obtenerProductos);
-rutasProductos.get('/obtenerProductosPorCantidad/:nombre', ProductoCtrl.obtenerProductosPorCantidad);
-rutasProductos.get('/obtenerProductosPorTam/:nombre', ProductoCtrl.obtenerProductosPorTam);
-rutasProductos.get('/familias', ProductoCtrl.obtenerFamilias);
-rutasProductos.get('/buscarProductoPorTam/:ancho/:alto', ProductoCtrl.buscarProductoPorTam);
-rutasProductos.get('/obtenerFamiliasYProductos', ProductoCtrl.obtenerFamiliasYProductos);
+rutasProductos.get('/obtenerProductos/:id', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerProductos);
+rutasProductos.get('/obtenerProductosPorCantidad/:id', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerProductosPorCantidad);
+rutasProductos.get('/obtenerProductosPorTam/:id', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerProductosPorTam);
+rutasProductos.get('/familias', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerFamilias);
+rutasProductos.get('/buscarProductoPorTam/:ancho/:alto', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.buscarProductoPorTam);
+rutasProductos.get('/obtenerFamiliasYProductos', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerFamiliasYProductos);
 //post
-rutasProductos.post('/buscarProducto', ProductoCtrl.buscarProducto);
+rutasProductos.post('/buscarProducto', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.buscarProducto);
 exports.default = rutasProductos;

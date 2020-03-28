@@ -35,13 +35,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PaginadorTraductor } from './pipes/paginador-translate';
 import { MatNativeDateModule } from '@angular/material';
-
+import { MatStepperModule } from '@angular/material/stepper';
 
 
 @NgModule({
-  declarations: [
-
-  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -52,9 +49,12 @@ import { MatNativeDateModule } from '@angular/material';
     MatIconModule,
     MatListModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatMenuModule
   ],
   exports: [
+    BrowserModule,
+    BrowserAnimationsModule,
     MatToolbarModule,
     MatCardModule,
     MatFormFieldModule,
@@ -85,7 +85,8 @@ import { MatNativeDateModule } from '@angular/material';
     MatCheckboxModule,
     MatChipsModule,
     MatMomentDateModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatStepperModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: PaginadorTraductor }

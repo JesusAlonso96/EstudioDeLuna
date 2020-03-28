@@ -91,9 +91,9 @@ export class EmpleadoVentaComponent implements OnInit {
   private _clientesFiltrados(value: string): Cliente[] {
     return this.clientes.filter(cliente => cliente.nombre.toLowerCase().indexOf(value.toLowerCase()) === 0);
   }
-  obtenerProductosPorCantidad(nombreFamilia) {
+  obtenerProductosPorCantidad(idFamilia:string) {
     this.cargando = true;
-    this.productosService.obtenerProductosPorCantidad(nombreFamilia).subscribe(
+    this.productosService.obtenerProductosPorCantidad(idFamilia).subscribe(
       (respuesta: any) => {
         this.grupo = respuesta;
         this.cargando = false;
@@ -104,9 +104,9 @@ export class EmpleadoVentaComponent implements OnInit {
       }
     )
   }
-  obtenerProductosPorTam(nombreFamilia) {
+  obtenerProductosPorTam(idFamilia: string) {
     this.cargando = true;
-    this.productosService.obtenerProductosPorTam(nombreFamilia).subscribe(
+    this.productosService.obtenerProductosPorTam(idFamilia).subscribe(
       (respuesta: any) => {
         this.grupo = respuesta;
         this.cargando = false;
@@ -135,12 +135,12 @@ export class EmpleadoVentaComponent implements OnInit {
     this.familiaSeleccionada = nombreFamilia;
     if (this.esFamiliaEspecial()) {
       if (this.familiaSeleccionada == 'Sesiones') {
-        this.obtenerProductosPorTam(nombreFamilia);
+        this.obtenerProductosPorTam(idFamilia);
       } else {
         this.obtenerProductosEspeciales(idFamilia);
       }
     } else {
-      this.obtenerProductosPorCantidad(nombreFamilia);
+      this.obtenerProductosPorCantidad(idFamilia);
     }
   }
   esFamiliaEspecial(): boolean {

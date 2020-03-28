@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AdministradorService } from 'src/app/administrador/servicio-administrador/servicio-administrador.service';
 import { ToastrService } from 'ngx-toastr';
 import { CorteCaja } from 'src/app/comun/modelos/corte_caja.model';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { CajaService } from 'src/app/comun/servicios/caja.service';
+import { Caja } from 'src/app/comun/modelos/caja.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-historial-cortes-caja',
@@ -9,13 +13,46 @@ import { CorteCaja } from 'src/app/comun/modelos/corte_caja.model';
   styleUrls: ['./historial-cortes-caja.component.scss']
 })
 export class HistorialCortesCajaComponent implements OnInit {
-  cortes: CorteCaja[] = [];
+  caja: Caja = new Caja();
+  cajas: Caja[] = [];
+  cortes: CorteCaja[];
   totalContado: number = 0;
-  constructor(private adminService: AdministradorService, private toastr: ToastrService) { }
+  cargando: boolean = false;
+  constructor(private adminService: AdministradorService,
+    private toastr: NgToastrService,
+    private cajasService: CajaService) { }
 
   ngOnInit() {
-    this.obtenerHistorial();
+    this.obtenerCajas();
   }
+  obtenerCajas() {
+    this.cargando = true;
+    this.cajasService.obtenerCajas().subscribe(
+      (cajas: Caja[]) => {
+        this.cargando = false;
+        this.cajas = cajas;
+        console.log(this.cajas);
+      },
+      (err: HttpErrorResponse) => {
+        this.cargando = false;
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+      }
+    );
+  }
+  buscarCortes(idCaja: string){
+    this.cargando = true;
+    this.cajasService.obtenerCortesCaja(idCaja).subscribe(
+      (cortes: CorteCaja[])=>{
+        this.cargando = false;
+        this.cortes = cortes;
+      },
+      (err: HttpErrorResponse)=>{
+        this.cargando = false;
+        this.toastr.abrirToastr('error',err.error.titulo,err.error.detalles);
+      }
+    );
+  }
+  /*
   obtenerHistorial() {
     this.adminService.obtenerHistorialCortes().subscribe(
       (cortesCaja) => {
@@ -26,7 +63,7 @@ export class HistorialCortesCajaComponent implements OnInit {
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );
-  }
+  }*/
   menorIgualCero(efectivoContado: number, tarjetaContado: number, efectivoEsperado: number, tarjetaEsperado: number) {
     const diferencia = (efectivoContado + tarjetaContado) - (efectivoEsperado + tarjetaEsperado);
     console.log(diferencia);

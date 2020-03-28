@@ -1,9 +1,57 @@
 @import 'variables';
-.color-root{
-    background-color: $root;
-    color: #ffffff;
-}
+
 .sidenav-container {
-    height: 100%;
-  }
-  
+  height: 100%;
+}
+
+.sidenav {
+  width: 265px;
+ overflow-y: hidden;
+}
+
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 999999999999999;
+  -webkit-box-shadow: 0px 6px 17px 0px rgba(0,0,0,0.59);
+  -moz-box-shadow: 0px 6px 17px 0px rgba(0,0,0,0.59);
+  box-shadow: 0px 6px 17px 0px rgba(0,0,0,0.59);
+}
+.botonesPerfil{
+  width: 108px;
+  text-align: center;
+  margin-bottom: 3px;
+}
+.example-tree-invisible {
+  display: none;
+}
+
+.example-tree ul,
+.example-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+.botonesPerfil{
+  width: 108px;
+  text-align: center;
+  margin-bottom: 3px;
+}
+.activa{
+  background-color: $light-gray-color2;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

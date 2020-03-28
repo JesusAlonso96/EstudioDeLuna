@@ -12,7 +12,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment_1 = __importDefault(require("moment"));
 const caja_model_1 = require("../modelos/caja.model");
-const corte_caja_model_1 = require("../modelos/corte_caja.model");
 const empresa_cot_model_1 = require("../modelos/empresa_cot.model");
 const producto_model_1 = require("../modelos/producto.model");
 const producto_proveedor_model_1 = require("../modelos/producto_proveedor.model");
@@ -21,6 +20,7 @@ const usuario_model_1 = require("../modelos/usuario.model");
 const venta_model_1 = require("../modelos/venta.model");
 const servidor_1 = __importDefault(require("../clases/servidor"));
 const Socket = __importStar(require("../sockets/socket"));
+const mongoose_1 = require("mongoose");
 const familia_model_1 = require("../modelos/familia.model");
 exports.obtenerVentasMes = (req, res) => {
     var fechaInicio = new Date(moment_1.default(req.params.fechaInicio).format('YYYY-MM-DD'));
@@ -46,6 +46,7 @@ exports.obtenerVentasMes = (req, res) => {
         as: "cliente",
     })
         .match({
+        sucursal: mongoose_1.Types.ObjectId(res.locals.usuario.sucursal),
         $and: [
             { fecha: { $gte: fechaInicio } },
             { fecha: { $lte: fechaFin } }
@@ -126,6 +127,7 @@ exports.obtenerVentasDia = (req, res) => {
         as: "cliente",
     })
         .match({
+        sucursal: mongoose_1.Types.ObjectId(res.locals.usuario.sucursal),
         fecha: fecha2
     })
         .project({
@@ -199,6 +201,7 @@ exports.obtenerVentasRango = (req, res) => {
         as: "productos",
     })
         .match({
+        sucursal: mongoose_1.Types.ObjectId(res.locals.usuario.sucursal),
         $and: [
             { fecha: { $gte: fechaInicio } },
             { fecha: { $lte: fechaFin } }
@@ -229,6 +232,7 @@ exports.obtenerProductosRango = (req, res) => {
     var fechaFin = new Date(moment_1.default(req.params.fechaFin).format('YYYY-MM-DD'));
     producto_model_1.Producto.aggregate()
         .match({
+        sucursal: mongoose_1.Types.ObjectId(res.locals.usuario.sucursal),
         $and: [
             { fecha: { $gte: fechaInicio } },
             { fecha: { $lte: fechaFin } }
@@ -251,6 +255,7 @@ exports.obtener10ProductosMasVendidos = (req, res) => {
     var fechaFin = new Date(moment_1.default(req.params.fechaFin).format('YYYY-MM-DD'));
     venta_model_1.Venta.aggregate()
         .match({
+        sucursal: mongoose_1.Types.ObjectId(res.locals.usuario.sucursal),
         $and: [
             { fecha: { $gte: fechaInicio } },
             { fecha: { $lte: fechaFin } }
@@ -292,6 +297,7 @@ exports.obtenerVentasPorFamilias = (req, res) => {
     var fechaFin = new Date(moment_1.default(req.params.fechaFin).format('YYYY-MM-DD'));
     venta_model_1.Venta.aggregate()
         .match({
+        sucursal: mongoose_1.Types.ObjectId(res.locals.usuario.sucursal),
         $and: [
             { fecha: { $gte: fechaInicio } },
             { fecha: { $lte: fechaFin } }
@@ -334,75 +340,26 @@ exports.obtenerVentasPorFamilias = (req, res) => {
     });
 };
 /* Corte de caja */
-exports.existeCorte = (req, res) => {
-    const fecha = new Date(moment_1.default(Date.now()).format('YYYY-MM-DD'));
-    corte_caja_model_1.CorteCaja.findOne({ fecha })
-        .exec((err, corte) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo verificar la existencia del corte de caja', tipo: 2 });
-        if (corte) {
-            return res.json({ encontrado: true });
-        }
-        else {
-            return res.json({ encontrado: false });
-        }
-    });
-};
-//posible error
-exports.crearCorteCaja = (req, res) => {
-    var fecha = new Date(moment_1.default(Date.now()).format('YYYY-MM-DD'));
-    var hora = new Date(moment_1.default(Date.now()).format('h:mm:ss a'));
-    const corte = new corte_caja_model_1.CorteCaja({
-        fecha,
-        hora,
-        usuario: res.locals.usuario,
-        efectivoEsperado: req.body.efectivoEsperado,
-        tarjetaEsperado: req.body.tarjetaEsperado,
-        efectivoContado: req.body.efectivoContado,
-        tarjetaContado: req.body.tarjetaContado,
-        fondoEfectivo: req.body.fondoEfectivo,
-        fondoTarjetas: req.body.fondoTarjetas
-    });
-    corte.save((err, guardado) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al guardar el corte de caja', tipo: 2 });
-        return res.json(guardado);
-    });
-};
 exports.obtenerCaja = (req, res) => {
-    caja_model_1.Caja.findOne()
+    caja_model_1.Caja.findOne({ _id: req.params.id })
         .exec((err, caja) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al obtener las cantidades', tipo: 2 });
         return res.json(caja);
     });
 };
-exports.actualizarCaja = (req, res) => {
-    caja_model_1.Caja.findOneAndUpdate({}, {
-        cantidadTotal: req.body.cantidadTotal,
-        cantidadEfectivo: req.body.cantidadEfectivo,
-        cantidadTarjetas: req.body.cantidadTarjetas
-    })
-        .exec((err, cajaActualizada) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al actualizar la caja', tipo: 2 });
-        return res.json(cajaActualizada);
-    });
-};
-exports.obtenerCortesCaja = (req, res) => {
-    corte_caja_model_1.CorteCaja.find()
-        .sort({
-        num_corte: 'desc'
-    })
-        .exec((err, cortes) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al obtener el historial', tipo: 2 });
-        return res.json(cortes);
-    });
-};
 /* Modulo usuarios */
 exports.altaUsuario = (req, res) => {
     const usuarioAlta = new usuario_model_1.Usuario(req.body);
+    usuarioAlta.sucursal = res.locals.usuario.sucursal;
+    usuarioAlta.configuracion = {
+        notificaciones: {
+            botonCerrar: true,
+            tiempo: 2000,
+            posicion: 'toast-top-right',
+            barraProgreso: false
+        }
+    };
     usuarioAlta.save((err, usuarioCreado) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al guardar el usuario' });
@@ -422,7 +379,7 @@ exports.cambiarPermisos = (req, res) => {
     });
 };
 exports.obtenerUsuariosEliminados = (req, res) => {
-    usuario_model_1.Usuario.find({ activo: 0 })
+    usuario_model_1.Usuario.find({ activo: 0, sucursal: res.locals.usuario.sucursal })
         .exec((err, usuariosEncontrados) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los usuarios eliminados' });
@@ -443,6 +400,7 @@ exports.restaurarUsuarioEliminado = (req, res) => {
 };
 exports.registrarUsuario = (req, res) => {
     const usuario = new usuario_model_1.Usuario(req.body);
+    usuario.sucursal = res.locals.usuario.sucursal;
     usuario_model_1.Usuario.findOne({ username: req.body.username })
         .exec((err, usuarioEncontrado) => {
         if (err)
@@ -539,7 +497,7 @@ exports.restaurarProveedor = (req, res) => {
     });
 };
 exports.obtenerProveedoresEliminados = (req, res) => {
-    proveedor_model_1.Proveedor.find({ activo: 0 })
+    proveedor_model_1.Proveedor.find({ activo: 0, sucursal: res.locals.usuario.sucursal })
         .exec((err, usuariosEncontrados) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los proveedores eliminados' });
@@ -604,7 +562,7 @@ exports.restaurarProductoProveedorEliminado = (req, res) => {
 };
 /* Modulo cotizaciones */
 exports.obtenerEmpresasEliminadas = (req, res) => {
-    empresa_cot_model_1.EmpresaCot.find({ activa: 0 })
+    empresa_cot_model_1.EmpresaCot.find({ activa: 0, sucursal: res.locals.usuario.sucursal })
         .exec((err, empresasEliminadas) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las empresas eliminadas' });
@@ -632,7 +590,7 @@ exports.adminMiddleware = (req, res, next) => {
     }
 };
 exports.obtenerFamiliasEliminadas = (req, res) => {
-    familia_model_1.Familia.find({ activa: 0 })
+    familia_model_1.Familia.find({ activa: 0, sucursal: res.locals.usuario.sucursal })
         .exec((err, familias) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las familias eliminadas' });
@@ -655,7 +613,7 @@ exports.restaurarFamiliaEliminada = (req, res) => {
 function obtenerNuevoElemento(elemento, res, tipo) {
     const servidor = servidor_1.default.instance;
     for (let usuarioConectado of Socket.usuariosConectados.lista) {
-        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0) {
+        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0 && usuarioConectado.sucursal == res.locals.usuario.sucursal) {
             switch (tipo) {
                 case 0:
                     servidor.io.in(usuarioConectado.id).emit('nuevo-usuario', elemento);

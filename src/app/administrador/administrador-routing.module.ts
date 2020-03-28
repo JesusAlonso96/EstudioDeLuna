@@ -19,76 +19,82 @@ import { AdministradorAyudaSeccionComponent } from './administrador-ayuda-seccio
 import { AdministradorCotizacionesSeccionComponent } from './administrador-cotizaciones-seccion/administrador-cotizaciones-seccion.component';
 import { AdministradorFacturacionSeccionComponent } from './administrador-facturacion-seccion/administrador-facturacion-seccion.component';
 import { AdministradorConfiguracionSistemaComponent } from './administrador-configuracion-sistema/administrador-configuracion-sistema.component';
+import { AdministradorCajaSeccionComponent } from './administrador-caja-seccion/administrador-caja-seccion.component';
 
 
 
 
 export const adminRoutes: Routes = [
-            { path: 'dashboard', component: AdministradorTableroSeccionComponent, canActivate: [AutenticacionGuard] },
-            { path: 'perfil', component: AdministradorPerfilComponent, canActivate: [AutenticacionGuard] },
-            {
-                path: 'ventas',
-                component: AdministradorVentasSeccionComponent,
-                canActivate: [AutenticacionGuard],
-                children: [
-                    { path: 'reportes-ventas', component: AdministradorReporteVentasComponent, canActivate: [AutenticacionGuard] },
-                ]
-            },
-            {
-                path: 'compras',
-                component: AdministradorComprasSeccionComponent,
-                canActivate: [AutenticacionGuard]
-            },
-            {
-                path: 'clientes',
-                component: AdministradorClientesSeccionComponent,
-                canActivate: [AutenticacionGuard]
-            },
-            {
-                path: 'familias-productos',
-                component: FamiliasProductosSeccionComponent,
-                canActivate: [AutenticacionGuard]
-            },
-            {
-                path: 'productos',
-                component: ProductosSeccionComponent,
-                canActivate: [AutenticacionGuard]
-            },
-            {
-                path: 'usrs',
-                component: AdministradorUsuariosSeccionComponent,
-                canActivate: [AutenticacionGuard]
-            },
-            {
-                path: 'inventarios',
-                component: AdministradorInventarioSeccionComponent,
-                canActivate: [AutenticacionGuard]
-            },
-            {
-                path: 'proveedores',
-                component: AdministradorProveedoresSeccionComponent,
-                canActivate: [AutenticacionGuard]
-            },
-            {
-                path: 'cotizaciones',
-                component: AdministradorCotizacionesSeccionComponent,
-                canActivate: [AutenticacionGuard]
-            },
-            {
-                path: 'facturacion',
-                component: AdministradorFacturacionSeccionComponent,
-                canActivate: [AutenticacionGuard]
-            },
-            {
-                path: 'ayuda',
-                component: AdministradorAyudaSeccionComponent,
-                canActivate: [AutenticacionGuard]
-            },
-            {
-                path: 'configuracion',
-                component: AdministradorConfiguracionSistemaComponent,
-                canActivate: [AutenticacionGuard]
-            }
+    { path: 'dashboard', component: AdministradorTableroSeccionComponent, canActivate: [AutenticacionGuard] },
+    { path: 'perfil', component: AdministradorPerfilComponent, canActivate: [AutenticacionGuard] },
+    {
+        path: 'ventas',
+        component: AdministradorVentasSeccionComponent,
+        canActivate: [AutenticacionGuard],
+        children: [
+            { path: 'reportes-ventas', component: AdministradorReporteVentasComponent, canActivate: [AutenticacionGuard] },
+        ]
+    },
+    {
+        path: 'compras',
+        component: AdministradorComprasSeccionComponent,
+        canActivate: [AutenticacionGuard]
+    },
+    {
+        path: 'clientes',
+        component: AdministradorClientesSeccionComponent,
+        canActivate: [AutenticacionGuard]
+    },
+    {
+        path: 'familias-productos',
+        component: FamiliasProductosSeccionComponent,
+        canActivate: [AutenticacionGuard]
+    },
+    {
+        path: 'productos',
+        component: ProductosSeccionComponent,
+        canActivate: [AutenticacionGuard]
+    },
+    {
+        path: 'usrs',
+        component: AdministradorUsuariosSeccionComponent,
+        canActivate: [AutenticacionGuard]
+    },
+    {
+        path: 'inventarios',
+        component: AdministradorInventarioSeccionComponent,
+        canActivate: [AutenticacionGuard]
+    },
+    {
+        path: 'proveedores',
+        component: AdministradorProveedoresSeccionComponent,
+        canActivate: [AutenticacionGuard]
+    },
+    {
+        path: 'cotizaciones',
+        component: AdministradorCotizacionesSeccionComponent,
+        canActivate: [AutenticacionGuard]
+    },
+    {
+        path: 'facturacion',
+        component: AdministradorFacturacionSeccionComponent,
+        canActivate: [AutenticacionGuard]
+    },
+    {
+        path: 'ayuda',
+        component: AdministradorAyudaSeccionComponent,
+        canActivate: [AutenticacionGuard]
+    },
+    {
+        path: 'cajas',
+        component: AdministradorCajaSeccionComponent,
+        canActivate: [AutenticacionGuard]
+    },
+    {
+        path: 'configuracion',
+        component: AdministradorConfiguracionSistemaComponent,
+        canActivate: [AutenticacionGuard]
+    }
 ]
 @NgModule({
     imports: [RouterModule.forRoot(adminRoutes)],

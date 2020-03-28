@@ -7,6 +7,7 @@ import * as Socket from '../sockets/socket';
 
 export let registrarCliente = (req: Request, res: Response) => {
     const clienteNuevo = new Cliente(req.body);
+    clienteNuevo.sucursal = res.locals.usuario.sucursal;
     clienteNuevo.save((err: NativeError, cliente: ICliente) => {
         if (err) return res.status(422).send({ titulo: 'No se pudo crear el registro' });
         obtenerNuevoCliente(cliente, res, 0);
@@ -14,14 +15,14 @@ export let registrarCliente = (req: Request, res: Response) => {
     });
 }
 export let obtenerClientes = (req: Request, res: Response) => {
-    Cliente.find({ activo: 1 }, { _id: 1, nombre: 1, ape_mat: 1, ape_pat: 1, email: 1 })
+    Cliente.find({ activo: 1, sucursal: res.locals.usuario.sucursal }, { _id: 1, nombre: 1, ape_mat: 1, ape_pat: 1, email: 1 })
         .exec((err: NativeError, clientes: ICliente[]) => {
             if (err) return res.status(422).send({ titulo: 'No se pudieron obtener los clientes' });
             return res.json(clientes);
         });
 }
 export let obtenerDatosClientes = (req: Request, res: Response) => {
-    Cliente.find({ activo: 1 })
+    Cliente.find({ activo: 1, sucursal: res.locals.usuario.sucursal })
         .exec((err: NativeError, clientes: ICliente[]) => {
             if (err) return res.status(422).send({ titulo: 'No se pudieron obtener los clientes' });
             return res.json(clientes);
@@ -91,7 +92,7 @@ export let editarCliente = (req: Request, res: Response) => {
         })
 }
 export let obtenerClientesEliminados = (req: Request, res: Response) => {
-    Cliente.find({ activo: 0 })
+    Cliente.find({ activo: 0, sucursal: res.locals.usuario.sucursal })
         .exec((err: NativeError, clientesEliminados: ICliente[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los clientes eliminados' });
             return res.json(clientesEliminados);
@@ -110,7 +111,7 @@ export let restaurarClienteEliminado = (req: Request, res: Response) => {
 function obtenerNuevoCliente(cliente: ICliente, res: Response, tipo: number) {
     const servidor = Servidor.instance;
     for (let usuarioConectado of Socket.usuariosConectados.lista) {
-        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0) {
+        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0 && usuarioConectado.sucursal == res.locals.usuario.sucursal) {
             switch (tipo) {
                 case 0: servidor.io.in(usuarioConectado.id).emit('nuevo-cliente', cliente); break;
                 case 1: servidor.io.in(usuarioConectado.id).emit('nuevo-cliente-eliminado', cliente); break;

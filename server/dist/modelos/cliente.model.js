@@ -26,6 +26,7 @@ const clienteSchema = new mongoose_1.Schema({
     num_ext: { type: Number, required: true },
     num_int: { type: Number, required: false },
     pedidos: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Pedido' }],
+    sucursal: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal' },
     fecha_registro: { type: Date, required: true },
     activo: { type: Number, default: 1 }
 });

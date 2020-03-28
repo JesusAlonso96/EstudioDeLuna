@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 import { IProductoProveedor } from './producto_proveedor.model';
+import { ISucursal } from './sucursal.model';
 
 export interface IProveedor extends Document {
     nombre: string;
@@ -14,6 +15,7 @@ export interface IProveedor extends Document {
     num_ext: number;
     num_int: number;
     productos: Types.Array<IProductoProveedor>;
+    sucursal: ISucursal['_id'];
     activo: number;
 }
 const proveedorSchema = new Schema({
@@ -29,6 +31,7 @@ const proveedorSchema = new Schema({
     num_ext: { type: Number, required: true },
     num_int: { type: Number, required: false },
     productos: [{ type: Schema.Types.ObjectId, ref: 'ProductoProveedor', default: [] }],
+    sucursal: { type: Schema.Types.ObjectId, ref: 'Sucursal'},
     activo: { type: Number, default: 1 }
 
 });

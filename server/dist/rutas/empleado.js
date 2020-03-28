@@ -40,14 +40,14 @@ rutasEmpleado.get('/obtenerNumPedidosEnCola', UsuarioCtrl.autenticacionMiddlewar
 rutasEmpleado.get('/obtenerProductosPorPedido/:id', EmpleadoCtrl.obtenerProductosPorPedido);
 //post
 rutasEmpleado.post('/crearPedido/:id', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.recepcionistaMiddleware, EmpleadoCtrl.crearPedido);
-rutasEmpleado.post('/crearVenta/:cantidadACaja/:metodoPago', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.recepcionistaMiddleware, EmpleadoCtrl.realizarVenta);
+rutasEmpleado.post('/crearVenta/:cantidadACaja/:metodoPago/:id', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.recepcionistaMiddleware, EmpleadoCtrl.realizarVenta);
 //patch
 rutasEmpleado.patch('/crearImagen/:id', upload.single('image'), EmpleadoCtrl.crearFoto);
 rutasEmpleado.patch('/tomarPedido/:idPedido/:id', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.tomarPedido);
 rutasEmpleado.patch('/actualizarEstado', EmpleadoCtrl.actualizarEstadoPedido);
 rutasEmpleado.patch('/actualizarAnticipo/:id/:anticipo', EmpleadoCtrl.actualizarAnticipoPedido);
 rutasEmpleado.patch('/actualizarOcupado/:id', EmpleadoCtrl.actualizarOcupado);
-rutasEmpleado.patch('/actualizarCaja/:cantidadACaja/:metodoPago', EmpleadoCtrl.actualizarCaja);
+rutasEmpleado.patch('/actualizarCaja/:cantidadACaja/:metodoPago/:id', EmpleadoCtrl.actualizarCaja);
 //delete
 rutasEmpleado.delete('/eliminarNotificacion/:id', EmpleadoCtrl.eliminarNotificacion);
 rutasEmpleado.delete('/eliminarNotificacionPorPedido/:num', EmpleadoCtrl.eliminarNotificacionPorPedido);

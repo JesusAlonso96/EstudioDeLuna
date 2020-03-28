@@ -31,7 +31,8 @@ const pedidoSchema = new mongoose_1.Schema({
     importante: { type: Boolean },
     anticipo: { type: Number },
     foto: { type: String },
-    metodoPago: { type: String }
+    metodoPago: { type: String },
+    sucursal: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal' }],
 });
 pedidoSchema.plugin(mongoose_auto_increment_1.default.plugin, { model: 'Pedido', field: 'num_pedido' });
 exports.Pedido = mongoose_1.default.model('Pedido', pedidoSchema);

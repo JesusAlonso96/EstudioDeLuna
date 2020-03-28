@@ -1,7 +1,7 @@
 @import 'variables';
 .toolbar-header{
-    background-color: $primary;
-    color: $light-gray-color2;
+   border-top-left-radius: 2%;
+   border-top-right-radius: 2%;
 }
 .btn-contenedor{
     display: flex;

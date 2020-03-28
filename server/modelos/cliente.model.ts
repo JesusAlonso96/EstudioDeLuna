@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 import { IPedido } from './pedido.model';
+import { ISucursal } from './sucursal.model';
 
 
 export interface ICliente extends Document{
@@ -20,6 +21,7 @@ export interface ICliente extends Document{
     num_ext:number;
     num_int:number;
     pedidos: Types.Array<IPedido>;
+    sucursal: ISucursal['_id'];
     fecha_registro: Date;
     activo: number;
 }
@@ -42,6 +44,7 @@ const clienteSchema = new Schema({
     num_ext: { type: Number, required: true },
     num_int: { type: Number, required: false },
     pedidos: [{ type: Schema.Types.ObjectId, ref: 'Pedido' }],
+    sucursal: { type: Schema.Types.ObjectId, ref:'Sucursal' },
     fecha_registro: { type: Date, required: true },
     activo: { type: Number, default: 1 }
 

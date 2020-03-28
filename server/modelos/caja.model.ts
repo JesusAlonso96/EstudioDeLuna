@@ -1,9 +1,14 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { IUsuario } from './usuario.model';
 import { ISucursal } from './sucursal.model';
+import autoIncrement from 'mongoose-auto-increment';
+import { environment } from '../global/environment';
 
-
+mongoose.set('useUnifiedTopology', true);
+var conexion = mongoose.createConnection(environment.DB_URL, { useNewUrlParser: true });
+autoIncrement.initialize(conexion);
 export interface ICaja extends Document {
+    id: number;
     cantidadTotal: number;
     cantidadEfectivo: number;
     cantidadTarjetas: number;
@@ -18,15 +23,19 @@ export interface ICaja extends Document {
             cantidadEntrada: number;
             sucursal: ISucursal['_id'];
         }
-    ]
+    ];
+    sucursal: ISucursal['_id'];
+    fechaRegistro: Date;
+    activa: boolean;
 }
-
-const CajaSchema = new Schema({
-    cantidadTotal: { type: Number, required: true },
-    cantidadEfectivo: { type: Number, required: true },
-    cantidadTarjetas: { type: Number, required: true },
+ 
+const cajaSchema = new Schema({
+    id: { type: Number, required: false },
+    cantidadTotal: { type: Number, required: true, default: 0 },
+    cantidadEfectivo: { type: Number, required: true, default: 0 },
+    cantidadTarjetas: { type: Number, required: true, default: 0 },
     historialEgresosIngresos: {
-        type: [
+        type: [ 
             {
                 id: { type: Number, required: false },
                 fecha: { type: Date, required: false, default: new Date(Date.now()) },
@@ -37,8 +46,13 @@ const CajaSchema = new Schema({
                 cantidadEntrada: { type: Number, required: false },
                 sucursal: { type: Schema.Types.ObjectId, ref: 'Sucursal' }
             }
-        ]
-    }
+        ], default: []
+    },
+    sucursal: { type: Schema.Types.ObjectId, ref: 'Sucursal' },
+    fechaRegistro: { type: Date, required: false, default: new Date(Date.now()) },
+    activa: { type: Boolean, required: false, default: true }
 });
 
-export const Caja = mongoose.model<ICaja>('Caja', CajaSchema);
+cajaSchema.plugin(autoIncrement.plugin, { model: 'Caja', field: 'id' });
+
+export const Caja = mongoose.model<ICaja>('Caja', cajaSchema);

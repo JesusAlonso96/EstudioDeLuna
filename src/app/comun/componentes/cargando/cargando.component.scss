@@ -1,18 +1,22 @@
-.cargando{
-    position: absolute ;
-    height: 100% ;
-    width: 100% ;
-    background: rgba(0,0,0,.6) ;
-    z-index: 1000000000000000000000000000000 ;
+.cargando {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, .7);
+  z-index: 1000000000000000000000000000000;
+  align-items: center;
+
+  .contenido {
+    margin-top: 10%;
     .spinner{
-        margin-left: auto ;
-        margin-right: auto ;
-        margin-top: 20% ;
+      margin: auto;
     }
-    h3{
-        z-index: 100000 ;
-        color: #ffffff ;
-        margin-top: 2% ;
-        text-align: center ;
+
+    h3, .spinner {
+      z-index: 100000;
+      color: #ffffff;
+      text-align: center;
     }
+  }
+
 }

@@ -1,1 +1,13 @@
-<p>administrador-caja-seccion works!</p>
+<app-encabezado-titulo titulo="Caja"></app-encabezado-titulo>
+<mat-tab-group class="w-100 h-100">
+    <mat-tab label="Administrar">
+        <ng-template matTabContent>
+            <app-caja-detalles></app-caja-detalles>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Restaurar">
+        <ng-template matTabContent>
+            <app-caja-restaurar></app-caja-restaurar>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>

@@ -32,7 +32,10 @@ const cotizacionSchema = new mongoose_1.Schema({
     iva: { type: Number, required: true },
     forma_pago: { type: String, required: false },
     fecha_entrega: { type: Date, required: true },
-    fecha_evento: { type: Date, required: false }
+    fecha_evento: { type: Date, required: false },
+    sucursal: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal', required: true },
+}, {
+    collection: 'cotizaciones'
 });
 cotizacionSchema.plugin(mongoose_auto_increment_1.default.plugin, { model: 'Cotizacion', field: 'num_cotizacion' });
 exports.Cotizacion = mongoose_1.default.model('Cotizacion', cotizacionSchema);
