@@ -13,7 +13,7 @@ import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
   styleUrls: ['./caja-detalles.component.scss']
 })
 export class CajaDetallesComponent implements OnInit {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnas: string[] = ['num_caja', 'activa', 'sucursal','eliminar'];
   cajas: Caja[];
   cargando: boolean = false;

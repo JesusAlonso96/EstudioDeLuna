@@ -12,7 +12,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./proveedores-baja.component.scss']
 })
 export class ProveedoresBajaComponent implements OnInit, OnDestroy {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnasTabla: string[] = ['nombre', 'rfc', 'telefono', 'ciudad', 'borrar'];
   proveedores: Proveedor[];
   cargando: boolean = false;

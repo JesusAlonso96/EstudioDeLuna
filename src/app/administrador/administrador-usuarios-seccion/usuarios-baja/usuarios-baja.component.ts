@@ -12,7 +12,7 @@ import { BuscadorComponent } from 'src/app/comun/componentes/buscador/buscador.c
   styleUrls: ['./usuarios-baja.component.scss']
 })
 export class UsuariosBajaComponent implements OnInit, OnDestroy {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnas: string[] = ['nombre', 'ape_pat', 'ape_mat', 'rol', 'borrar'];
   usuarios: Usuario[];
   cargando: boolean = false;

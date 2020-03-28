@@ -13,7 +13,7 @@ import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
   styleUrls: ['./familias-producto-restaurar.component.scss']
 })
 export class FamiliasProductoRestaurarComponent implements OnInit, OnDestroy {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnasTabla: string[] = ['id', 'nombre', 'restaurar'];
   familiasEliminadas: Familia[];
   cargando: boolean = false;

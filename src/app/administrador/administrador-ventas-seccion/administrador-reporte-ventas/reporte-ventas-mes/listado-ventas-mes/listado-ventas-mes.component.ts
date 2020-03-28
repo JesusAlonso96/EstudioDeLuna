@@ -9,7 +9,7 @@ import * as html2pdf from 'html2pdf.js';
 })
 export class ListadoVentasMesComponent implements OnInit {
   displayedColumns: string[] = ['pedido', 'fecha', 'cliente', 'tipo', 'iva', 'total'];
-  @ViewChild('contenido', { static: false }) contenido: ElementRef;
+  @ViewChild('contenido') contenido: ElementRef;
 
   constructor(
     public dialogRef: MatDialogRef<ListadoVentasMesComponent>,

@@ -13,8 +13,8 @@ import { DetallesProductoComponent } from 'src/app/comun/componentes/modales/det
   styleUrls: ['./pedidos-cola.component.scss']
 })
 export class PedidosColaComponent implements OnInit {
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   pedidos: Pedido[];
   pedidoSeleccionado: Pedido;
   empleadoSeleccionado: Usuario;

@@ -14,7 +14,7 @@ import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
   providers: []
 })
 export class EmpresasComponent implements OnInit {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   displayedColumns: string[] = ['nombre', 'contacto', 'email', 'editar', 'eliminar'];
   empresas: EmpresaCot[];
   cargando: boolean = false;

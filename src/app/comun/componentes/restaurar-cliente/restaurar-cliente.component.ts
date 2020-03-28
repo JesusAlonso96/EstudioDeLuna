@@ -13,7 +13,7 @@ import { BuscadorComponent } from '../buscador/buscador.component';
   styleUrls: ['./restaurar-cliente.component.scss']
 })
 export class RestaurarClienteComponent implements OnInit, OnDestroy {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnas: string[] = ['nombre', 'ape_pat', 'ape_mat', 'email', 'telefono', 'restaurar'];
   cargando: boolean = false;
   clientes: Cliente[];

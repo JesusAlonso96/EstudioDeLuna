@@ -12,7 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./inventarios-almacenes-restaurar.component.scss']
 })
 export class InventariosAlmacenesRestaurarComponent implements OnInit {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnas: string[] = ['id', 'nombre', 'direccion', 'restaurar'];
   almacenes: Almacen[];
   cargando: boolean = false;

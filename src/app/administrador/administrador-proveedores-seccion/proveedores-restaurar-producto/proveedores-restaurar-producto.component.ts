@@ -12,8 +12,8 @@ import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
   styleUrls: ['./proveedores-restaurar-producto.component.scss']
 })
 export class ProveedoresRestaurarProductoComponent implements OnInit {
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   listData: MatTableDataSource<ProductoProveedor>;
   displayedColumns: string[] = ['nombre', 'costo', 'detalles', 'proveedor', 'restaurar'];
   busquedaProducto: string = '';

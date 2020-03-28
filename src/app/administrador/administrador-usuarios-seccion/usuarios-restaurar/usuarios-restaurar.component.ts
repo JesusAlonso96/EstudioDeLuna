@@ -13,7 +13,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./usuarios-restaurar.component.scss']
 })
 export class UsuariosRestaurarComponent implements OnInit, OnDestroy {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnas: string[] = ['nombre', 'ape_pat', 'ape_mat', 'rol', 'restaurar'];
   usuarios: Usuario[];
   cargando: boolean = false;

@@ -10,7 +10,7 @@ import { ProductoCot } from 'src/app/comun/modelos/producto_cot.model';
   styleUrls: ['./ver-cotizacion.component.scss']
 })
 export class VerCotizacionComponent implements OnInit {
-  @ViewChild('cotizacionPdf', { static: false }) cotizacionPdf: ElementRef;
+  @ViewChild('cotizacionPdf') cotizacionPdf: ElementRef;
   displayedColumns: string[] = ['cantidad', 'descripcion', 'precio', 'subtotal'];
   listData: MatTableDataSource<ProductoCot>;
 

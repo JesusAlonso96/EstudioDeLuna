@@ -13,7 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./inventarios-almacenes-detalles.component.scss']
 })
 export class InventariosAlmacenesDetallesComponent implements OnInit {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnas: string[] = ['id', 'nombre', 'direccion', 'editar', 'eliminar'];
   almacenes: Almacen[];
   cargando: boolean = false;

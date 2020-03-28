@@ -16,8 +16,8 @@ import { Almacen } from '../../modelos/almacen.model';
 
 })
 export class BuscadorComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
-  @ViewChild('paginator', { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('paginator') paginator: MatPaginator;
   @Input() elementos: any[];
   @Input() columnas: string[];
   @Input() nombre: string;

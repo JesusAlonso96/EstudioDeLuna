@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./baja-cliente.component.scss']
 })
 export class BajaClienteComponent implements OnInit, OnDestroy {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnas: string[] = ['nombre', 'ape_pat', 'ape_mat', 'email', 'telefono', 'borrar'];
   clientes: Cliente[];
   cargando: boolean = false;

@@ -68,7 +68,7 @@ export class ReporteVentasFechaComponent implements OnInit {
     private toastr: ToastrService) {
   }
 
-  @ViewChild('contenido', { static: false }) contenido: ElementRef;
+  @ViewChild('contenido') contenido: ElementRef;
 
   ngOnInit() {
   }

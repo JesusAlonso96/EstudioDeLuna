@@ -13,7 +13,7 @@ import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-aut
   styleUrls: ['./consulta-cliente.component.scss']
 })
 export class ConsultaClienteComponent implements OnInit, OnDestroy {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnas: string[] = ['nombre', 'ape_pat', 'ape_mat', 'email', 'telefono', 'editar'];
   clientes: Cliente[];
   cargando: boolean = false;

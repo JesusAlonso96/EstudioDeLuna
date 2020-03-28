@@ -11,7 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./caja-restaurar.component.scss']
 })
 export class CajaRestaurarComponent implements OnInit {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnas: string[] = ['num_caja', 'activa', 'sucursal', 'restaurar'];
   cajas: Caja[];
   cargando: boolean = false;

@@ -13,7 +13,7 @@ import { BuscadorComponent } from '../buscador/buscador.component';
 })
 export class ConsultaUsuarioComponent implements OnInit, OnDestroy {
 
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnas: string[] = ['nombre', 'ape_pat', 'ape_mat', 'rol', 'editar', 'permisos'];
   usuarios: Usuario[];
   cargando: boolean = false;

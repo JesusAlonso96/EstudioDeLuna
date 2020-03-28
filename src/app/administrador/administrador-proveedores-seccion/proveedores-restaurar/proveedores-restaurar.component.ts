@@ -13,7 +13,7 @@ import { BuscadorComponent } from 'src/app/comun/componentes/buscador/buscador.c
   styleUrls: ['./proveedores-restaurar.component.scss']
 })
 export class ProveedoresRestaurarComponent implements OnInit, OnDestroy {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnas: string[] = ['nombre', 'rfc', 'telefono', 'ciudad', 'restaurar'];
   proveedores: Proveedor[];
   cargando: boolean = false;

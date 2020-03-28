@@ -13,8 +13,8 @@ import { PedidosService } from '../servicio-empleado/pedidos.service';
   styleUrls: ['./empleado-pedidos-cola.component.scss']
 })
 export class EmpleadoPedidosColaComponent implements OnInit {
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   parametroBusqueda: string;
   pedidos: Pedido[];
   listData: MatTableDataSource<any>

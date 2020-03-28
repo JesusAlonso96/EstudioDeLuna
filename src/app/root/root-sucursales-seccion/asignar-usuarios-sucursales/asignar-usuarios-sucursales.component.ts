@@ -12,7 +12,7 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./asignar-usuarios-sucursales.component.scss']
 })
 export class AsignarUsuariosSucursalesComponent implements OnInit {
-  @ViewChild('paginator', { static: false }) paginator: MatPaginator;
+  @ViewChild('paginator') paginator: MatPaginator;
   cargando: boolean = false;
   usuarios: Usuario[] = [];
   usuarioSeleccionado: Usuario;

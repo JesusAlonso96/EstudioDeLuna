@@ -7,7 +7,7 @@ import { BuscadorComponent } from 'src/app/comun/componentes/buscador/buscador.c
   styleUrls: ['./root-administrar-usuarios.component.scss']
 })
 export class RootAdministrarUsuariosComponent implements OnInit {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnas: string[] = ['nombre', 'ape_pat', 'ape_mat', 'rol', 'borrar','editar',''];
 
   constructor() { }

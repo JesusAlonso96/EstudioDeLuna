@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./proveedores-editar.component.scss']
 })
 export class ProveedoresEditarComponent implements OnInit, OnDestroy {
-  @ViewChild('buscador', { static: false }) buscador: BuscadorComponent;
+  @ViewChild('buscador') buscador: BuscadorComponent;
   columnas: string[] = ['nombre', 'rfc', 'telefono', 'ciudad', 'editar'];
   proveedores: Proveedor[];
   cargando: boolean = false;

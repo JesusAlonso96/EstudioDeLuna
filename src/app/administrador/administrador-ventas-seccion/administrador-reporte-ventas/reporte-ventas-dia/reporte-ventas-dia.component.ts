@@ -10,8 +10,8 @@ import { ListadoVentasMesComponent } from '../reporte-ventas-mes/listado-ventas-
   styleUrls: ['./reporte-ventas-dia.component.scss']
 })
 export class ReporteVentasDiaComponent implements OnInit {
-  @ViewChild('reporte', { static: false }) reporte: ElementRef;
-  @ViewChild('contenido', {static: false}) contenido: ElementRef;
+  @ViewChild('reporte') reporte: ElementRef;
+  @ViewChild('contenido') contenido: ElementRef;
 
   ventas: any ;
   fecha: Date = new Date(Date.now());
