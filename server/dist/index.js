@@ -22,23 +22,6 @@ servidor.app.use(body_parser_1.default.json());
 servidor.app.use(cors_1.default({ origin: true, credentials: true }));
 /* Rutas de imagenes */
 servidor.app.use(express_1.default.static('subidas'));
-/*
-for (let i=0;i< 397; i++){
-    new Usuario({
-        nombre: `usuario ${i+244556677889900112233}`,
-        username: `usuario ${i+244556677889900112233}`,
-        ape_pat: `usuario ${i+244556677889900112233}`,
-        email:`email${i+244556677889900112233}@mail`,
-        telefono:7899652354,
-        contrasena:'hola',
-        rol:2,
-        rol_sec:-1,
-        sucursal:'5e765035221f4b2580983f1c'
-   
-    }).save((err: NativeError, usuario: IUsuario)=>{
-        if(err) console.log(err);
-        if(usuario) console.log(`inserte ${i+1}`)
-    })
-}*/
+servidor.app.use(express_1.default.static('subidas/logotipos'));
 /*Servidor inicializado */
 servidor.iniciar();

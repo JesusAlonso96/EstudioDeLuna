@@ -25,8 +25,11 @@ export interface IUsuario extends Document {
             tiempo: number,
             posicion: string,
             barraProgreso: boolean;
-        }
+        },
+        tema: string;
     };
+    logo: string;
+    fotoPerfil: string;
     codigoRecuperacion: string;
     activo: number;
 }
@@ -53,9 +56,12 @@ const usuarioSchema = new Schema({
                     posicion: { type: String, default: 'toast-top-right' },
                     barraProgreso: { type: Boolean, default: false }
                 }
-            }
+            },
+            tema: { type: String, required: false }
         }
     },
+    logo: {type: String, required: false},
+    fotoPerfil: {type: String, required:false},
     codigoRecuperacion: { type: String, required: false, default: '' },
     activo: { type: Number, default: 1 }
 });

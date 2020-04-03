@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>Nueva empresa</h2>
-<mat-dialog-content>
+<mat-dialog-content [class]="temasService.obtenerClaseActiva()">
     <form class="container-fluid" #empresaForm="ngForm">
         <div class="row">
             <div class="col-lg-6">
@@ -64,7 +64,8 @@
         </div>
     </form>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
+<mat-dialog-actions align="end" [ngClass]="{'default': temasService.temaActivo('default'), 'tema-rojo': temasService.temaActivo('tema-rojo'), 
+'tema-azul': temasService.temaActivo('tema-azul'), 'tema-verde': temasService.temaActivo('tema-verde')}">
     <button mat-raised-button color="primary" [mat-dialog-close]="nuevaEmpresa"
         [disabled]="!empresaForm.valid">Agregar</button>
     <button mat-raised-button (click)="onNoClick()">Cancelar</button>

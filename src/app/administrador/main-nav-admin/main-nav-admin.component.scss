@@ -9,7 +9,6 @@
  overflow-y: hidden;
 }
 
-
 .mat-toolbar.mat-primary {
   position: sticky;
   top: 0;
@@ -41,20 +40,31 @@
 .activa{
   background-color: $light-gray-color2;
 }
-.dot {
+.dot{
   height: 40px;
   width: 40px;
-  background-color: #bbb;
+  background-color:$primary;
   border-radius: 50%;
   display: inline-block;
 }
-
-
-
-
-
-
-
-
-
-
+.dot-azul {
+  height: 40px;
+  width: 40px;
+  background-color: $azul;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-rojo {
+  height: 40px;
+  width: 40px;
+  background-color: $rojo;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-verde{
+  height: 40px;
+  width: 40px;
+  background-color: $verde;
+  border-radius: 50%;
+  display: inline-block;
+}

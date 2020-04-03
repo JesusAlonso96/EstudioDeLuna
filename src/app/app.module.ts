@@ -56,7 +56,8 @@ const config: SocketIoConfig = {
     ComunModule,
     NgxPrintModule,
     ToastrModule.forRoot(),
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    
   ],
   providers: [
     AutenticacionGuard,

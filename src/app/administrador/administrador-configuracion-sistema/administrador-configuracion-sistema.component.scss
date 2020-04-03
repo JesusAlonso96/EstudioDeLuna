@@ -1,12 +1,32 @@
 @import 'variables';
-.toolbar-header{
-   border-top-left-radius: 2%;
-   border-top-right-radius: 2%;
+
+.toolbar-header {
+  border-top-left-radius: 2%;
+  border-top-right-radius: 2%;
 }
-.btn-contenedor{
-    display: flex;
-    align-items: center; 
+
+.btn-contenedor {
+  display: flex;
+  align-items: center;
 }
-.input{
-    font-size: 14px;
+
+.input {
+  font-size: 14px;
+}
+
+.mat-toolbar-cropper {
+  height: 5%;
+  background-color: #ffffff;
+}
+
+.cargando {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 1;
+  bottom: 1;
+  height: 100%;
+  width: 100%;
+  border-radius: 1%;
+  background-color: rgba($color: #000000, $alpha: 0.6);
 }

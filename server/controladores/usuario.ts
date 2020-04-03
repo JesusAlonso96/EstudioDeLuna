@@ -46,12 +46,14 @@ export let login = (req: Request, res: Response) => {
                     return res.status(422).send({ titulo: 'Usuario no encontrado', detalles: 'No existe un usuario con estos datos' });
                 }
                 if (verificarContrasena(contrasena, usuarioEncontrado.contrasena)) {
+                    console.log(usuarioEncontrado.configuracion)
                     const token = jwt.sign({
                         id: usuarioEncontrado._id,
                         nombre: usuarioEncontrado.nombre,
                         rol: usuarioEncontrado.rol,
                         rol_sec: usuarioEncontrado.rol_sec,
                         configuracion: usuarioEncontrado.configuracion,
+                        logo: usuarioEncontrado.logo,
                         sucursal: usuarioEncontrado.sucursal
                     }, environment.SECRET, { expiresIn: '8h' });
                     return res.json(token);
@@ -493,7 +495,7 @@ export let nuevaCotizacion = (req: Request, res: Response) => {
     });
 }
 export let obtenerCotizaciones = (req: Request, res: Response) => {
-    Cotizacion.find({sucursal: res.locals.usuario.sucursal}, { __v: 0 })
+    Cotizacion.find({ sucursal: res.locals.usuario.sucursal }, { __v: 0 })
         .populate('productos.producto', '-activo -caracteristicas -__v -familia -c_ad -c_r -b_n -nombre -num_fotos')
         .populate('asesor', '-_id -__v -ape_mat -asistencia -ocupado -pedidosTomados -activo -username -contrasena -rol -rol_sec')
         .populate('empresa', '-_id -activa -__v')
@@ -645,6 +647,8 @@ export let obtenerSucursales = (req: Request, res: Response) => {
         return res.json(sucursales);
     })
 }
+/* Modulo de configuracion */
+
 /* Middlewares */
 export let autenticacionMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;

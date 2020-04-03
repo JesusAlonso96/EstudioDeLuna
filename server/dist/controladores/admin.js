@@ -358,7 +358,8 @@ exports.altaUsuario = (req, res) => {
             tiempo: 2000,
             posicion: 'toast-top-right',
             barraProgreso: false
-        }
+        },
+        tema: 'default'
     };
     usuarioAlta.save((err, usuarioCreado) => {
         if (err)

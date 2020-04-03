@@ -343,7 +343,8 @@ export let altaUsuario = (req: Request, res: Response) => {
             tiempo:2000,
             posicion:'toast-top-right',
             barraProgreso: false
-        }
+        },
+        tema: 'default'
     }
     usuarioAlta.save((err, usuarioCreado) => {
         if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al guardar el usuario' });

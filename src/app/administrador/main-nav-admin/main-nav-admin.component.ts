@@ -6,7 +6,10 @@ import { Router } from '@angular/router';
 import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
 import { Pestana } from 'src/app/comun/modelos/pestana.model';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
-import { ToastrService } from 'ngx-toastr';
+import { TemasService } from 'src/app/comun/servicios/temas.service';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-main-nav-admin',
@@ -16,10 +19,16 @@ import { ToastrService } from 'ngx-toastr';
 export class MainNavAdminComponent implements OnInit {
   pestanasActivas: boolean[] = [];
   pestanas: Pestana[] = [];
-  constructor(private breakpointObserver: BreakpointObserver, public autenticacionService: ServicioAutenticacionService, private rutas: Router, private usuarioService: UsuarioService, private toastr: ToastrService) {
+  constructor(private breakpointObserver: BreakpointObserver, 
+    public autenticacionService: ServicioAutenticacionService,
+    public temasService: TemasService, 
+    private rutas: Router, private usuarioService: UsuarioService, 
+    private toastr: NgToastrService) {
   }
   ngOnInit() {
+    console.log("acabo de inciiarrasjasdnkjn")
     this.obtenerPestanas();
+    this.temasService.iniciarTemas();
   }
   obtenerPestanas() {
     this.usuarioService.obtenerPestanas('Administrador').subscribe(
@@ -27,8 +36,8 @@ export class MainNavAdminComponent implements OnInit {
         this.pestanas = pestanas;
         this.iniciarPestanas();
       },
-      (err: any) => {
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
 
@@ -52,6 +61,20 @@ export class MainNavAdminComponent implements OnInit {
     for (let i = 0; i < this.pestanas.length; i++) {
       this.pestanasActivas[i] = false;
     }
+  }
+  cambiarTema(tema: string) {
+    this.temasService.cambiarTema(tema);
+    this.temasService.actualizarTemaUsuario(tema).subscribe(
+      (resp: Mensaje)=>{
+        this.toastr.abrirToastr('exito', resp.titulo, resp.detalles);
+      },
+      (err: HttpErrorResponse)=>{
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+      }
+    );
+  }
+  temaActivo(tema: string): boolean {
+    return this.temasService.temaActivo(tema)
   }
 
 }

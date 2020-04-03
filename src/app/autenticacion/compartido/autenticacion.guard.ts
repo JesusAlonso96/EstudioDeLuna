@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { ServicioAutenticacionService } from '../servicio-autenticacion/servicio-autenticacion.service';
+import { TemasService } from 'src/app/comun/servicios/temas.service';
 
 @Injectable()
 export class AutenticacionGuard implements CanActivate {
 
     private url: string;
-    constructor(private authService: ServicioAutenticacionService, private router: Router) { }
+    constructor(private authService: ServicioAutenticacionService, private router: Router, private temasService: TemasService) { }
 
     private manejarAutenticacion(): boolean {
         if (this.loginOHomeOCuentaInvalida()) {

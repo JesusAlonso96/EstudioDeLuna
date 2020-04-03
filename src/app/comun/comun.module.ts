@@ -61,6 +61,7 @@ import { FiltroCotizacionPipe } from './pipes/filtro-cotizacion.pipe';
 import { AlmacenService } from './servicios/almacen.service';
 import { AltaAlmacenComponent } from './componentes/modales/alta-almacen/alta-almacen.component';
 import { EditarAlmacenComponent } from './componentes/modales/editar-almacen/editar-almacen.component';
+import { TemasService } from './servicios/temas.service';
 
 @NgModule({
     declarations: [
@@ -175,7 +176,8 @@ import { EditarAlmacenComponent } from './componentes/modales/editar-almacen/edi
         UsuarioService,
         BuscadorService,
         DatosService,
-        AlmacenService
+        AlmacenService,
+        TemasService
     ],
 })
 export class ComunModule { }

@@ -1,7 +1,96 @@
 <app-encabezado-titulo titulo="Configuracion del sistema"></app-encabezado-titulo>
 <app-barra-cargando [cargando]="cargando"></app-barra-cargando>
-<div class="container tema-prueba2">
+
+<div class="container">
     <div class="row margin-top">
+        <div class="col-lg-12 col-md-12">
+            <mat-card class="full-width card h-100" style="padding: 0%;">
+                <mat-toolbar color="primary" class="toolbar-header">
+                    <span>Logotipo</span>
+                </mat-toolbar>
+                <div>
+                    <div class="container mt-4">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h6>Escoge el logotipo de la empresa.</h6>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="row h-100 w-100 cargando" *ngIf="cargandoImagen" [@carga]="'in'">
+                            <div class="col-lg-12 my-auto ">
+                                <div class="w-50 h-50 mx-auto my-auto">
+                                    <mat-spinner class="mx-auto "></mat-spinner>
+                                    <h2 class="text-center">Cargando imagen...</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row h-50">
+                            <div class="col-lg-12 h-100">
+                                <form #logoForm="ngForm">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <input style="display: none;" type="file" accept="image/*"
+                                                    (change)="cambioArchivoEvento($event)" #imagen required/>
+                                                <button mat-raised-button color="primary" (click)="imagen.click()">
+                                                    <mat-icon>get_app</mat-icon>
+                                                    Seleccionar imagen
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mt-4">
+                                            <div class="col-lg-4" @primerEstado *ngIf="logotipoActual != ''">
+                                                <mat-toolbar class="mat-toolbar-cropper">
+                                                    <span>Logotipo actual</span>
+                                                </mat-toolbar>
+                                                <hr>
+                                                <img  [src]="logotipoActual" class="img-thumbnail" width="200px" height="150px" alt="Logotipo actual de la empresa" srcset="">
+                                            </div>
+                                            <div class="col-lg-4" @primerEstado>
+                                                <mat-toolbar class="mat-toolbar-cropper" *ngIf="imagenLogoRecortada != ''">
+                                                    <span>Recortar imagen</span>
+                                                </mat-toolbar>
+                                                <hr *ngIf="imagenLogoRecortada != ''">
+                                                <image-cropper *ngIf="eventoCambioImagenLogotipo"
+                                                    [imageChangedEvent]="eventoCambioImagenLogotipo"
+                                                    [maintainAspectRatio]="true" [aspectRatio]="1 / 1" format="png"
+                                                    (imageCropped)="imagenRecortada($event)"
+                                                    (imageLoaded)="imagenCargada()" (cropperReady)="cortadorListo()"
+                                                    (loadImageFailed)="cargarImagenFallida()">
+                                                </image-cropper>
+                                            </div>
+                                            <div class="col-lg-4" @primerEstado *ngIf="imagenLogoRecortada != ''">
+                                                <mat-toolbar class="mat-toolbar-cropper">
+                                                    <span>Vista previa</span>
+                                                    <span class="espaciador"></span>
+                                                    <button mat-icon-button class="float-right" color="warn"
+                                                        (click)="eliminarImagen(0)">
+                                                        <mat-icon>close</mat-icon>
+                                                    </button>
+                                                </mat-toolbar>
+                                                <hr>
+                                                <img class="text-center" [src]="imagenLogoRecortada"
+                                                    class="img-thumbnail" width="200px" height="150px"
+                                                    alt="Logotipo nuevo de la empresa">
+                                            </div>
+                                        </div>
+                                        <div class="row mt-4 mb-4">
+                                            <div class="col-lg-12">
+                                                <button mat-raised-button color="primary"
+                                                    class="float-right" [disabled]="!imagenValida()" (click)="guardarImagen()">Guardar imagen</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+    <div class="row mt-4">
         <div class="col-lg-6 col-md-12">
             <mat-card class="full-width card" style="padding: 0%;">
                 <mat-toolbar color="primary" class="toolbar-header">
@@ -79,37 +168,7 @@
                 </form>
             </mat-card>
         </div>
-        <div class="col-lg-6 col-md-12">
-            <mat-card class="full-width card" style="padding: 0%;">
-                <mat-toolbar color="primary" class="toolbar-header">
-                    <span>Temas</span>
-                </mat-toolbar>
-                <div>
-                    <div class="container mt-4">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <h6>Escoge el tema de tu preferencia.</h6>
-                                <hr>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12 ">
-                                <div class="row">
-                                    <div class="col-lg-5">
-                                        <mat-card class="mb-4" style="text-align: center;">
-                                            <span class="dot mr-4"></span>
-                                            <span class="dot"></span> <br>
-                                            <span class="dot mr-4"></span>
-                                            <span class="dot"></span>
-                                        </mat-card>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </mat-card>
-        </div>
+        
     </div>
     <div class="row mt-4">
         <div class="col-lg-6 col-md-6">
@@ -128,3 +187,4 @@
         </div>
     </div>
 </div>
+

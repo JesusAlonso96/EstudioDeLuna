@@ -57,12 +57,14 @@ exports.login = (req, res) => {
                 return res.status(422).send({ titulo: 'Usuario no encontrado', detalles: 'No existe un usuario con estos datos' });
             }
             if (verificarContrasena(contrasena, usuarioEncontrado.contrasena)) {
+                console.log(usuarioEncontrado.configuracion);
                 const token = jsonwebtoken_1.default.sign({
                     id: usuarioEncontrado._id,
                     nombre: usuarioEncontrado.nombre,
                     rol: usuarioEncontrado.rol,
                     rol_sec: usuarioEncontrado.rol_sec,
                     configuracion: usuarioEncontrado.configuracion,
+                    logo: usuarioEncontrado.logo,
                     sucursal: usuarioEncontrado.sucursal
                 }, environment_1.environment.SECRET, { expiresIn: '8h' });
                 return res.json(token);
@@ -708,6 +710,7 @@ exports.obtenerSucursales = (req, res) => {
         return res.json(sucursales);
     });
 };
+/* Modulo de configuracion */
 /* Middlewares */
 exports.autenticacionMiddleware = (req, res, next) => {
     const token = req.headers.authorization;

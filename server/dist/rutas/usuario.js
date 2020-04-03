@@ -6,9 +6,21 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const UsuarioCtrl = __importStar(require("../controladores/usuario"));
+const multer_1 = __importDefault(require("multer"));
+const storage = multer_1.default.diskStorage({
+    filename: (req, file, cb) => {
+        cb(null, file.originalname + '.jpeg');
+    },
+    destination: function (req, file, cb) {
+        cb(null, './subidas');
+    }
+}), upload = multer_1.default({ storage: storage });
 const rutasUsuario = express_1.Router();
 //get
 rutasUsuario.get('/obtenerPestanas/:rol', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.obtenerPestanas);
@@ -41,13 +53,13 @@ rutasUsuario.post('/agregarCotizacion', UsuarioCtrl.autenticacionMiddleware, Usu
 rutasUsuario.post('/ordenCompra', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.nuevaOrdenCompra);
 rutasUsuario.post('/compra', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.registrarCompra);
 //patch
-rutasUsuario.patch('/actualizarProducto', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.actualizarProducto);
 rutasUsuario.patch('/eliminarProducto/:id/:idFamilia', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.eliminarProducto);
 rutasUsuario.patch('/eliminarFamilia/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.eliminarFamilia);
+rutasUsuario.patch('/recuperarContrasena/:email', UsuarioCtrl.recuperarContrasena);
+rutasUsuario.patch('/ordenCompra/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.desactivarOrdenComra);
+rutasUsuario.patch('/actualizarProducto', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.actualizarProducto);
 rutasUsuario.patch('/eliminarEmpresa', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.eliminarEmpresa);
 rutasUsuario.patch('/actualizarEmpresa', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.editarEmpresa);
 rutasUsuario.patch('/generarCodigoRecuperacion', UsuarioCtrl.generarCodigoRecuperacion);
-rutasUsuario.patch('/recuperarContrasena/:email', UsuarioCtrl.recuperarContrasena);
 rutasUsuario.patch('/eliminarCodigoRecuperacion', UsuarioCtrl.eliminarCodigoRecuperacion);
-rutasUsuario.patch('/ordenCompra/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.desactivarOrdenComra);
 exports.default = rutasUsuario;

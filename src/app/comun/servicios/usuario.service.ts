@@ -131,6 +131,7 @@ export class UsuarioService {
     public desactivarOrdenCompra(id: string): Observable<any> {
         return this.http.patch(`/api/v1/usuarios/ordenCompra/${id}`, null);
     }
+    
     /* Peticiones para sockets */
     public escucharNuevoUsuario() {
         return this.wsService.escuchar('nuevo-usuario');

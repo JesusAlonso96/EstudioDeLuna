@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TemasService } from '../comun/servicios/temas.service';
 
 @Component({
   selector: 'app-administrador',
@@ -7,6 +8,6 @@ import { Component } from '@angular/core';
 })
 export class AdministradorComponent {
 
-  constructor() { }
+  constructor(private temasService: TemasService) { }
 
 }

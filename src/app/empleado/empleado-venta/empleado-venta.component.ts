@@ -2,7 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as momento from 'moment';
-import { NgxImageCompressService } from 'ngx-image-compress';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -57,7 +56,7 @@ export class EmpleadoVentaComponent implements OnInit {
   pagado: number;
   imagen: any;
   pedidoCreado: Pedido = new Pedido();
-  constructor(private usuarioService: UsuarioService, private toastr: ToastrService, private productosService: ProductosService, private clientesService: ClienteService, private empleadoService: EmpleadoService, public dialog: MatDialog, private imageCompress: NgxImageCompressService, private pedidosService: PedidosService) { }
+  constructor(private usuarioService: UsuarioService, private toastr: ToastrService, private productosService: ProductosService, private clientesService: ClienteService, private empleadoService: EmpleadoService, public dialog: MatDialog, private pedidosService: PedidosService) { }
 
   ngOnInit() {
     this.obtenerFamiliasProductos();

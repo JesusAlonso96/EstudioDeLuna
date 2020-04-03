@@ -12,11 +12,16 @@ import { rootRoutes } from './root/root-routing.module';
 
 
 const routes: Routes = [
-  {path:'', component: LoginComponent},
+  { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'admin', component: AdministradorComponent, children: adminRoutes, canActivate: [AutenticacionGuard] },
+  {
+    path: 'admin',
+    component: AdministradorComponent,
+    loadChildren: () => import('./administrador/administrador-routing.module').then(m => m.AdministradorRoutingModule), 
+    canActivate: [AutenticacionGuard]
+  },
   { path: 'usuario', component: EmpleadoComponent, children: empleadoRoutes, canActivate: [AutenticacionGuard] },
-  { path: 'root', component: RootComponent, children: rootRoutes ,canActivate: [AutenticacionGuard] }
+  { path: 'root', component: RootComponent, children: rootRoutes, canActivate: [AutenticacionGuard] }
 ];
 
 @NgModule({

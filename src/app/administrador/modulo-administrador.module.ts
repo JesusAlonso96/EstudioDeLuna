@@ -90,6 +90,8 @@ import { AdministradorConfiguracionSistemaComponent } from './administrador-conf
 import { AdministradorCajaSeccionComponent } from './administrador-caja-seccion/administrador-caja-seccion.component';
 import { CajaDetallesComponent } from './administrador-caja-seccion/caja-detalles/caja-detalles.component';
 import { CajaRestaurarComponent } from './administrador-caja-seccion/caja-restaurar/caja-restaurar.component';
+import { TemasService } from '../comun/servicios/temas.service';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 
 
@@ -168,7 +170,8 @@ import { CajaRestaurarComponent } from './administrador-caja-seccion/caja-restau
     ChartsModule,
     NgxPrintModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    ImageCropperModule
   ],
   entryComponents: [
     ListadoVentasMesComponent,
@@ -177,6 +180,7 @@ import { CajaRestaurarComponent } from './administrador-caja-seccion/caja-restau
   ],
   providers: [
     AdministradorService,
+    TemasService,
     AutenticacionGuard
   ]
 })

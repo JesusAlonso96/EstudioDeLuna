@@ -1,4 +1,5 @@
-<mat-sidenav-container class="sidenav-container tema-prueba" *ngIf="autenticacionService.estaAutenticado()">
+<mat-sidenav-container class="sidenav-container">
+  <!---->
   <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="'over'" [opened]="(isHandset$ | async) === false">
     <mat-toolbar color="primary">
@@ -22,7 +23,15 @@
       </button>
       <span>Administrador</span>
       <span class="espaciador"></span>
-      
+      <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" style="color:#ffff" matTooltip="Temas">
+        <mat-icon>palette</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu" style="padding: 1;">
+        <button mat-menu-item class="dot mr-4 ml-2" (click)="cambiarTema('default')"></button>
+        <button mat-menu-item class="dot-rojo mr-2" (click)="cambiarTema('tema-rojo')"></button> <br>
+        <button mat-menu-item class="dot-azul mr-4 ml-2" (click)="cambiarTema('tema-azul')"></button>
+        <button mat-menu-item class="dot-verde mr-2" (click)="cambiarTema('tema-verde')"></button>
+      </mat-menu>
       <button mat-icon-button routerLink="/admin/configuracion" color="primary" style="color:#ffff"
         matTooltip="Configuracion del sistema">
         <mat-icon>settings</mat-icon>
@@ -37,4 +46,3 @@
     <ng-content></ng-content>
   </mat-sidenav-content>
 </mat-sidenav-container>
-

@@ -1,6 +1,15 @@
 import { Router } from 'express';
 import * as UsuarioCtrl from '../controladores/usuario';
-
+import multer from 'multer';
+const storage = multer.diskStorage({
+    filename: (req, file, cb) => {
+        cb(null, file.originalname + '.jpeg')
+    },
+    destination: function (req, file, cb) {
+        cb(null, './subidas');
+    }
+}),
+    upload = multer({ storage: storage });
 const rutasUsuario = Router();
 
 //get
@@ -34,13 +43,13 @@ rutasUsuario.post('/agregarCotizacion', UsuarioCtrl.autenticacionMiddleware, Usu
 rutasUsuario.post('/ordenCompra', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.nuevaOrdenCompra);
 rutasUsuario.post('/compra', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.registrarCompra)
 //patch
-rutasUsuario.patch('/actualizarProducto', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.actualizarProducto);
 rutasUsuario.patch('/eliminarProducto/:id/:idFamilia', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.eliminarProducto);
 rutasUsuario.patch('/eliminarFamilia/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.eliminarFamilia);
+rutasUsuario.patch('/recuperarContrasena/:email', UsuarioCtrl.recuperarContrasena);
+rutasUsuario.patch('/ordenCompra/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.desactivarOrdenComra);
+rutasUsuario.patch('/actualizarProducto', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.actualizarProducto);
 rutasUsuario.patch('/eliminarEmpresa', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.eliminarEmpresa);
 rutasUsuario.patch('/actualizarEmpresa', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.editarEmpresa);
 rutasUsuario.patch('/generarCodigoRecuperacion', UsuarioCtrl.generarCodigoRecuperacion);
-rutasUsuario.patch('/recuperarContrasena/:email', UsuarioCtrl.recuperarContrasena);
 rutasUsuario.patch('/eliminarCodigoRecuperacion', UsuarioCtrl.eliminarCodigoRecuperacion);
-rutasUsuario.patch('/ordenCompra/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.desactivarOrdenComra);
 export default rutasUsuario;

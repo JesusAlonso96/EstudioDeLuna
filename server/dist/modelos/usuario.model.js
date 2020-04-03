@@ -32,9 +32,12 @@ const usuarioSchema = new mongoose_1.Schema({
                     posicion: { type: String, default: 'toast-top-right' },
                     barraProgreso: { type: Boolean, default: false }
                 }
-            }
+            },
+            tema: { type: String, required: false }
         }
     },
+    logo: { type: String, required: false },
+    fotoPerfil: { type: String, required: false },
     codigoRecuperacion: { type: String, required: false, default: '' },
     activo: { type: Number, default: 1 }
 });
