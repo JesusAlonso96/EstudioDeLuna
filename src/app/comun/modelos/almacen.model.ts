@@ -1,5 +1,8 @@
 import { ProductoProveedor } from './producto_proveedor.model';
 import { Sucursal } from './sucursal.model';
+import { Usuario } from './usuario.model';
+import { Traspaso } from './traspaso.model';
+import { Inventario } from './inventario.model';
 class Direccion {
     calle: string;
     colonia: string;
@@ -13,6 +16,22 @@ class Direccion {
 export class InsumoAlmacen {
     insumo: ProductoProveedor;
     existencia: number;
+    seleccionado?: number;
+    cantidadMovimiento?: number;
+}
+export class Movimiento {
+    _id: string;
+    fecha: Date;
+    numFactura: number;
+    insumo: ProductoProveedor;
+    usuario: Usuario;
+    traspaso?: string | Traspaso;
+    inventario?: string | Inventario;
+    almacen?: Almacen
+    tipo: string;
+    cantidadMovimiento: number;
+    existenciaActual: number; 
+    observaciones: string;
 }
 export class Almacen {
     _id: string;
@@ -20,6 +39,7 @@ export class Almacen {
     nombre: string;
     direccion: Direccion = new Direccion();
     insumos: InsumoAlmacen[];
+    historialMov: Movimiento[];
     sucursal: Sucursal = new Sucursal();
     constructor() { }
     nuevoAlmacen(_id: string, id: number, nombre: string, calle: string, colonia: string, num_ext: number, num_int: number, cp: number, ciudad: string, estado: string) {

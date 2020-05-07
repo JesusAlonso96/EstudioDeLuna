@@ -3,6 +3,9 @@ import { IProductoProveedor } from './producto_proveedor.model';
 import autoIncrement from 'mongoose-auto-increment';
 import { environment } from '../global/environment';
 import { ISucursal } from './sucursal.model';
+import { IUsuario } from './usuario.model';
+import { ITraspaso } from './traspaso';
+import { IInventario } from './inventario.model';
 
 mongoose.set('useUnifiedTopology', true);
 var conexion = mongoose.createConnection(environment.DB_URL, { useNewUrlParser: true });
@@ -24,7 +27,21 @@ export interface IAlmacen extends Document {
             insumo: IProductoProveedor;
             existencia: number;
         }
-    ]
+    ];
+    historialMov: [
+        {
+            fecha: Date;
+            numFactura: Number;
+            traspaso: ITraspaso['_id'];
+            inventario: IInventario['_id'];
+            insumo: IProductoProveedor['_id'];
+            usuario: IUsuario['_id'];
+            tipo: String;
+            cantidadMovimiento: Number;
+            existenciaActual: Number;
+            observaciones: String;
+        }
+    ];
     sucursal: ISucursal['_id'];
     fechaRegistro: Date;
     activo: boolean;
@@ -49,6 +66,22 @@ const almacenSchema = new Schema({
             {
                 insumo: { type: Schema.Types.ObjectId, ref: 'ProductoProveedor' },
                 existencia: { type: Number }
+            }
+        ]
+    },
+    historialMov: {
+        type: [
+            {
+                fecha: { type: Date, required: false, default: new Date(Date.now()) },
+                numFactura: { type: Number, required: false },
+                traspaso: { type: Schema.Types.ObjectId, ref: 'Traspaso', required: false },
+                inventario: { type: Schema.Types.ObjectId, ref: 'Inventario', required: false },
+                insumo: { type: Schema.Types.ObjectId, ref: 'ProductoProveedor', required: true },
+                usuario: { type: Schema.Types.ObjectId, ref: 'Usuario', required: true },
+                tipo: { type: String, required: true },
+                cantidadMovimiento: {type: Number, required: true},
+                existenciaActual: {type: Number, required: true},
+                observaciones: { type: String, required: false },
             }
         ]
     },

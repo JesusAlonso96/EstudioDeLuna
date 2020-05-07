@@ -1,1 +1,74 @@
-<p>inventarios-entradas-salidas works!</p>
+<app-barra-cargando [cargando]="cargando"></app-barra-cargando>
+<mat-card class="container margin-top mb-4" [hidden]="!datosTabla">
+  <div class="row">
+    <div class="col-lg-12">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Buscar por almacen, insumo o motivo</mat-label>
+        <input matInput [(ngModel)]="busquedaElemento" placeholder="Buscar por nombre" (keyup)="aplicarFiltroBusqueda()"
+          autocomplete="off">
+        <button *ngIf="busquedaElemento" (click)="borrarBusqueda()" mat-button matSuffix mat-icon-button
+          aria-label="Clear">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12 mb-4">
+      <mat-table *ngIf="datosTabla" [dataSource]="datosTabla" matSort>
+        <ng-container matColumnDef="fecha">
+          <mat-header-cell *matHeaderCellDef>Fecha de registro</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.fecha | date}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="almacen">
+          <mat-header-cell *matHeaderCellDef>Almacen</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.almacen.nombre}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="insumo">
+          <mat-header-cell *matHeaderCellDef>Insumo</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.insumo.nombre}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="tipoMovimiento">
+          <mat-header-cell *matHeaderCellDef>Tipo movimiento</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <mat-icon [ngClass]="esAlta(element.tipo) ? 'success' : 'danger'">swap_vert</mat-icon>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="motivo">
+          <mat-header-cell *matHeaderCellDef>Motivo</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.tipo}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="cantidadMovimiento">
+          <mat-header-cell *matHeaderCellDef>Cantidad</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.cantidadMovimiento}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="detalles">
+          <mat-header-cell *matHeaderCellDef>Ver detalles</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <button mat-icon-button color="primary" (click)="verDetalles(element)">
+              <mat-icon>remove_red_eye</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="hacerInventario">
+          <mat-header-cell *matHeaderCellDef>Hacer inventario</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <button mat-icon-button class="success">
+              <mat-icon>note_add</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="noData">
+          <mat-footer-cell *matFooterCellDef colspan="6">
+            No hay movimientos registrados
+          </mat-footer-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+        <mat-row *matRowDef="let row;columns: columnas;"></mat-row>
+        <mat-footer-row *matFooterRowDef="['noData']"
+          [ngClass]="{'hide':!(datosTabla!=null && datosTabla.data.length == 0)}"></mat-footer-row>
+      </mat-table>
+      <mat-paginator #paginator [pageSizeOptions]="[5,10,15,20]" [pageSize]="10"></mat-paginator>
+    </div>
+  </div>
+</mat-card>

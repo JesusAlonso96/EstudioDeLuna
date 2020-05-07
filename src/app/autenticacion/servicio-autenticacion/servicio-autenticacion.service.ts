@@ -98,6 +98,9 @@ export class ServicioAutenticacionService {
   public getNombreUsuarioCompleto(): string {
     return this.tokenDesencriptado.nombre + ' ' + this.tokenDesencriptado.ape_pat;
   }
+  public getIdSucursal(): any {
+    return this.tokenDesencriptado.sucursal;
+  }
   public getTipoUsuario(): any {
     return this.tokenDesencriptado.rol;
   }

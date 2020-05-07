@@ -84,8 +84,15 @@ import { CajaRestaurarComponent } from './administrador-caja-seccion/caja-restau
 import { TemasService } from '../comun/servicios/temas.service';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { CotizacionListaProductosComponent } from './administrador-cotizaciones-seccion/generar-cotizacion/cotizacion-lista-productos/cotizacion-lista-productos.component';
-
-
+import { InventariosInvFisicoAlmacenesComponent } from './administrador-inventario-seccion/inventarios-inv-fisico/inventarios-inv-fisico-almacenes/inventarios-inv-fisico-almacenes.component';
+import { InventariosInvFisicoHistorialComponent } from './administrador-inventario-seccion/inventarios-inv-fisico/inventarios-inv-fisico-historial/inventarios-inv-fisico-historial.component';
+import { InventariosInvFisicoAlmacenesAltaModalComponent } from './administrador-inventario-seccion/inventarios-inv-fisico/inventarios-inv-fisico-almacenes/inventarios-inv-fisico-almacenes-alta-modal/inventarios-inv-fisico-almacenes-alta-modal.component';
+import { InventariosInvFisicoAlmacenesExistenciasModalComponent } from './administrador-inventario-seccion/inventarios-inv-fisico/inventarios-inv-fisico-almacenes/inventarios-inv-fisico-almacenes-existencias-modal/inventarios-inv-fisico-almacenes-existencias-modal.component';
+import { InventariosInvFisicoHistorialExistenciasModalComponent } from './administrador-inventario-seccion/inventarios-inv-fisico/inventarios-inv-fisico-historial/inventarios-inv-fisico-historial-existencias-modal/inventarios-inv-fisico-historial-existencias-modal.component';
+import { InventariosBajaInsumoComponent } from './administrador-inventario-seccion/inventarios-baja-insumo/inventarios-baja-insumo.component';
+import { InventariosAlmacenesTraspasosPendientesComponent } from './administrador-inventario-seccion/inventarios-almacenes-traspasos/inventarios-almacenes-traspasos-pendientes/inventarios-almacenes-traspasos-pendientes.component';
+import { InventariosAlmacenesTraspasosAltaComponent } from './administrador-inventario-seccion/inventarios-almacenes-traspasos/inventarios-almacenes-traspasos-alta/inventarios-almacenes-traspasos-alta.component';
+import { InventariosEntradasSalidasDetallesModalComponent } from './administrador-inventario-seccion/inventarios-entradas-salidas/inventarios-entradas-salidas-detalles-modal/inventarios-entradas-salidas-detalles-modal.component';
 
 
 @NgModule({
@@ -144,6 +151,15 @@ import { CotizacionListaProductosComponent } from './administrador-cotizaciones-
     CajaRestaurarComponent,
     ClientesAdministrarComponent,
     CotizacionListaProductosComponent
+    InventariosInvFisicoAlmacenesComponent,
+    InventariosInvFisicoHistorialComponent,
+    InventariosInvFisicoAlmacenesAltaModalComponent,
+    InventariosInvFisicoAlmacenesExistenciasModalComponent,
+    InventariosInvFisicoHistorialExistenciasModalComponent,
+    InventariosBajaInsumoComponent,
+    InventariosAlmacenesTraspasosPendientesComponent,
+    InventariosAlmacenesTraspasosAltaComponent,
+    InventariosEntradasSalidasDetallesModalComponent
   ],
   imports: [
     CommonModule,
