@@ -1,233 +1,220 @@
-<app-barra-cargando [cargando]="!cargando"></app-barra-cargando>
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <mat-card class="mt-4 mb-4">
-                <form #clienteForm="ngForm" class="formCliente">
-                    <h3 class="text-center">Registrar cliente</h3>
-                    <hr>
-                    <div class="row text-center">
-                        <div class="col-lg-12 col-md-12">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Nombre de pila</mat-label>
-                                <input [(ngModel)]="cliente.nombre" #nombre="ngModel" name="nombre" matInput
-                                    placeholder="Ingresa tu nombre "
-                                    pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]*(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$"
-                                    required>
-                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                                <mat-error
-                                    *ngIf="(nombre.invalid && (nombre.dirty || nombre.touched)) && nombre.errors.required">
-                                    Por favor ingresa tu nombre</mat-error>
-                                <mat-error
-                                    *ngIf="(nombre.invalid && (nombre.dirty || nombre.touched)) && nombre.errors.pattern">
-                                    Por favor ingresa solo letras</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Apellido paterno</mat-label>
-                                <input [(ngModel)]="cliente.ape_pat" #ape_pat="ngModel" name="ape_pat" matInput
-                                    placeholder="Ingresa tu apellido paterno"
-                                    pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$"
-                                    required>
-                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                                <mat-error
-                                    *ngIf="(ape_pat.invalid && (ape_pat.dirty || ape_pat.touched)) && ape_pat.errors.required">
-                                    Por favor ingresa tu apellido paterno</mat-error>
-                                <mat-error
-                                    *ngIf="(ape_pat.invalid && (ape_pat.dirty || ape_pat.touched)) && ape_pat.errors.pattern">
-                                    Por favor ingresa solo letras</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Apellido materno</mat-label>
-                                <input [(ngModel)]="cliente.ape_mat" #ape_mat="ngModel" name="ape_mat" matInput
-                                    placeholder="Ingresa tu apellido materno"
-                                    pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$"
-                                    required>
-                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                                <mat-error
-                                    *ngIf="(ape_mat.invalid && (ape_mat.dirty || ape_mat.touched)) && ape_mat.errors.required">
-                                    Por favor ingresa tu apellido materno</mat-error>
-                                <mat-error
-                                    *ngIf="(ape_mat.invalid && (ape_mat.dirty || ape_mat.touched)) && ape_mat.errors.pattern">
-                                    Por favor ingresa solo letras</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Correo electronico</mat-label>
-                                <input [(ngModel)]="cliente.email" #email="ngModel" name="email" matInput type="email"
-                                    placeholder="Ingresa tu correo electronico"
-                                    pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
-                                    required>
-                                <mat-error
-                                    *ngIf="(email.invalid && (email.dirty || email.touched)) &&  email.errors.required">
-                                    Por favor ingresa tu correo electronico</mat-error>
-                                <mat-error
-                                    *ngIf="(email.invalid && (email.dirty || email.touched)) &&  email.errors.pattern">
-                                    Por favor ingresa un formato de correo valido</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Nombre de usuario</mat-label>
-                                <input [(ngModel)]="cliente.username" #username="ngModel" name="username" matInput
-                                    type="text" pattern="^[a-zA-Z0-9]+$" placeholder="Ingresa un nombre de usuario">
-                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                                <mat-error
-                                    *ngIf="(username.invalid && (username.dirty || username.touched)) && username.errors.pattern">
-                                    Por favor ingresa solo letras y numeros</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Telefono celular</mat-label>
-                                <input [(ngModel)]="cliente.telefono" #telefono="ngModel" name="telefono" matInput
-                                    pattern="^[0-9]+$" placeholder="Ingresa tu telefono" minlength="10" required>
-                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                                <mat-error
-                                    *ngIf="(telefono.invalid && (telefono.dirty || telefono.touched)) && telefono.errors.minlength">
-                                    Por favor ingresa 10 digitos</mat-error>
-                                <mat-error
-                                    *ngIf="(telefono.invalid && (telefono.dirty || telefono.touched)) && telefono.errors.pattern">
-                                    Por favor ingresa solo digitos</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6 col-md-6" style="margin-bottom: 10px;">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Razon social</mat-label>
-                                <input [(ngModel)]="cliente.razonSocial" #razonSocial="ngModel" name="razonSocial"
-                                    matInput type="text" pattern="^[a-zA-Z ]+$" placeholder="Razon social">
-                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                                <mat-error
-                                    *ngIf="(razonSocial.invalid && (razonSocial.dirty || razonSocial.touched)) && razonSocial.errors.pattern">
-                                    Por favor ingresa solo letras</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-12 text-left">
-                            <h5 style="margin-top: 10px;"> ¿Se necesita factura? </h5>
-                            <mat-slide-toggle color="primary" (change)="onChange($event)" checked="false">{{conFactura}}
-                            </mat-slide-toggle>
+<app-barra-cargando [cargando]="cargando"></app-barra-cargando>
+<div class="mt-2 mb-4">
+    <form #clienteForm="ngForm" class="formCliente container-fluid">
+        <h3 class="text-center">Registrar cliente</h3>
+        <hr>
+        <div class="row text-center">
+            <div class="col-lg-12 col-md-12">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Nombre de pila</mat-label>
+                    <input [(ngModel)]="cliente.nombre" #nombre="ngModel" name="nombre" matInput
+                        placeholder="Ingresa tu nombre "
+                        pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]*(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$"
+                        required>
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-error *ngIf="(nombre.invalid && (nombre.dirty || nombre.touched)) && nombre.errors.required">
+                        Por favor ingresa tu nombre</mat-error>
+                    <mat-error *ngIf="(nombre.invalid && (nombre.dirty || nombre.touched)) && nombre.errors.pattern">
+                        Por favor ingresa solo letras</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Apellido paterno</mat-label>
+                    <input [(ngModel)]="cliente.ape_pat" #ape_pat="ngModel" name="ape_pat" matInput
+                        placeholder="Ingresa tu apellido paterno"
+                        pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$"
+                        required>
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-error
+                        *ngIf="(ape_pat.invalid && (ape_pat.dirty || ape_pat.touched)) && ape_pat.errors.required">
+                        Por favor ingresa tu apellido paterno</mat-error>
+                    <mat-error
+                        *ngIf="(ape_pat.invalid && (ape_pat.dirty || ape_pat.touched)) && ape_pat.errors.pattern">
+                        Por favor ingresa solo letras</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Apellido materno</mat-label>
+                    <input [(ngModel)]="cliente.ape_mat" #ape_mat="ngModel" name="ape_mat" matInput
+                        placeholder="Ingresa tu apellido materno"
+                        pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$"
+                        required>
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-error
+                        *ngIf="(ape_mat.invalid && (ape_mat.dirty || ape_mat.touched)) && ape_mat.errors.required">
+                        Por favor ingresa tu apellido materno</mat-error>
+                    <mat-error
+                        *ngIf="(ape_mat.invalid && (ape_mat.dirty || ape_mat.touched)) && ape_mat.errors.pattern">
+                        Por favor ingresa solo letras</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Correo electronico</mat-label>
+                    <input [(ngModel)]="cliente.email" #email="ngModel" name="email" matInput type="email"
+                        placeholder="Ingresa tu correo electronico"
+                        pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" required>
+                    <mat-error *ngIf="(email.invalid && (email.dirty || email.touched)) &&  email.errors.required">
+                        Por favor ingresa tu correo electronico</mat-error>
+                    <mat-error *ngIf="(email.invalid && (email.dirty || email.touched)) &&  email.errors.pattern">
+                        Por favor ingresa un formato de correo valido</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Nombre de usuario</mat-label>
+                    <input [(ngModel)]="cliente.username" #username="ngModel" name="username" matInput type="text"
+                        pattern="^[a-zA-Z0-9]+$" placeholder="Ingresa un nombre de usuario">
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-error
+                        *ngIf="(username.invalid && (username.dirty || username.touched)) && username.errors.pattern">
+                        Por favor ingresa solo letras y numeros</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Telefono celular</mat-label>
+                    <input [(ngModel)]="cliente.telefono" #telefono="ngModel" name="telefono" matInput
+                        pattern="^[0-9]+$" placeholder="Ingresa tu telefono" minlength="10" required>
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-error
+                        *ngIf="(telefono.invalid && (telefono.dirty || telefono.touched)) && telefono.errors.minlength">
+                        Por favor ingresa 10 digitos</mat-error>
+                    <mat-error
+                        *ngIf="(telefono.invalid && (telefono.dirty || telefono.touched)) && telefono.errors.pattern">
+                        Por favor ingresa solo digitos</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 col-md-6" style="margin-bottom: 10px;">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Razon social</mat-label>
+                    <input [(ngModel)]="cliente.razonSocial" #razonSocial="ngModel" name="razonSocial" matInput
+                        type="text" pattern="^[a-zA-Z ]+$" placeholder="Razon social">
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-error
+                        *ngIf="(razonSocial.invalid && (razonSocial.dirty || razonSocial.touched)) && razonSocial.errors.pattern">
+                        Por favor ingresa solo letras</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-12 text-left">
+                <h5 style="margin-top: 10px;"> ¿Se necesita factura? </h5>
+                <mat-slide-toggle color="primary" (change)="onChange($event)" checked="false">{{conFactura}}
+                </mat-slide-toggle>
 
-                        </div>
-                        <div *ngIf="conFactura == 'Si'" class="col-12">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>RFC</mat-label>
-                                <input [(ngModel)]="cliente.rfc" #rfc="ngModel" name="rfc" matInput type="text"
-                                    placeholder="Ingresa tu rfc" pattern="^[a-zA-Z0-9]+$" minlength="13" maxlength="13">
-                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                                <mat-error *ngIf="(rfc.invalid && (rfc.dirty || rfc.touched)) && rfc.errors.pattern">
-                                    Por favor ingresa solo letras y digitos</mat-error>
-                                <mat-error *ngIf="(rfc.invalid && (rfc.dirty || rfc.touched)) && rfc.errors.minlength">
-                                    Por favor ingresa el total de digitos</mat-error>
-                                <mat-error *ngIf="(rfc.invalid && (rfc.dirty || rfc.touched)) && rfc.errors.maxlength">
-                                    Por favor ingresa 13 digitos</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-12 text-left">
-                            <h5 style="margin-top: 10px;"> Domicilio</h5>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Ingresa tu estado</mat-label>
-                                <mat-select [(ngModel)]="estado" name="estado" #estado2="ngModel" required>
-                                    <mat-option (click)="buscarMunicipios()"
-                                        *ngFor="let estado of estados" [value]="estado">
-                                        {{estado.nombre}}
-                                    </mat-option>
-                                </mat-select>
-                                <mat-error
-                                    *ngIf="(estado2.invalid && (estado2.dirty || estado2.touched)) && estado2.errors.required">
-                                    Por favor ingresa tu ciudad</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <mat-progress-bar *ngIf="cargando" mode="indeterminate"></mat-progress-bar>
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Ingresa tu municipio</mat-label>
-                                <mat-select [disabled]="!seleccionoEstado()" [(ngModel)]="municipio"
-                                    #municipio2="ngModel" name="municipio" required>
-                                    <mat-option (click)="setMunicipio()" *ngFor="let municipio of municipios"
-                                        [value]="municipio">
-                                        {{municipio.nombre}}
-                                    </mat-option>
-                                </mat-select>
-                                <mat-error
-                                    *ngIf="(municipio2.invalid && (municipio2.dirty || municipio2.touched)) && municipio2.errors.required">
-                                    Por favor ingresa tu municipio</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-4 col-md-4">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Codigo postal</mat-label>
-                                <input [(ngModel)]="cliente.cp" #cp="ngModel" type="number" name="cp" matInput
-                                    placeholder="Ingresa tu codigo postal" required>
-                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                                <mat-error *ngIf="(cp.invalid && (cp.dirty || cp.touched)) && cp.errors.required">
-                                    Por favor ingresa tu codigo postal</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-4 col-md-4">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Numero exterior</mat-label>
-                                <input [(ngModel)]="cliente.num_ext" #num_ext="ngModel" name="num_ext" matInput
-                                    type="number" placeholder="Ingresa tu numero exterior" required>
-                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                                <mat-error
-                                    *ngIf="(num_ext.invalid && (num_ext.dirty || num_ext.touched)) && num_ext.errors.required">
-                                    Por favor ingresa tu numero exterior</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-4 col-md-4">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Numero interior</mat-label>
-                                <input [(ngModel)]="cliente.num_int" #num_int="ngModel" name="num_int" matInput
-                                    type="number" placeholder="Ingresa tu numero interior">
-                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                                <mat-hint></mat-hint>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Ingresa tu direccion</mat-label>
-                                <input [(ngModel)]="cliente.direccion" #direccion="ngModel" name="direccion" matInput
-                                    type="text" placeholder="Direccion"
-                                    pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d10-9 ]+$"
-                                    required>
-                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                                <mat-error
-                                    *ngIf="(direccion.invalid && (direccion.dirty || direccion.touched)) && direccion.errors.required">
-                                    Por favor ingresa tu numero exterior</mat-error>
-                                <mat-error
-                                    *ngIf="(direccion.invalid && (direccion.dirty || direccion.touched)) && direccion.errors.pattern">
-                                    Por favor ingresa solo letras y digitos</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Ingresa tu colonia</mat-label>
-                                <input [(ngModel)]="cliente.colonia" #colonia="ngModel" name="colonia" matInput
-                                    type="text" placeholder="Colonia"
-                                    pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d10-9 ]+$"
-                                    required>
-                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                                <mat-error
-                                    *ngIf="(colonia.invalid && (colonia.dirty || colonia.touched)) && colonia.errors.required">
-                                    Por favor ingresa el nombre de tu colonia</mat-error>
-                                <mat-error
-                                    *ngIf="(colonia.invalid && (colonia.dirty || colonia.touched)) && colonia.errors.pattern">
-                                    Por favor ingresa solo letras y digitos</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-12">
-                            <button mat-raised-button color="accent" class="float-right" [disabled]="!clienteForm.valid"
-                                (click)="abrirRegistrarCliente()">Registrar</button>
-                        </div>
-                    </div>
-                </form>
-            </mat-card>
+            </div>
+            <div *ngIf="conFactura == 'Si'" class="col-12">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>RFC</mat-label>
+                    <input [(ngModel)]="cliente.rfc" #rfc="ngModel" name="rfc" matInput type="text"
+                        placeholder="Ingresa tu rfc" pattern="^[a-zA-Z0-9]+$" minlength="13" maxlength="13">
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-error *ngIf="(rfc.invalid && (rfc.dirty || rfc.touched)) && rfc.errors.pattern">
+                        Por favor ingresa solo letras y digitos</mat-error>
+                    <mat-error *ngIf="(rfc.invalid && (rfc.dirty || rfc.touched)) && rfc.errors.minlength">
+                        Por favor ingresa el total de digitos</mat-error>
+                    <mat-error *ngIf="(rfc.invalid && (rfc.dirty || rfc.touched)) && rfc.errors.maxlength">
+                        Por favor ingresa 13 digitos</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-12 text-left">
+                <h5 style="margin-top: 10px;"> Domicilio</h5>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Ingresa tu estado</mat-label>
+                    <mat-select [(ngModel)]="estado" name="estado" #estado2="ngModel" required>
+                        <mat-option (click)="buscarMunicipios()" *ngFor="let estado of estados" [value]="estado">
+                            {{estado.nombre}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="(estado2.invalid && (estado2.dirty || estado2.touched)) && estado2.errors.required">
+                        Por favor ingresa tu ciudad</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <mat-progress-bar *ngIf="cargando" mode="indeterminate"></mat-progress-bar>
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Ingresa tu municipio</mat-label>
+                    <mat-select [disabled]="!seleccionoEstado()" [(ngModel)]="municipio" #municipio2="ngModel"
+                        name="municipio" required>
+                        <mat-option (click)="setMunicipio()" *ngFor="let municipio of municipios" [value]="municipio">
+                            {{municipio.nombre}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="(municipio2.invalid && (municipio2.dirty || municipio2.touched)) && municipio2.errors.required">
+                        Por favor ingresa tu municipio</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Codigo postal</mat-label>
+                    <input [(ngModel)]="cliente.cp" #cp="ngModel" type="number" name="cp" matInput
+                        placeholder="Ingresa tu codigo postal" required>
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-error *ngIf="(cp.invalid && (cp.dirty || cp.touched)) && cp.errors.required">
+                        Por favor ingresa tu codigo postal</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Numero exterior</mat-label>
+                    <input [(ngModel)]="cliente.num_ext" #num_ext="ngModel" name="num_ext" matInput type="number"
+                        placeholder="Ingresa tu numero exterior" required>
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-error
+                        *ngIf="(num_ext.invalid && (num_ext.dirty || num_ext.touched)) && num_ext.errors.required">
+                        Por favor ingresa tu numero exterior</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Numero interior</mat-label>
+                    <input [(ngModel)]="cliente.num_int" #num_int="ngModel" name="num_int" matInput type="number"
+                        placeholder="Ingresa tu numero interior">
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-hint></mat-hint>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Ingresa tu direccion</mat-label>
+                    <input [(ngModel)]="cliente.direccion" #direccion="ngModel" name="direccion" matInput type="text"
+                        placeholder="Direccion"
+                        pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d10-9 ]+$"
+                        required>
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-error
+                        *ngIf="(direccion.invalid && (direccion.dirty || direccion.touched)) && direccion.errors.required">
+                        Por favor ingresa tu numero exterior</mat-error>
+                    <mat-error
+                        *ngIf="(direccion.invalid && (direccion.dirty || direccion.touched)) && direccion.errors.pattern">
+                        Por favor ingresa solo letras y digitos</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Ingresa tu colonia</mat-label>
+                    <input [(ngModel)]="cliente.colonia" #colonia="ngModel" name="colonia" matInput type="text"
+                        placeholder="Colonia"
+                        pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d10-9 ]+$"
+                        required>
+                    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                    <mat-error
+                        *ngIf="(colonia.invalid && (colonia.dirty || colonia.touched)) && colonia.errors.required">
+                        Por favor ingresa el nombre de tu colonia</mat-error>
+                    <mat-error
+                        *ngIf="(colonia.invalid && (colonia.dirty || colonia.touched)) && colonia.errors.pattern">
+                        Por favor ingresa solo letras y digitos</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-12">
+                <button mat-raised-button color="accent" class="float-right" [disabled]="!clienteForm.valid"
+                    (click)="abrirRegistrarCliente()">Registrar</button>
+            </div>
         </div>
-    </div>
+    </form>
 </div>

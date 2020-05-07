@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const DatosCtrl = __importStar(require("../controladores/datos_estudio"));
-const UsuarioCtrl = __importStar(require("../controladores/usuario"));
+const middlewares_1 = require("../middlewares/middlewares");
 const multer_1 = __importDefault(require("multer"));
 const crypto_1 = __importDefault(require("crypto"));
 const storage = multer_1.default.diskStorage({
@@ -25,5 +25,5 @@ const storage = multer_1.default.diskStorage({
 }), upload = multer_1.default({ storage });
 const rutasDatos = express_1.Router();
 //get
-rutasDatos.get('', UsuarioCtrl.autenticacionMiddleware, DatosCtrl.obtenerDatos);
+rutasDatos.get('', middlewares_1.autenticacionMiddleware, DatosCtrl.obtenerDatos);
 exports.default = rutasDatos;

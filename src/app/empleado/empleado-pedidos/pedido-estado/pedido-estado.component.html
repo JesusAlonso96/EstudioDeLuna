@@ -23,51 +23,51 @@
             <h4 mat-line>Estado actual</h4>
         </mat-list-item>
     </mat-list>
-    <div align="end">
+    <div class="mb-2" align="start">
+        <span *ngIf="!pedidoPagado()"><strong>Debe: </strong>${{cantidadRestante}}</span> <br>
         <span><strong>Total: </strong>${{data.total}}</span> <br>
         <span><strong> Anticipo: </strong>${{data.anticipo}}</span>
     </div>
-
+    <app-alerta *ngIf="pedidoPagado()" tipo="exito" tipo_bootstrap="success" mensaje="El pedido ya ha sido pagado.">
+    </app-alerta>
     <hr>
 </div>
 <div mat-dialog-actions align="end">
-    <ng-container *ngIf="montoCumplido2()">
+    <div *ngIf="pedidoPagado()">
         <button mat-button>
             <mat-icon>done</mat-icon>
             Pedido pagado
         </button>
-        <button class="boton" *ngIf="estadoActual == 'Finalizado'" mat-raised-button
-        color="primary" (click)="marcarEntregado()">Marcar como entregado</button>
-    <button mat-button (click)="onNoClick()" cdkFocusInitial>Cancelar</button>
-    </ng-container>
-    <form #pagadoForm="ngForm" *ngIf="!montoCumplido2() &&  estadoActual == 'Finalizado' ">
-        <mat-form-field appearance="outline" class="">
-            <mat-label>Metodo pago</mat-label>
-            <mat-select [(ngModel)]="metodoPago" name="metodoPago2" #metodoPago2="ngModel" required>
-                <mat-option value="efectivo">
-                    Efectivo
-                </mat-option>
-                <mat-option value="tarjeta">
-                    Tarjeta
-                </mat-option>
-            </mat-select>
-            <mat-error
-                *ngIf="(metodoPago2.invalid && (metodoPago2.dirty || metodoPago2.touched) && metodoPago2.errors.required)">
-                Porfavor ingresa el campo
-            </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Cubrir monto</mat-label>
-            <input type="number" matInput [(ngModel)]="inputDebe" name="debeI" #debeI="ngModel"
-                placeholder="Cubrir monto" required>
-            <mat-error *ngIf="(debeI.invalid && (debeI.dirty || debeI.touched) && debeI.errors.required)">
-                Porfavor ingresa el campo
-            </mat-error>
-        </mat-form-field>
-        <button class="boton" *ngIf="estadoActual == 'Finalizado'" [disabled]="!pagadoForm.valid" mat-raised-button
-            color="primary" (click)="marcarEntregado()">Marcar como entregado</button>
-        <button mat-button (click)="onNoClick()" cdkFocusInitial>Cancelar</button>
-    </form>
-    
+        <button class="boton" *ngIf="estadoActual == 'Finalizado'" mat-raised-button color="primary"
+            (click)="entregarPedido()"
+            [disabled]="cargando.cargando">{{cargando.cargando ? cargando.texto : 'Entregar'}}</button>
+        <button mat-raised-button (click)="onNoClick()" cdkFocusInitial>Cerrar</button>
+    </div>
+    <div *ngIf="!pedidoPagado()">
+        <form #pagadoForm="ngForm">
+            <mat-form-field appearance="outline" class="input">
+                <mat-label>Metodo pago</mat-label>
+                <mat-select [(ngModel)]="metodoPago" name="metodoPago2" #metodoPago2="ngModel" required>
+                    <mat-option value="efectivo">
+                        Efectivo
+                    </mat-option>
+                    <mat-option value="tarjeta">
+                        Tarjeta
+                    </mat-option>
+                </mat-select>
+                <mat-error
+                    *ngIf="(metodoPago2.invalid && (metodoPago2.dirty || metodoPago2.touched) && metodoPago2.errors.required)">
+                    Porfavor ingresa el campo
+                </mat-error>
+            </mat-form-field>
+            <button mat-raised-button color="primary" *ngIf="estadoActual !== 'Finalizado'"
+                [disabled]="!pagadoForm.valid || cargando.cargando"
+                (click)="pagarPedido()">{{cargando.cargando ? cargando.texto : 'Pagar'}}</button>
 
+            <button class="boton" *ngIf="estadoActual == 'Finalizado'"
+                [disabled]="!pagadoForm.valid || cargando.cargando" mat-raised-button color="primary"
+                (click)="pagarYEntregarPedido()"> {{cargando.cargando ? cargando.texto : 'Pagar y entregar'}} </button>
+            <button mat-button (click)="onNoClick()" [disabled]="cargando.cargando" cdkFocusInitial>Cancelar</button>
+        </form>
+    </div>
 </div>

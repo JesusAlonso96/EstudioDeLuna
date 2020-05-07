@@ -8,21 +8,23 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const UsuarioCtrl = __importStar(require("../controladores/usuario"));
+const middlewares_1 = require("../middlewares/middlewares");
 const CajaCtrl = __importStar(require("../controladores/caja"));
-const AdminCtrl = __importStar(require("../controladores/admin"));
 const rutasCaja = express_1.Router();
 //get
-rutasCaja.get('/existe-corte/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, CajaCtrl.existeCorteCaja);
-rutasCaja.get('/cortes-caja/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, CajaCtrl.obtenerCortesCaja);
-rutasCaja.get('/eliminadas', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, CajaCtrl.obtenerCajasEliminadas);
-rutasCaja.get('/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, CajaCtrl.obtenerCaja);
-rutasCaja.get('', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, CajaCtrl.obtenerCajas);
+rutasCaja.get('/existe-corte/:id', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, CajaCtrl.existeCorteCaja);
+rutasCaja.get('/cortes-caja/:id', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, CajaCtrl.obtenerCortesCaja);
+rutasCaja.get('/eliminadas', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, CajaCtrl.obtenerCajasEliminadas);
+rutasCaja.get('/desocupadas', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorORecepcionistaMiddleware, CajaCtrl.obtenerCajasDesocupadas);
+rutasCaja.get('/:id', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, CajaCtrl.obtenerCaja);
+rutasCaja.get('', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorORecepcionistaMiddleware, CajaCtrl.obtenerCajas);
 //post
-rutasCaja.post('/corte-caja', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, CajaCtrl.crearCorteCaja);
-rutasCaja.post('', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, CajaCtrl.agregarCaja);
+rutasCaja.post('/corte-caja', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, CajaCtrl.crearCorteCaja);
+rutasCaja.post('', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, CajaCtrl.agregarCaja);
 //patch
-rutasCaja.patch('/restaurar', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, CajaCtrl.restaurarCaja);
-rutasCaja.patch('/:id', UsuarioCtrl.autenticacionMiddleware, AdminCtrl.adminMiddleware, CajaCtrl.actualizarCaja);
-rutasCaja.patch('', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, CajaCtrl.eliminarCaja);
+rutasCaja.patch('/abrir/:id', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorORecepcionistaMiddleware, CajaCtrl.abrirCaja);
+rutasCaja.patch('/restaurar', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, CajaCtrl.restaurarCaja);
+rutasCaja.patch('/completa', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, CajaCtrl.actualizarCajaCompleta);
+rutasCaja.patch('/:id', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorORecepcionistaMiddleware, CajaCtrl.actualizarCaja);
+rutasCaja.patch('', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, CajaCtrl.eliminarCaja);
 exports.default = rutasCaja;

@@ -43,6 +43,7 @@ import { SeleccionarProductoProveedorComponent } from './componentes/modales/sel
 import { SeleccionarInsumoCompraComponent } from './componentes/modales/seleccionar-insumo-compra/seleccionar-insumo-compra.component';
 import { SeleccionarOrdenDeCompraComponent } from './componentes/modales/seleccionar-orden-de-compra/seleccionar-orden-de-compra.component';
 import { VerInsumosOrdenDeCompraComponent } from './componentes/modales/ver-insumos-orden-de-compra/ver-insumos-orden-de-compra.component';
+import { AlertaComponent } from './componentes/alerta/alerta.component';
 
 //modulos
 import { MaterialModule } from './material.module';
@@ -110,7 +111,8 @@ import { TemasService } from './servicios/temas.service';
         SeleccionarProductoProveedorComponent,
         SeleccionarInsumoCompraComponent,
         SeleccionarOrdenDeCompraComponent,
-        VerInsumosOrdenDeCompraComponent
+        VerInsumosOrdenDeCompraComponent,
+        AlertaComponent
     ],
     imports: [
         CommonModule,
@@ -139,7 +141,8 @@ import { TemasService } from './servicios/temas.service';
         PerfilComponent,
         ListaPedidosComponent,
         BarraCargandoComponent,
-        BuscadorComponent
+        BuscadorComponent,
+        AlertaComponent
 
     ],
     entryComponents: [

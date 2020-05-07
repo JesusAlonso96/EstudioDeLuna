@@ -1,19 +1,19 @@
 import { Router } from 'express';
-import * as UsuarioCtrl from '../controladores/usuario';
+import { autenticacionMiddleware, adminOSupervisorMiddleware, adminOSupervisorORecepcionistaMiddleware } from '../middlewares/middlewares';
 import * as ClienteCtrl from '../controladores/cliente';
 const rutasCliente = Router();
 
 //get
-rutasCliente.get('', UsuarioCtrl.autenticacionMiddleware, ClienteCtrl.obtenerClientes);
-rutasCliente.get('/obtenerDatosClientes', UsuarioCtrl.autenticacionMiddleware, ClienteCtrl.obtenerDatosClientes);
+rutasCliente.get('', autenticacionMiddleware, ClienteCtrl.obtenerClientes);
+rutasCliente.get('/obtenerDatosClientes', autenticacionMiddleware, ClienteCtrl.obtenerDatosClientes);
 rutasCliente.get('/obtenerClientePorEmailNombre/:nombre/:email', ClienteCtrl.obtenerClienteNombreEmail);
 rutasCliente.get('/obtenerPedidosCliente/:id', ClienteCtrl.obtenerPedidosCliente);
-rutasCliente.get('/obtenerClientesEliminados', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, ClienteCtrl.obtenerClientesEliminados);
+rutasCliente.get('/obtenerClientesEliminados', autenticacionMiddleware, adminOSupervisorMiddleware, ClienteCtrl.obtenerClientesEliminados);
 //post
-rutasCliente.post('/registrar', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorORecepcionistaMiddleware, ClienteCtrl.registrarCliente);
+rutasCliente.post('/registrar', autenticacionMiddleware, adminOSupervisorORecepcionistaMiddleware, ClienteCtrl.registrarCliente);
 //patch
-rutasCliente.patch('/eliminarCliente', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, ClienteCtrl.eliminarCliente);
-rutasCliente.patch('/actualizarCliente', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, ClienteCtrl.editarCliente);
-rutasCliente.patch('/restaurarCliente', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, ClienteCtrl.restaurarClienteEliminado)
+rutasCliente.patch('/eliminarCliente', autenticacionMiddleware, adminOSupervisorMiddleware, ClienteCtrl.eliminarCliente);
+rutasCliente.patch('/actualizarCliente', autenticacionMiddleware, adminOSupervisorMiddleware, ClienteCtrl.editarCliente);
+rutasCliente.patch('/restaurarCliente', autenticacionMiddleware, adminOSupervisorMiddleware, ClienteCtrl.restaurarClienteEliminado)
 
 export default rutasCliente;

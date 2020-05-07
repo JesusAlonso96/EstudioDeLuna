@@ -8,18 +8,18 @@ export class Pedido {
     cliente: Cliente;
     fecha_creacion: Date;
     fecha_entrega: Date;
-    comentarios: String;
+    comentarios: string;
     productos: Producto[];
-    status: String;
-    urgente: Boolean;
-    total: Number;
-    c_retoque: Boolean;
-    c_adherible: Boolean;
-    importante: Boolean;
-    anticipo: Number;
-    foto: any;
-    num_pedido: Number;
-    metodoPago: String;
+    status: string;
+    urgente: boolean;
+    total: number;
+    c_retoque: boolean;
+    c_adherible: boolean;
+    importante: boolean;
+    anticipo: number;
+    foto: string;
+    num_pedido: number;
+    metodoPago: string;
     constructor() {
         this.total = 0;
         this.c_retoque = false;
@@ -28,7 +28,7 @@ export class Pedido {
         this.cliente = new Cliente();
         this.productos = [];
         this.fotografo = new Usuario();
-        this.comentarios=' ';
+        this.comentarios = ' ';
         this.foto = '';
     }
 }

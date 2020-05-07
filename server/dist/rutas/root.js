@@ -8,11 +8,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const UsuarioCtrl = __importStar(require("../controladores/usuario"));
 const RootCtrl = __importStar(require("../controladores/root"));
+const middlewares_1 = require("../middlewares/middlewares");
 const rutasRoot = express_1.Router();
-rutasRoot.get('/usuarios-sucursal', UsuarioCtrl.autenticacionMiddleware, RootCtrl.rootMiddleware, RootCtrl.obtenerUsuariosSinSucursal);
-rutasRoot.get('/sucursales', UsuarioCtrl.autenticacionMiddleware, RootCtrl.rootMiddleware, RootCtrl.obtenerSucursales);
-rutasRoot.post('/sucursal', UsuarioCtrl.autenticacionMiddleware, RootCtrl.rootMiddleware, RootCtrl.nuevaSucursal);
-rutasRoot.patch('/usuarios', UsuarioCtrl.autenticacionMiddleware, RootCtrl.rootMiddleware, RootCtrl.asignarSucursalUsuario);
+rutasRoot.get('/usuarios-sucursal', middlewares_1.autenticacionMiddleware, RootCtrl.rootMiddleware, RootCtrl.obtenerUsuariosSinSucursal);
+rutasRoot.get('/sucursales', middlewares_1.autenticacionMiddleware, RootCtrl.rootMiddleware, RootCtrl.obtenerSucursales);
+rutasRoot.post('/sucursal', middlewares_1.autenticacionMiddleware, RootCtrl.rootMiddleware, RootCtrl.nuevaSucursal);
+rutasRoot.patch('/usuarios', middlewares_1.autenticacionMiddleware, RootCtrl.rootMiddleware, RootCtrl.asignarSucursalUsuario);
 exports.default = rutasRoot;

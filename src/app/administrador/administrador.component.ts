@@ -8,6 +8,6 @@ import { TemasService } from '../comun/servicios/temas.service';
 })
 export class AdministradorComponent {
 
-  constructor(private temasService: TemasService) { }
+  constructor(public temasService: TemasService) { }
 
 }

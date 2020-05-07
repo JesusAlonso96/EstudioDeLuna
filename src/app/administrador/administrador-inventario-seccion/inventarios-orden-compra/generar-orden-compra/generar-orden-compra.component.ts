@@ -7,6 +7,7 @@ import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { ToastrService } from 'ngx-toastr';
 import { OrdenCompra, ProductoOrdenCompra } from 'src/app/comun/modelos/orden_compra.model';
 import { SeleccionarProductoProveedorComponent } from 'src/app/comun/componentes/modales/seleccionar-producto-proveedor/seleccionar-producto-proveedor.component';
+import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service';
 
 @Component({
   selector: 'app-generar-orden-compra',
@@ -30,7 +31,8 @@ export class GenerarOrdenCompraComponent implements OnInit {
   //FORMULARIO
   constructor(private dialog: MatDialog,
     private toastr: ToastrService,
-    private usuarioService: UsuarioService) { }
+    private usuarioService: UsuarioService,
+    private proveedoresService: ProveedoresService) { }
 
   ngOnInit() {
     this.iniciarVariablesEstaticas();
@@ -57,7 +59,7 @@ export class GenerarOrdenCompraComponent implements OnInit {
   }
   obtenerProductosProveedor(idProveedor: string) {
     this.cargando = true;
-    this.usuarioService.obtenerProductosProveedor(idProveedor).subscribe(
+    this.proveedoresService.obtenerProductosProveedor(idProveedor).subscribe(
       (productos: ProductoProveedor[]) => {
         this.cargando = false;
         this.productos = productos;

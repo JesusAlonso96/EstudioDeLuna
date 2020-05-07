@@ -10,6 +10,7 @@ import { AlmacenService } from 'src/app/comun/servicios/almacen.service';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { SeleccionarOrdenDeCompraComponent } from 'src/app/comun/componentes/modales/seleccionar-orden-de-compra/seleccionar-orden-de-compra.component';
 import { ProductoOrdenCompra, OrdenCompra } from 'src/app/comun/modelos/orden_compra.model';
+import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service';
 
 @Component({
   selector: 'app-inventarios-compra',
@@ -30,6 +31,7 @@ export class InventariosCompraComponent implements OnInit {
   columnas: string[] = ['cantidad', 'existencia', 'nombre', 'descripcion', 'eliminar', 'costo'];
   ordenDeCompraSeleccionada: boolean = false;
   constructor(private dialog: MatDialog,
+    private proveedoresService: ProveedoresService,
     private usuarioService: UsuarioService,
     private almacenesService: AlmacenService,
     private toastr: ToastrService) { }
@@ -103,7 +105,7 @@ export class InventariosCompraComponent implements OnInit {
   }
   obtenerProductosProveedor(idProveedor: string) {
     this.cargando = true;
-    this.usuarioService.obtenerProductosProveedor(idProveedor).subscribe(
+    this.proveedoresService.obtenerProductosProveedor(idProveedor).subscribe(
       (productos: ProductoProveedor[]) => {
         this.cargando = false;
         this.productos = productos;

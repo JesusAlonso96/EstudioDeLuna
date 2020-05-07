@@ -1,11 +1,11 @@
 <app-barra-cargando [cargando]="cargando"></app-barra-cargando>
 <mat-toolbar>
     <mat-toolbar-row>
-        <button mat-button (click)="seleccionarEmpleado()">
+        <button mat-raised-button class="mr-4" color="primary" (click)="seleccionarEmpleado()">
             <mat-icon>search</mat-icon>
             Buscar pedidos por empleado
         </button>
-        <button mat-button (click)="obtenerVendidos()">
+        <button mat-raised-button color="accent" (click)="obtenerVendidos()">
             <mat-icon>monetization_on</mat-icon>
             Obtener pedidos vendidos con retoque
         </button>

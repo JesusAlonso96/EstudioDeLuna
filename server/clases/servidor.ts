@@ -18,6 +18,7 @@ import { Municipio } from '../modelos/municipio.model';
 import rutasRoot from '../rutas/root';
 import rutasCaja from '../rutas/caja';
 import rutasConfiguracion from '../rutas/configuracion';
+import rutasProveedores from '../rutas/proveedores';
 
 export default class Servidor {
     private static _instance: Servidor;
@@ -64,6 +65,7 @@ export default class Servidor {
         this.app.use('/api/v2/root', rutasRoot);
         this.app.use('/api/v2/cajas', rutasCaja);
         this.app.use('/api/v2/configuracion', rutasConfiguracion);
+        this.app.use('/api/v2/proveedores', rutasProveedores);
     }
     iniciar() {
 

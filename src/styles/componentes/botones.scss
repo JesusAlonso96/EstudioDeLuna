@@ -1,0 +1,24 @@
+@import 'variables';
+
+
+@mixin botones {
+  .btn-exito {
+    color: #ffffff;
+    background-color: $success;
+  }
+
+  .btn-error {
+    color: #ffffff;
+    background-color: $danger;
+  }
+
+  .btn-info {
+    color: #ffffff;
+    background-color: $info;
+  }
+
+  .btn-advertencia {
+    color: #ffffff;
+    background-color: $warn;
+  }
+}

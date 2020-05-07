@@ -4,8 +4,6 @@ import { Observable } from 'rxjs';
 import { Producto } from '../modelos/producto.model';
 import { Familia } from '../modelos/familia.model';
 import { Usuario } from '../modelos/usuario.model';
-import { Proveedor } from '../modelos/proveedor.model';
-import { ProductoProveedor } from '../modelos/producto_proveedor.model';
 import { EmpresaCot } from '../modelos/empresa_cot.model';
 import { Cotizacion } from '../modelos/cotizacion.model';
 import { ProductoCot } from '../modelos/producto_cot.model';
@@ -30,12 +28,8 @@ export class UsuarioService {
     public crearAsistencia(id: string): Observable<any> {
         return this.http.post(`/api/v1/usuarios/crearAsistencia/${id}`, null);
     }
-    public nuevoProveedor(proveedor: Proveedor): Observable<any> {
-        return this.http.post('/api/v1/usuarios/nuevoProveedor', proveedor);
-    }
-    public agregarProductoProveedor(producto: ProductoProveedor): Observable<any> {
-        return this.http.post('/api/v1/usuarios/agregarProductoProveedor', producto);
-    }
+    
+  
     public agregarEmpresa(empresa: EmpresaCot): Observable<any> {
         return this.http.post('/api/v1/usuarios/agregarEmpresa', empresa);
     }
@@ -75,15 +69,6 @@ export class UsuarioService {
     }
     public obtenerDesglosePedidosCRetoque(idUsuario: string): Observable<any> {
         return this.http.get(`/api/v1/usuarios/desglosarVentasConRetoquePorFotografo/${idUsuario}`);
-    }
-    public obtenerProveedores(): Observable<any> {
-        return this.http.get('/api/v1/usuarios/obtenerProveedores');
-    }
-    public obtenerListaProveedores(): Observable<any> {
-        return this.http.get('/api/v1/usuarios/obtenerListaProveedores');
-    }
-    public obtenerProductosProveedor(idProveedor: string): Observable<any> {
-        return this.http.get(`/api/v1/usuarios/obtenerProductosProveedor/${idProveedor}`);
     }
     public obtenerEmpresas(): Observable<any> {
         return this.http.get('/api/v1/usuarios/obtenerEmpresas');
@@ -145,18 +130,7 @@ export class UsuarioService {
     public escucharNuevoUsuarioRestaurado() {
         return this.wsService.escuchar('nuevo-usuario-restaurado')
     }
-    public escucharNuevoProveedor() {
-        return this.wsService.escuchar('nuevo-proveedor');
-    }
-    public escucharNuevoProveedorEliminado() {
-        return this.wsService.escuchar('nuevo-proveedor-eliminado');
-    }
-    public escucharNuevoProveedorEditado() {
-        return this.wsService.escuchar('nuevo-proveedor-editado');
-    }
-    public escucharNuevoProveedorRestaurado() {
-        return this.wsService.escuchar('nuevo-proveedor-restaurado');
-    }
+    
     public escucharNuevaFamilia() {
         return this.wsService.escuchar('nueva-familia');
     }

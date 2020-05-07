@@ -7,7 +7,13 @@ import { Component } from '@angular/core';
 
 })
 export class AdministradorClientesSeccionComponent {
-
+  cargando: any = {
+    cargando: false,
+    texto: ''
+  }
   constructor() { }
-
+  cargandoEv(evento: any) {
+    this.cargando.cargando = evento.cargando;
+    this.cargando.texto = evento.texto;
+  }
 }

@@ -1,4 +1,3 @@
-<app-encabezado-titulo titulo="Configuracion del sistema"></app-encabezado-titulo>
 <app-barra-cargando [cargando]="cargando"></app-barra-cargando>
 
 <div class="container">
@@ -54,7 +53,7 @@
                                                 <hr *ngIf="imagenLogoRecortada != ''">
                                                 <image-cropper *ngIf="eventoCambioImagenLogotipo"
                                                     [imageChangedEvent]="eventoCambioImagenLogotipo"
-                                                    [maintainAspectRatio]="true" [aspectRatio]="1 / 1" format="png"
+                                                    [maintainAspectRatio]="true" [aspectRatio]="1 / 1" format="jpg"
                                                     (imageCropped)="imagenRecortada($event)"
                                                     (imageLoaded)="imagenCargada()" (cropperReady)="cortadorListo()"
                                                     (loadImageFailed)="cargarImagenFallida()">

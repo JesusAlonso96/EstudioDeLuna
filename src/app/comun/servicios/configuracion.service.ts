@@ -21,7 +21,6 @@ export class ConfiguracionService {
   public cambiarLogotipo(imagenLogo: any): Observable<any> {
     const imagen = new FormData();
     imagen.append('imagen', imagenLogo);
-    console.log(imagen);
     return this.http.patch('/api/v2/configuracion/logotipo', imagen);
   }
   public escucharNuevoLogo(){

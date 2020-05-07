@@ -1,5 +1,4 @@
-<app-encabezado-titulo titulo="Buscar pedido"></app-encabezado-titulo>
-<app-cargando *ngIf="cargando" texto="Cargando pedidos..."></app-cargando>
+<app-cargando [cargando]="cargando" texto="Cargando pedidos..."></app-cargando>
 <mat-card class="container margin-top" >
     <div class="row">
         <div class="col-lg-12">
@@ -30,6 +29,12 @@
                 </mat-card>
             </div>
         </ng-container>
+    </div>
+    <div class="row" *ngIf="pedidos.length == 0">
+        <div class="col-lg-12">
+            <app-alerta  tipo="info" tipo_bootstrap="info" mensaje="No hay pedidos realizados hasta el momento.">
+            </app-alerta>
+        </div>
     </div>
 </mat-card>
 <mat-paginator class="paginador" [length]="pedidos.length" [pageSize]="page_size" (page)="manejarPaginacion($event)">

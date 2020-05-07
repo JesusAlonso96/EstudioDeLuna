@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const caja_model_1 = require("../modelos/caja.model");
 const corte_caja_model_1 = require("../modelos/corte_caja.model");
 const moment_1 = __importDefault(require("moment"));
+const empleado_1 = require("./empleado");
 exports.obtenerCajas = (req, res) => {
     caja_model_1.Caja.find({ activa: true, sucursal: res.locals.usuario.sucursal })
         .populate('sucursal')
@@ -13,6 +14,14 @@ exports.obtenerCajas = (req, res) => {
         if (err)
             return res.status(422).send({ titulo: 'Error al obtener', detalles: 'Ocurrio un error al obtener las cajas, por favor intentelo de nuevo mas tarde' });
         return res.json(cajas);
+    });
+};
+exports.obtenerCajasDesocupadas = (req, res) => {
+    caja_model_1.Caja.find({ activa: true, ocupada: false, sucursal: res.locals.usuario.sucursal }, { id: 1 })
+        .exec((err, cajas) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error al obtener', detalles: 'Ocurrio un error al obtener las cajas, por favor intentelo de nuevo mas tarde' });
+        return res.status(200).json(cajas);
     });
 };
 exports.obtenerCajasEliminadas = (req, res) => {
@@ -71,15 +80,38 @@ exports.restaurarCaja = (req, res) => {
     });
 };
 exports.actualizarCaja = (req, res) => {
-    caja_model_1.Caja.findOneAndUpdate({ _id: req.params._id }, {
-        cantidadTotal: req.body.cantidadTotal,
-        cantidadEfectivo: req.body.cantidadEfectivo,
-        cantidadTarjetas: req.body.cantidadTarjetas
-    })
-        .exec((err, cajaActualizada) => {
+    empleado_1.actualizarCantidadesCaja(req.params.id, req.body.cantidad, req.body.metodoPago, res);
+};
+exports.actualizarCajaCompleta = (req, res) => {
+    const caja = new caja_model_1.Caja(req.body);
+    caja_model_1.Caja.findByIdAndUpdate(caja._id, {
+        cantidadTotal: caja.cantidadTotal,
+        cantidadEfectivo: caja.cantidadEfectivo,
+        cantidadTarjetas: caja.cantidadTarjetas
+    }).exec((err, cajaActualizada) => {
         if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al actualizar la caja', tipo: 2 });
-        return res.json(cajaActualizada);
+            return res.status(422).send({ titulo: 'Error al actualizar caja', detalles: 'Ocurrio un error al actualizar la caja, por favor intentalo de nuevo mas tarde' });
+        return res.status(200).json(cajaActualizada);
+    });
+};
+exports.abrirCaja = (req, res) => {
+    caja_model_1.Caja.findOne({ _id: req.params.id, ocupada: true }).exec((err, caja) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al abrir la caja' });
+        if (caja)
+            return res.status(422).send({ titulo: 'Caja ya ocupada', detalles: 'La caja seleccionada ya esta ocupada, por favor selecciona otra' });
+        else {
+            caja_model_1.Caja.findByIdAndUpdate(req.params.id, {
+                ocupada: true
+            }).exec((err, cajaAbierta) => {
+                if (err)
+                    return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al abrir la caja' });
+                if (cajaAbierta)
+                    return res.status(200).json({ titulo: 'Caja abierta' });
+                else
+                    return res.status(404).json({ titulo: 'Error al abrir caja', detalles: 'Ocurrio un error al abrir caja, posiblemente no exista' });
+            });
+        }
     });
 };
 exports.existeCorteCaja = (req, res) => {

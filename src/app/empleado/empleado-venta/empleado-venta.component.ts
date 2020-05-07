@@ -1,5 +1,6 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, Inject, OnInit, ViewChild, AfterViewInit, AfterViewChecked } from '@angular/core';
+import { FormControl, NgForm, NgModel } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as momento from 'moment';
 import { ToastrService } from 'ngx-toastr';
@@ -15,10 +16,18 @@ import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { ProductosService } from '../../comun/servicios/productos.service';
 import { EmpleadoService } from '../servicio-empleado/empleado.service';
 import { PedidosService } from '../servicio-empleado/pedidos.service';
+import { EmpleadoVentaTablaProductosAgregadosComponent } from './empleado-venta-tabla-productos-agregados/empleado-venta-tabla-productos-agregados.component';
 import { ModalConfirmarCompraComponent } from './modal-confirmar-compra/modal-confirmar-compra.component';
-import { ModalDetallesProductoComponent } from './modal-detalles-producto/modal-detalles-producto.component';
-import { ModaDetallesTamComponent } from './modal-detalles-tam/modal-detalles-tam.component';
 import { ModalGenerarTicketComponent } from './modal-generar-ticket/modal-generar-ticket.component';
+import { ImageCroppedEvent } from 'ngx-image-cropper';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { Animaciones } from 'src/app/comun/constantes/animaciones';
+import { TemasService } from 'src/app/comun/servicios/temas.service';
+import { ImagenesService } from 'src/app/comun/servicios/imagenes.service';
+import { EmpleadoVentaListaProductosComponent } from './empleado-venta-lista-productos/empleado-venta-lista-productos.component';
+import { MatStepper } from '@angular/material';
+import { ModalEmpleadoAbrirCajaComponent } from './modal-empleado-abrir-caja/modal-empleado-abrir-caja.component';
+import { CajaService } from 'src/app/comun/servicios/caja.service';
 
 export interface DialogData {
   num: number,
@@ -32,182 +41,170 @@ export interface DialogData2 {
 @Component({
   selector: 'app-empleado-venta',
   templateUrl: './empleado-venta.component.html',
-  styleUrls: ['./empleado-venta.component.scss']
+  styleUrls: ['./empleado-venta.component.scss'],
+  animations: [
+    Animaciones.deslizarAbajo
+  ]
 })
-export class EmpleadoVentaComponent implements OnInit {
-  //
-  imagen2: any;
-  //
+export class EmpleadoVentaComponent implements OnInit, AfterViewChecked {
+  @ViewChild('tablaProductos') tablaProductos: EmpleadoVentaTablaProductosAgregadosComponent;
+  @ViewChild('listaProductos') listaProductos: EmpleadoVentaListaProductosComponent;
+  @ViewChild('cliente') cliente: NgModel;
+  @ViewChild('stepper') stepper: MatStepper;
+  eventoCambioImagen: any = '';
+  imagenRecortada: any = '';
   familias: Familia[];
   pedido: Pedido = new Pedido();
   clientes: Cliente[] = [];
   clientesFiltrados: Observable<Cliente[]>;
-  clienteCtrl = new FormControl();
   familiaSeleccionada: String = '';
   productos: Producto[];
-  fecha_creacion: string = '';
-  fecha_entrega: string = '';
   fotografosDisponibles: Usuario[];
-  cargando: boolean = false;
-  cargandoFotografo: boolean = false;
-  cargandoPedido: boolean = false;
-  grupo: any[];
-  num_fotos: number;
-  pagado: number;
-  imagen: any;
-  pedidoCreado: Pedido = new Pedido();
-  constructor(private usuarioService: UsuarioService, private toastr: ToastrService, private productosService: ProductosService, private clientesService: ClienteService, private empleadoService: EmpleadoService, public dialog: MatDialog, private pedidosService: PedidosService) { }
+  costoExtra: boolean = false;
+  cargando = {
+    cargando: false,
+    texto: ''
+  }
+  constructor(private usuarioService: UsuarioService,
+    private toastr: NgToastrService,
+    private productosService: ProductosService,
+    private clientesService: ClienteService,
+    private empleadoService: EmpleadoService,
+    public dialog: MatDialog,
+    private pedidosService: PedidosService,
+    private temasService: TemasService,
+    private imagenesService: ImagenesService,
+    private cajasService: CajaService) { }
+  ngAfterViewChecked(): void {
 
+  }
   ngOnInit() {
+    if (!localStorage.getItem('c_a')) this.abrirModalAbrirCaja();
+    this.pedido.cliente = undefined;
+    this.pedido.productos = [];
     this.obtenerFamiliasProductos();
-    this.obtenerClientes();
+  }
+  cambioArchivoEvento(evento: any) {
+    if (evento.target.value == '') {
+      this.crearVistaCargando(false);
+    } else {
+      this.crearVistaCargando(true, 'Cargando imagen..');
+      this.eventoCambioImagen = event;
+    }
+  }
+  _imagenRecortada(evento: ImageCroppedEvent) {
+    this.imagenRecortada = evento.base64;
+  }
+  imagenCargada() { this.crearVistaCargando(false); }
+  cortadorListo() { this.crearVistaCargando(false); }
+  cargarImagenFallida() { this.crearVistaCargando(false); }
+  eliminarImagen() {
+    this.imagenRecortada = '';
+    this.eventoCambioImagen = '';
+  }
+  /* FIN DE CROPPER */
+  crearVistaCargando(cargando: boolean, texto?: string) {
+    this.cargando.cargando = cargando;
+    this.cargando.texto = texto;
+  }
+  agregarCostoExtra() {
+    if (this.pedido.importante) {
+      this.pedido.total += 30
+      this.costoExtra = true;
+      this.toastr.abrirToastr('advertencia', 'Costo extra', 'Se agregaron $30 pesos');
+    } else {
+      if (this.costoExtra) this.pedido.total -= 30;
+    }
+  }
+  verificarCantidadAPagar(): { valido: boolean, mensaje?: string } {
+    if (this.pedido.anticipo > this.pedido.total) return { valido: false, mensaje: 'La cantidad pagada es mayor a la del pedido' };
+    else {
+      if (!this.pedido.c_retoque) {
+        if (this.pedido.anticipo < this.pedido.total) return { valido: false, mensaje: 'Tiene que cubrir el monto completo' }
+      }
+    }
+    return { valido: true };
+  }
+  imagenValida(): { valido: boolean, mensaje?: string } {
+    return this.pedido.c_retoque && this.imagenRecortada == '' ? { valido: false, mensaje: 'Por favor, selecciona una imagen' } : { valido: true }
+  }
+  cargandoProductos(evento) {
+    this.cargando.cargando = evento.cargando;
+    this.cargando.texto = evento.texto;
+  }
+  obtenerProductoAgregado(evento) {
+    this.agregarProducto(evento);
+  }
+  agregarProducto(producto: Producto) {
+    this.pedido.total = this.pedido.total + producto.precio;
+    this.pedido.productos.push(producto);
+    this.tablaProductos.datosProductos.data = this.pedido.productos;
+    this.pedido.c_retoque = this.tieneRetoque();
+    this.pedido.c_adherible = this.llevaAdherible();
+  }
+  quitarProducto(producto: Producto) {
+    const indice = this.pedido.productos.indexOf(producto);
+    this.pedido.total = this.pedido.total - this.pedido.productos[indice].precio;
+    this.pedido.productos.splice(indice, 1);
+    this.tablaProductos.datosProductos.data = this.pedido.productos;
+    this.pedido.c_retoque = this.tieneRetoque();
+    this.pedido.importante = false;
+  }
+  listaProductosValida(): boolean {
+    return this.pedido.productos.length > 0 ? true : false;
+  }
+  mostrarCliente(cliente: Cliente): string {
+    return cliente && cliente.nombre + ' ' + cliente.ape_pat ? cliente.nombre + ' ' + cliente.ape_pat : '';
   }
   obtenerClientes() {
     this.clientesService.obtenerClientes().subscribe(
-      (clientes) => {
+      (clientes: Cliente[]) => {
         this.clientes = clientes;
+        this.clientesFiltrados = this.cliente.valueChanges
+          .pipe(
+            startWith(''),
+            map(valor => typeof valor == 'string' ? valor : valor.nombre),
+            map(cliente => cliente ? this._clientesFiltrados(cliente) : this.clientes.slice())
+          );
       }
     );
-    this.clientesFiltrados = this.clienteCtrl.valueChanges
-      .pipe(
-        startWith(''),
-        map(cliente => cliente ? this._clientesFiltrados(cliente) : this.clientes.slice())
-      );
-  }
-  obtenerFamiliasProductos() {
-    this.cargando = true;
-    this.productosService.obtenerFamiliasProductos().subscribe(
-      (familias) => {
-        this.familias = familias;
-        this.cargando = false;
-      },
-      (err) => {
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
-        this.cargando = false;
-      }
-    )
   }
   private _clientesFiltrados(value: string): Cliente[] {
     return this.clientes.filter(cliente => cliente.nombre.toLowerCase().indexOf(value.toLowerCase()) === 0);
   }
-  obtenerProductosPorCantidad(idFamilia:string) {
-    this.cargando = true;
-    this.productosService.obtenerProductosPorCantidad(idFamilia).subscribe(
-      (respuesta: any) => {
-        this.grupo = respuesta;
-        this.cargando = false;
+  obtenerFamiliasProductos() {
+    this.crearVistaCargando(true, 'Obteniendo familias...')
+    this.productosService.obtenerFamiliasProductos().subscribe(
+      (familias) => {
+        this.familias = familias;
+        this.crearVistaCargando(false);
       },
-      (err: any) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err) => {
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
+        this.crearVistaCargando(false);
       }
     )
   }
-  obtenerProductosPorTam(idFamilia: string) {
-    this.cargando = true;
-    this.productosService.obtenerProductosPorTam(idFamilia).subscribe(
-      (respuesta: any) => {
-        this.grupo = respuesta;
-        this.cargando = false;
+  crearImagen(idPedido: string) {
+    this.crearVistaCargando(true, 'Subiendo imagen...');
+    const imagen = this.imagenesService.convertirImagen(this.imagenRecortada);
+    const img = new FormData();
+    img.append('imagen', imagen);
+    this.empleadoService.crearFoto(img, idPedido).subscribe(
+      (pedido: Pedido) => {
+        this.crearVistaCargando(false);
       },
-      (err: any) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
-  }
-  obtenerProductosEspeciales(idFamilia) {
-    this.cargando = true;
-    this.productosService.obtenerProductos(idFamilia).subscribe(
-      (productos: any) => {
-        this.grupo = productos;
-        this.cargando = false;
-      },
-      (err: any) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
-      }
-    );
-  }
-  obtenerProductos(nombreFamilia, idFamilia) {
-    this.grupo = [];
-    this.familiaSeleccionada = nombreFamilia;
-    if (this.esFamiliaEspecial()) {
-      if (this.familiaSeleccionada == 'Sesiones') {
-        this.obtenerProductosPorTam(idFamilia);
-      } else {
-        this.obtenerProductosEspeciales(idFamilia);
-      }
-    } else {
-      this.obtenerProductosPorCantidad(idFamilia);
-    }
-  }
-  esFamiliaEspecial(): boolean {
-    if (this.familiaSeleccionada == 'Filiacion' || this.familiaSeleccionada == 'Pasaporte' || this.familiaSeleccionada == 'Visas' || this.familiaSeleccionada == 'Universidades' || this.familiaSeleccionada == 'Visas' || this.familiaSeleccionada == 'Sesiones' || this.familiaSeleccionada == 'Instituciones' || this.familiaSeleccionada == 'Combinadas') return true;
-    return false
-  }
-  pedidoValido() {
-    if (this.pedido.c_retoque) {
-      this.pedido.status = 'En espera';
-      if (this.pedido.importante) {
-        this.pedido.total = <number>this.pedido.total + 30;
-        if (this.pagado > this.pedido.total) {
-          this.pedido.total = <number>this.pedido.total - 30;
-          this.toastr.error("El anticipo es mayor al total del pedido");
-          return false;
-        }
-        this.toastr.warning("Se agregaron $30 pesos por ser pedido urgente");
-      } else {
-        if (this.pagado > this.pedido.total) {
-          this.toastr.error("El anticipo es mayor al total del pedido");
-          return false;
-        }
-      }
-    } else {
-      this.pedido.status = 'Finalizado';
-      if (!this.montoValido()) return false;
-    }
-    return true;
-  }
-  montoValido(): boolean {
-    if (this.pagado < this.pedido.total || this.pagado > this.pedido.total) {
-      this.toastr.error("Debes cubrir el monto exacto", '', { closeButton: true });
-      return false;
-    }
-    return true;
-  }
-  obtenerCliente() {
-    if (this.clienteCtrl.value !== null && this.clienteCtrl.value !== '') {
-      var valores = this.clienteCtrl.value;
-      var separado = valores.split(" | ", 2);
-      this.clientesService.obtenerClientePorEmailYNombre(separado[0], separado[1]).subscribe(
-        (cliente) => {
-          this.pedido.cliente = cliente;
-        },
-        (err) => {
-          this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
-        }
-      );
-    } else {
-      this.pedido.cliente = null;
-    }
-    return true;
   }
   tieneRetoque(): boolean {
-    for (let p of this.pedido.productos) {
-      if (p.c_r) {
-        return true;
-      }
-    }
-    return false;
+    return this.pedido.productos.find(producto => producto.c_r) ? true : false;
   }
   llevaAdherible(): boolean {
-    for (let p of this.pedido.productos) {
-      if (p.c_ad) {
-        return true;
-      }
-    }
-    return false;
+    return this.pedido.productos.find(producto => producto.c_ad) ? true : false;
   }
   generarFechaEntrega() {
     if (this.pedido.c_retoque) { // si tiene retoque
@@ -255,222 +252,128 @@ export class EmpleadoVentaComponent implements OnInit {
       this.pedido.fecha_entrega = momento(this.pedido.fecha_creacion).add(15, 'm').toDate();
 
     }
-    this.fecha_creacion = momento(this.pedido.fecha_creacion).locale('es').format('LLLL');
-    this.fecha_entrega = momento(this.pedido.fecha_entrega).locale('es').format('LLLL');
+    //momento(this.pedido.fecha_creacion).locale('es').format('LLLL');
+    //momento(this.pedido.fecha_entrega).locale('es').format('LLLL');
     return true;
   }
-  asignarFotografoAleatorio(num_fotografos, fotografos) {
-    var random = Math.floor(Math.random() * num_fotografos) + 0;
-    this.pedido.fotografo = fotografos[random];
+  asignarFotografoAleatorio(num_fotografos: number, fotografos: Usuario[]) {
+    this.pedido.fotografo = fotografos[(Math.floor(Math.random() * num_fotografos) + 0)];
   }
-  asignarFotografo() {
+  reiniciarFormularios(detallesForm: NgForm, completarForm: NgForm) {
+    this.stepper.previous(); this.stepper.previous();
+    detallesForm.resetForm();
+    completarForm.resetForm();
+    this.pedido.productos = [];
+    this.tablaProductos.datosProductos.data = this.pedido.productos;
+    this.pedido.total = 0;
+    this.imagenRecortada = '';
+    this.eventoCambioImagen = '';
+  }
+  asignarFotografo(detallesForm: NgForm, completarForm: NgForm) {
     if (this.pedido.c_retoque) {
-      this.pedido.fotografo._id = undefined;
-      this.abrirModalPedido();
+      this.abrirModalPedido(detallesForm, completarForm);
     } else {
-      this.cargandoFotografo = true;
+      this.crearVistaCargando(true, 'Asignando fotografo...');
       var hoy = new Date(Date.now());
       this.empleadoService.asignarFotografoLibre(momento(hoy).format('YYYY-MM-DD')).subscribe(
         (fotografos) => {
           this.asignarFotografoAleatorio(fotografos.length, fotografos);
-          this.cargandoFotografo = false;
-          this.toastr.success('El pedido sera realizado por ' + <string>this.pedido.fotografo.nombre);
-          this.abrirModalPedido();
-          return true;
+          this.crearVistaCargando(false);
+          this.toastr.abrirToastr('exito', 'El pedido sera realizado por ' + this.pedido.fotografo.nombre, '');
+          this.abrirModalPedido(detallesForm, completarForm);
         },
-        (err) => {
+        (err: HttpErrorResponse) => {
           if (err.error.titulo == 'No hay ningun fotografo desocupado') {
             this.empleadoService.numPedidosFotografo().subscribe(
               (idFotografo: string) => {
                 this.usuarioService.obtenerUsuario(idFotografo !== '' ? idFotografo : '').subscribe(
                   (fotografo: Usuario) => {
                     this.pedido.fotografo = fotografo;
-                    this.toastr.success('El pedido sera realizado por ' + <string>this.pedido.fotografo.nombre);
+                    this.toastr.abrirToastr('exito', 'El pedido sera realizado por ' + this.pedido.fotografo.nombre, '');
+                    this.abrirModalPedido(detallesForm, completarForm);
                   },
-                  (err: any) => {
-                    this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+                  (err: HttpErrorResponse) => {
+                    if (err.error.detalles == 'No se encontro el usuario solicitado') this.toastr.abrirToastr('error', 'Sin fotografos', 'El pedido no se puede realizar debido a que no existen empleados disponibles');
                   }
                 );
-                this.cargandoFotografo = false;
+                this.crearVistaCargando(false);
               },
-              (err) => {
-                this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
-                this.cargandoFotografo = false;
+              (err: HttpErrorResponse) => {
+                this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+                this.crearVistaCargando(false);
               }
             );
-            this.abrirModalPedido();
-            return false;
           }
         }
       );
     }
-    return true;
   }
-  quitarProducto(item) {
-    const indice = this.pedido.productos.indexOf(item);
-    this.pedido.total = <any>this.pedido.total - <any>this.pedido.productos[indice].precio;
-    this.pedido.productos.splice(indice, 1);
-    this.pedido.c_retoque = this.tieneRetoque();
-    this.pedido.importante = false;
-  }
-  asignarValoresDefault() {
-    if (this.pedido.c_retoque) {
-      this.pedido.status = 'En espera';
-    } else {
-      this.pedido.status = 'Finalizado';
-    }
-    this.pedido.anticipo = this.pagado;
-    return true;
-  }
+
   crearVenta(pedidoCreado: Pedido) {
     if (!this.pedido.c_retoque) {
-      this.empleadoService.crearVenta(pedidoCreado, pedidoCreado.anticipo, pedidoCreado.metodoPago).subscribe(
+      this.crearVistaCargando(true, 'Creando venta...');
+      this.empleadoService.crearVenta(pedidoCreado, pedidoCreado.total, pedidoCreado.metodoPago, localStorage.getItem('c_a')).subscribe(
         (ok: any) => {
-
+          this.crearVistaCargando(false);
         },
-        (err: any) => {
-          this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        (err: HttpErrorResponse) => {
+          this.crearVistaCargando(false);
+          this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
         });
-    } else {
-      this.empleadoService.actualizarCaja(pedidoCreado.anticipo, pedidoCreado.metodoPago).subscribe();
-    }
+    } else this.cajasService.actualizarCaja(localStorage.getItem('c_a'), { cantidad: pedidoCreado.anticipo, metodoPago: pedidoCreado.metodoPago }).subscribe();
   }
-  crearPedido() {
-    this.cargandoPedido = true;
+  crearPedido(detallesForm: NgForm, completarForm: NgForm) {
+    this.crearVistaCargando(true, 'Creando pedido...');
     this.empleadoService.crearPedido(this.pedido, this.pedido.fotografo._id).subscribe(
       (pedidoCreado: Pedido) => {
-        if (this.imagen) {
-          this.subirImagen(pedidoCreado._id);
-        }
         //socket aqui
+        if (this.imagenRecortada) {
+          this.crearImagen(pedidoCreado._id);
+        }
         this.crearVenta(pedidoCreado);
         this.mandarNotificaciones(pedidoCreado);
         this.abrirModalTicket(pedidoCreado);
-        this.toastr.success('El pedido ha sido creado con exito', 'Pedido creado', { closeButton: true });
-        this.cargandoPedido = false;
-        this.pedido = new Pedido();
-        this.pagado = 0;
+        this.toastr.abrirToastr('exito', 'El pedido ha sido creado con exito', 'Pedido creado');
+        this.reiniciarFormularios(detallesForm, completarForm);
+        this.crearVistaCargando(false);
       },
-      (err: any) => {
-        this.cargandoPedido = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     );
-  }
-  agregarProducto(producto) {
-    this.pedido.total = this.pedido.total + producto.precio;
-    this.pedido.productos.push(producto);
-    this.pedido.c_retoque = this.tieneRetoque();
-    this.pedido.c_adherible = this.llevaAdherible();
   }
   mandarNotificaciones(pedido: Pedido) {
     this.pedidosService.mandarNotificaciones(pedido);
   }
-  //MODAL PARA VER LOS PRODUCTOS
-  verDetalles(producto) {
-    this.dialog.open(ModalDetallesProductoComponent, {
-      data: { producto }
-    });
-  }
-  abrirModal(num_fotos) {
-    const dialogRef = this.dialog.open(Modal, {
-      height: '55%',
-      width: '55%',
-      data: { num: num_fotos, familia: this.familiaSeleccionada }
-    });
-    dialogRef.afterClosed().subscribe(producto => {
-      if (producto != null) {
-        this.agregarProducto(producto);
-      }
-    })
-  }
+  //MODALES
   abrirModalTicket(pedidoCreado) {
-    const dialogRef = this.dialog.open(ModalGenerarTicketComponent, {
+    this.dialog.open(ModalGenerarTicketComponent, {
       data: { pedido: pedidoCreado }
     });
-    dialogRef.afterClosed().subscribe(producto => {
-
-    })
   }
-  abrirModalTamano(ancho, alto) {
-    const dialogRef = this.dialog.open(ModaDetallesTamComponent, {
-
-      data: { ancho: ancho, alto: alto }
-    });
-    dialogRef.afterClosed().subscribe(producto => {
-      if (producto != null) {
-        this.agregarProducto(producto);
-      }
-    })
-  }
-  abrirModalPedido() {
+  abrirModalPedido(detallesForm: NgForm, completarForm: NgForm) {
     const dialogRef = this.dialog.open(ModalConfirmarCompraComponent, {
-      data: {
-        crear: false,
-        pedido: this.pedido
-      }
+      data: this.pedido,
+      panelClass: this.temasService.obtenerClaseActiva(),
+      disableClose: true
     });
     dialogRef.afterClosed().subscribe(crear => {
       if (crear) {
-        this.crearPedido();
-
-      } else {
-        if (this.pedido.c_retoque && this.pedido.importante) {
-          this.pedido.total = <number>this.pedido.total - 30;
-        }
-        this.clienteCtrl
-        this.pedido = new Pedido();
+        this.crearPedido(detallesForm, completarForm);
       }
     })
-    return true;
   }
-  abrirCrearPedido() {
+  abrirModalAbrirCaja() {
+    this.dialog.open(ModalEmpleadoAbrirCajaComponent, {
+      panelClass: this.temasService.obtenerClaseActiva(),
+      disableClose: true
+    })
+  }
+
+  abrirCrearPedido(detallesForm: NgForm, completarForm: NgForm) {
     this.generarFechaEntrega();
-    this.obtenerCliente();
-    this.asignarValoresDefault();
-    if (this.pedidoValido()) {
-      this.asignarFotografo();
-    }
-  }
-  //SECCION PARA IMAGENES
-  obtenerImagen(e) {
-    /*this.cargando = true;
-    this.imageCompress.uploadFile().then(({ image, orientation }) => {
-      this.cargando = true;
-      //console.warn('Size in bytes was:', this.imageCompress.byteCount(image));
-      this.imageCompress.compressFile(image, orientation, 50, 50).then(
-        result => {
-          this.cargando = false;
-          this.imagen2 = result;
-          this.imagen = new File([result], 'hola2', { type: 'image/jpeg' });
-          console.log(result);
-        }
-      );
-    });
-    var localurl;
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      this.imagen = file;
-      this.imageCompress.uploadFile().then(({ image, orientation }) => {
-        this.imageCompress.compressFile(image, orientation, 50, 50).then(
-          result => {
-            this.imagen = result;
-          }
-        )
-      })
-    }*/
-  }
-  subirImagen(id) {
-    const image = new FormData();
-    image.append('image', this.imagen);
-    this.empleadoService.crearFoto(image, id).subscribe(
-      () => {
-
-      },
-      () => {
-
-      }
-    );
+    this.asignarFotografo(detallesForm, completarForm);
   }
 }
 
@@ -487,7 +390,7 @@ export interface Error {
 export class Modal {
   buscador: boolean = false;
   productoBuscar: any;
-  productosEncontrados: Producto;
+  productosEncontrados: Producto[] = [];
   error: Error;
   constructor(
     public dialogRef: MatDialogRef<Modal>,
@@ -498,11 +401,10 @@ export class Modal {
     this.buscador = false;
   }
   onNoClick(): void {
-    this.productoBuscar = null;
     this.dialogRef.close();
   }
   buscar() {
-    this.productosEncontrados = null;
+    this.productosEncontrados = [];
     this.error = null;
     this.buscador = true;
     this.productoService.buscarProducto(this.productoBuscar).subscribe(
@@ -510,7 +412,7 @@ export class Modal {
         this.productosEncontrados = productos;
         this.buscador = false;
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.error = err.error;
         this.buscador = false;
       }

@@ -37,7 +37,7 @@ export class ServicioAutenticacionService {
   public getDatosToken() {
     return localStorage.getItem('usuario_meta');
   }
-  public getTokenDesencriptado(){
+  public getTokenDesencriptado() {
     return this.tokenDesencriptado;
   }
   public login(datosUsuario: UsuarioLogin): Observable<any> {
@@ -47,6 +47,8 @@ export class ServicioAutenticacionService {
     this.wsService.cerrarSesionWS().then(() => {
       localStorage.removeItem('usuario_auth');
       localStorage.removeItem('usuario_meta');
+      localStorage.removeItem('moduloActual');
+      localStorage.removeItem('tema-actual');
     })
     this.tokenDesencriptado = new tokenDesencriptado();
   }
@@ -58,21 +60,26 @@ export class ServicioAutenticacionService {
       case 0:
         //Usuario normal, trabajador
         if (this.tokenDesencriptado.rol_sec == 1) {
-          this.rutas.navigate(['/usuario/dashboard'])
+          this.rutas.navigate(['/usuario/dashboard']);
+          localStorage.setItem('moduloActual', 'Tablero principal');
         } else {
           this.rutas.navigate(['/usuario/nuevaVenta']);
+          localStorage.setItem('moduloActual', 'Punto de venta');
         }
         break;
       case 1:
         //Supervisor
         this.rutas.navigate(['/supervisor/perfil']);
+        localStorage.setItem('moduloActual', 'Perfil personal');
         break;
       case 2:
         //Administrador
         this.rutas.navigate(['/admin/dashboard']);
+        localStorage.setItem('moduloActual', 'Tablero principal');
         break;
       case 3:
         this.rutas.navigate(['/root/dashboard']);
+        localStorage.setItem('moduloActual', 'Tablero principal');
         break;
     }
   }
@@ -87,6 +94,9 @@ export class ServicioAutenticacionService {
   }
   public getNombreUsuario(): any {
     return this.tokenDesencriptado.nombre;
+  }
+  public getNombreUsuarioCompleto(): string {
+    return this.tokenDesencriptado.nombre + ' ' + this.tokenDesencriptado.ape_pat;
   }
   public getTipoUsuario(): any {
     return this.tokenDesencriptado.rol;

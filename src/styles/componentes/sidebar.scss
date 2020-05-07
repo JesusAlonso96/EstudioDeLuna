@@ -1,0 +1,46 @@
+@mixin sidebar ($color-gradiente-primario, $color-gradiente-secundario, $color-gradiente-terciario, $gradiente-complementario, $color-logo) {
+  .sidebar {
+    background: $color-gradiente-primario;
+    background-repeat: no-repeat;
+    background: url('assets/imagenes/fondo-sidebar2.png'),
+      linear-gradient(0deg,
+        $color-gradiente-primario 0%,
+        $color-gradiente-terciario 0%,
+        $color-gradiente-secundario 44%,
+        $gradiente-complementario 89%) !important;
+    width: 265px;
+    overflow-y: hidden;
+    -webkit-box-shadow: -11px 4px 26px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: -11px 4px 26px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: -11px 4px 26px 0px rgba(0, 0, 0, 0.75);
+    .header {
+      width: 100%;
+      height: 18%;
+      text-align: center;
+      margin-top: 1%;
+
+      img {
+        margin-top: 2%;
+        background-color: rgba(#ffffff, 0.75);
+        height: 100%;
+        border-radius: 50%;
+        border: 1px solid rgba(#ffffff, 0.4);
+        -webkit-box-shadow: -1px 0px 13px 0px rgba(0, 0, 0, 0.75);
+        -moz-box-shadow: -1px 0px 13px 0px rgba(0, 0, 0, 0.75);
+        box-shadow: -1px 0px 13px 0px rgba(0, 0, 0, 0.75);
+      }
+    }
+
+    hr {
+      background-color: rgba(#ffffff, 0.4);
+      width: 90%;
+    }
+  }
+}
+
+/*
+tema naranja
+rgba(244, 81, 30, 1) 0%
+rgba(0, 137, 123, 1) 0%
+rgba(94, 53, 177, 1) 44%
+*/

@@ -1,7 +1,7 @@
-import  {Router} from 'express';
-import * as UsuarioCtrl from '../controladores/usuario';
-import * as ConfiguracionCtrl from '../controladores/configuracion';
+import { Router } from 'express';
 import multer from 'multer';
+import * as ConfiguracionCtrl from '../controladores/configuracion';
+import { autenticacionMiddleware } from '../middlewares/middlewares';
 const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         cb(null, file.originalname)
@@ -10,14 +10,14 @@ const storage = multer.diskStorage({
         cb(null, './subidas/logotipos');
     }
 }),
-    upload = multer({ storage: storage }); 
+    upload = multer({ storage: storage });
 const rutasConfiguracion = Router();
 
-//rutasConfiguracion.get('/logotipo', UsuarioCtrl.autenticacionMiddleware, ConfiguracionCtrl.obtenerLogotipo);
-rutasConfiguracion.get('', UsuarioCtrl.autenticacionMiddleware, ConfiguracionCtrl.obtenerConfiguracionUsuario);
+//rutasConfiguracion.get('/logotipo', autenticacionMiddleware, ConfiguracionCtrl.obtenerLogotipo);
+rutasConfiguracion.get('', autenticacionMiddleware, ConfiguracionCtrl.obtenerConfiguracionUsuario);
 
-rutasConfiguracion.patch('/notificaciones', UsuarioCtrl.autenticacionMiddleware, ConfiguracionCtrl.guardarConfiguracionNotificaciones);
-rutasConfiguracion.patch('/temas', UsuarioCtrl.autenticacionMiddleware, ConfiguracionCtrl.cambiarTema);
-rutasConfiguracion.patch('/logotipo', UsuarioCtrl.autenticacionMiddleware, upload.single('imagen'), ConfiguracionCtrl.cambiarLogotipo);
+rutasConfiguracion.patch('/notificaciones', autenticacionMiddleware, ConfiguracionCtrl.guardarConfiguracionNotificaciones);
+rutasConfiguracion.patch('/temas', autenticacionMiddleware, ConfiguracionCtrl.cambiarTema);
+rutasConfiguracion.patch('/logotipo', autenticacionMiddleware, upload.single('imagen'), ConfiguracionCtrl.cambiarLogotipo);
 
 export default rutasConfiguracion;

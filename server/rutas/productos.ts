@@ -1,15 +1,15 @@
 import { Router } from 'express';
-import * as UsuarioCtrl from '../controladores/usuario';
+import { autenticacionMiddleware } from '../middlewares/middlewares';
 import * as ProductoCtrl from '../controladores/productos';
 const rutasProductos = Router();
 
-rutasProductos.get('/obtenerProductos/:id', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerProductos);
-rutasProductos.get('/obtenerProductosPorCantidad/:id', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerProductosPorCantidad);
-rutasProductos.get('/obtenerProductosPorTam/:id', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerProductosPorTam);
-rutasProductos.get('/familias', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerFamilias);
-rutasProductos.get('/buscarProductoPorTam/:ancho/:alto', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.buscarProductoPorTam)
-rutasProductos.get('/obtenerFamiliasYProductos', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerFamiliasYProductos)
+rutasProductos.get('/obtenerProductos/:id', autenticacionMiddleware, ProductoCtrl.obtenerProductos);
+rutasProductos.get('/obtenerProductosPorCantidad/:id', autenticacionMiddleware, ProductoCtrl.obtenerProductosPorCantidad);
+rutasProductos.get('/obtenerProductosPorTam/:id', autenticacionMiddleware, ProductoCtrl.obtenerProductosPorTam);
+rutasProductos.get('/familias', autenticacionMiddleware, ProductoCtrl.obtenerFamilias);
+rutasProductos.get('/buscarProductoPorTam/:ancho/:alto', autenticacionMiddleware, ProductoCtrl.buscarProductoPorTam)
+rutasProductos.get('/obtenerFamiliasYProductos', autenticacionMiddleware, ProductoCtrl.obtenerFamiliasYProductos)
 //post
-rutasProductos.post('/buscarProducto', UsuarioCtrl.autenticacionMiddleware,ProductoCtrl.buscarProducto);
+rutasProductos.post('/buscarProducto', autenticacionMiddleware,ProductoCtrl.buscarProducto);
 
 export default rutasProductos;

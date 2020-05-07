@@ -1,0 +1,42 @@
+@import '~@angular/material/theming';
+@import '../componentes/menus';
+@import '../componentes/pestanas';
+@import '../componentes/scrollbar';
+@import '../componentes/listas';
+@import '../componentes/sidebar';
+@import '../componentes/botones';
+@import '../componentes/iconos';
+@import '../componentes/steppers';
+@import '../componentes/inputs';
+@include mat-core();
+
+$naranja-primario-color:#f4511e;
+$naranja-secundario-color:#5e35b1;
+$naranja-terciario-color:#00897b;
+
+$gradiente-primario: rgba(244, 81, 30, 1);
+$gradiente-secundario:rgba(0, 137, 123, 1);
+$gradiente-terciario: rgba(94, 53, 177, 1);
+$gradiente-complementario: rgba(244, 81, 30, 1);
+
+$naranja-primario: mat-palette($mat-deep-orange, 600); //
+$naranja-secundario: mat-palette($mat-deep-purple, 600); //
+$naranja-terciario: mat-palette($mat-teal, 600);
+$naranja-tema: mat-light-theme($naranja-primario, $naranja-secundario, $naranja-terciario);
+
+@mixin tema-naranja {
+  @include angular-material-theme($naranja-tema);
+  @include menus($naranja-primario-color, #ffffff);
+  @include pestanas($naranja-secundario-color, #000000, #ffffff);
+  @include scrollbar($naranja-primario-color);
+  @include listas($naranja-primario-color);
+  @include sidebar($gradiente-primario, $gradiente-secundario, $gradiente-terciario, $gradiente-complementario, $naranja-primario-color);
+  @include botones;
+  @include iconos;
+  @include steppers ($naranja-primario-color);
+  @include inputs($naranja-primario-color, $naranja-secundario-color, $naranja-terciario-color);
+
+  .mat-toolbar {
+    background: inherit;
+  }
+}

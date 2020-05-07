@@ -1,29 +1,50 @@
 <mat-sidenav-container class="sidenav-container">
-  <!---->
-  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="'over'" [opened]="(isHandset$ | async) === false">
-    <mat-toolbar color="primary">
-      Menu
-    </mat-toolbar>
+  <mat-sidenav #drawer class="sidebar" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+    <div class="header">
+      <img [src]="logotipoActual" alt="Logotipo actual de la empresa">
+    </div>
+    <hr>
     <mat-nav-list>
-      <mat-list>
-        <h3 mat-subheader>Secciones</h3>
-        <mat-list-item *ngFor="let pestana of pestanas; let i=index" (click)="activarPestana(i)"
-          [ngClass]="{'activa':pestanasActivas[i] == true }" [routerLink]="pestana.ruta">
-          <mat-icon mat-list-icon>{{pestana.icono}}</mat-icon>
-          <h5 mat-line>{{pestana.nombre}}</h5>
-        </mat-list-item>
-      </mat-list>
+      <mat-list-item class="mx-auto mb-1" [matMenuTriggerFor]="menuPerfil">
+        <mat-icon mat-list-icon>account_circle</mat-icon>
+        <h5 mat-line>{{obtenerNombreUsuario() | titlecase}}</h5>
+        <mat-icon>expand_more</mat-icon>
+      </mat-list-item>
+      <mat-menu #menuPerfil="matMenu">
+        <button class="mx-auto" mat-menu-item>
+          <mat-icon>account_circle</mat-icon>
+          <span>Perfil personal</span>
+        </button>
+        <button class="mx-auto mb-1 mt-1" mat-menu-item>
+          <mat-icon>create</mat-icon>
+          <span>Editar perfil</span>
+        </button>
+        <button class="mx-auto" (click)="cerrarSesion()" mat-menu-item>
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Cerrar sesion</span>
+        </button>
+      </mat-menu>
+    </mat-nav-list>
+    <hr>
+    <mat-nav-list class="mt-1">
+      <mat-list-item class="mx-auto mb-1" *ngFor="let pestana of pestanas; let i=index"
+        (click)="activarPestana(i, pestana.nombre)" [ngClass]="{'menu-seleccionado':pestanasActivas[i] == true }"
+        [routerLink]="pestana.ruta">
+        <mat-icon mat-list-icon>{{pestana.icono}}</mat-icon>
+        <h5 mat-line>{{pestana.nombre}}</h5>
+      </mat-list-item>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content>
-    <mat-toolbar color="primary">
-      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+  <mat-sidenav-content (scroll)="scrollHandler($event)">
+    <div class="navbar" *ngIf="!mostrarToggleSidebar" @primerEstado>
+      <button mat-mini-fab class="btn-toggle" aria-label="Toggle sidenav" (click)="drawer.toggle()">
+        <mat-icon [@rotacion]="drawer.opened ? 'rotado' : 'inicial' ">{{drawer.opened ? 'more_vert' : 'view_list'}}
+        </mat-icon>
       </button>
-      <span>Administrador</span>
+      <span style="color: #555;">{{moduloActual}}</span>
       <span class="espaciador"></span>
-      <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" style="color:#ffff" matTooltip="Temas">
+      <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-nav" color="primary" matTooltip="Temas">
         <mat-icon>palette</mat-icon>
       </button>
       <mat-menu #menu="matMenu" style="padding: 1;">
@@ -32,17 +53,34 @@
         <button mat-menu-item class="dot-azul mr-4 ml-2" (click)="cambiarTema('tema-azul')"></button>
         <button mat-menu-item class="dot-verde mr-2" (click)="cambiarTema('tema-verde')"></button>
       </mat-menu>
-      <button mat-icon-button routerLink="/admin/configuracion" color="primary" style="color:#ffff"
-        matTooltip="Configuracion del sistema">
+      <button mat-icon-button class="btn-nav" (click)="activarModuloActivo('Configuracion del sistema')"
+        routerLink="/admin/configuracion" color="primary" matTooltip="Configuracion del sistema">
         <mat-icon>settings</mat-icon>
       </button>
-      <button mat-icon-button routerLink="/admin/ayuda" color="primary" style="color:#ffff" matTooltip="Ayuda">
+      <button mat-icon-button class="btn-nav" (click)="activarModuloActivo('Ayuda')" routerLink="/admin/ayuda"
+        color="primary" matTooltip="Ayuda">
         <mat-icon>help_outline</mat-icon>
       </button>
-      <button mat-icon-button color="primary" (click)="cerrarSesion()" style="color:#ffff" matTooltip="Cerrar sesion">
+      <button mat-icon-button class="btn-nav" color="primary" (click)="cerrarSesion()" matTooltip="Cerrar sesion">
         <mat-icon>exit_to_app</mat-icon>
       </button>
-    </mat-toolbar>
+    </div>
+
+    <div *ngIf="mostrarToggleSidebar" @deslizarDerecha class="opciones">
+      <button mat-mini-fab aria-label="Toggle sidenav" (click)="drawer.toggle()">
+        <mat-icon [@rotacion]="drawer.opened ? 'rotado' : 'inicial' ">{{drawer.opened ? 'more_vert' : 'view_list'}}
+        </mat-icon>
+      </button> <br>
+      <button mat-mini-fab (click)="activarModuloActivo('Configuracion del sistema')"
+        routerLink="/admin/configuracion" color="primary" matTooltip="Configuracion del sistema">
+        <mat-icon>settings</mat-icon>
+      </button> <br>
+      <button mat-mini-fab color="primary"
+        (click)="cerrarSesion()" matTooltip="Cerrar sesion">
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
+    </div>
     <ng-content></ng-content>
+
   </mat-sidenav-content>
 </mat-sidenav-container>

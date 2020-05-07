@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -6,14 +9,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const UsuarioCtrl = __importStar(require("../controladores/usuario"));
-const ConfiguracionCtrl = __importStar(require("../controladores/configuracion"));
 const multer_1 = __importDefault(require("multer"));
+const ConfiguracionCtrl = __importStar(require("../controladores/configuracion"));
+const middlewares_1 = require("../middlewares/middlewares");
 const storage = multer_1.default.diskStorage({
     filename: (req, file, cb) => {
         cb(null, file.originalname);
@@ -23,9 +23,9 @@ const storage = multer_1.default.diskStorage({
     }
 }), upload = multer_1.default({ storage: storage });
 const rutasConfiguracion = express_1.Router();
-//rutasConfiguracion.get('/logotipo', UsuarioCtrl.autenticacionMiddleware, ConfiguracionCtrl.obtenerLogotipo);
-rutasConfiguracion.get('', UsuarioCtrl.autenticacionMiddleware, ConfiguracionCtrl.obtenerConfiguracionUsuario);
-rutasConfiguracion.patch('/notificaciones', UsuarioCtrl.autenticacionMiddleware, ConfiguracionCtrl.guardarConfiguracionNotificaciones);
-rutasConfiguracion.patch('/temas', UsuarioCtrl.autenticacionMiddleware, ConfiguracionCtrl.cambiarTema);
-rutasConfiguracion.patch('/logotipo', UsuarioCtrl.autenticacionMiddleware, upload.single('imagen'), ConfiguracionCtrl.cambiarLogotipo);
+//rutasConfiguracion.get('/logotipo', autenticacionMiddleware, ConfiguracionCtrl.obtenerLogotipo);
+rutasConfiguracion.get('', middlewares_1.autenticacionMiddleware, ConfiguracionCtrl.obtenerConfiguracionUsuario);
+rutasConfiguracion.patch('/notificaciones', middlewares_1.autenticacionMiddleware, ConfiguracionCtrl.guardarConfiguracionNotificaciones);
+rutasConfiguracion.patch('/temas', middlewares_1.autenticacionMiddleware, ConfiguracionCtrl.cambiarTema);
+rutasConfiguracion.patch('/logotipo', middlewares_1.autenticacionMiddleware, upload.single('imagen'), ConfiguracionCtrl.cambiarLogotipo);
 exports.default = rutasConfiguracion;

@@ -7,12 +7,13 @@ import { Proveedor } from '../../modelos/proveedor.model';
 import { Usuario } from '../../modelos/usuario.model';
 import { BuscadorService } from '../../servicios/buscador.service';
 import { Almacen } from '../../modelos/almacen.model';
+import { Animaciones } from '../../constantes/animaciones';
 
 @Component({
   selector: 'app-buscador',
   templateUrl: './buscador.component.html',
   styleUrls: ['./buscador.component.scss'],
-  providers: []
+  animations: [Animaciones.deslizarAbajo]
 
 })
 export class BuscadorComponent implements OnInit, AfterViewInit {

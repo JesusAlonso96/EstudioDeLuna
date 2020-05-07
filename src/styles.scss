@@ -1,13 +1,9 @@
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
+
 @import '~@angular/material/theming';
 @import 'variables';
-// Plus imports for other components in your app.
-
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
 @include mat-core();
+@import 'temas/naranja';
+
 //TEMA 1
 $cliente-primary: mat-palette($mat-indigo, 700);
 $cliente-accent: mat-palette($mat-yellow, 600);
@@ -29,6 +25,38 @@ $cliente4-accent: mat-palette($mat-yellow, 600);
 $cliente4-warn: mat-palette($mat-red);
 $cliente4-theme: mat-light-theme($cliente4-primary, $cliente4-accent, $cliente4-warn);
 
+.dot {
+  height: 40px !important;
+  width: 40px !important;
+  background-color: $primary !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+}
+
+.dot-azul {
+  height: 40px !important;
+  width: 40px !important;
+  background-color: $azul !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+}
+
+.dot-rojo {
+  height: 40px !important;
+  width: 40px !important;
+  background-color: $rojo !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+}
+
+.dot-verde {
+  height: 40px !important;
+  width: 40px !important;
+  background-color: $verde !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+}
+
 .default {
   @include angular-material-theme($cliente-theme);
 
@@ -44,16 +72,7 @@ $cliente4-theme: mat-light-theme($cliente4-primary, $cliente4-accent, $cliente4-
 }
 
 .tema-rojo {
-  @include angular-material-theme($cliente2-theme);
-
-  *::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  *::-webkit-scrollbar-thumb {
-    background-color: $rojo;
-    border-radius: 5px;
-  }
+  @include tema-naranja;
 }
 
 .tema-azul {
@@ -113,19 +132,19 @@ body {
 }
 
 .toast-success {
-  background-color: #5cb85c !important;
+  background-color: $success !important;
 }
 
 .toast-error {
-  background-color: #d9534f !important;
+  background-color: $danger !important;
 }
 
 .toast-info {
-  background-color: #5bc0de !important;
+  background-color: $info !important;
 }
 
 .toast-warning {
-  background-color: #f0ad4e !important;
+  background-color: $warn !important;
 }
 
 .espaciador {
@@ -145,10 +164,6 @@ body {
 //no mostrar
 .hide {
   display: none;
-}
-
-mat-card {
-  border-radius: 0%;
 }
 
 //cotizaciones

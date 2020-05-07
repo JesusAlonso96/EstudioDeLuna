@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, NgModel } from '@angular/forms';
 import { MatDialog, MatTableDataSource } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
@@ -16,6 +16,8 @@ import { Usuario } from 'src/app/comun/modelos/usuario.model';
 import { ProductosService } from 'src/app/comun/servicios/productos.service';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import { CotizacionListaProductosComponent } from './cotizacion-lista-productos/cotizacion-lista-productos.component';
 
 @Component({
   selector: 'app-generar-cotizacion',
@@ -23,23 +25,24 @@ import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
   styleUrls: ['./generar-cotizacion.component.scss']
 })
 export class GenerarCotizacionComponent implements OnInit {
+  @ViewChild('listaProductos') listaProductos: CotizacionListaProductosComponent; 
+  @ViewChild('empresa') empresa: NgModel;
+  vigencias: number[] = [];
   cargando: boolean = false;
   empresas: EmpresaCot[] = [];
   empresasFiltradas: Observable<EmpresaCot[]>;
-  empresa: FormControl = new FormControl();
-  familias: FormControl = new FormControl();
-  fecha_entrega: FormControl = new FormControl();
-  fecha_evento: FormControl = new FormControl();
   cotizacion: Cotizacion = new Cotizacion();
   productos_cot: ProductoCot[] = [];
+  familiaSeleccionada: Familia = new Familia();
   familiasProductos: Familia[] = [];
-  familiasFiltradas: Observable<Familia[]>;
   editarManual: boolean = false;
-
+  fechaEmpiezaEn: Date = new Date(Date.now());
+  datosTabla: MatTableDataSource<Producto>;
   constructor(private usuarioService: UsuarioService, private toastr: ToastrService, private productosService: ProductosService, private autService: ServicioAutenticacionService, private dialog: MatDialog) { }
 
   ngOnInit() {
     this.obtenerEmpresas();
+    this.inicializarVigencias();
   }
   obtenerDatosEstudio() {
     this.cargando = true;
@@ -48,7 +51,7 @@ export class GenerarCotizacionComponent implements OnInit {
         this.cargando = false;
         this.cotizacion.datos = datos;
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
@@ -77,9 +80,8 @@ export class GenerarCotizacionComponent implements OnInit {
       (familias: Familia[]) => {
         this.cargando = false;
         this.familiasProductos = familias;
-        this.iniciarFiltroFamilias();
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
@@ -100,34 +102,14 @@ export class GenerarCotizacionComponent implements OnInit {
   mostrarEmpresa(empresa?: EmpresaCot) {
     return empresa ? empresa.nombre : undefined;
   }
-  //filtro de familias de productos
-  iniciarFiltroFamilias() {
-    this.productos_cot = [];
-    this.familias = new FormControl();
-    this.familiasFiltradas = this.familias.valueChanges
-      .pipe(
-        startWith(''),
-        map(valor => typeof valor === 'string' ? valor : valor.nombre),
-        map(nombre => nombre ? this._filtroFamilia(nombre) : this.familiasProductos.slice())
-      );
-  }
-  private _filtroFamilia(nombre: string): Familia[] {
-    return this.familiasProductos.filter(opcion => opcion.nombre.toLowerCase().includes(nombre.toLowerCase()));
-  }
-  mostrarFamilia(familia?: Familia) {
-    return familia ? familia.nombre : undefined;
-  }
-  borrarBusqueda() {
-    this.familias = new FormControl();
-  }
   buscarProductosPorFamilia() {
     this.cargando = true;
-    this.productosService.obtenerProductos(<string>this.familias.value._id).subscribe(
+    this.productosService.obtenerProductos(this.familiaSeleccionada._id).subscribe(
       (productos: Producto[]) => {
         this.cargando = false;
         this.iniciarProductosCotizacion(productos);
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
@@ -140,7 +122,6 @@ export class GenerarCotizacionComponent implements OnInit {
     }
   }
   agregarCantidadProducto(producto: ProductoCot) {
-    producto.cantidad += 1;
     this.agregarProducto(producto);
   }
   quitarCantidadProducto(producto: ProductoCot) {
@@ -153,7 +134,7 @@ export class GenerarCotizacionComponent implements OnInit {
   }
   agregarProducto(productoCot: ProductoCot) {
     if (productoCot.cantidad == 1) {
-      if(!this.existeProducto(productoCot)){
+      if (!this.listaProductos.existeProducto(productoCot)) {
         this.cotizacion.productos.push(productoCot);
       }
     }
@@ -184,36 +165,24 @@ export class GenerarCotizacionComponent implements OnInit {
         this.cargando = false;
         this.cotizacion.asesor = asesor;
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );
   }
-  generarFechaEntrega() {
-    this.cotizacion.fecha_entrega = this.fecha_entrega.value._d;
-  }
-  generarFechaEvento() {
-    if (this.eligioFechaEvento()) {
-      this.cotizacion.fecha_evento = this.fecha_evento.value._d;
-    }
-  }
+
   eligioProductos(): boolean {
     return this.cotizacion.productos.length > 0 ? true : false;
-  }
-  eligioFechaEvento(): boolean {
-    return this.fecha_evento.value != null ? true : false;
   }
   eligioControladorValido(controlador: FormControl): boolean {
     return controlador.status == 'VALID' ? true : false;
   }
   abrirCotizacion() {
-    if (this.eligioControladorValido(this.fecha_entrega) && this.eligioControladorValido(this.empresa) && this.eligioProductos()) {
+    if (this.eligioProductos()) {
       this.cotizacion.empresa = this.empresa.value;
       this.crearFechaCotizacion();
       this.generarCantidadesCotizacion();
-      this.generarFechaEntrega();
-      this.generarFechaEvento();
       this.generarCotizacion();
     } else {
       this.toastr.error('Cotización no generada', 'Por favor, completa todos los datos', { closeButton: true });
@@ -232,17 +201,21 @@ export class GenerarCotizacionComponent implements OnInit {
           this.cotizacion = new Cotizacion();
         })
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );
 
   }
-  existeProducto(producto: ProductoCot): boolean {
-    for (let i = 0; i < this.cotizacion.productos.length; i++) {
-      if (producto.producto._id == this.cotizacion.productos[i].producto._id) return true;
+ 
+  listaProductosValida(): boolean {
+    return this.cotizacion.productos.length > 0 ? true : false;
+  }
+  inicializarVigencias() {
+    const anioVigente = new Date().getFullYear();
+    for (let i = 0; i < 2; i++) {
+      this.vigencias.push(anioVigente + i);
     }
-    return false;
   }
 }

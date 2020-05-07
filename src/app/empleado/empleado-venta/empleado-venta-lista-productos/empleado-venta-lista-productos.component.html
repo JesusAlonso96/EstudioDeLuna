@@ -1,0 +1,66 @@
+<div class="row" *ngIf="productosAgrupados.length == 0">
+    <div class="col-lg-12">
+        <div class="alert alert-info sin-borde" role="alert">
+            No existen productos en la familia <a href="#" class="alert-link">{{familia.nombre}}</a>. Por favor,
+            selecciona otra.
+        </div>
+    </div>
+</div>
+<div class="row" *ngIf="!esFamiliaEspecial()">
+    <ng-container *ngFor="let productos of productosAgrupados">
+        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 w-100">
+            <mat-card class="sin-borde mb-4 card p-0">
+                <div class="card-body">
+                    <h5 class="card-title">{{productos._id}} fotos</h5>
+                    <p class="card-text">Da clic para ver paquetes con {{productos._id}} fotos disponibles
+                    </p>
+                    <button mat-raised-button color="primary"
+                        (click)="abrirSeleccionarProductos(productos._id)">Seleccionar</button>
+                </div>
+            </mat-card>
+        </div>
+    </ng-container>
+</div>
+<ng-container *ngIf="esFamiliaEspecial()">
+    <div class="row" *ngIf="familiaSeleccionada=='Sesiones'">
+        <ng-container *ngFor="let productos of productosAgrupados">
+            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <mat-card class="sin-borde mb-4 card p-0">
+                    <div class="card-body">
+                        <h5 class="card-title">{{productos._id.ancho}}'' x {{productos._id.alto}}''</h5>
+                        <p class="card-text">Da clic para ver paquetes
+                        </p>
+                        <button mat-raised-button color="primary"
+                            (click)="abrirModalTamano(productos._id.ancho,productos._id.alto)">Seleccionar</button>
+                    </div>
+                </mat-card>
+            </div>
+        </ng-container>
+    </div>
+    <div class="row" *ngIf="familiaSeleccionada !='Sesiones'">
+        <ng-container *ngFor="let producto of productosAgrupados">
+            <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                <mat-card class="sin-borde mb-4 card" style="padding: 0%;">
+                    <div class="card-header text-muted">
+                        {{producto.nombre}}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{producto.num_fotos}} fotos</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">${{producto.precio}} MXN</h6>
+                    </div>
+                    <div class="card-footer">
+                        <button mat-mini-fab matTooltip="Agregar producto" color="primary"
+                            (click)="agregarProducto(producto)">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                        <button mat-mini-fab matTooltip="Ver detalles" class="float-right"
+                            (click)="verDetalles(productos)">
+                            <mat-icon>visibility</mat-icon>
+                        </button>
+                    </div>
+                </mat-card>
+            </div>
+
+        </ng-container>
+    </div>
+</ng-container>

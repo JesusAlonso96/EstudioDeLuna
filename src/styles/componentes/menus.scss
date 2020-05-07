@@ -1,0 +1,25 @@
+@mixin menus ($color, $color-texto-hover) {
+  .mat-menu-panel {
+    width: 235px;
+    .mat-menu-item {
+      width: 95%;
+      height: 45px;
+      font-size: 14px;
+      font-weight: 300;
+      border-radius: 5px 5px 5px 5px;
+      -moz-border-radius: 5px 5px 5px 5px;
+      -webkit-border-radius: 5px 5px 5px 5px;
+      transition: all 100ms linear;
+      -webkit-transition: all 100ms linear;
+      -ms-transition: all 100ms linear;
+      &:hover {
+        background-color: $color;
+        color: $color-texto-hover;
+        .mat-icon-no-color,
+        .mat-menu-item-submenu-trigger::after {
+          color: $color-texto-hover;
+        }
+      }
+    }
+  }
+}

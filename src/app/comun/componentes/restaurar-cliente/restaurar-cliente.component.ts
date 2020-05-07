@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Cliente } from '../../modelos/cliente.model';
 import { ClienteService } from '../../servicios/cliente.service';
@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BuscadorComponent } from '../buscador/buscador.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-restaurar-cliente',
@@ -14,11 +15,11 @@ import { BuscadorComponent } from '../buscador/buscador.component';
 })
 export class RestaurarClienteComponent implements OnInit, OnDestroy {
   @ViewChild('buscador') buscador: BuscadorComponent;
-  columnas: string[] = ['nombre', 'ape_pat', 'ape_mat', 'email', 'telefono', 'restaurar'];
+  @Output() cargandoEvento = new EventEmitter(true);
+  columnas: string[] = ['nombre', 'ape_pat', 'ape_mat', 'email', 'telefono', 'opciones'];
   cargando: boolean = false;
   clientes: Cliente[];
   private onDestroy$ = new Subject<boolean>();
-
   constructor(private clienteService: ClienteService, private toastr: ToastrService, private dialog: MatDialog) { }
 
   ngOnInit() {
@@ -27,14 +28,14 @@ export class RestaurarClienteComponent implements OnInit, OnDestroy {
     this.obtenerNuevoClienteRestaurado();
   }
   obtenerClientesEliminados() {
-    this.cargando = true;
+    this.crearVistaCargando(true, 'Obteniendo clientes eliminados..')
     this.clienteService.obtenerClientesEliminados().subscribe(
       (clientesEliminados: Cliente[]) => {
-        this.cargando = false;
+        this.crearVistaCargando(false);
         this.clientes = clientesEliminados;
       },
-      (err: any) => {
-        this.cargando = false;
+      (err: HttpErrorResponse) => {
+        this.crearVistaCargando(false);
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );
@@ -71,5 +72,8 @@ export class RestaurarClienteComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.onDestroy$.next(true);
     this.onDestroy$.complete();
+  }
+  crearVistaCargando(cargando: boolean, texto?: string) {
+    this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
   }
 }

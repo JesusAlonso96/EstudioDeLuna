@@ -43,12 +43,8 @@ export class AdministradorService {
   public obtenerUsuariosEliminados(): Observable<any> {
     return this.http.get('/api/v1/admins/obtenerUsuariosEliminados');
   }
-  public obtenerProveedoresEliminados(): Observable<any> {
-    return this.http.get('/api/v1/admins/obtenerProveedoresEliminados');
-  }
-  public obtenerProductosProveedorEliminados(): Observable<any>{
-    return this.http.get('/api/v1/admins/obtenerProductosProveedorEliminados');
-  }
+ 
+  
   public obtenerEmpresasEliminadas(): Observable<any>{
     return this.http.get('/api/v1/admins/obtenerEmpresasEliminadas');
   }
@@ -68,24 +64,6 @@ export class AdministradorService {
   }
   public editarUsuario(usuario: Usuario): Observable<any> {
     return this.http.patch('/api/v1/admins/editarUsuario', usuario);
-  }
-  public editarProveedor(proveedor: Proveedor): Observable<any> {
-    return this.http.patch('/api/v1/admins/editarProveedor', proveedor);
-  }
-  public eliminarProveedor(proveedor: Proveedor): Observable<any> {
-    return this.http.patch('/api/v1/admins/eliminarProveedor', proveedor);
-  }
-  public restaurarProveedor(proveedor: Proveedor): Observable<any> {
-    return this.http.patch('/api/v1/admins/restaurarProveedorEliminado', proveedor);
-  }
-  public eliminarProductoProveedor(producto: ProductoProveedor): Observable<any> {
-    return this.http.patch('/api/v1/admins/eliminarProductoProveedor', producto);
-  }
-  public editarProductoProveedor(producto: ProductoProveedor): Observable<any>{
-    return this.http.patch('/api/v1/admins/editarProductoProveedor', producto);
-  }
-  public restaurarProductoProveedorEliminado(producto: ProductoProveedor): Observable<any>{
-    return this.http.patch('/api/v1/admins/restaurarProductoProveedorEliminado', producto);
   }
   public restaurarEmpresa(empresa: EmpresaCot): Observable<any>{
     return this.http.patch('/api/v1/admins/restaurarEmpresaEliminada', empresa);

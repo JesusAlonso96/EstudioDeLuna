@@ -4,7 +4,13 @@ import { Pedido } from 'src/app/comun/modelos/pedido.model';
 import { ToastrService } from 'ngx-toastr';
 import { EmpleadoService } from '../../servicio-empleado/empleado.service';
 import { ModalGenerarTicketComponent } from '../../empleado-venta/modal-generar-ticket/modal-generar-ticket.component';
-
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Venta } from 'src/app/comun/modelos/venta.model';
+class Pago {
+  metodoPago: string;
+  monto: number;
+}
 @Component({
   selector: 'app-pedido-estado',
   templateUrl: './pedido-estado.component.html',
@@ -16,18 +22,21 @@ export class PedidoEstadoComponent implements OnInit {
   estados = ['En espera', 'En retoque', 'Imprimiendo', 'Poniendo adherible', 'Cortando fotografias', 'Finalizado', 'Vendido'];
   estadosNuevo = [];
   estadoActual = '';
-  debe: number;
+  debe: number;  //eliminar
   input: boolean = false;
-  inputDebe: number;
+  inputDebe: number;//eliminar
   metodoPago: string = '';
+  cantidadRestante: number;
+  cargando = {
+    cargando: false,
+    texto: ''
+  }
   constructor(public matDialog: MatDialog,
-    public dialogRef: MatDialogRef<PedidoEstadoComponent>, @Inject(MAT_DIALOG_DATA) public data: Pedido, private toastr: ToastrService, private empleadoService: EmpleadoService) { }
+    public dialogRef: MatDialogRef<PedidoEstadoComponent>, @Inject(MAT_DIALOG_DATA) public data: Pedido, private toastr: NgToastrService, private empleadoService: EmpleadoService) { }
   ngOnInit() {
-    console.log(this.data)
-    this.inputDebe = 0;
+    this.cantidadRestante = this.data.total - this.data.anticipo;
     this.obtenerProductos();
     this.crearRuta();
-    this.inicializarPago();
   }
   crearRuta() {
     if (this.data.c_adherible) {
@@ -38,9 +47,6 @@ export class PedidoEstadoComponent implements OnInit {
       var indice = this.estados_normal.indexOf(<string>this.data.status);
       this.crearBreadCrumb(indice, 0)
     }
-  }
-  inicializarPago() {
-    this.debe = <number>this.data.total - <number>this.data.anticipo;
   }
   onNoClick(): void {
     this.dialogRef.close();
@@ -55,49 +61,11 @@ export class PedidoEstadoComponent implements OnInit {
     }
     this.estadoActual = this.estadosNuevo.pop();
   }
-  marcarEntregado() {
-    if (this.data.c_retoque) {
+  crearVistaCargando(cargando: boolean, texto?: string) {
+    this.cargando.cargando = cargando;
+    this.cargando.texto = texto;
+  }
 
-    }
-    if (this.montoCumplido2()) {
-      this.data.status = 'Vendido';
-      this.empleadoService.actualizarEstado(this.data).subscribe();
-      if (this.data.c_retoque) {
-        this.crearVenta(this.data, this.inputDebe, <string>this.data.metodoPago);
-      }
-      this.toastr.success('Pedido actualizado y vendido');
-      this.matDialog.open(ModalGenerarTicketComponent,
-        {
-          data: { pedido: this.data }
-        })
-      this.onNoClick();
-    } else if (this.montoCumplido()) {
-      let pago = this.inputDebe + <number>this.data.anticipo;
-      this.data.anticipo = pago;
-      this.empleadoService.actualizarAnticipo(this.data._id, this.data.anticipo).subscribe()
-      this.data.status = 'Vendido';
-      this.empleadoService.actualizarEstado(this.data).subscribe()
-      this.toastr.success('Pedido actualizado y vendido');
-      this.crearVenta(this.data, this.inputDebe, this.metodoPago);
-    } else {
-      this.toastr.info('Por favor cubre el monto del pedido');
-    }
-
-  }
-  montoCumplido2() {
-    if (this.data.anticipo < this.data.total) {
-      return false;
-    }
-    return true;
-  }
-  montoCumplido() {
-    if ((this.inputDebe + <number>this.data.anticipo) == this.data.total) {
-      this.debe = 0;
-      return true;
-    }
-    this.inicializarPago()
-    return false;
-  }
   obtenerProductos() {
     this.empleadoService.obtenerProductosPorPedido(this.data._id).subscribe(
       (productos) => {
@@ -105,17 +73,68 @@ export class PedidoEstadoComponent implements OnInit {
       }
     );
   }
+
+  //metodo para pagar pedido sin marcarlo como finalizado
+  pagarPedido() {
+    this.data.anticipo = this.data.anticipo + this.cantidadRestante;
+    this.actualizarAnticipoPedido();
+    this.crearVenta(this.data, this.cantidadRestante, this.metodoPago);
+  }
+  //si esta pagado y esta en finalizado, solo actualizar el estado a entregado
+  entregarPedido() {
+    this.data.status = 'Vendido';
+    this.actualizarEstadoPedido();
+  }
+  //pagar pedido y actualizar el estado del mismo, crear venta
+  pagarYEntregarPedido() {
+    this.pagarPedido();
+    this.entregarPedido();
+  }
+  pedidoPagado(): boolean {
+    return this.data.total == this.data.anticipo ? true : false;
+  }
+  actualizarAnticipoPedido() {
+    this.crearVistaCargando(true, 'Actualizando el anticipo del pedido...')
+    this.empleadoService.actualizarAnticipo(this.data._id, this.data.anticipo).subscribe(
+      (pedidoActualizado: Pedido) => {
+        this.crearVistaCargando(false);
+        this.toastr.abrirToastr('exito', 'El pedido se ha actualizado satisfactoriamente', '');
+      },
+      (err: HttpErrorResponse) => {
+        this.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+      }
+    );
+  }
+  actualizarEstadoPedido() {
+    this.crearVistaCargando(true, 'Actualizando el estado del pedido...')
+    this.empleadoService.actualizarEstado(this.data).subscribe(
+      (pedidoActualizado: Pedido) => {
+        this.crearVistaCargando(false);
+        this.toastr.abrirToastr('exito', 'El pedido se ha actualizado correctamente', '');
+        this.onNoClick();
+      },
+      (err: HttpErrorResponse) => {
+        this.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+      }
+    )
+  }
   crearVenta(pedido: Pedido, debe: Number, metodoPago: string) {
-    this.empleadoService.crearVenta(pedido, debe, metodoPago).subscribe(
-      () => {
+    this.crearVistaCargando(true, 'Creando venta...')
+    this.empleadoService.crearVenta(pedido, debe, metodoPago, localStorage.getItem('c_a')).subscribe(
+      (ventaRealizada: Venta) => {
+        this.crearVistaCargando(false);
+        this.toastr.abrirToastr('exito', 'Se realizo la venta satisfactoriamente', '');
         this.matDialog.open(ModalGenerarTicketComponent,
           {
             data: { pedido: this.data }
           })
         this.onNoClick();
       },
-      () => {
-
+      (err: HttpErrorResponse) => {
+        this.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }

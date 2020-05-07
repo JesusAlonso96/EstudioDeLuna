@@ -1,0 +1,17 @@
+<mat-tab-group mat-align-tabs="center">
+    <mat-tab label="Agregar">
+        <ng-template matTabContent>
+            <app-root-proveedores-insumo-alta (cargandoEvento)="cargandoEv($event)"></app-root-proveedores-insumo-alta>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Eliminar">
+        <ng-template matTabContent>
+            <app-root-proveedores-insumo-baja></app-root-proveedores-insumo-baja>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Restaurar">
+        <ng-template matTabContent>
+            <app-root-proveedores-insumo-restaurar></app-root-proveedores-insumo-restaurar>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>

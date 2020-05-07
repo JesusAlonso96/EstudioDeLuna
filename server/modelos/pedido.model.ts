@@ -26,7 +26,8 @@ export interface IPedido extends Document {
     anticipo: number;
     foto: string;
     metodoPago: string;
-    sucursal: ISucursal['_id']
+    sucursal: ISucursal['_id'];
+    usuario: IUsuario['_id'];
 }
 const pedidoSchema = new Schema({
     num_pedido: { type: Number },//
@@ -45,7 +46,7 @@ const pedidoSchema = new Schema({
     foto: { type: String },
     metodoPago: { type: String },
     sucursal: [{ type: Schema.Types.ObjectId, ref: 'Sucursal' }],//
-
+    usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' }
 });
 
 pedidoSchema.plugin(autoIncrement.plugin, { model: 'Pedido', field: 'num_pedido' });

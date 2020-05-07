@@ -1,326 +1,200 @@
-<app-cargando *ngIf="cargando" texto="Cargando elementos..."></app-cargando>
-<app-cargando *ngIf="cargandoFotografo" texto="Asignando fotografo..."></app-cargando>
-<app-cargando *ngIf="cargandoPedido" texto="Creando pedido..."></app-cargando>
-<div class="container-fluid contenedor sin-borde">
-    <div class="row" style="height: 100%;">
-        <div class="col-lg-1 col-md-4 col-sm-12 familias" style="padding: 0;">
-            <div class="row headers">
-                <div class="col-12" class="titulo-productos3">
-                    <h4 class="text-center titulo-orden">Familias</h4>
-                </div>
-                <mat-divider></mat-divider>
-            </div>
-            <mat-list style="padding: 0;">
-                <ng-container *ngFor="let familia of familias; let i = index">
-                    <mat-list-item class="familias-item" (click)="obtenerProductos(familia.nombre, familia._id)">
-                        <h4 mat-line>{{familia.nombre}}</h4>
-                    </mat-list-item>
-                    <mat-divider></mat-divider>
-                </ng-container>
-            </mat-list>
-        </div>
-        <div class="col-lg-7 col-md-8 col-sm-12 productos">
-            <div class="row headers">
-                <div class="col-12" class="titulo-productos3">
-                    <h4 class="text-center titulo-orden">Selecciona los productos a ordenar</h4>
-                </div>
-                <mat-divider></mat-divider>
-            </div>
-            <div class="container-fluid">
-                <div class="row">
-                    <ng-container *ngIf="grupo">
-                        <div class="col-12" *ngIf="familiaSeleccionada !== ''">
-                            <h5 class="text-left titulo-productos">Productos de la familia {{familiaSeleccionada}}</h5>
-                        </div>
-                    </ng-container>
-                    <ng-container *ngIf="!grupo">
-
-
-                    </ng-container>
-                    <ng-container *ngIf="!esFamiliaEspecial()">
-                        <ng-container *ngFor="let g of grupo">
-                            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                <mat-card class="sin-borde productos card" style="padding: 0;">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{g._id}} fotos</h5>
-                                        <p class="card-text">Da clic para ver paquetes con {{g._id}} fotos disponibles
-                                        </p>
-                                        <button mat-raised-button color="primary"
-                                            (click)="abrirModal(g._id)">Seleccionar</button>
+<app-cargando [cargando]="cargando.cargando" [texto]="cargando.texto"></app-cargando>
+<div class="container-fluid">
+    <div class="row  mt-4">
+        <div class="col-lg-5">
+            <mat-card class="p-0">
+                <mat-horizontal-stepper linear #stepper>
+                    <mat-step [stepControl]="listaProductosValida()" [completed]="listaProductosValida()">
+                        <form #listaProductosForm="ngForm">
+                            <ng-template matStepLabel>Productos</ng-template>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <app-empleado-venta-tabla-productos-agregados #tablaProductos
+                                            [productosAgregados]="pedido.productos"
+                                            (quitarProductoEvento)="quitarProducto($event)">
+                                        </app-empleado-venta-tabla-productos-agregados>
                                     </div>
-                                </mat-card>
-                            </div>
-                        </ng-container>
-                    </ng-container>
-                    <ng-container *ngIf="esFamiliaEspecial()">
-                        <ng-container *ngIf="familiaSeleccionada=='Sesiones'">
-                            <ng-container *ngFor="let g of grupo">
-                                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <mat-card class="sin-borde productos card" style="padding: 0;">
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{g._id.ancho}}'' x {{g._id.alto}}''</h5>
-                                            <p class="card-text">Da clic para ver paquetes
-                                            </p>
-                                            <button mat-raised-button color="primary"
-                                                (click)="abrirModalTamano(g._id.ancho,g._id.alto)">Seleccionar</button>
-                                        </div>
-                                    </mat-card>
                                 </div>
-                            </ng-container>
-                        </ng-container>
-                        <ng-container *ngIf="familiaSeleccionada !='Sesiones'">
-                            <ng-container *ngFor="let g of grupo">
-                                <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
-                                    <mat-card class="sin-borde productos card" style="padding: 0%;">
-                                        <div class="card-header text-muted">
-                                            {{g.nombre}}
-                                        </div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{g.num_fotos}} fotos</h5>
-                                            <h6 class="card-subtitle mb-2 text-muted">${{g.precio}} MXN</h6>
-                                        </div>
-                                        <div class="card-footer">
-                                            <button mat-mini-fab matTooltip="Agregar producto" color="primary"
-                                                (click)="agregarProducto(g)">
-                                                <mat-icon>add</mat-icon>
-                                            </button>
-                                            <button mat-mini-fab matTooltip="Ver detalles" class="float-right"
-                                                (click)="verDetalles(g)">
-                                                <mat-icon>visibility</mat-icon>
-                                            </button>
-                                        </div>
-                                    </mat-card>
+                                <div class="row mt-4">
+                                    <div class="col-lg-12">
+                                        <button mat-raised-button color="primary" [disabled]="!listaProductosValida()"
+                                            matStepperNext>Siguiente</button>
+                                    </div>
                                 </div>
+                            </div>
+                        </form>
+                    </mat-step>
+                    <mat-step [stepControl]="detallesForm">
+                        <form #detallesForm="ngForm">
+                            <ng-template matStepLabel>Detalles</ng-template>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div *ngIf="pedido.c_retoque ? true: false" class="col-lg-6">
+                                        <mat-slide-toggle [(ngModel)]="pedido.importante" (change)="agregarCostoExtra()"
+                                            #importante="ngModel" name="importante">
+                                            {{pedido.importante ? 'Pedido urgente' : 'Pedido no urgente'}}
+                                        </mat-slide-toggle>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <mat-slide-toggle [(ngModel)]="pedido.c_adherible" #c_adherible="ngModel"
+                                            name="c_adherible">
+                                            {{pedido.c_adherible ? 'Con adherible' : 'Sin adherible'}}
+                                        </mat-slide-toggle>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-lg-6">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <input class="d-none" type="file" accept="imagen/*"
+                                                    (change)="cambioArchivoEvento($event)" #imagen>
+                                                <button mat-raised-button color="primary" (click)="imagen.click()">
+                                                    <mat-icon>get_app</mat-icon>
+                                                    Seleccionar imagen
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-4" *ngIf="imagenRecortada !== ''">
+                                            <div class="col-lg-12">
+                                                <button mat-raised-button (click)="eliminarImagen()"
+                                                    color="warn">Eliminar imagen</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <image-cropper *ngIf="eventoCambioImagen != ''"
+                                            [imageChangedEvent]="eventoCambioImagen" [maintainAspectRatio]="true"
+                                            [aspectRatio]="1 / 1" format="jpg" (imageCropped)="_imagenRecortada($event)"
+                                            (imageLoaded)="imagenCargada()" (cropperReady)="cortadorListo()"
+                                            (loadImageFailed)="cargarImagenFallida()"></image-cropper>
+                                    </div>
+                                </div>
+                                <div *ngIf="!imagenValida().valido" class="row mt-4" @primerEstado>
+                                    <div class="col-lg-12">
+                                        <app-alerta tipo="error" tipo_bootstrap="danger" [mensaje]="imagenValida().mensaje"></app-alerta>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-lg-12">
+                                        <mat-form-field class="w-100 input" appearance="outline">
+                                            <mat-label>Anotar observación</mat-label>
+                                            <textarea matInput cols="20" rows="3" #input appearance="outline"
+                                                placeholder="Observaciones" [(ngModel)]="pedido.comentarios"
+                                                maxlength="256" #comentarios="ngModel" name="comentarios"></textarea>
+                                            <mat-hint align="start"><strong>Escribe las observaciones</strong>
+                                            </mat-hint>
+                                            <mat-hint align="end">{{input.value.length}} / 256</mat-hint>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-lg-12">
+                                        <button mat-raised-button class="float-left" matStepperPrevious>Atras</button>
+                                        <button mat-raised-button class="float-right" color="primary"
+                                            [disabled]="!detallesForm.valid || !imagenValida().valido" matStepperNext (click)="obtenerClientes()">Siguiente</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </mat-step>
+                    <mat-step [stepControl]="completarForm">
+                        <form #completarForm="ngForm">
+                            <ng-template matStepLabel>Completar</ng-template>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <mat-form-field class="w-100 input" appearance="outline">
+                                            <mat-label>Metodo pago</mat-label>
+                                            <mat-select [(ngModel)]="pedido.metodoPago" name="metodoPago"
+                                                #metodoPago="ngModel" required>
+                                                <mat-option value="efectivo">
+                                                    Efectivo
+                                                </mat-option>
+                                                <mat-option value="tarjeta">
+                                                    Tarjeta
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-error
+                                                *ngIf="(metodoPago.invalid && (metodoPago.dirty || metodoPago.touched) && metodoPago.errors.required)">
+                                                Porfavor ingresa el metodo de pago
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <mat-form-field class="w-100 input" appearance="outline">
+                                            <mat-label>Cantidad a pagar</mat-label>
+                                            <input matInput [(ngModel)]="pedido.anticipo" #anticipo="ngModel"
+                                                type="number" name="anticipo" pattern="^[0-9]+$"
+                                                (keyup)="verificarCantidadAPagar()" placeholder="Monto de compra"
+                                                required>
+                                            <mat-icon matSuffix>payment</mat-icon>
+                                            <mat-error
+                                                *ngIf="(anticipo.invalid && (anticipo.dirty || anticipo.touched) && anticipo.errors.required)">
+                                                Por favor ingresa la cantidad a pagar
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <mat-form-field class="w-100 input" appearance="outline">
+                                            <mat-label>Seleccionar cliente</mat-label>
+                                            <input matInput placeholder="Cliente" [(ngModel)]="pedido.cliente"
+                                                name="cliente" [matAutocomplete]="auto" #cliente="ngModel"
+                                                [required]="pedido.c_retoque">
+                                            <mat-error
+                                                *ngIf="(cliente.invalid && (cliente.dirty || cliente.touched) && cliente.errors.required)">
+                                                Porfavor ingresa el campo
+                                            </mat-error>
+                                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="mostrarCliente">
+                                                <mat-option *ngFor="let cliente of clientesFiltrados | async"
+                                                    [value]="cliente">
+                                                    {{cliente.nombre}} {{cliente.ape_pat}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div *ngIf="!verificarCantidadAPagar().valido" class="row" @primerEstado>
+                                    <div class="col-lg-12">
+                                        <app-alerta tipo="error" tipo_bootstrap="danger"
+                                            [mensaje]="verificarCantidadAPagar().mensaje"></app-alerta>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-lg-12">
+                                        <button mat-raised-button class="float-left" matStepperPrevious>Atras</button>
+                                        <button mat-raised-button class="ml-4" (click)="reiniciarFormularios(detallesForm, completarForm)" color="warn">Limpiar
+                                            formulario</button>
+                                        <button mat-raised-button color="primary" class="float-right"
+                                            (click)="abrirCrearPedido(detallesForm, completarForm)"
+                                            [disabled]="!completarForm.valid || !verificarCantidadAPagar().valido">Crear
+                                            pedido</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </mat-step>
+                </mat-horizontal-stepper>
 
-                            </ng-container>
-                        </ng-container>
-                    </ng-container>
-                </div>
-            </div>
+            </mat-card>
         </div>
-        <div class="col-lg-2 agregados">
-            <div class="row headers">
-                <div class="col-12" class="titulo-productos3">
-                    <h4 class="text-center titulo-orden">Productos agregados</h4>
-                </div>
-                <mat-divider></mat-divider>
-            </div>
-            <div class="row">
-                <div class="col-12" style="padding:0; ">
-                    <div class="container-fluid" style="padding:0;">
-                        <mat-list style="padding:0;">
-                            <ng-container *ngFor="let producto of pedido.productos">
-                                <mat-list-item>
-                                    <h4 mat-line>{{producto.nombre}} {{producto.num_fotos}} fotos
-                                        ${{producto.precio}}MXN</h4>
-                                    <mat-icon mat-list-icon color="warn" matTooltip="Quitar producto"
-                                        class="quitarProducto" (click)="quitarProducto(producto)">close</mat-icon>
-                                </mat-list-item>
-                                <mat-divider></mat-divider>
-                            </ng-container>
-                        </mat-list>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12" style="bottom: 0; position: absolute;">
-                    <span class="total1 text-left" style="margin-right: 2%;" *ngIf="pedido.total"> <strong>Total:
-                        </strong>${{pedido.total}}</span>
-                    <span class="total text-right" *ngIf="pagado"> <strong>Pagado: </strong>${{pagado}}</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-2 agregados">
-            <div class="row headers">
-                <div class="col-12" class="titulo-productos3">
-                    <h4 class="text-center titulo-orden">Completar pedido</h4>
-                </div>
-                <mat-divider></mat-divider>
-            </div>
-            <div class="row">
-                <form class="col-12 formulario" #pedidoForm="ngForm">
-                    <ng-container *ngIf="pedido.c_retoque">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <label id="example-radio-group-label" style="margin-top: 5px; padding-bottom:0 ;">¿Es
-                                    urgente?</label>
-                                <mat-radio-group [(ngModel)]="pedido.importante" #importante="ngModel"
-                                    name="importante">
-                                    <mat-radio-button [value]=true>
-                                        Si
-                                    </mat-radio-button>
-                                    <mat-radio-button [value]=false>
-                                        No
-                                    </mat-radio-button>
-                                </mat-radio-group>
-
+        <div class="col-lg-7 h-100">
+            <mat-card class="p-0">
+                <mat-tab-group>
+                    <mat-tab *ngFor="let familia of familias; let i = index" [label]="familia.nombre">
+                        <ng-template matTabContent>
+                            <div class="container-fluid mt-2 mb-2">
+                                <app-empleado-venta-lista-productos #listaProductos [familia]="familia"
+                                    (cargandoEvento)="cargandoProductos($event)"
+                                    (productoAgregadoEvento)="obtenerProductoAgregado($event)">
+                                </app-empleado-venta-lista-productos>
                             </div>
-                            <div class="col-lg-6">
-                                <label id="example-radio-group-label" style="margin-top: 5px; padding-bottom:0 ;">¿Con
-                                    adherible?</label>
-                                <mat-radio-group [(ngModel)]="pedido.c_adherible" #c_adherible="ngModel"
-                                    name="c_adherible">
-                                    <mat-radio-button [value]=true>
-                                        Si
-                                    </mat-radio-button>
-                                    <mat-radio-button [value]=false>
-                                        No
-                                    </mat-radio-button>
-                                </mat-radio-group>
-                            </div>
-                            <div class="col-lg-12">
-                                <input style="display: none;" type="file" accept="image/*"
-                                    (change)="obtenerImagen($event)" #imagenInput>
-                                    <img *ngIf="imagen2" [src]="imagen2" alt="">
-                                <mat-form-field *ngIf="imagen" style="width:100%">
-                                    <input type="text" matInput [placeholder]="imagen.name" disabled>
-                                </mat-form-field>
-                                <button (click)="obtenerImagen($event)">Ejemplo</button>
-                                <button mat-raised-button (click)="imagenInput.click()" class="btn-img">Subir
-                                    imagen</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <h5 style="margin-top: 2%;">Ingresar anticipo</h5>
-                            </div>
-                            <div class="col-lg-12">
-                                <mat-form-field appearance="outline" class="full-width">
-                                    <mat-label>Metodo pago</mat-label>
-                                    <mat-select [(ngModel)]="pedido.metodoPago" name="metodoPago" #metodoPago="ngModel"
-                                        required>
-                                        <mat-option value="efectivo">
-                                            Efectivo
-                                        </mat-option>
-                                        <mat-option value="tarjeta">
-                                            Tarjeta
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-error
-                                        *ngIf="(metodoPago.invalid && (metodoPago.dirty || metodoPago.touched) && metodoPago.errors.required)">
-                                        Porfavor ingresa el campo
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-lg-12">
-                                <mat-form-field style="width:100%" appearance="outline">
-                                    <mat-label>Favor de ingresa cantidad a pagar</mat-label>
-                                    <input matInput [(ngModel)]="pagado" #pagado2="ngModel" name="pagado2"
-                                        pattern="^[0-9]+$" placeholder="Monto de compra" required>
-                                    <mat-icon matSuffix>payment</mat-icon>
-                                    <mat-error
-                                        *ngIf="(pagado2.invalid && (pagado2.dirty || pagado2.touched) && pagado2.errors.required)">
-                                        Porfavor ingresa el campo
-                                    </mat-error>
-                                    <mat-error
-                                        *ngIf="(pagado2.invalid && (pagado2.dirty || pagado2.touched) && pagado2.errors.pattern)">
-                                        Ingresa solo numeros
-                                    </mat-error>
-
-                                </mat-form-field>
-                            </div>
-                        </div>
-
-                    </ng-container>
-                    <ng-container *ngIf="!pedido.c_retoque">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <label id="example-radio-group-label" style="margin-top: 5px; padding-bottom:0 ;">¿Con
-                                    adherible?</label>
-                                <mat-radio-group [(ngModel)]="pedido.c_adherible" #c_adherible="ngModel"
-                                    name="c_adherible">
-                                    <mat-radio-button [value]=true>
-                                        Si
-                                    </mat-radio-button>
-                                    <mat-radio-button [value]=false>
-                                        No
-                                    </mat-radio-button>
-                                </mat-radio-group>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <h5 style="margin-top: 2%;">Ingresar anticipo</h5>
-                            </div>
-                            <div class="col-lg-12">
-                                <mat-form-field appearance="outline" class="full-width">
-                                    <mat-label>Metodo pago</mat-label>
-                                    <mat-select [(ngModel)]="pedido.metodoPago" name="metodoPago" #metodoPago="ngModel"
-                                        required>
-                                        <mat-option value="efectivo">
-                                            Efectivo
-                                        </mat-option>
-                                        <mat-option value="tarjeta">
-                                            Tarjeta
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-error
-                                        *ngIf="(metodoPago.invalid && (metodoPago.dirty || metodoPago.touched) && metodoPago.errors.required)">
-                                        Porfavor ingresa el campo
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-lg-12">
-                                <mat-form-field style="width:100%" appearance="outline">
-                                    <mat-label>Favor de ingresa cantidad a pagar</mat-label>
-                                    <input matInput [(ngModel)]="pagado" #pagado2="ngModel" name="pagado2"
-                                        pattern="^[0-9]+$" placeholder="Monto de compra" required>
-                                    <mat-icon matSuffix>payment</mat-icon>
-                                    <mat-error
-                                        *ngIf="(pagado2.invalid && (pagado2.dirty || pagado2.touched) && pagado2.errors.required)">
-                                        Porfavor ingresa el campo
-                                    </mat-error>
-                                    <mat-error
-                                        *ngIf="(pagado2.invalid && (pagado2.dirty || pagado2.touched) && pagado2.errors.pattern)">
-                                        Ingresa solo numeros
-                                    </mat-error>
-
-                                </mat-form-field>
-                            </div>
-                        </div>
-                    </ng-container>
-                    <ng-container *ngIf="clientes.length > 0">
-                        <h5 style="margin-top: 1%;">Seleccionar cliente</h5>
-                        <mat-form-field appearance="outline" style="width:100%">
-                            <mat-label>Buscar cliente</mat-label>
-                            <input matInput appearance="outline" placeholder="Cliente" aria-label="Cliente"
-                                [matAutocomplete]="auto" [formControl]="clienteCtrl" required>
-                            <mat-error
-                                *ngIf="(clienteCtrl.invalid && (clienteCtrl.dirty || clienteCtrl.touched) && clienteCtrl.errors.required)">
-                                Porfavor ingresa el campo
-                            </mat-error>
-                            <mat-autocomplete #auto="matAutocomplete">
-                                <mat-option *ngFor="let cliente of clientesFiltrados | async"
-                                    [value]="cliente.nombre + ' | '+ cliente.email">
-                                    <span>{{cliente.nombre}}</span> |
-                                    <small>Correo: {{cliente.email}}</small>
-                                </mat-option>
-                            </mat-autocomplete>
-                        </mat-form-field>
-                        <h5 style="margin-top: 1%;">¿Existe alguna observacion?</h5>
-                        <mat-form-field appearance="outline" style="width:100%;">
-                            <mat-label>Anotar observación</mat-label>
-                            <textarea matInput cols="20" rows="3" #input appearance="outline"
-                                placeholder="Observaciones" [(ngModel)]="pedido.comentarios" maxlength="256"
-                                #comentarios="ngModel" name="comentarios"></textarea>
-                            <mat-hint align="start"><strong>Escribe las observaciones</strong> </mat-hint>
-                            <mat-hint align="end">{{input.value.length}} / 256</mat-hint>
-                        </mat-form-field>
-                        {{pedido.comentarios}}
-                    </ng-container>
-                    <ng-container *ngIf="pedido.productos.length > 0 && pagado != 0 && !pedido.c_retoque">
-                        <button mat-raised-button (click)="abrirCrearPedido()" [disabled]="!pedidoForm.valid"
-                            color="accent">Crear
-                            pedido</button>
-                    </ng-container>
-                    <ng-container
-                        *ngIf="pedido.productos.length > 0 && pagado != null && pedido.c_retoque && clienteCtrl.value !== null">
-                        <button mat-raised-button (click)="abrirCrearPedido()" [disabled]="!pedidoForm.valid"
-                            color="accent">Crear
-                            pedido</button>
-                    </ng-container>
-                </form>
-            </div>
+                        </ng-template>
+                    </mat-tab>
+                </mat-tab-group>
+            </mat-card>
         </div>
     </div>
 </div>

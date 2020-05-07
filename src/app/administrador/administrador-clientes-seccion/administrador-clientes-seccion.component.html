@@ -1,23 +1,20 @@
-<app-encabezado-titulo titulo="Clientes"></app-encabezado-titulo>
-<mat-tab-group class="w-100 h-100">
-    <mat-tab label="Dar de alta">
-        <ng-template matTabContent>
-            <app-clientes-alta></app-clientes-alta>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Dar de baja">
-        <ng-template matTabContent>
-            <app-clientes-baja></app-clientes-baja>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Consultar cliente">
-        <ng-template matTabContent>
-            <app-clientes-consulta></app-clientes-consulta>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Restaurar clientes eliminados">
-        <ng-template matTabContent>
-            <app-clientes-restaurar></app-clientes-restaurar>
-        </ng-template>
-    </mat-tab>
-</mat-tab-group>
+<app-cargando [cargando]="cargando.cargando" [texto]="cargando.texto"></app-cargando>
+<mat-card class="container mb-4">
+    <mat-tab-group>
+        <mat-tab label="Agregar">
+            <ng-template matTabContent>
+                <app-clientes-alta (cargandoEventoHijos)="cargandoEv($event)"></app-clientes-alta>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Administrar">
+            <ng-template matTabContent>
+                <app-clientes-administrar (cargandoEvento)="cargandoEv($event)"></app-clientes-administrar>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Restaurar">
+            <ng-template matTabContent>
+                <app-clientes-restaurar (cargandoEventoHijos)="cargandoEv($event)"></app-clientes-restaurar>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+</mat-card>

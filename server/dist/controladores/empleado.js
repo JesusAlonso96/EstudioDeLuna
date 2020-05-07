@@ -17,7 +17,7 @@ const transporter = nodemailer_1.default.createTransport({
     secure: false,
     auth: {
         user: 'j.alonso.jacl2@gmail.com',
-        pass: 'papanatas.123'
+        pass: 'papanatas.1234'
     }
 });
 exports.asignarFotografo = (req, res) => {
@@ -125,14 +125,18 @@ exports.tieneAsistenciaTrabajador = (req, res) => {
     });
 };
 exports.crearPedido = (req, res) => {
-    if (req.body.fotografo._id == undefined) {
-        req.body.fotografo = null;
-    }
     let pedidoAlta = new pedido_model_1.Pedido(req.body);
+    if (!pedidoAlta.fotografo) {
+        pedidoAlta.fotografo = null;
+    }
+    if (pedidoAlta.c_retoque)
+        pedidoAlta.status = 'En espera';
+    else
+        pedidoAlta.status = 'Finalizado';
+    pedidoAlta.usuario = res.locals.usuario;
     pedidoAlta.sucursal = res.locals.usuario.sucursal;
     pedidoAlta.save((err, pedidoGuardado) => {
         if (err) {
-            console.log(err);
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear el pedido' });
         }
         if (pedidoAlta.fotografo) {
@@ -184,8 +188,8 @@ exports.crearFoto = (req, res) => {
         }
     }).exec((err, pedidoActualizado) => {
         if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo subir la foto' });
-        return res.json(pedidoActualizado);
+            return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al subir la imagen, por favor intentalo de nuevo' });
+        return res.status(200).json(pedidoActualizado);
     });
 };
 exports.realizarVenta = (req, res) => {
@@ -553,13 +557,15 @@ exports.actualizarEstadoPedido = (req, res) => {
                     };
                     transporter.sendMail(opciones, (err, info) => {
                         if (err)
-                            res.status(422).send({ titulo: 'Error al enviar correo', detalles: 'Ocurrio un error al enviar el correo electronico, por favor intentalo de nuevo mas tarde' });
+                            return res.status(422).send({ titulo: 'Error al enviar correo', detalles: 'Ocurrio un error al enviar el correo electronico, por favor intentalo de nuevo mas tarde' });
                         console.log("Message sent: %s", info.messageId);
                         console.log("Preview URL: %s", nodemailer_1.default.getTestMessageUrl(info));
                     });
                 }
-                return res.json(pedido);
+                return res.status(200).json(pedido);
             }
+            else
+                return res.status(404).send({ titulo: 'Error al actualizar el estado del pedido', detalles: 'Ocurrio un error al actualizar el estado del pedido, posiblemente no exista.' });
         });
     });
 };
@@ -682,3 +688,4 @@ function actualizarCantidadesCaja(idCaja, cantidad, metodoPago, res) {
             break;
     }
 }
+exports.actualizarCantidadesCaja = actualizarCantidadesCaja;

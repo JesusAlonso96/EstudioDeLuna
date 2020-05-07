@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const UsuarioCtrl = __importStar(require("../controladores/usuario"));
+const middlewares_1 = require("../middlewares/middlewares");
 const multer_1 = __importDefault(require("multer"));
 const storage = multer_1.default.diskStorage({
     filename: (req, file, cb) => {
@@ -23,43 +24,38 @@ const storage = multer_1.default.diskStorage({
 }), upload = multer_1.default({ storage: storage });
 const rutasUsuario = express_1.Router();
 //get
-rutasUsuario.get('/obtenerPestanas/:rol', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.obtenerPestanas);
-rutasUsuario.get('/obtenerPedidosRealizadosPorFotografo/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerPedidosRealizadosPorFotografo);
-rutasUsuario.get('/obtenerPedidosRealizados', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.obtenerPedidosRealizados);
-rutasUsuario.get('/obtenerUsuarios', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerUsuarios);
-rutasUsuario.get('/obtenerUsuario/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.obtenerUsuario);
-rutasUsuario.get('/obtenerFotografos', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerFotografos);
-rutasUsuario.get('/obtenerPedidosVendidos/:filtro', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.obtenerPedidosVendidos);
-rutasUsuario.get('/obtenerPedidosVendidosPorFotografo/:id/:filtro', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.obtenerPedidosVendidosPorFotografo);
-rutasUsuario.get('/obtenerVentasConRetoquePorFotografo', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.obtenerVentasConRetoquePorFotografo);
+rutasUsuario.get('/obtenerPestanas/:rol', middlewares_1.autenticacionMiddleware, UsuarioCtrl.obtenerPestanas);
+rutasUsuario.get('/obtenerPedidosRealizadosPorFotografo/:id', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.obtenerPedidosRealizadosPorFotografo);
+rutasUsuario.get('/obtenerPedidosRealizados', middlewares_1.autenticacionMiddleware, UsuarioCtrl.obtenerPedidosRealizados);
+rutasUsuario.get('/obtenerUsuarios', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.obtenerUsuarios);
+rutasUsuario.get('/obtenerUsuario/:id', middlewares_1.autenticacionMiddleware, UsuarioCtrl.obtenerUsuario);
+rutasUsuario.get('/obtenerFotografos', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.obtenerFotografos);
+rutasUsuario.get('/obtenerPedidosVendidos/:filtro', middlewares_1.autenticacionMiddleware, UsuarioCtrl.obtenerPedidosVendidos);
+rutasUsuario.get('/obtenerPedidosVendidosPorFotografo/:id/:filtro', middlewares_1.autenticacionMiddleware, UsuarioCtrl.obtenerPedidosVendidosPorFotografo);
+rutasUsuario.get('/obtenerVentasConRetoquePorFotografo', middlewares_1.autenticacionMiddleware, UsuarioCtrl.obtenerVentasConRetoquePorFotografo);
 rutasUsuario.get('/desglosarVentasConRetoquePorFotografo/:id', UsuarioCtrl.desglosarVentasConRetoquePorFotografo);
-rutasUsuario.get('/obtenerProveedores', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerProveedores);
-rutasUsuario.get('/obtenerListaProveedores', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerListaProveedores);
-rutasUsuario.get('/obtenerProductosProveedor/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerProductosProveedor);
-rutasUsuario.get('/obtenerEmpresas', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerEmpresas);
-rutasUsuario.get('/obtenerDatosEstudio', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.obtenerDatosEstudio);
-rutasUsuario.get('/obtenerCotizaciones', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerCotizaciones);
-rutasUsuario.get('/ordenesCompra', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.obtenerOrdenesCompra);
-rutasUsuario.get('/sucursales', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.obtenerSucursales);
+rutasUsuario.get('/obtenerEmpresas', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.obtenerEmpresas);
+rutasUsuario.get('/obtenerDatosEstudio', middlewares_1.autenticacionMiddleware, UsuarioCtrl.obtenerDatosEstudio);
+rutasUsuario.get('/obtenerCotizaciones', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.obtenerCotizaciones);
+rutasUsuario.get('/ordenesCompra', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.obtenerOrdenesCompra);
+rutasUsuario.get('/sucursales', middlewares_1.autenticacionMiddleware, UsuarioCtrl.obtenerSucursales);
 //post
 rutasUsuario.post('/login', UsuarioCtrl.login);
 rutasUsuario.post('/crearAsistencia/:id', UsuarioCtrl.crearAsistencia);
-rutasUsuario.post('/agregarProducto', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.agregarProducto);
-rutasUsuario.post('/agregarFamilia', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.agregarFamilia);
-rutasUsuario.post('/nuevoProveedor', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.nuevoProveedor);
-rutasUsuario.post('/agregarProductoProveedor', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.agregarProductoProveedor);
-rutasUsuario.post('/agregarEmpresa', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.nuevaEmpresa);
-rutasUsuario.post('/agregarCotizacion', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.nuevaCotizacion);
-rutasUsuario.post('/ordenCompra', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.nuevaOrdenCompra);
-rutasUsuario.post('/compra', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.registrarCompra);
+rutasUsuario.post('/agregarProducto', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.agregarProducto);
+rutasUsuario.post('/agregarFamilia', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.agregarFamilia);
+rutasUsuario.post('/agregarEmpresa', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.nuevaEmpresa);
+rutasUsuario.post('/agregarCotizacion', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.nuevaCotizacion);
+rutasUsuario.post('/ordenCompra', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.nuevaOrdenCompra);
+rutasUsuario.post('/compra', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.registrarCompra);
 //patch
-rutasUsuario.patch('/eliminarProducto/:id/:idFamilia', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.eliminarProducto);
-rutasUsuario.patch('/eliminarFamilia/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.eliminarFamilia);
+rutasUsuario.patch('/eliminarProducto/:id/:idFamilia', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.eliminarProducto);
+rutasUsuario.patch('/eliminarFamilia/:id', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.eliminarFamilia);
 rutasUsuario.patch('/recuperarContrasena/:email', UsuarioCtrl.recuperarContrasena);
-rutasUsuario.patch('/ordenCompra/:id', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.desactivarOrdenComra);
-rutasUsuario.patch('/actualizarProducto', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.actualizarProducto);
-rutasUsuario.patch('/eliminarEmpresa', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.eliminarEmpresa);
-rutasUsuario.patch('/actualizarEmpresa', UsuarioCtrl.autenticacionMiddleware, UsuarioCtrl.adminOSupervisorMiddleware, UsuarioCtrl.editarEmpresa);
+rutasUsuario.patch('/ordenCompra/:id', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.desactivarOrdenComra);
+rutasUsuario.patch('/actualizarProducto', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.actualizarProducto);
+rutasUsuario.patch('/eliminarEmpresa', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.eliminarEmpresa);
+rutasUsuario.patch('/actualizarEmpresa', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.editarEmpresa);
 rutasUsuario.patch('/generarCodigoRecuperacion', UsuarioCtrl.generarCodigoRecuperacion);
 rutasUsuario.patch('/eliminarCodigoRecuperacion', UsuarioCtrl.eliminarCodigoRecuperacion);
 exports.default = rutasUsuario;

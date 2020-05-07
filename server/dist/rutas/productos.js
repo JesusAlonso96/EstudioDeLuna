@@ -8,15 +8,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const UsuarioCtrl = __importStar(require("../controladores/usuario"));
+const middlewares_1 = require("../middlewares/middlewares");
 const ProductoCtrl = __importStar(require("../controladores/productos"));
 const rutasProductos = express_1.Router();
-rutasProductos.get('/obtenerProductos/:id', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerProductos);
-rutasProductos.get('/obtenerProductosPorCantidad/:id', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerProductosPorCantidad);
-rutasProductos.get('/obtenerProductosPorTam/:id', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerProductosPorTam);
-rutasProductos.get('/familias', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerFamilias);
-rutasProductos.get('/buscarProductoPorTam/:ancho/:alto', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.buscarProductoPorTam);
-rutasProductos.get('/obtenerFamiliasYProductos', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.obtenerFamiliasYProductos);
+rutasProductos.get('/obtenerProductos/:id', middlewares_1.autenticacionMiddleware, ProductoCtrl.obtenerProductos);
+rutasProductos.get('/obtenerProductosPorCantidad/:id', middlewares_1.autenticacionMiddleware, ProductoCtrl.obtenerProductosPorCantidad);
+rutasProductos.get('/obtenerProductosPorTam/:id', middlewares_1.autenticacionMiddleware, ProductoCtrl.obtenerProductosPorTam);
+rutasProductos.get('/familias', middlewares_1.autenticacionMiddleware, ProductoCtrl.obtenerFamilias);
+rutasProductos.get('/buscarProductoPorTam/:ancho/:alto', middlewares_1.autenticacionMiddleware, ProductoCtrl.buscarProductoPorTam);
+rutasProductos.get('/obtenerFamiliasYProductos', middlewares_1.autenticacionMiddleware, ProductoCtrl.obtenerFamiliasYProductos);
 //post
-rutasProductos.post('/buscarProducto', UsuarioCtrl.autenticacionMiddleware, ProductoCtrl.buscarProducto);
+rutasProductos.post('/buscarProducto', middlewares_1.autenticacionMiddleware, ProductoCtrl.buscarProducto);
 exports.default = rutasProductos;

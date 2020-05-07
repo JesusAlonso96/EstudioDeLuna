@@ -16,14 +16,11 @@ export class EmpleadoPedidosColaComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   parametroBusqueda: string;
-  pedidos: Pedido[];
+  pedidos: Pedido[] = [];
   listData: MatTableDataSource<any>
-  cargando: boolean;
+  cargando: boolean = false;
   displayedColumns: string[] = ['acciones', 'num_pedido', 'status', 'fecha_entrega', 'total', 'anticipo']
-  constructor(public dialog: MatDialog, private empleadoService: EmpleadoService, private autService: ServicioAutenticacionService, private toastr: ToastrService, private pedidosService: PedidosService) {
-    this.pedidos = [];
-    this.cargando = false;
-  }
+  constructor(public dialog: MatDialog, private empleadoService: EmpleadoService, private autService: ServicioAutenticacionService, private toastr: ToastrService, private pedidosService: PedidosService) { }
   ngOnInit() {
     this.obtenerPedidosEnCola();
     this.obtenerPedidosEnColaTiempoReal();
@@ -53,8 +50,8 @@ export class EmpleadoPedidosColaComponent implements OnInit {
       (pedido: Pedido) => {
         const indice = this.pedidos.indexOf(pedido);
         this.pedidos.splice(indice, 1);
-        if(pedido.fotografo._id !== this.autService.getIdUsuario()){
-          this.toastr.info(`El pedido ${pedido.num_pedido} fue tomado por ${pedido.fotografo.nombre}`, 'Pedido tomado', {closeButton:true});
+        if (pedido.fotografo._id !== this.autService.getIdUsuario()) {
+          this.toastr.info(`El pedido ${pedido.num_pedido} fue tomado por ${pedido.fotografo.nombre}`, 'Pedido tomado', { closeButton: true });
         }
       }
     );

@@ -1,18 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import moment from 'moment';
+import { NativeError, Types } from 'mongoose';
 import { Caja, ICaja } from '../modelos/caja.model';
-import { CorteCaja, ICorteCaja } from '../modelos/corte_caja.model';
 import { EmpresaCot, IEmpresaCot } from '../modelos/empresa_cot.model';
+import { Familia, IFamilia } from '../modelos/familia.model';
 import { Producto } from '../modelos/producto.model';
-import { IProductoProveedor, ProductoProveedor } from '../modelos/producto_proveedor.model';
-import { IProveedor, Proveedor } from '../modelos/proveedor.model';
 import { IUsuario, Usuario } from '../modelos/usuario.model';
 import { Venta } from '../modelos/venta.model';
-import Servidor from '../clases/servidor';
-import * as Socket from '../sockets/socket';
-import { NativeError, Types } from 'mongoose';
-import { Familia, IFamilia } from '../modelos/familia.model';
-
+import * as FuncionesSockets from '../sockets/funciones-auxiliares-sockets';
 
 export let obtenerVentasMes = (req: Request, res: Response) => {
     var fechaInicio = new Date(moment(req.params.fechaInicio).format('YYYY-MM-DD'));
@@ -326,7 +321,7 @@ export let obtenerVentasPorFamilias = (req: Request, res: Response) => {
 /* Corte de caja */
 
 export let obtenerCaja = (req: Request, res: Response) => {
-    Caja.findOne({_id: req.params.id})
+    Caja.findOne({ _id: req.params.id })
         .exec((err: any, caja: ICaja) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al obtener las cantidades', tipo: 2 });
             return res.json(caja);
@@ -339,16 +334,16 @@ export let altaUsuario = (req: Request, res: Response) => {
     usuarioAlta.sucursal = res.locals.usuario.sucursal;
     usuarioAlta.configuracion = {
         notificaciones: {
-            botonCerrar:true,
-            tiempo:2000,
-            posicion:'toast-top-right',
+            botonCerrar: true,
+            tiempo: 2000,
+            posicion: 'toast-top-right',
             barraProgreso: false
         },
         tema: 'default'
     }
     usuarioAlta.save((err, usuarioCreado) => {
         if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al guardar el usuario' });
-        obtenerNuevoElemento(usuarioCreado, res, 0);
+        FuncionesSockets.obtenerNuevoElemento(usuarioCreado, res, 0);
         return res.json({ titulo: 'Usuario guardado con exito', detalles: usuarioCreado });
     })
 }
@@ -363,7 +358,7 @@ export let cambiarPermisos = (req: Request, res: Response) => {
         })
 }
 export let obtenerUsuariosEliminados = (req: Request, res: Response) => {
-    Usuario.find({ activo: 0 , sucursal: res.locals.usuario.sucursal})
+    Usuario.find({ activo: 0, sucursal: res.locals.usuario.sucursal })
         .exec((err: any, usuariosEncontrados: IUsuario[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los usuarios eliminados' });
             return res.json(usuariosEncontrados);
@@ -375,14 +370,23 @@ export let restaurarUsuarioEliminado = (req: Request, res: Response) => {
     })
         .exec((err: any, usuarioRestaurado: IUsuario) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo restaurar el usuario' });
-            obtenerNuevoElemento(usuarioRestaurado, res, 0);
-            obtenerNuevoElemento(usuarioRestaurado, res, 3);
+            FuncionesSockets.obtenerNuevoElemento(usuarioRestaurado, res, 0);
+            FuncionesSockets.obtenerNuevoElemento(usuarioRestaurado, res, 3);
             return res.json({ titulo: 'Usuario restaurado', detalles: 'Usuario restaurado exitosmente' });
         })
 }
 export let registrarUsuario = (req: Request, res: Response) => {
     const usuario = new Usuario(req.body);
     usuario.sucursal = res.locals.usuario.sucursal;
+    usuario.configuracion = {
+        notificaciones: {
+            botonCerrar: true,
+            tiempo: 2000,
+            posicion: 'toast-top-right',
+            barraProgreso: false
+        },
+        tema: 'default'
+    }
     Usuario.findOne({ username: req.body.username })
         .exec((err: any, usuarioEncontrado: IUsuario) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo registrar el usuario' });
@@ -390,7 +394,7 @@ export let registrarUsuario = (req: Request, res: Response) => {
             else {
                 usuario.save((err: any, usuarioRegistrado: IUsuario) => {
                     if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo registrar el usuario' });
-                    obtenerNuevoElemento(usuarioRegistrado, res, 0);
+                    FuncionesSockets.obtenerNuevoElemento(usuarioRegistrado, res, 0);
                     return res.json({ titulo: 'Usuario registrado', detalles: 'Registro completado exitosamente' });
                 });
             }
@@ -402,7 +406,7 @@ export let eliminarUsuario = (req: Request, res: Response) => {
     })
         .exec((err: any, usuarioEliminado: IUsuario) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo eliminar el usuario' });
-            obtenerNuevoElemento(usuarioEliminado, res, 1);
+            FuncionesSockets.obtenerNuevoElemento(usuarioEliminado, res, 1);
             return res.json({ titulo: 'Usuario elimnado', detalles: 'Usuario eliminado exitosamente' });
         })
 }
@@ -420,113 +424,14 @@ export let editarUsuario = (req: Request, res: Response) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar el usuario' });
             Usuario.findById(usuarioActualizado._id)
                 .exec((err: NativeError, usuario: IUsuario) => {
-                    obtenerNuevoElemento(usuario, res, 2)
+                    FuncionesSockets.obtenerNuevoElemento(usuario, res, 2)
                     return res.json({ titulo: 'Usuario actualizado', detalles: 'Los datos fueron actualizados correctamente' });
                 })
 
         })
 }
 /* Modulo proveedores */
-export let editarProveedor = (req: Request, res: Response) => {
-    Proveedor.findByIdAndUpdate(req.body._id, {
-        nombre: req.body.nombre,
-        rfc: req.body.rfc,
-        email: req.body.email,
-        ciudad: req.body.ciudad,
-        estado: req.body.estado,
-        telefono: req.body.telefono,
-        direccion: req.body.direccion,
-        colonia: req.body.colonia,
-        cp: req.body.cp,
-        num_ext: req.body.num_ext,
-        num_int: req.body.num_int
-    })
-        .exec((err: any, proveedorActualizado: IProveedor) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar al proveedor' });
-            Proveedor.findById(proveedorActualizado._id)
-                .exec((err: NativeError, proveedor: IProveedor) => {
-                    obtenerNuevoElemento(proveedor, res, 5);
-                    return res.json({ titulo: 'Datos actualizados', detalles: 'Datos del proveedor actualizados correctamente' });
-                })
-        });
-}
-export let eliminarProveedor = (req: Request, res: Response) => {
-    Proveedor.findByIdAndUpdate(req.body._id, {
-        activo: 0
-    })
-        .exec((err: any, eliminado: IProveedor) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo eliminar al proveedor' });
-            obtenerNuevoElemento(eliminado, res, 7);
-            return res.json({ titulo: 'Proveedor eliminado', detalles: 'Proveedor eliminado exitosamente' });
-        })
-}
-export let restaurarProveedor = (req: Request, res: Response) => {
-    Proveedor.findByIdAndUpdate(req.body._id, {
-        activo: 1
-    })
-        .exec((err: any, proveedorActualizado: IProveedor) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo restaurar al proveedor' });
-            obtenerNuevoElemento(proveedorActualizado, res, 4);
-            obtenerNuevoElemento(proveedorActualizado, res, 6);
-            return res.json({ titulo: 'Proveedor restaurado', detalles: 'Proveedor eliminado restaurado correctamente' });
-        })
-}
-export let obtenerProveedoresEliminados = (req: Request, res: Response) => {
-    Proveedor.find({ activo: 0, sucursal: res.locals.usuario.sucursal })
-        .exec((err: any, usuariosEncontrados: IProveedor) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los proveedores eliminados' });
-            return res.json(usuariosEncontrados);
-        });
-}
-export let eliminarProductoProveedor = (req: Request, res: Response) => {
-    ProductoProveedor.findByIdAndUpdate(req.body._id, {
-        activo: 0
-    })
-        .exec((err: any, eliminado: IProductoProveedor) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo eliminar el producto' });
-            if (eliminado) {
-                ProductoProveedor.find({ activo: 1, proveedor: req.body.proveedor })
-                    .exec((err, productos) => {
-                        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los productos actualizados' });
-                        return res.json(productos);
-                    })
-            }
-        });
-}
-export let editarProductoProveedor = (req: Request, res: Response) => {
-    ProductoProveedor.findByIdAndUpdate(req.body._id, {
-        nombre: req.body.nombre,
-        costo: req.body.costo,
-        detalles: req.body.detalles
-    })
-        .exec((err: any, actualizado: IProductoProveedor) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar el producto' });
-            if (actualizado) {
-                ProductoProveedor.find({ proveedor: req.body.proveedor })
-                    .exec((err, productos) => {
-                        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los productos actualizados' });
-                        return res.json(productos);
-                    })
-            }
-        });
-}
-export let obtenerProductosProveedorEliminados = (req: Request, res: Response) => {
-    ProductoProveedor.find({ activo: 0 })
-        .populate('proveedor')
-        .exec((err: any, productos: IProductoProveedor[]) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los productos eliminados' });
-            return res.json(productos);
-        })
-}
-export let restaurarProductoProveedorEliminado = (req: Request, res: Response) => {
-    ProductoProveedor.findByIdAndUpdate(req.body._id, {
-        activo: 1
-    })
-        .exec((err: any, actualizado: IProductoProveedor) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo restaurar el producto' });
-            if (actualizado) return res.json({ titulo: 'Producto restaurado', detalles: 'Producto restaurado exitosamente' });
-        })
-}
+
 /* Modulo cotizaciones */
 export let obtenerEmpresasEliminadas = (req: Request, res: Response) => {
     EmpresaCot.find({ activa: 0, sucursal: res.locals.usuario.sucursal })
@@ -564,28 +469,8 @@ export let restaurarFamiliaEliminada = (req: Request, res: Response) => {
     })
         .exec((err: any, restaurada: IFamilia) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo restaurar la familia de productos' });
-            obtenerNuevoElemento(restaurada, res, 8);
-            obtenerNuevoElemento(restaurada, res, 9);
+            FuncionesSockets.obtenerNuevoElemento(restaurada, res, 8);
+            FuncionesSockets.obtenerNuevoElemento(restaurada, res, 9);
             return res.json({ titulo: 'Familia restaurada', detalles: 'Familia restaurada exitosamente' });
         })
-}
-/* Funciones para sockets */
-function obtenerNuevoElemento(elemento: any, res: Response, tipo: number) {
-    const servidor = Servidor.instance;
-    for (let usuarioConectado of Socket.usuariosConectados.lista) {
-        if (usuarioConectado !== undefined && usuarioConectado._id != res.locals.usuario._id && usuarioConectado.rol == 2 && usuarioConectado.rol_sec == 0 && usuarioConectado.sucursal == res.locals.usuario.sucursal) {
-            switch (tipo) {
-                case 0: servidor.io.in(usuarioConectado.id).emit('nuevo-usuario', elemento); break;
-                case 1: servidor.io.in(usuarioConectado.id).emit('nuevo-usuario-eliminado', elemento); break;
-                case 2: servidor.io.in(usuarioConectado.id).emit('nuevo-usuario-editado', elemento); break;
-                case 3: servidor.io.in(usuarioConectado.id).emit('nuevo-usuario-restaurado', elemento); break;
-                case 4: servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor', elemento); break;
-                case 5: servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor-editado', elemento); break;
-                case 6: servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor-restaurado', elemento); break;
-                case 7: servidor.io.in(usuarioConectado.id).emit('nuevo-proveedor-eliminado', elemento); break;
-                case 8: servidor.io.in(usuarioConectado.id).emit('nueva-familia', elemento); break;
-                case 9: servidor.io.in(usuarioConectado.id).emit('nueva-familia-restaurada', elemento); break;
-            }
-        }
-    }
 }

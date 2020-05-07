@@ -1,8 +1,8 @@
 import { Producto } from './producto.model';
 
 export class Familia{
-    _id: String;
-    nombre: String;
+    _id: string;
+    nombre: string;
     productos: Producto[];
     constructor(){
     }

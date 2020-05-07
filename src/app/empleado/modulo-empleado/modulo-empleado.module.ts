@@ -22,7 +22,6 @@ import { EmpleadoPedidosRealizadosComponent } from '../empleado-pedidos-realizad
 import { EmpleadoPedidosComponent } from '../empleado-pedidos/empleado-pedidos.component';
 import { PedidoEstadoComponent } from '../empleado-pedidos/pedido-estado/pedido-estado.component';
 import { EmpleadoPerfilComponent } from '../empleado-perfil/empleado-perfil.component';
-import { EmpleadoPuntoVentaComponent } from '../empleado-punto-venta/empleado-punto-venta.component';
 import { EmpleadoVentaComponent, Modal } from '../empleado-venta/empleado-venta.component';
 import { ModalConfirmarCompraComponent } from '../empleado-venta/modal-confirmar-compra/modal-confirmar-compra.component';
 //modales
@@ -33,10 +32,14 @@ import { ModalGenerarTicketComponent } from '../empleado-venta/modal-generar-tic
 import { EmpleadoComponent } from '../empleado.component';
 import { MainNavEmpleadoComponent } from '../main-nav-empleado/main-nav-empleado.component';
 import { RegistroUsuarioComponent } from '../registro-usuario/registro-usuario.component';
+import { EmpleadoVentaListaProductosComponent } from '../empleado-venta/empleado-venta-lista-productos/empleado-venta-lista-productos.component';
+import { EmpleadoVentaTablaProductosAgregadosComponent } from '../empleado-venta/empleado-venta-tabla-productos-agregados/empleado-venta-tabla-productos-agregados.component';
+
 //servicios
 import { EmpleadoService } from '../servicio-empleado/empleado.service';
 import { PedidosService } from '../servicio-empleado/pedidos.service';
 import { EmpleadoRoutingModule } from './empleado-routing.module';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 
 
@@ -67,7 +70,8 @@ import { EmpleadoRoutingModule } from './empleado-routing.module';
     PedidoEstadoComponent,
     EmpleadoDashboardFotografoComponent,
     PedidosProximosComponent,
-    EmpleadoPuntoVentaComponent
+    EmpleadoVentaListaProductosComponent,
+    EmpleadoVentaTablaProductosAgregadosComponent
   ],
   imports: [
     CommonModule,
@@ -77,7 +81,8 @@ import { EmpleadoRoutingModule } from './empleado-routing.module';
     FormsModule,
     ReactiveFormsModule,
     ComunModule,
-    NgxPrintModule
+    NgxPrintModule,
+    ImageCropperModule
   ],
   exports: [
     PedidosProximosComponent

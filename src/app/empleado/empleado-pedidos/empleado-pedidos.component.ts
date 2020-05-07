@@ -5,6 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
 import { PageEvent, MatDialog } from '@angular/material';
 import { PedidoEstadoComponent } from './pedido-estado/pedido-estado.component';
+import { TemasService } from 'src/app/comun/servicios/temas.service';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 @Component({
   selector: 'app-empleado-pedidos',
   templateUrl: './empleado-pedidos.component.html',
@@ -17,7 +19,7 @@ export class EmpleadoPedidosComponent implements OnInit {
   url_fotos: string = environment.url_fotos;;
   page_size: number = 10;
   page_number: number = 1;
-  constructor(public dialog: MatDialog, private empleadoService: EmpleadoService, private toastr: ToastrService) { }
+  constructor(public dialog: MatDialog, private empleadoService: EmpleadoService, private toastr: NgToastrService, private temasService: TemasService) { }
 
   ngOnInit() {
     this.obtenerPedidos();
@@ -44,7 +46,7 @@ export class EmpleadoPedidosComponent implements OnInit {
     this.page_number = e.pageIndex + 1;
   }
   verDetalles(pedido: Pedido) {
-    this.dialog.open(PedidoEstadoComponent, { data: pedido })
+    this.dialog.open(PedidoEstadoComponent, { data: pedido, panelClass: this.temasService.obtenerClaseActiva(), disableClose: true })
   }
 
 }

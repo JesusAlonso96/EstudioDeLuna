@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { Pedido } from 'src/app/comun/modelos/pedido.model';
 import { ToastrService } from 'ngx-toastr';
@@ -6,14 +6,15 @@ import { MatDialog } from '@angular/material';
 import { SeleccionarEmpleadoComponent } from 'src/app/comun/componentes/modales/seleccionar-empleado/seleccionar-empleado.component';
 import { Usuario } from 'src/app/comun/modelos/usuario.model';
 import { environment } from '../../../../environments/environment';
+import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-pedidos-completados',
   templateUrl: './pedidos-completados.component.html',
   styleUrls: ['./pedidos-completados.component.scss']
 })
 export class PedidosCompletadosComponent implements OnInit {
+  @Output() cargandoEvento = new EventEmitter(true);
   buscar: boolean = false;
-  cargando: boolean = false;
   pedidos: Pedido[] = [];
   empleadoSeleccionado: Usuario;
   url_fotos: string = environment.url_fotos;
@@ -23,14 +24,14 @@ export class PedidosCompletadosComponent implements OnInit {
     this.obtenerPedidosRealizados();
   }
   obtenerPedidosRealizados() {
-    this.cargando = true;
+    this.cargandoEv(true,'Obteniendo pedidos...');
     this.usuarioService.obtenerPedidosRealizados().subscribe(
       (pedidos: Pedido[]) => {
-        this.cargando = false;
+        this.cargandoEv(false);
         this.pedidos = pedidos;
       },
-      (err) => {
-        this.cargando = false;
+      (err: HttpErrorResponse) => {
+        this.cargandoEv(false);
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );
@@ -45,15 +46,15 @@ export class PedidosCompletadosComponent implements OnInit {
     })
   }
   obtenerPedidosRealizadosPorFotografo(empleado: Usuario) {
-    this.cargando = true;
+    this.cargandoEv(true,'Obteniendo pedidos...');
     this.usuarioService.obtenerPedidosRealizadosPorFotografo(<string>empleado._id).subscribe(
       (pedidos: Pedido[]) => {
-        this.cargando = false;
+        this.cargandoEv(false);
         this.pedidos = pedidos;
         this.buscar = true;
       },
       (err: any) => {
-        this.cargando = false;
+        this.cargandoEv(false);
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     )
@@ -62,5 +63,7 @@ export class PedidosCompletadosComponent implements OnInit {
     this.empleadoSeleccionado = undefined;
     this.obtenerPedidosRealizados();
   }
- 
+  cargandoEv(cargando: boolean, texto?: string) {
+    this.cargandoEvento.emit({ cargando, texto: texto ? texto: '' });
+  }
 }

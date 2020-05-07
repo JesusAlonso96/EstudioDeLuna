@@ -36,6 +36,7 @@ const cajaSchema = new mongoose_1.Schema({
         ], default: []
     },
     sucursal: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal' },
+    ocupada: { type: Boolean, required: false, default: false },
     fechaRegistro: { type: Date, required: false, default: new Date(Date.now()) },
     activa: { type: Boolean, required: false, default: true }
 });

@@ -13,7 +13,6 @@ import { AdministradorComprasSeccionComponent } from './administrador-compras-se
 import { AdministradorClientesSeccionComponent } from './administrador-clientes-seccion/administrador-clientes-seccion.component';
 import { AdministradorUsuariosSeccionComponent } from './administrador-usuarios-seccion/administrador-usuarios-seccion.component';
 import { AdministradorInventarioSeccionComponent } from './administrador-inventario-seccion/administrador-inventario-seccion.component';
-import { AdministradorProveedoresSeccionComponent } from './administrador-proveedores-seccion/administrador-proveedores-seccion.component';
 import { AdministradorTableroSeccionComponent } from './administrador-tablero-seccion/administrador-tablero-seccion.component';
 import { AdministradorAyudaSeccionComponent } from './administrador-ayuda-seccion/administrador-ayuda-seccion.component';
 import { AdministradorCotizacionesSeccionComponent } from './administrador-cotizaciones-seccion/administrador-cotizaciones-seccion.component';
@@ -63,11 +62,6 @@ export const adminRoutes: Routes = [
     {
         path: 'inventarios',
         component: AdministradorInventarioSeccionComponent,
-        canActivate: [AutenticacionGuard]
-    },
-    {
-        path: 'proveedores',
-        component: AdministradorProveedoresSeccionComponent,
         canActivate: [AutenticacionGuard]
     },
     {

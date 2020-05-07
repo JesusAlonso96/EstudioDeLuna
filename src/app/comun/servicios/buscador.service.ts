@@ -22,6 +22,7 @@ import { ClienteService } from './cliente.service';
 import { NgToastrService } from './ng-toastr.service';
 import { UsuarioService } from './usuario.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ProveedoresService } from './proveedores.service';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +36,8 @@ export class BuscadorService {
     private toastr: NgToastrService,
     private almacenService: AlmacenService,
     private _snackBar: MatSnackBar,
-    private cajaService: CajaService) { }
+    private cajaService: CajaService,
+    private proveedoresService: ProveedoresService) { }
   //eliminaciones
   public confirmarEliminacionElemento(tabla: MatTableDataSource<any>, listaElementos: any[], elemento: any, nombre: string, tipo: number) {
     const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
@@ -58,7 +60,7 @@ export class BuscadorService {
   private eliminarProveedor(tabla: MatTableDataSource<Proveedor>, listaProveedores: Proveedor[], proveedor: Proveedor) {
     this.abrirSnackBar('Eliminando proveedor...', '');
     const indice = listaProveedores.indexOf(proveedor);
-    this.adminService.eliminarProveedor(proveedor).subscribe(
+    this.proveedoresService.eliminarProveedor(proveedor).subscribe(
       (eliminado: Mensaje) => {
         this.toastr.abrirToastr('exito', eliminado.titulo, eliminado.detalles);
         this.quitarElementoTabla(tabla, listaProveedores, proveedor);
@@ -170,7 +172,7 @@ export class BuscadorService {
   /*Restauracion de proveedores */
   private restaurarProveedorEliminado(tabla: MatTableDataSource<Proveedor>, listaProveedores: Proveedor[], proveedor: Proveedor) {
     this.abrirSnackBar('Restaurando proveedor...', '');
-    this.adminService.restaurarProveedor(proveedor).subscribe(
+    this.proveedoresService.restaurarProveedor(proveedor).subscribe(
       (restaurado: Mensaje) => {
         this.cerrarSnackBar();
         this.toastr.abrirToastr('exito', restaurado.titulo, restaurado.detalles);
@@ -290,7 +292,7 @@ export class BuscadorService {
   }
   private editarProveedor(tabla: MatTableDataSource<Proveedor>, listaProveedores: Proveedor[], proveedor: Proveedor, proveedorAuxiliar: Proveedor) {
     this.abrirSnackBar('Guardando cambios...', '');
-    this.adminService.editarProveedor(proveedor).subscribe(
+    this.proveedoresService.editarProveedor(proveedor).subscribe(
       (actualizado: Mensaje) => {
         this.cerrarSnackBar();
         this.toastr.abrirToastr('exito', actualizado.titulo, actualizado.detalles);

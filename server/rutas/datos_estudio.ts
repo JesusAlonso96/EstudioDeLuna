@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as DatosCtrl from '../controladores/datos_estudio';
-import * as UsuarioCtrl from '../controladores/usuario';
+import { autenticacionMiddleware } from '../middlewares/middlewares';
 import multer from 'multer';
 import crypto from 'crypto';
 const storage = multer.diskStorage({
@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 const rutasDatos = Router();
 
 //get
-rutasDatos.get('', UsuarioCtrl.autenticacionMiddleware, DatosCtrl.obtenerDatos);
+rutasDatos.get('', autenticacionMiddleware, DatosCtrl.obtenerDatos);
 
 
 

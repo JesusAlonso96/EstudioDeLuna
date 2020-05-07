@@ -1,3 +1,4 @@
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
@@ -9,7 +10,8 @@ export class TemasService {
   temas: string[] = ['default', 'tema-rojo', 'tema-azul', 'tema-verde'];
   temasActivo: boolean[] = [];
   constructor(private autenticacionService: ServicioAutenticacionService,
-    private http: HttpClient) {
+    private http: HttpClient,
+    private overlayContainer: OverlayContainer) {
     this.iniciarTemas();
   }
   public iniciarTemas() {
@@ -20,6 +22,7 @@ export class TemasService {
     this.inicializarTemas();
     this.temasActivo[this.temas.indexOf(tema)] = true;
     localStorage.setItem('tema-actual', tema);
+    this.crearContenedorSuperposicion(tema);
     this.actualizarTemaUsuario(tema);
   }
   public temaActivo(tema: string): boolean {
@@ -39,6 +42,10 @@ export class TemasService {
     }
   }
   public actualizarTemaUsuario(tema: string) {
-    return this.http.patch('/api/v1/usuarios/temas', { tema });
+    return this.http.patch('/api/v2/configuracion/temas', { tema });
+  }
+  private crearContenedorSuperposicion(tema: string) {
+    this.overlayContainer.getContainerElement().classList.remove(...this.temas)
+    this.overlayContainer.getContainerElement().classList.add(tema);
   }
 }

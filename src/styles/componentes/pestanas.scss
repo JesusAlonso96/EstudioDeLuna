@@ -1,0 +1,52 @@
+@mixin pestanas($color, $color-letra, $color-letra-activa) {
+  .mat-ink-bar {
+    display: none;
+  }
+
+  .mat-tab-header {
+    height: 90%;
+  }
+
+  .mat-tab-nav-bar,
+  .mat-tab-header {
+    border-bottom: none;
+  }
+
+  .mat-tab-label {
+    margin: 1% 1% 1% 1%;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    color: $color-letra;
+    height: 70px !important;
+    width: 70px !important;
+    transition: all 300ms linear;
+    -webkit-transition: all 300ms linear;
+    -ms-transition: all 300ms linear;
+
+    mat-icon {
+      margin-top: 2px;
+      margin-right: 10px;
+
+    }
+
+    &:hover {
+      opacity: 1;
+      color: $color-letra-activa;
+      background-color: $color;
+      -webkit-box-shadow: 0px 0px 10px -1px rgba($color, 0.75);
+      -moz-box-shadow: 0px 0px 10px -1px rgba($color, 0.75);
+      box-shadow: 0px 0px 10px -1px rgba($color, 0.75);
+    }
+  }
+
+  .mat-tab-label-active {
+    opacity: 1;
+    color: $color-letra-activa;
+    background-color: $color;
+    -webkit-box-shadow: 0px 0px 10px -1px rgba($color, 0.75);
+    -moz-box-shadow: 0px 0px 10px -1px rgba($color, 0.75);
+    box-shadow: 0px 0px 10px -1px rgba($color, 0.75);
+  }
+}

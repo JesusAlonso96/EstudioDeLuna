@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Estado } from '../../modelos/estado.model';
 import { Municipio } from '../../modelos/municipio.model';
 import { Cliente } from '../../modelos/cliente.model';
@@ -7,6 +7,8 @@ import { ClienteService } from '../../servicios/cliente.service';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material';
 import { ModalConfirmacionComponent } from '../modal-confirmacion/modal-confirmacion.component';
+import { NgForm } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-alta-cliente',
@@ -14,13 +16,14 @@ import { ModalConfirmacionComponent } from '../modal-confirmacion/modal-confirma
   styleUrls: ['./alta-cliente.component.scss']
 })
 export class AltaClienteComponent implements OnInit {
+  @ViewChild('clienteForm') clienteForm: NgForm;
+  @Output() cargandoEvento = new EventEmitter(true);
   conFactura: string = 'No';
   estados: Estado[];
   estado: Estado;
   municipios: Municipio[];
   municipio: Municipio;
   cliente: Cliente = new Cliente();
-  cargando: boolean = false;
   constructor(private estadosService: EstadosService, private clienteService: ClienteService, private toastr: ToastrService, private dialog: MatDialog) { }
 
   ngOnInit() {
@@ -66,28 +69,29 @@ export class AltaClienteComponent implements OnInit {
   registrarCliente() {
     this.cliente.fecha_registro = new Date(Date.now());
     this.cliente.contrasena = this.generarContrasena();
-    this.cargando = true;
+    this.crearVistaCargando(true, 'Registrando cliente...')
     this.clienteService.registrarCliente(this.cliente).subscribe(
       (registrado: any) => {
-        this.cargando = false;
+        this.crearVistaCargando(false);
+        this.clienteForm.resetForm();
         this.toastr.success('Cliente registrado', 'El cliente ha sido registrado exitosamente', { closeButton: true });
       },
       (err: any) => {
-        this.cargando = false;
+        this.crearVistaCargando(false);
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );
   }
   buscarMunicipios() {
     this.cliente.estado = this.estado.nombre;
-    this.cargando = true;
+    this.crearVistaCargando(true, 'Obteniendo municipios...')
     this.estadosService.obtenerMunicipios(this.estado._id).subscribe(
       (municipios) => {
-        this.cargando = false;
+        this.crearVistaCargando(false);
         this.municipios = municipios;
       },
-      (err) => {
-        this.cargando = false;
+      (err: HttpErrorResponse) => {
+        this.crearVistaCargando(false);
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     )
@@ -95,5 +99,8 @@ export class AltaClienteComponent implements OnInit {
   }
   setMunicipio() {
     this.cliente.municipio = this.municipio.nombre;
+  }
+  crearVistaCargando(cargando: boolean, texto?: string) {
+    this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
   }
 }

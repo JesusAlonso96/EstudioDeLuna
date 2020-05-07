@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
     secure: false,
     auth: {
         user: 'j.alonso.jacl2@gmail.com',
-        pass: 'papanatas.123'
+        pass: 'papanatas.1234'
     }
 })
 
@@ -118,14 +118,16 @@ export let tieneAsistenciaTrabajador = (req: Request, res: Response) => {
         });
 }
 export let crearPedido = (req: Request, res: Response) => {
-    if (req.body.fotografo._id == undefined) {
-        req.body.fotografo = null;
-    }
     let pedidoAlta = new Pedido(req.body);
+    if (!pedidoAlta.fotografo) {
+        pedidoAlta.fotografo = null;
+    }
+    if (pedidoAlta.c_retoque) pedidoAlta.status = 'En espera';
+    else pedidoAlta.status = 'Finalizado';
+    pedidoAlta.usuario = res.locals.usuario;
     pedidoAlta.sucursal = res.locals.usuario.sucursal;
     pedidoAlta.save((err: NativeError, pedidoGuardado: IPedido) => {
         if (err) {
-            console.log(err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo crear el pedido' });
         }
         if (pedidoAlta.fotografo) {
@@ -174,8 +176,8 @@ export let crearFoto = (req: Request, res: Response) => {
             foto: path
         }
     }).exec((err: NativeError, pedidoActualizado: IPedido) => {
-        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo subir la foto' });
-        return res.json(pedidoActualizado);
+        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al subir la imagen, por favor intentalo de nuevo' });
+        return res.status(200).json(pedidoActualizado);
     });
 }
 export let realizarVenta = (req: Request, res: Response) => {
@@ -442,7 +444,7 @@ export let obtenerNumPedidosEnProceso = (req: Request, res: Response) => {
         });
 }
 export let obtenerProductosPorPedido = (req: Request, res: Response) => {
-    Pedido.findById(req.params.id)
+    Pedido.findById(req.params.id) 
         .populate('productos')
         .exec((err: NativeError, pedido: IPedido) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al obtener los productos' });
@@ -534,13 +536,13 @@ export let actualizarEstadoPedido = (req: Request, res: Response) => {
 
                         }
                         transporter.sendMail(opciones, (err: Error | null, info: any) => {
-                            if (err) res.status(422).send({ titulo: 'Error al enviar correo', detalles: 'Ocurrio un error al enviar el correo electronico, por favor intentalo de nuevo mas tarde' });
+                            if (err) return res.status(422).send({ titulo: 'Error al enviar correo', detalles: 'Ocurrio un error al enviar el correo electronico, por favor intentalo de nuevo mas tarde' });
                             console.log("Message sent: %s", info.messageId);
                             console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
                         })
                     }
-                    return res.json(pedido);
-                }
+                    return res.status(200).json(pedido);
+                } else return res.status(404).send({ titulo: 'Error al actualizar el estado del pedido', detalles: 'Ocurrio un error al actualizar el estado del pedido, posiblemente no exista.' });
             });
     });
 }
@@ -620,7 +622,7 @@ export let recepcionistaMiddleware = (req: Request, res: Response, next: NextFun
     }
 }
 /* Funciones auxiliares */
-function actualizarCantidadesCaja(idCaja: string, cantidad: number, metodoPago: string, res: Response) {
+export function actualizarCantidadesCaja(idCaja: string, cantidad: number, metodoPago: string, res: Response) {
     let cantidadSuma = cantidad;
     switch (metodoPago) {
         case 'efectivo':

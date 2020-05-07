@@ -1,8 +1,4 @@
-<div *ngIf="cargando" class="cargando ">
-    <mat-spinner class="spinner"></mat-spinner>
-    <h3>Asignando pedido...</h3>
-</div>
-<app-encabezado-titulo titulo="Tablero principal"></app-encabezado-titulo>
+<app-cargando [cargando]="cargando" texto="Cargando pedidos..."></app-cargando>
 <div class="container-fluid margin-top">
     <div class="row principal">
         <div class="col-lg-3 col-md-6">

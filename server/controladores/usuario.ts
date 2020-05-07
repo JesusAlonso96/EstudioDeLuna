@@ -1,29 +1,28 @@
 import * as bcrypt from 'bcrypt';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import { NativeError, Types } from 'mongoose';
+import nodemailer from 'nodemailer';
 import Servidor from '../clases/servidor';
 import { environment } from '../global/environment';
+import { Almacen, IAlmacen } from '../modelos/almacen.model';
 import { Asistencia, IAsistencia } from '../modelos/asistencia.model';
+import { Caja, ICaja } from '../modelos/caja.model';
+import { Compra, ICompra } from '../modelos/compra.model';
 import { Cotizacion, ICotizacion } from '../modelos/cotizacion.model';
 import { DatosEstudio, IDatosEstudio } from '../modelos/datos_estudio.model';
 import { EmpresaCot, IEmpresaCot } from '../modelos/empresa_cot.model';
 import { Familia, IFamilia } from '../modelos/familia.model';
+import { IOrdenCompra, OrdenCompra } from '../modelos/orden_compra.model';
 import { IPedido, Pedido } from '../modelos/pedido.model';
 import { IPestana, Pestana } from '../modelos/pestana.model';
 import { IProducto, Producto } from '../modelos/producto.model';
-import { IProductoProveedor, ProductoProveedor } from '../modelos/producto_proveedor.model';
-import { IProveedor, Proveedor } from '../modelos/proveedor.model';
+import { ProductoProveedor } from '../modelos/producto_proveedor.model';
+import { ISucursal, Sucursal } from '../modelos/sucursal.model';
 import { IUsuario, Usuario } from '../modelos/usuario.model';
 import { IVenta, Venta } from '../modelos/venta.model';
 import * as Socket from '../sockets/socket';
-import nodemailer from 'nodemailer';
-import { OrdenCompra, IOrdenCompra } from '../modelos/orden_compra.model';
-import { Compra, ICompra } from '../modelos/compra.model';
-import { Almacen, IAlmacen } from '../modelos/almacen.model';
-import { Caja, ICaja } from '../modelos/caja.model';
-import { Sucursal, ISucursal } from '../modelos/sucursal.model';
 
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -391,62 +390,8 @@ export let desglosarVentasConRetoquePorFotografo = (req: Request, res: Response)
             return res.json(ventas);
         })
 }
-/* Modulo proveedores */
-export let nuevoProveedor = (req: Request, res: Response) => {
-    const proveedor = new Proveedor(req.body);
-    proveedor.save((err: NativeError, registrado: IProveedor) => {
-        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo registrar al proveedor' });
-        obtenerNuevoElementoAdminOSupervisor(registrado, res, 0);
-        return res.json({ titulo: 'Proveedor registrado', detalles: 'El proveedor fue registrado exitosamente' });
-    });
-}
-export let obtenerProveedores = (req: Request, res: Response) => {
-    Proveedor.find({ activo: 1 })
-        .exec((err: NativeError, proveedores: IProveedor[]) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo obtener la lista de proveedores' });
-            return res.json(proveedores);
-        })
-}
-export let agregarProductoProveedor = (req: Request, res: Response) => {
-    if (!req.body.proveedor) {
-        return res.status(422).send({ titulo: 'Error', detalles: 'Debes elegir un proveedor' });
-    }
-    const producto = new ProductoProveedor(req.body);
-    producto.save((err: NativeError, productoGuardado: IProductoProveedor) => {
-        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar el producto' });
-        if (productoGuardado) {
-            Proveedor.findByIdAndUpdate(productoGuardado.proveedor._id, {
-                $push: {
-                    productos: productoGuardado
-                }
-            })
-                .exec((err: NativeError, proveedorActualizado: IProveedor) => {
-                    if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar el producto' });
-                    if (proveedorActualizado) return res.json({ titulo: 'Producto guardado', detalles: 'Producto guardado exitosamente' });
-                })
-        }
-    });
-}
-export let obtenerListaProveedores = (req: Request, res: Response) => {
-    Proveedor.find({ activo: 1 }, { rfc: 0, email: 0, ciudad: 0, estado: 0, telefono: 0, direccion: 0, colonia: 0, cp: 0, num_ext: 0, num_int: 0, activo: 0, __v: 0 })
-        .exec((err: NativeError, listaProveedores: IProveedor[]) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo obtener la lista de proveedores' });
-            let lista = [];
-            for (let proveedor of listaProveedores) {
-                if (proveedor.productos.length > 0) {
-                    lista.push(proveedor);
-                }
-            }
-            return res.json(lista);
-        });
-}
-export let obtenerProductosProveedor = (req: Request, res: Response) => {
-    ProductoProveedor.find({ proveedor: req.params.id, activo: 1 })
-        .exec((err: NativeError, productos: IProductoProveedor[]) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los productos' });
-            return res.json(productos);
-        });
-}
+
+
 /* Modulo cotizaciones */
 export let obtenerEmpresas = (req: Request, res: Response) => {
     EmpresaCot.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
@@ -650,47 +595,11 @@ export let obtenerSucursales = (req: Request, res: Response) => {
 /* Modulo de configuracion */
 
 /* Middlewares */
-export let autenticacionMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
-    if (token) {
-        const usuario: IUsuario = parseToken(token);
-        Usuario.findById(usuario.id, (err: NativeError, usuarioEncontrado: IUsuario) => {
-            if (usuarioEncontrado) {
-                res.locals.usuario = usuarioEncontrado;
-                next();
-            } else {
-                return res.status(422).send({ titulo: 'No autorizado', detalles: 'Necesitar iniciar sesion para tener acceso' })
-            }
-        });
-    } else {
-        return res.status(422).send({ titulo: 'No autorizado', detalles: 'Necesitar iniciar sesion para tener acceso' })
-    }
-}
-export let adminORootMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    if ((res.locals.usuario.rol == 2 && res.locals.usuario.rol_sec == 0) || (res.locals.usuario.rol == 3)) {
-        next();
-    } else {
-        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' })
-    }
-}
-export let adminOSupervisorMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    if ((res.locals.usuario.rol == 2 && res.locals.usuario.rol_sec == 0) || (res.locals.usuario.rol == 1 && res.locals.usuario.rol_sec == 0)) {
-        next();
-    } else {
-        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' })
-    }
-}
-export let adminOSupervisorORecepcionistaMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    if ((res.locals.usuario.rol == 2 && res.locals.usuario.rol_sec == 0) || (res.locals.usuario.rol == 1 && res.locals.usuario.rol_sec == 0) || (res.locals.usuario.rol == 0 && res.locals.usuario.rol_sec == 2)) {
-        next();
-    } else {
-        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' })
-    }
-}
+
+
+
 /* Funciones auxiliares */
-function parseToken(token: any) {
-    return <IUsuario>jwt.verify(token.split(' ')[1], environment.SECRET);
-}
+
 export function encriptarContrasena(contrasena: string) {
     bcrypt.genSalt(10, function (err, salt) {
         bcrypt.hash(contrasena, salt, function (err, hash) {

@@ -25,7 +25,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 //modulos de componentes
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -36,6 +35,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PaginadorTraductor } from './pipes/paginador-translate';
 import { MatNativeDateModule } from '@angular/material';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MAT_DATE_LOCALE } from '@angular/material';
 
 
 @NgModule({
@@ -84,12 +84,12 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatNativeDateModule,
     MatCheckboxModule,
     MatChipsModule,
-    MatMomentDateModule,
     MatSnackBarModule,
     MatStepperModule
   ],
   providers: [
-    { provide: MatPaginatorIntl, useClass: PaginadorTraductor }
+    { provide: MatPaginatorIntl, useClass: PaginadorTraductor },
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
   ],
   bootstrap: []
 })

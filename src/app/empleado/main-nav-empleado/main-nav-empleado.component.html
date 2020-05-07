@@ -1,6 +1,6 @@
-<mat-sidenav-container class="sidenav-container" *ngIf="autenticacionService.estaAutenticado()">
+<mat-sidenav-container class="sidenav-container">
   <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="false">
+    [mode]="'over'" [opened]="false">
     <mat-toolbar color="primary">Menu</mat-toolbar>
     <mat-nav-list>
       <mat-list>
@@ -13,10 +13,6 @@
           <mat-list-item routerLink="/usuario/nuevaVenta">
             <mat-icon mat-list-icon>add_a_photo</mat-icon>
             <h5 mat-line>Realizar pedido</h5>
-          </mat-list-item>
-          <mat-list-item routerLink="/usuario/punto-venta">
-            <mat-icon mat-list-icon>add_a_photo</mat-icon>
-            <h5 mat-line>Punto de venta</h5>
           </mat-list-item>
           <mat-list-item routerLink="/usuario/pedidos">
             <mat-icon mat-list-icon>search</mat-icon>
@@ -53,20 +49,34 @@
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar color="primary" class="navbar">
+    <mat-toolbar [@openClose]="navbarAbierto ? 'open' : 'closed'" color="primary" class="navbar">
       <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <span>Usuario</span>
       <span class="espaciador"></span>
-      <app-empleado-notificaciones></app-empleado-notificaciones>
-      <button class="iconos" mat-icon-button color="primary" matTooltip="Ayuda">
+      <app-empleado-notificaciones *ngIf="!esRecepcionista()"></app-empleado-notificaciones>
+      <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" style="color:#ffff" matTooltip="Temas">
+        <mat-icon>palette</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu" style="padding: 1;">
+        <button mat-menu-item class="dot mr-4 ml-2" (click)="cambiarTema('default')"></button>
+        <button mat-menu-item class="dot-rojo mr-2" (click)="cambiarTema('tema-rojo')"></button> <br>
+        <button mat-menu-item class="dot-azul mr-4 ml-2" (click)="cambiarTema('tema-azul')"></button>
+        <button mat-menu-item class="dot-verde mr-2" (click)="cambiarTema('tema-verde')"></button>
+      </mat-menu>
+      <button class="iconos" mat-icon-button color="primary" matTooltip="Ayuda" style="color:#ffff;">
         <mat-icon>help_outline</mat-icon>
       </button>
-      <button class="iconos" mat-icon-button color="primary" (click)="cerrarSesion()" matTooltip="Cerrar sesion">
+      <button class="iconos" mat-icon-button color="primary" (click)="cerrarSesion()" matTooltip="Cerrar sesion"
+        style="color: #ffff;">
         <mat-icon>exit_to_app</mat-icon>
       </button>
     </mat-toolbar>
+    <button *ngIf="ocultarNavbar()" mat-mini-fab color="primary" class="btn-toolbar"
+      (click)="toggleNavbar()">
+      <mat-icon [@rotacion]="navbarAbierto ? 'rotado' : 'inicial' ">arrow_downward</mat-icon>
+    </button>
     <ng-content></ng-content>
   </mat-sidenav-content>
 </mat-sidenav-container>

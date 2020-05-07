@@ -1,38 +1,46 @@
 @import 'variables';
-mat-radio-group{
-    display: flex;
+
+.titulo {
+  background-color: rgba($color: #000000, $alpha: 0);
+}
+
+mat-radio-group {
+  display: flex;
   flex-direction: column;
   margin: 15px 0;
 }
-mat-radio-button{
-    margin: 5px;
+
+mat-radio-button {
+  margin: 5px;
 }
-.precio{
+
+.contenedor-p {
+  overflow: hidden;
+}
+
+.precio {
   font-size: 15px;
 }
-.precio-titulo{
-  font-size: 20px;
+
+.precio-titulo {
+  //font-size: 20px;
 }
-.cancelar{
-  position: absolute;
-  right: 0;
-  margin-top:3% ;
-}
-.aceptar{
+
+.aceptar {
   position: absolute;
   left: 0;
   margin-top: 3%;
 }
-.cerrar{
-  position: absolute;
-  right: 0;
-  cursor: pointer;
-  top: 0;
+
+
+.tam-productos{
+  height: 60% !important;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
-.contenedor-productos{
-  background-color: $light-gray-color2;
-  height: 400px;
+.tam-producto{
+  height: 100% !important;
 }
-.items{
+.items {
   padding-top: 40%;
 }

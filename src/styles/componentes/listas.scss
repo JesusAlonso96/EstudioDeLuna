@@ -1,0 +1,33 @@
+@mixin listas($color) {
+  .mat-list-base {
+    padding: 0;
+
+    .mat-list-item {
+      color: #ffffff;
+      font-size: 14px;
+      width: 90%;
+      height: 42px !important;
+      border-radius: 5px 5px 5px 5px;
+      -moz-border-radius: 5px 5px 5px 5px;
+      -webkit-border-radius: 5px 5px 5px 5px;
+      transition: background-color 200ms linear;
+      -webkit-transition: background-color 200ms linear;
+      -ms-transition: background-color 200ms linear;
+
+      .mat-list-icon {
+        text-align: center;
+        font-size: 19px;
+      }
+
+      &:hover {
+        background-color: rgba(#ffffff, 0.3);
+      }
+    }
+  }
+
+  .menu-seleccionado {
+    background-color: rgba(#ffffff, 0.3) !important;
+  }
+
+
+}

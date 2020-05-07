@@ -1,0 +1,74 @@
+@import 'variables';
+
+@mixin iconos {
+  .icono-exito {
+    color: #ffffff;
+    background-color: $success;
+    transition: all 100ms ease;
+
+    &:hover {
+      transform: scale(1);
+      animation: pulse 2s infinite;
+    }
+  }
+
+  .icono-error {
+    color: #ffffff;
+    background-color: $danger;
+    transition: all 100ms ease;
+
+    &:hover {
+      transform: scale(1);
+      animation: pulse 2s infinite;
+    }
+  }
+
+  .icono-info {
+    color: #ffffff;
+    background-color: $info;
+    transition: all 100ms ease;
+
+    &:hover {
+      transform: scale(1);
+      animation: pulse 2s infinite;
+    }
+  }
+
+  .icono-advertencia {
+    color: #ffffff;
+    background-color: $warn;
+    transition: all 100ms ease;
+
+    &:hover {
+      transform: scale(1);
+      animation: pulse 2s infinite;
+    }
+  }
+
+  .icono-estado-activo {
+    font-size: 14px;
+    color: $success;
+  }
+
+  .icono-estado-inactivo {
+    font-size: 14px;
+    color: $danger;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(#555, 0.7);
+    }
+
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgba(#555, 0);
+    }
+
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(#555, 0);
+    }
+  }
+}

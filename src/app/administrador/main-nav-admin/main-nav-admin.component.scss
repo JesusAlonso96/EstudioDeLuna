@@ -1,70 +1,82 @@
 @import 'variables';
 
+
 .sidenav-container {
   height: 100%;
 }
 
-.sidenav {
-  width: 265px;
- overflow-y: hidden;
+mat-sidenav-content {
+  .opciones {
+    background: inherit;
+    display: grid;
+    position: sticky;
+    z-index: 2;
+    top: 2%;
+    left: 1%;
+    width: 50px !important;
+
+    button {
+      background-color: #ffffff;
+      color: #555;
+      position: sticky;
+      left: 1%;
+      transition: all 100ms linear;
+      -webkit-transition: all 100ms linear;
+      -ms-transition: all 100ms linear;
+
+      &:hover {
+        -webkit-box-shadow: -1px 0px 13px 3px rgba(#555, 0.75);
+        -moz-box-shadow: -1px 0px 13px 3px rgba(#555, 0.75);
+        box-shadow: -1px 0px 13px 3px rgba(#555, 0.75);
+      }
+    }
+
+
+  }
+
+
 }
 
-.mat-toolbar.mat-primary {
-  position: sticky;
-  top: 0;
-  z-index: 999999999999999;
-  -webkit-box-shadow: 0px 6px 17px 0px rgba(0,0,0,0.59);
-  -moz-box-shadow: 0px 6px 17px 0px rgba(0,0,0,0.59);
-  box-shadow: 0px 6px 17px 0px rgba(0,0,0,0.59);
+
+.navbar {
+  background: inherit;
+  display: flex;
+
+  .btn-toggle {
+    z-index: 0;
+    background-color: #ffffff;
+    color: #555;
+    margin-right: 2%;
+    transition: all 100ms linear;
+    -webkit-transition: all 100ms linear;
+    -ms-transition: all 100ms linear;
+
+    &:hover {
+      -webkit-box-shadow: -1px 0px 13px 3px rgba(#555, 0.75);
+      -moz-box-shadow: -1px 0px 13px 3px rgba(#555, 0.75);
+      box-shadow: -1px 0px 13px 3px rgba(#555, 0.75);
+    }
+  }
+
+  .btn-nav {
+    visibility: visible;
+    color: #555;
+  }
 }
-.botonesPerfil{
+
+.botonesPerfil {
   width: 108px;
   text-align: center;
   margin-bottom: 3px;
 }
-.example-tree-invisible {
-  display: none;
-}
 
-.example-tree ul,
-.example-tree li {
-  margin-top: 0;
-  margin-bottom: 0;
-  list-style-type: none;
-}
-.botonesPerfil{
+.botonesPerfil {
   width: 108px;
   text-align: center;
   margin-bottom: 3px;
 }
-.activa{
-  background-color: $light-gray-color2;
-}
-.dot{
-  height: 40px;
-  width: 40px;
-  background-color:$primary;
-  border-radius: 50%;
-  display: inline-block;
-}
-.dot-azul {
-  height: 40px;
-  width: 40px;
-  background-color: $azul;
-  border-radius: 50%;
-  display: inline-block;
-}
-.dot-rojo {
-  height: 40px;
-  width: 40px;
-  background-color: $rojo;
-  border-radius: 50%;
-  display: inline-block;
-}
-.dot-verde{
-  height: 40px;
-  width: 40px;
-  background-color: $verde;
-  border-radius: 50%;
-  display: inline-block;
+
+img {
+  color: #ffffff;
+  background-size: cover;
 }

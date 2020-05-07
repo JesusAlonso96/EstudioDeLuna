@@ -9,17 +9,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const AlmacenCtrl = __importStar(require("../controladores/almacen"));
-const UsuarioCtrl = __importStar(require("../controladores/usuario"));
+const middlewares_1 = require("../middlewares/middlewares");
 const rutasAlmacen = express_1.Router();
 /* GET */
-rutasAlmacen.get('/eliminados', UsuarioCtrl.autenticacionMiddleware, AlmacenCtrl.obtenerAlmacenesEliminados);
-rutasAlmacen.get('/:id', UsuarioCtrl.autenticacionMiddleware, AlmacenCtrl.obtenerAlmacenPorId);
-rutasAlmacen.get('', UsuarioCtrl.autenticacionMiddleware, AlmacenCtrl.obtenerAlmacenes);
+rutasAlmacen.get('/eliminados', middlewares_1.autenticacionMiddleware, AlmacenCtrl.obtenerAlmacenesEliminados);
+rutasAlmacen.get('/:id', middlewares_1.autenticacionMiddleware, AlmacenCtrl.obtenerAlmacenPorId);
+rutasAlmacen.get('', middlewares_1.autenticacionMiddleware, AlmacenCtrl.obtenerAlmacenes);
 /* POST */
-rutasAlmacen.post('', UsuarioCtrl.autenticacionMiddleware, AlmacenCtrl.nuevoAlmacen);
+rutasAlmacen.post('', middlewares_1.autenticacionMiddleware, AlmacenCtrl.nuevoAlmacen);
 /* PUT */
-rutasAlmacen.put('/:id', UsuarioCtrl.autenticacionMiddleware, AlmacenCtrl.editarAlmacen);
+rutasAlmacen.put('/:id', middlewares_1.autenticacionMiddleware, AlmacenCtrl.editarAlmacen);
 /* PATCH */
-rutasAlmacen.patch('/:id/restauracion', UsuarioCtrl.autenticacionMiddleware, AlmacenCtrl.restaurar);
-rutasAlmacen.patch('/:id/eliminar', UsuarioCtrl.autenticacionMiddleware, AlmacenCtrl.eliminarAlmacen);
+rutasAlmacen.patch('/:id/restauracion', middlewares_1.autenticacionMiddleware, AlmacenCtrl.restaurar);
+rutasAlmacen.patch('/:id/eliminar', middlewares_1.autenticacionMiddleware, AlmacenCtrl.eliminarAlmacen);
 exports.default = rutasAlmacen;

@@ -13,6 +13,7 @@ export class HistorialEgresoIngreso {
     constructor() { }
 }
 export class Caja {
+    id: number;
     _id: string;
     cantidadTotal: number;
     cantidadEfectivo: number;

@@ -14,7 +14,6 @@ import { EmpleadoPedidosProcesoComponent } from '../empleado-pedidos-proceso/emp
 import { EmpleadoPedidosColaComponent } from '../empleado-pedidos-cola/empleado-pedidos-cola.component';
 import { EmpleadoPedidosComponent } from '../empleado-pedidos/empleado-pedidos.component';
 import { EmpleadoDashboardFotografoComponent } from '../empleado-dashboard-fotografo/empleado-dashboard-fotografo.component';
-import { EmpleadoPuntoVentaComponent } from '../empleado-punto-venta/empleado-punto-venta.component';
 
 
 
@@ -27,7 +26,6 @@ export const empleadoRoutes: Routes = [
     { path: 'pedidos-proceso', component: EmpleadoPedidosProcesoComponent },
     { path: 'pedidos-cola', component: EmpleadoPedidosColaComponent },
     { path: 'pedidos', component: EmpleadoPedidosComponent },
-    { path: 'punto-venta', component: EmpleadoPuntoVentaComponent }
 
 
 ]

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Proveedor } from 'src/app/comun/modelos/proveedor.model';
 import { MatDialogRef } from '@angular/material';
-import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { ToastrService } from 'ngx-toastr';
+import { Proveedor } from 'src/app/comun/modelos/proveedor.model';
+import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service';
 
 @Component({
   selector: 'app-seleccionar-proveedor',
@@ -14,14 +14,15 @@ export class SeleccionarProveedorComponent implements OnInit {
   cargando: boolean = false;
   seleccionados: boolean[] = [];
   seleccionado: Proveedor;
-  constructor(public dialogRef: MatDialogRef<SeleccionarProveedorComponent>, private usuarioService: UsuarioService, private toastr: ToastrService) { }
+  constructor(public dialogRef: MatDialogRef<SeleccionarProveedorComponent>, 
+    private proveedoresService: ProveedoresService, private toastr: ToastrService) { }
 
   ngOnInit() {
     this.obtenerProveedores();
   }
   obtenerProveedores() {
     this.cargando = true;
-    this.usuarioService.obtenerProveedores().subscribe(
+    this.proveedoresService.obtenerProveedores().subscribe(
       (proveedores: Proveedor[]) => {
         this.cargando = false;
         this.proveedores = proveedores;

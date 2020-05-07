@@ -55,12 +55,12 @@ export class EmpleadoService {
   public crearPedido(pedido: Pedido, id?: String): Observable<any> {
     return this.http.post(`/api/v1/empleados/crearPedido/${id}`, pedido);
   }
-  public crearVenta(pedido: Pedido, cantidadACaja, metodoPago): Observable<any> {
-    return this.http.post(`/api/v1/empleados/crearVenta/${cantidadACaja}/${metodoPago}`, pedido);
+  public crearVenta(pedido: Pedido, cantidadACaja, metodoPago, idCaja: string): Observable<any> {
+    return this.http.post(`/api/v1/empleados/crearVenta/${cantidadACaja}/${metodoPago}/${idCaja}`, pedido);
   }
   //patch
-  public crearFoto(image, id): Observable<any> {
-    return this.http.patch(`/api/v1/empleados/crearImagen/${id}`, image)
+  public crearFoto(imagen: FormData, idPedido: string): Observable<any> {
+    return this.http.patch(`/api/v1/empleados/crearImagen/${idPedido}`, imagen)
   }
   public tomarPedido(idPedido: string, id: string): Observable<any> {
     return this.http.patch(`/api/v1/empleados/tomarPedido/${idPedido}/${id}`, null);
@@ -74,6 +74,7 @@ export class EmpleadoService {
   public actualizarEstadoFotografo(id): Observable<any> {
     return this.http.patch(`/api/v1/empleados/actualizarOcupado/${id}`, null)
   }
+  //borrar
   public actualizarCaja(cantidadACaja, metodoPago): Observable<any> {
     return this.http.patch(`/api/v1/empleados/actualizarCaja/${cantidadACaja}/${metodoPago}`, null)
   }

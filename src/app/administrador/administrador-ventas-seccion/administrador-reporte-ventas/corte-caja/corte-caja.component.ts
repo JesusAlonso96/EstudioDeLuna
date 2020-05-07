@@ -138,7 +138,7 @@ export class CorteCajaComponent implements OnInit {
     this.corte.caja.cantidadEfectivo = this.efectivoADejar;
     this.corte.caja.cantidadTarjetas = this.tarjetaADejar;
     this.cargandoCorte = true;
-    this.cajasService.actualizarCaja(this.corte.caja).subscribe(
+    this.cajasService.actualizarCantidadesCaja(this.corte.caja).subscribe(
       (cajaActualizada: Caja) => {
         this.cargandoCorte = false;
         this.toastr.abrirToastr('exito', 'Caja actualizada correctamente', 'Exito')

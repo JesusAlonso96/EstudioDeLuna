@@ -2,7 +2,7 @@
     <div class="row">
         <mat-card class="col-lg-8 mx-auto">
             <div *ngIf="pedidos.length == 0">
-                <h3>No hay pedidos realizados</h3>
+                <app-alerta tipo="info" tipo_bootstrap="info" mensaje="No hay pedidos realizados"></app-alerta>
             </div>
             <ul class="list-group shadow mb-4">
                 <li class="list-group-item" *ngFor="let pedido of pedidos">

@@ -1,23 +1,24 @@
-<app-encabezado-titulo titulo="Cotizaciones"></app-encabezado-titulo>
-<mat-tab-group>
-    <mat-tab label="Generar cotizacion">
-        <ng-template matTabContent>
-            <app-generar-cotizacion></app-generar-cotizacion>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Cotizaciones generadas">
-        <ng-template matTabContent>
-            <app-historial-cotizaciones></app-historial-cotizaciones>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Empresas">
-        <ng-template matTabContent>
-            <app-empresas></app-empresas>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Restaurar empresa">
-        <ng-template matTabContent>
-            <app-restaurar-empresa></app-restaurar-empresa>
-        </ng-template>
-    </mat-tab>
-</mat-tab-group>
+<mat-card class="container-fluid contenedor-cotizaciones mx-auto mb-4">
+    <mat-tab-group>
+        <mat-tab label="Generar cotizacion">
+            <ng-template matTabContent>
+                <app-generar-cotizacion></app-generar-cotizacion>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Cotizaciones generadas">
+            <ng-template matTabContent>
+                <app-historial-cotizaciones></app-historial-cotizaciones>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Empresas">
+            <ng-template matTabContent>
+                <app-empresas></app-empresas>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Restaurar empresa">
+            <ng-template matTabContent>
+                <app-restaurar-empresa></app-restaurar-empresa>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+</mat-card>

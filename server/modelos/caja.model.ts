@@ -25,6 +25,7 @@ export interface ICaja extends Document {
         }
     ];
     sucursal: ISucursal['_id'];
+    ocupada: boolean;
     fechaRegistro: Date;
     activa: boolean;
 }
@@ -49,6 +50,7 @@ const cajaSchema = new Schema({
         ], default: []
     },
     sucursal: { type: Schema.Types.ObjectId, ref: 'Sucursal' },
+    ocupada: { type: Boolean, required: false, default: false },
     fechaRegistro: { type: Date, required: false, default: new Date(Date.now()) },
     activa: { type: Boolean, required: false, default: true }
 });

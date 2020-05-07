@@ -29,6 +29,7 @@ import { AutenticacionGuard } from './autenticacion/compartido/autenticacion.gua
 import { SocketIoModule, SocketIoConfig, Socket } from 'ngx-socket-io';
 import { environment } from 'src/environments/environment';
 import { RecuperarContrasenaComponent } from './autenticacion/recuperar-contrasena/recuperar-contrasena.component';
+import { ModalEmpleadoAbrirCajaComponent } from './empleado/empleado-venta/modal-empleado-abrir-caja/modal-empleado-abrir-caja.component';
 const config: SocketIoConfig = {
   url: environment.wsUrl, options: {}
 }
@@ -40,6 +41,7 @@ const config: SocketIoConfig = {
     NavComponent,
     AutenticacionComponent,
     RecuperarContrasenaComponent,
+    ModalEmpleadoAbrirCajaComponent
   ],
   imports: [
     BrowserModule,

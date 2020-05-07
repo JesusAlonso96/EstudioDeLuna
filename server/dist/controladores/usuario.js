@@ -14,27 +14,26 @@ const bcrypt = __importStar(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const moment_1 = __importDefault(require("moment"));
 const mongoose_1 = require("mongoose");
+const nodemailer_1 = __importDefault(require("nodemailer"));
 const servidor_1 = __importDefault(require("../clases/servidor"));
 const environment_1 = require("../global/environment");
+const almacen_model_1 = require("../modelos/almacen.model");
 const asistencia_model_1 = require("../modelos/asistencia.model");
+const caja_model_1 = require("../modelos/caja.model");
+const compra_model_1 = require("../modelos/compra.model");
 const cotizacion_model_1 = require("../modelos/cotizacion.model");
 const datos_estudio_model_1 = require("../modelos/datos_estudio.model");
 const empresa_cot_model_1 = require("../modelos/empresa_cot.model");
 const familia_model_1 = require("../modelos/familia.model");
+const orden_compra_model_1 = require("../modelos/orden_compra.model");
 const pedido_model_1 = require("../modelos/pedido.model");
 const pestana_model_1 = require("../modelos/pestana.model");
 const producto_model_1 = require("../modelos/producto.model");
 const producto_proveedor_model_1 = require("../modelos/producto_proveedor.model");
-const proveedor_model_1 = require("../modelos/proveedor.model");
+const sucursal_model_1 = require("../modelos/sucursal.model");
 const usuario_model_1 = require("../modelos/usuario.model");
 const venta_model_1 = require("../modelos/venta.model");
 const Socket = __importStar(require("../sockets/socket"));
-const nodemailer_1 = __importDefault(require("nodemailer"));
-const orden_compra_model_1 = require("../modelos/orden_compra.model");
-const compra_model_1 = require("../modelos/compra.model");
-const almacen_model_1 = require("../modelos/almacen.model");
-const caja_model_1 = require("../modelos/caja.model");
-const sucursal_model_1 = require("../modelos/sucursal.model");
 const transporter = nodemailer_1.default.createTransport({
     service: 'Gmail',
     secure: false,
@@ -427,69 +426,6 @@ exports.desglosarVentasConRetoquePorFotografo = (req, res) => {
         return res.json(ventas);
     });
 };
-/* Modulo proveedores */
-exports.nuevoProveedor = (req, res) => {
-    const proveedor = new proveedor_model_1.Proveedor(req.body);
-    proveedor.save((err, registrado) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo registrar al proveedor' });
-        obtenerNuevoElementoAdminOSupervisor(registrado, res, 0);
-        return res.json({ titulo: 'Proveedor registrado', detalles: 'El proveedor fue registrado exitosamente' });
-    });
-};
-exports.obtenerProveedores = (req, res) => {
-    proveedor_model_1.Proveedor.find({ activo: 1 })
-        .exec((err, proveedores) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo obtener la lista de proveedores' });
-        return res.json(proveedores);
-    });
-};
-exports.agregarProductoProveedor = (req, res) => {
-    if (!req.body.proveedor) {
-        return res.status(422).send({ titulo: 'Error', detalles: 'Debes elegir un proveedor' });
-    }
-    const producto = new producto_proveedor_model_1.ProductoProveedor(req.body);
-    producto.save((err, productoGuardado) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar el producto' });
-        if (productoGuardado) {
-            proveedor_model_1.Proveedor.findByIdAndUpdate(productoGuardado.proveedor._id, {
-                $push: {
-                    productos: productoGuardado
-                }
-            })
-                .exec((err, proveedorActualizado) => {
-                if (err)
-                    return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar el producto' });
-                if (proveedorActualizado)
-                    return res.json({ titulo: 'Producto guardado', detalles: 'Producto guardado exitosamente' });
-            });
-        }
-    });
-};
-exports.obtenerListaProveedores = (req, res) => {
-    proveedor_model_1.Proveedor.find({ activo: 1 }, { rfc: 0, email: 0, ciudad: 0, estado: 0, telefono: 0, direccion: 0, colonia: 0, cp: 0, num_ext: 0, num_int: 0, activo: 0, __v: 0 })
-        .exec((err, listaProveedores) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo obtener la lista de proveedores' });
-        let lista = [];
-        for (let proveedor of listaProveedores) {
-            if (proveedor.productos.length > 0) {
-                lista.push(proveedor);
-            }
-        }
-        return res.json(lista);
-    });
-};
-exports.obtenerProductosProveedor = (req, res) => {
-    producto_proveedor_model_1.ProductoProveedor.find({ proveedor: req.params.id, activo: 1 })
-        .exec((err, productos) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los productos' });
-        return res.json(productos);
-    });
-};
 /* Modulo cotizaciones */
 exports.obtenerEmpresas = (req, res) => {
     empresa_cot_model_1.EmpresaCot.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
@@ -712,52 +648,7 @@ exports.obtenerSucursales = (req, res) => {
 };
 /* Modulo de configuracion */
 /* Middlewares */
-exports.autenticacionMiddleware = (req, res, next) => {
-    const token = req.headers.authorization;
-    if (token) {
-        const usuario = parseToken(token);
-        usuario_model_1.Usuario.findById(usuario.id, (err, usuarioEncontrado) => {
-            if (usuarioEncontrado) {
-                res.locals.usuario = usuarioEncontrado;
-                next();
-            }
-            else {
-                return res.status(422).send({ titulo: 'No autorizado', detalles: 'Necesitar iniciar sesion para tener acceso' });
-            }
-        });
-    }
-    else {
-        return res.status(422).send({ titulo: 'No autorizado', detalles: 'Necesitar iniciar sesion para tener acceso' });
-    }
-};
-exports.adminORootMiddleware = (req, res, next) => {
-    if ((res.locals.usuario.rol == 2 && res.locals.usuario.rol_sec == 0) || (res.locals.usuario.rol == 3)) {
-        next();
-    }
-    else {
-        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' });
-    }
-};
-exports.adminOSupervisorMiddleware = (req, res, next) => {
-    if ((res.locals.usuario.rol == 2 && res.locals.usuario.rol_sec == 0) || (res.locals.usuario.rol == 1 && res.locals.usuario.rol_sec == 0)) {
-        next();
-    }
-    else {
-        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' });
-    }
-};
-exports.adminOSupervisorORecepcionistaMiddleware = (req, res, next) => {
-    if ((res.locals.usuario.rol == 2 && res.locals.usuario.rol_sec == 0) || (res.locals.usuario.rol == 1 && res.locals.usuario.rol_sec == 0) || (res.locals.usuario.rol == 0 && res.locals.usuario.rol_sec == 2)) {
-        next();
-    }
-    else {
-        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' });
-    }
-};
 /* Funciones auxiliares */
-function parseToken(token) {
-    return jsonwebtoken_1.default.verify(token.split(' ')[1], environment_1.environment.SECRET);
-}
 function encriptarContrasena(contrasena) {
     bcrypt.genSalt(10, function (err, salt) {
         bcrypt.hash(contrasena, salt, function (err, hash) {

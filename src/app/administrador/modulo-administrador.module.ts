@@ -43,20 +43,11 @@ import { CambiarPermisosComponent } from './administrador-usuarios-seccion/usuar
 import { AdministradorClientesSeccionComponent } from './administrador-clientes-seccion/administrador-clientes-seccion.component';
 //seccion de ABD DE CLIENTES
 import { ClientesAltaComponent } from './administrador-clientes-seccion/clientes-alta/clientes-alta.component';
-import { ClientesBajaComponent } from './administrador-clientes-seccion/clientes-baja/clientes-baja.component';
-import { ClientesConsultaComponent } from './administrador-clientes-seccion/clientes-consulta/clientes-consulta.component';
+import { ClientesAdministrarComponent } from './administrador-clientes-seccion/clientes-administrar/clientes-administrar.component';
 import { ClientesRestaurarComponent } from './administrador-clientes-seccion/clientes-restaurar/clientes-restaurar.component';
 //seccion de compras
 import { AdministradorComprasSeccionComponent } from './administrador-compras-seccion/administrador-compras-seccion.component';
-//seccion de proveedores
-import { AdministradorProveedoresSeccionComponent } from './administrador-proveedores-seccion/administrador-proveedores-seccion.component';
-import { ProveedoresAltaComponent } from './administrador-proveedores-seccion/proveedores-alta/proveedores-alta.component';
-import { ProveedoresBajaComponent } from './administrador-proveedores-seccion/proveedores-baja/proveedores-baja.component';
-import { ProveedoresEditarComponent } from './administrador-proveedores-seccion/proveedores-editar/proveedores-editar.component';
-import { ProveedoresAgregarProductoComponent } from './administrador-proveedores-seccion/proveedores-agregar-producto/proveedores-agregar-producto.component';
-import { ProveedoresEditarProductoComponent } from './administrador-proveedores-seccion/proveedores-editar-producto/proveedores-editar-producto.component';
-import { ProveedoresRestaurarComponent } from './administrador-proveedores-seccion/proveedores-restaurar/proveedores-restaurar.component';
-import { ProveedoresRestaurarProductoComponent } from './administrador-proveedores-seccion/proveedores-restaurar-producto/proveedores-restaurar-producto.component';
+
 //seccion de cotizaciones
 import { AdministradorCotizacionesSeccionComponent } from './administrador-cotizaciones-seccion/administrador-cotizaciones-seccion.component';
 import { GenerarCotizacionComponent } from './administrador-cotizaciones-seccion/generar-cotizacion/generar-cotizacion.component';
@@ -92,6 +83,7 @@ import { CajaDetallesComponent } from './administrador-caja-seccion/caja-detalle
 import { CajaRestaurarComponent } from './administrador-caja-seccion/caja-restaurar/caja-restaurar.component';
 import { TemasService } from '../comun/servicios/temas.service';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { CotizacionListaProductosComponent } from './administrador-cotizaciones-seccion/generar-cotizacion/cotizacion-lista-productos/cotizacion-lista-productos.component';
 
 
 
@@ -117,10 +109,7 @@ import { ImageCropperModule } from 'ngx-image-cropper';
     AdministradorComprasSeccionComponent,
     AdministradorUsuariosSeccionComponent,
     AdministradorInventarioSeccionComponent,
-    AdministradorProveedoresSeccionComponent,
     ClientesAltaComponent,
-    ClientesBajaComponent,
-    ClientesConsultaComponent,
     ClientesRestaurarComponent,
     UsuariosAltaComponent,
     UsuariosBajaComponent,
@@ -131,13 +120,6 @@ import { ImageCropperModule } from 'ngx-image-cropper';
     PedidosColaComponent,
     PedidosVendidosComponent,
     PedidosCompletadosComponent,
-    ProveedoresAltaComponent,
-    ProveedoresBajaComponent,
-    ProveedoresEditarComponent,
-    ProveedoresAgregarProductoComponent,
-    ProveedoresEditarProductoComponent,
-    ProveedoresRestaurarComponent,
-    ProveedoresRestaurarProductoComponent,
     AdministradorAyudaSeccionComponent,
     AdministradorCotizacionesSeccionComponent,
     GenerarCotizacionComponent,
@@ -159,7 +141,9 @@ import { ImageCropperModule } from 'ngx-image-cropper';
     InventariosAlmacenesDetallesComponent,
     AdministradorCajaSeccionComponent,
     CajaDetallesComponent,
-    CajaRestaurarComponent
+    CajaRestaurarComponent,
+    ClientesAdministrarComponent,
+    CotizacionListaProductosComponent
   ],
   imports: [
     CommonModule,

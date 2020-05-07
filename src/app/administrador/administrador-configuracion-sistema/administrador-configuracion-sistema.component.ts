@@ -1,9 +1,10 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
+import { Animaciones } from 'src/app/comun/constantes/animaciones';
 import { DatosEstudio } from 'src/app/comun/modelos/datos_estudio.model';
 import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
 import { Configuracion } from 'src/app/comun/modelos/usuario.model';
@@ -11,40 +12,13 @@ import { ConfiguracionService } from 'src/app/comun/servicios/configuracion.serv
 import { DatosService } from 'src/app/comun/servicios/datos.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { environment } from '../../../environments/environment';
-import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
-
 @Component({
   selector: 'app-administrador-configuracion-sistema',
   templateUrl: './administrador-configuracion-sistema.component.html',
   styleUrls: ['./administrador-configuracion-sistema.component.scss'],
   animations: [
-    trigger('primerEstado', [
-      state('void', style({
-        transform: 'translateY(-100%)',
-        opacity: 0
-      })),
-      transition(':enter', [
-        animate(300, style({
-          transform: 'translateY(0)',
-          opacity: 1
-        }))
-      ]),
-      transition('* => void', [
-        animate(200, style({
-          transform: 'translateY(-100%)',
-          opacity: 0
-        }))
-      ])
-    ]),
-    trigger('carga', [
-      state('in', style({ opacity: 1 })),
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate(300)
-      ]),
-      transition(':leave',
-        animate(300, style({ opacity: 0 })))
-    ])
+    Animaciones.deslizarAbajo,
+    Animaciones.carga
   ]
 })
 export class AdministradorConfiguracionSistemaComponent implements OnInit, OnDestroy {
@@ -61,8 +35,7 @@ export class AdministradorConfiguracionSistemaComponent implements OnInit, OnDes
   constructor(private datosService: DatosService,
     private autenticacionService: ServicioAutenticacionService,
     private _serToastr: NgToastrService,
-    private configuracionService: ConfiguracionService,
-    private configService: ConfiguracionService) { }
+    private configuracionService: ConfiguracionService) { }
 
   ngOnDestroy(): void {
     this.onDestroy$.next(true);
@@ -76,7 +49,7 @@ export class AdministradorConfiguracionSistemaComponent implements OnInit, OnDes
   }
   obtenerConfiguracion() {
     this.cargando = true;
-    this.configService.obtenerConfiguracion().subscribe(
+    this.configuracionService.obtenerConfiguracion().subscribe(
       (configuracion: Configuracion) => {
         this.cargando = false;
         this.configuracion = configuracion;
@@ -101,7 +74,7 @@ export class AdministradorConfiguracionSistemaComponent implements OnInit, OnDes
   }
   guardarConfiguracionNotificaciones() {
     this.cargando = true;
-    this.configService.guardarConfiguracionNotificaciones(this.configuracion.notificaciones).subscribe(
+    this.configuracionService.guardarConfiguracionNotificaciones(this.configuracion.notificaciones).subscribe(
       (resp: Mensaje) => {
         this.cargando = false;
         this._serToastr.exito(resp.titulo, resp.detalles, this.configuracion.notificaciones.botonCerrar, this.configuracion.notificaciones.tiempo, this.configuracion.notificaciones.posicion, this.configuracion.notificaciones.barraProgreso);
@@ -115,11 +88,10 @@ export class AdministradorConfiguracionSistemaComponent implements OnInit, OnDes
   abrirToastr() {
     this._serToastr.default('Prueba', 'Notificacion de prueba', this.configuracion.notificaciones.botonCerrar, this.configuracion.notificaciones.tiempo, this.configuracion.notificaciones.posicion, this.configuracion.notificaciones.barraProgreso);
   }
-  actualizarUsuarioLocal(rutaLogo: any){
-   const usuario: any = this.autenticacionService.getTokenDesencriptado();
-   usuario.logo = rutaLogo;
-   localStorage.setItem('usuario_meta', JSON.stringify(usuario));
-   console.log("actualize el logo");
+  actualizarUsuarioLocal(rutaLogo: any) {
+    const usuario: any = this.autenticacionService.getTokenDesencriptado();
+    usuario.logo = rutaLogo;
+    localStorage.setItem('usuario_meta', JSON.stringify(usuario));
   }
   ////cropper
   cambioArchivoEvento(event: any) {

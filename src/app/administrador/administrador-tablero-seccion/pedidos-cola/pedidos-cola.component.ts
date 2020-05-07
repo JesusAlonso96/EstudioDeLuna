@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
 import { Pedido } from 'src/app/comun/modelos/pedido.model';
 import { EmpleadoService } from 'src/app/empleado/servicio-empleado/empleado.service';
@@ -15,11 +15,11 @@ import { DetallesProductoComponent } from 'src/app/comun/componentes/modales/det
 export class PedidosColaComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @Output() cargandoEvento = new EventEmitter(true);
   pedidos: Pedido[];
   pedidoSeleccionado: Pedido;
   empleadoSeleccionado: Usuario;
   listData: MatTableDataSource<Pedido>
-  cargando: boolean;
   displayedColumns: string[] = ['num_pedido', 'status', 'fecha_entrega', 'total', 'anticipo', 'asignar', 'verDetalles'];
   asignar: boolean = false;
 
@@ -29,16 +29,16 @@ export class PedidosColaComponent implements OnInit {
     this.obtenerPedidosEnCola();
   }
   obtenerPedidosEnCola() {
-    this.cargando = true;
+    this.cargandoEv(true,'Obteniendo pedidos...');
     this.empleadoService.obtenerPedidosEnCola().subscribe(
       (pedidos: Pedido[]) => {
-        this.cargando = false;
+        this.cargandoEv(false);
         this.pedidos = pedidos;
         console.log(this.pedidos);
         this.inicializarTabla(this.pedidos);
       },
       (err) => {
-        this.cargando = false;
+        this.cargandoEv(false);
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );
@@ -72,19 +72,22 @@ export class PedidosColaComponent implements OnInit {
     this.pedidoSeleccionado = undefined;
   }
   asignarPedidoConfirmado() {
-    this.cargando = true;
+    this.cargandoEv(true,'Asignando pedido...');
     this.empleadoService.tomarPedido(this.pedidoSeleccionado._id, <string>this.empleadoSeleccionado._id).subscribe(
       (pedidos: Pedido[]) => {
-        this.cargando = false;
+        this.cargandoEv(false);
         this.pedidos = pedidos;
         this.listData.data = this.pedidos;
         this.toastr.success('Pedido asignado exitosamente', '', { closeButton: true });
         this.eliminarAsignacion();
       },
       (err) => {
-        this.cargando = false;
+        this.cargandoEv(false);
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );
+  }
+  cargandoEv(cargando: boolean, texto?: string) {
+    this.cargandoEvento.emit({ cargando, texto: texto ? texto: '' });
   }
 }

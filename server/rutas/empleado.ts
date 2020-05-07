@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import * as UsuarioCtrl from '../controladores/usuario';
-import * as EmpleadoCtrl from '../controladores/empleado';
 import multer from 'multer';
+import * as EmpleadoCtrl from '../controladores/empleado';
+import { autenticacionMiddleware, adminOSupervisorORecepcionistaMiddleware } from '../middlewares/middlewares';
 const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         cb(null, file.originalname + '.jpeg')
@@ -14,28 +14,28 @@ const storage = multer.diskStorage({
 const rutasEmpleado = Router();
 
 //get
-rutasEmpleado.get('/fotografo/:id', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.obtenerFotografo)
-rutasEmpleado.get('/fotografos', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.obtenerFotografos)
-rutasEmpleado.get('/asignarFotografo/:fecha', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.asignarFotografo);
+rutasEmpleado.get('/fotografo/:id', autenticacionMiddleware, EmpleadoCtrl.obtenerFotografo)
+rutasEmpleado.get('/fotografos', autenticacionMiddleware, EmpleadoCtrl.obtenerFotografos)
+rutasEmpleado.get('/asignarFotografo/:fecha', autenticacionMiddleware, EmpleadoCtrl.asignarFotografo);
 rutasEmpleado.get('/asistioTrabajador/:id/:fecha', EmpleadoCtrl.tieneAsistenciaTrabajador);
 rutasEmpleado.get('/obtenerNotificaciones/:id/:fecha', EmpleadoCtrl.obtenerNotificaciones);
-rutasEmpleado.get('/numPedidos', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.numPedidosFotografo);
-rutasEmpleado.get('/obtenerPedidos', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.recepcionistaMiddleware, EmpleadoCtrl.obtenerPedidos);
+rutasEmpleado.get('/numPedidos', autenticacionMiddleware, EmpleadoCtrl.numPedidosFotografo);
+rutasEmpleado.get('/obtenerPedidos', autenticacionMiddleware, EmpleadoCtrl.recepcionistaMiddleware, EmpleadoCtrl.obtenerPedidos);
 rutasEmpleado.get('/obtenerPedidosPorEmpleado/:id', EmpleadoCtrl.obtenerPedidosPorEmpleado);
-rutasEmpleado.get('/obtenerNumPedidosPorEmpleado', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.obtenerNumPedidosPorEmpleado)
-rutasEmpleado.get('/obtenerPedidosEnProceso/:id', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.obtenerPedidosEnProceso);
-rutasEmpleado.get('/obtenerNumPedidosEnProceso', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.obtenerNumPedidosEnProceso)
-rutasEmpleado.get('/obtenerPedidosEnCola', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.obtenerPedidosEnCola);
-rutasEmpleado.get('/obtenerNumPedidosEnCola', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.obtenerNumPedidosEnCola)
+rutasEmpleado.get('/obtenerNumPedidosPorEmpleado', autenticacionMiddleware, EmpleadoCtrl.obtenerNumPedidosPorEmpleado)
+rutasEmpleado.get('/obtenerPedidosEnProceso/:id', autenticacionMiddleware, EmpleadoCtrl.obtenerPedidosEnProceso);
+rutasEmpleado.get('/obtenerNumPedidosEnProceso', autenticacionMiddleware, EmpleadoCtrl.obtenerNumPedidosEnProceso)
+rutasEmpleado.get('/obtenerPedidosEnCola', autenticacionMiddleware, EmpleadoCtrl.obtenerPedidosEnCola);
+rutasEmpleado.get('/obtenerNumPedidosEnCola', autenticacionMiddleware, EmpleadoCtrl.obtenerNumPedidosEnCola)
 rutasEmpleado.get('/obtenerProductosPorPedido/:id', EmpleadoCtrl.obtenerProductosPorPedido);
 
 //post
-rutasEmpleado.post('/crearPedido/:id', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.recepcionistaMiddleware, EmpleadoCtrl.crearPedido);
-rutasEmpleado.post('/crearVenta/:cantidadACaja/:metodoPago/:id', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.recepcionistaMiddleware, EmpleadoCtrl.realizarVenta);
+rutasEmpleado.post('/crearPedido/:id', autenticacionMiddleware, EmpleadoCtrl.recepcionistaMiddleware, EmpleadoCtrl.crearPedido);
+rutasEmpleado.post('/crearVenta/:cantidadACaja/:metodoPago/:id', autenticacionMiddleware, adminOSupervisorORecepcionistaMiddleware, EmpleadoCtrl.realizarVenta);
 
 //patch
-rutasEmpleado.patch('/crearImagen/:id', upload.single('image'), EmpleadoCtrl.crearFoto);
-rutasEmpleado.patch('/tomarPedido/:idPedido/:id', UsuarioCtrl.autenticacionMiddleware, EmpleadoCtrl.tomarPedido);
+rutasEmpleado.patch('/crearImagen/:id', upload.single('imagen'), EmpleadoCtrl.crearFoto);
+rutasEmpleado.patch('/tomarPedido/:idPedido/:id', autenticacionMiddleware, EmpleadoCtrl.tomarPedido);
 rutasEmpleado.patch('/actualizarEstado', EmpleadoCtrl.actualizarEstadoPedido);
 rutasEmpleado.patch('/actualizarAnticipo/:id/:anticipo', EmpleadoCtrl.actualizarAnticipoPedido);
 rutasEmpleado.patch('/actualizarOcupado/:id', EmpleadoCtrl.actualizarOcupado);

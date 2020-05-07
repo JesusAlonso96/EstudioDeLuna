@@ -3,6 +3,7 @@ import { Caja, ICaja } from '../modelos/caja.model';
 import { NativeError } from 'mongoose';
 import { CorteCaja, ICorteCaja } from '../modelos/corte_caja.model';
 import moment from 'moment';
+import { actualizarCantidadesCaja } from './empleado';
 
 export let obtenerCajas = (req: Request, res: Response) => {
     Caja.find({ activa: true, sucursal: res.locals.usuario.sucursal })
@@ -10,6 +11,13 @@ export let obtenerCajas = (req: Request, res: Response) => {
         .exec((err: NativeError, cajas: ICaja[]) => {
             if (err) return res.status(422).send({ titulo: 'Error al obtener', detalles: 'Ocurrio un error al obtener las cajas, por favor intentelo de nuevo mas tarde' })
             return res.json(cajas);
+        })
+}
+export let obtenerCajasDesocupadas = (req: Request, res: Response) => {
+    Caja.find({ activa: true, ocupada: false, sucursal: res.locals.usuario.sucursal }, { id: 1 })
+        .exec((err: NativeError, cajas: ICaja[]) => {
+            if (err) return res.status(422).send({ titulo: 'Error al obtener', detalles: 'Ocurrio un error al obtener las cajas, por favor intentelo de nuevo mas tarde' })
+            return res.status(200).json(cajas);
         })
 }
 export let obtenerCajasEliminadas = (req: Request, res: Response) => {
@@ -61,15 +69,34 @@ export let restaurarCaja = (req: Request, res: Response) => {
         })
 }
 export let actualizarCaja = (req: Request, res: Response) => {
-    Caja.findOneAndUpdate({ _id: req.params._id }, {
-        cantidadTotal: req.body.cantidadTotal,
-        cantidadEfectivo: req.body.cantidadEfectivo,
-        cantidadTarjetas: req.body.cantidadTarjetas
+    actualizarCantidadesCaja(req.params.id, req.body.cantidad, req.body.metodoPago, res);
+}
+export let actualizarCajaCompleta = (req: Request, res: Response)=>{
+    const caja = new Caja(req.body);
+    Caja.findByIdAndUpdate(caja._id,{
+        cantidadTotal: caja.cantidadTotal,
+        cantidadEfectivo: caja.cantidadEfectivo,
+        cantidadTarjetas: caja.cantidadTarjetas
+    }).exec((err: NativeError, cajaActualizada: ICaja)=>{
+        if (err) return res.status(422).send({ titulo: 'Error al actualizar caja', detalles: 'Ocurrio un error al actualizar la caja, por favor intentalo de nuevo mas tarde' });
+        return res.status(200).json(cajaActualizada);
     })
-        .exec((err: NativeError, cajaActualizada: ICaja) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al actualizar la caja', tipo: 2 });
-            return res.json(cajaActualizada);
-        })
+}
+export let abrirCaja = (req: Request, res: Response) => {
+    Caja.findOne({ _id: req.params.id, ocupada: true }).exec((err: NativeError, caja: ICaja | null) => {
+        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al abrir la caja' });
+        if (caja) return res.status(422).send({ titulo: 'Caja ya ocupada', detalles: 'La caja seleccionada ya esta ocupada, por favor selecciona otra' });
+        else {
+            Caja.findByIdAndUpdate(req.params.id, {
+                ocupada: true
+            }).exec((err: NativeError, cajaAbierta: ICaja | null) => {
+                if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al abrir la caja' });
+                if (cajaAbierta) return res.status(200).json({ titulo: 'Caja abierta' });
+                else return res.status(404).json({ titulo: 'Error al abrir caja', detalles: 'Ocurrio un error al abrir caja, posiblemente no exista' });
+            })
+        }
+    })
+
 }
 export let existeCorteCaja = (req: Request, res: Response) => {
     const fecha = new Date(moment(Date.now()).format('YYYY-MM-DD'));

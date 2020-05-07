@@ -1,10 +1,9 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import express, { Request, Response } from 'express';
-import mongoose, { NativeError } from 'mongoose';
+import express from 'express';
+import mongoose from 'mongoose';
 import Servidor from './clases/servidor';
 import { environment } from './global/environment';
-import {Usuario, IUsuario} from './modelos/usuario.model';
 
 const servidor = Servidor.instance;
 
