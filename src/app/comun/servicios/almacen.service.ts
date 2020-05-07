@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Almacen } from '../modelos/almacen.model';
+import { Almacen, InsumoAlmacen, Movimiento } from '../modelos/almacen.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +20,12 @@ export class AlmacenService {
   public obtenerAlmacenPorId(id: string): Observable<any> {
     return this.http.get(`/api/v1/almacenes/${id}`)
   }
+  public obtenerMovimientoAlmacenPorId(id: string, idMovimiento: string): Observable<any> {
+    return this.http.get(`/api/v1/almacenes/${id}/movimientos/${idMovimiento}`)
+  }
+  public obtenerHistorialMovimientos(): Observable<any> {
+    return this.http.get('/api/v1/almacenes/historial-movimientos');
+  }
   //post 
   public nuevoAlmacen(almacen: Almacen): Observable<any> {
     return this.http.post('/api/v1/almacenes', almacen);
@@ -34,5 +40,13 @@ export class AlmacenService {
   }
   public restaurarAlmacen(id: string): Observable<any> {
     return this.http.patch(`/api/v1/almacenes/${id}/restauracion`, null);
+  }
+
+  public actualizarInsumosAlmacen(id: string, insumos: InsumoAlmacen[]): Observable<any> {
+    return this.http.patch(`/api/v1/almacenes/${id}/insumos`, insumos);
+  }
+
+  public actualizarInsumoAlmacen(id: string, idInsumo: string, movimiento: Movimiento): Observable<any> {
+    return this.http.patch(`/api/v1/almacenes/${id}/insumos/${idInsumo}`, movimiento);
   }
 }

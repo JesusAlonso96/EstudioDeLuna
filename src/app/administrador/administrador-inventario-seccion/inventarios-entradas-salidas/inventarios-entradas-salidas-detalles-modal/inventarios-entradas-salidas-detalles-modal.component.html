@@ -1,0 +1,50 @@
+<div class="row">
+    <div class="col-lg-12">
+        <mat-nav-list style="margin-top: 0;" *ngIf="movimiento">
+            <h3 mat-subheader style="padding-bottom: 0%;">Detalles</h3>
+            <mat-list-item>
+                <mat-icon mat-list-icon >event</mat-icon>
+                <h4 mat-line>{{movimiento.fecha | date}}</h4>
+            </mat-list-item>
+            <mat-list-item>
+                <mat-icon mat-list-icon [ngClass]="esAlta(data.tipo) ? 'success' : 'danger'">swap_vert</mat-icon>
+                <h4 mat-line>{{movimiento.tipo}}</h4>
+            </mat-list-item>
+            <mat-list-item *ngIf="esAlta(data.tipo)"> 
+                <mat-icon mat-list-icon class="success">add</mat-icon>
+                <h4 mat-line>Cantidad aumentada de {{movimiento.cantidadMovimiento}} (Existencia de {{movimiento.existenciaActual}} a {{movimiento.existenciaActual + movimiento.cantidadMovimiento}})</h4>
+            </mat-list-item>
+            <mat-list-item *ngIf="!esAlta(data.tipo)"> 
+                <mat-icon mat-list-icon class="danger">remove</mat-icon>
+                <h4 mat-line>Cantidad rebajada de {{movimiento.cantidadMovimiento}} (Existencia de {{movimiento.existenciaActual}} a {{movimiento.existenciaActual - movimiento.cantidadMovimiento}})</h4>
+            </mat-list-item>
+            <mat-list-item>
+                <mat-icon mat-list-icon>store</mat-icon>
+                <h4 mat-line>{{movimiento.almacen.nombre}}</h4>
+            </mat-list-item>
+            <mat-list-item>
+                <mat-icon mat-list-icon>person</mat-icon>
+                <h4 mat-line>{{movimiento.usuario.nombre + ' ' + movimiento.usuario.ape_pat + ' ' + movimiento.usuario.ape_mat}}</h4>
+            </mat-list-item>
+            <mat-list-item>
+                <mat-icon mat-list-icon>local_offer</mat-icon>
+                <h4 mat-line>{{movimiento.insumo.nombre}}</h4>
+            </mat-list-item>
+            <mat-list-item *ngIf="movimiento.traspaso.id != null">
+                <mat-icon mat-list-icon>swap_horiz</mat-icon>
+                <h4 mat-line>Traspaso con ID {{movimiento.traspaso.id}}</h4>
+            </mat-list-item>
+            <mat-list-item *ngIf="movimiento.inventario.id != null">
+                <mat-icon mat-list-icon>inventory</mat-icon>
+                <h4 mat-line>Inventario con ID {{movimiento.inventario.id}}</h4>
+            </mat-list-item>
+            <mat-list-item>
+                <mat-icon mat-list-icon>comment</mat-icon>
+                <h4 mat-line>{{movimiento.observaciones}}</h4>
+            </mat-list-item>
+        </mat-nav-list>
+    </div>
+</div>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close tabindex="-1">Cerrar</button>
+</mat-dialog-actions>

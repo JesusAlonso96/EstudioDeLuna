@@ -88,6 +88,9 @@ export class ServicioAutenticacionService {
   public getNombreUsuario(): any {
     return this.tokenDesencriptado.nombre;
   }
+  public getIdSucursal(): any {
+    return this.tokenDesencriptado.sucursal;
+  }
   public getTipoUsuario(): any {
     return this.tokenDesencriptado.rol;
   }

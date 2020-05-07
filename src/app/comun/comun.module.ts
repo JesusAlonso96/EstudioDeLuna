@@ -62,6 +62,7 @@ import { AlmacenService } from './servicios/almacen.service';
 import { AltaAlmacenComponent } from './componentes/modales/alta-almacen/alta-almacen.component';
 import { EditarAlmacenComponent } from './componentes/modales/editar-almacen/editar-almacen.component';
 import { TemasService } from './servicios/temas.service';
+import { InventarioService } from './servicios/inventario.service';
 
 @NgModule({
     declarations: [
@@ -177,7 +178,8 @@ import { TemasService } from './servicios/temas.service';
         BuscadorService,
         DatosService,
         AlmacenService,
-        TemasService
+        TemasService,
+        InventarioService
     ],
 })
 export class ComunModule { }

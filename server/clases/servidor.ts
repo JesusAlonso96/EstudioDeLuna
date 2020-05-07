@@ -18,6 +18,9 @@ import { Municipio } from '../modelos/municipio.model';
 import rutasRoot from '../rutas/root';
 import rutasCaja from '../rutas/caja';
 import rutasConfiguracion from '../rutas/configuracion';
+import rutasInventario from '../rutas/inventario';
+import rutasSucursal from '../rutas/sucursal';
+import rutasTraspaso from '../rutas/traspaso';
 
 export default class Servidor {
     private static _instance: Servidor;
@@ -61,6 +64,9 @@ export default class Servidor {
         this.app.use('/api/v1/empleados', rutasEmpleado);
         this.app.use('/api/v1/datos', rutasDatos);
         this.app.use('/api/v1/almacenes', rutasAlmacen);
+        this.app.use('/api/v1/inventarios', rutasInventario);
+        this.app.use('/api/v1/traspasos', rutasTraspaso);
+        this.app.use('/api/v1/sucursales', rutasSucursal);
         this.app.use('/api/v2/root', rutasRoot);
         this.app.use('/api/v2/cajas', rutasCaja);
         this.app.use('/api/v2/configuracion', rutasConfiguracion);
