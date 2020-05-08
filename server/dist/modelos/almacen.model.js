@@ -38,6 +38,22 @@ const almacenSchema = new mongoose_1.Schema({
             }
         ]
     },
+    historialMov: {
+        type: [
+            {
+                fecha: { type: Date, required: false, default: new Date(Date.now()) },
+                numFactura: { type: Number, required: false },
+                traspaso: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Traspaso', required: false },
+                inventario: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Inventario', required: false },
+                insumo: { type: mongoose_1.Schema.Types.ObjectId, ref: 'ProductoProveedor', required: true },
+                usuario: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+                tipo: { type: String, required: true },
+                cantidadMovimiento: { type: Number, required: true },
+                existenciaActual: { type: Number, required: true },
+                observaciones: { type: String, required: false },
+            }
+        ]
+    },
     sucursal: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal' },
     fechaRegistro: { type: Date, required: false, default: new Date(Date.now()) },
     activo: { type: Boolean, required: true, default: true }

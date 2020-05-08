@@ -1,19 +1,20 @@
 import {Router} from 'express';
 import * as TraspasoCtrl from '../controladores/traspaso';
 import * as UsuarioCtrl from '../controladores/usuario';
+import { autenticacionMiddleware } from '../middlewares/middlewares';
 
 const rutasTraspaso = Router();
 /* GET */
-rutasTraspaso.get('/pendientes', UsuarioCtrl.autenticacionMiddleware, TraspasoCtrl.obtenerTraspasosPendientes);
+rutasTraspaso.get('/pendientes', autenticacionMiddleware, TraspasoCtrl.obtenerTraspasosPendientes);
 
 /* POST */
-rutasTraspaso.post('', UsuarioCtrl.autenticacionMiddleware, TraspasoCtrl.nuevoTraspaso);
+rutasTraspaso.post('', autenticacionMiddleware, TraspasoCtrl.nuevoTraspaso);
 
 /* PUT */
 
 /* PATCH */
-rutasTraspaso.patch('/:id/estado', UsuarioCtrl.autenticacionMiddleware, TraspasoCtrl.editarEstadoTraspaso);
-rutasTraspaso.patch('/:id', UsuarioCtrl.autenticacionMiddleware, TraspasoCtrl.eliminarTraspaso);
+rutasTraspaso.patch('/:id/estado', autenticacionMiddleware, TraspasoCtrl.editarEstadoTraspaso);
+rutasTraspaso.patch('/:id', autenticacionMiddleware, TraspasoCtrl.eliminarTraspaso);
 
 
 export default rutasTraspaso;

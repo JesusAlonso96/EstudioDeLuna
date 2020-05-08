@@ -150,7 +150,7 @@ import { InventariosEntradasSalidasDetallesModalComponent } from './administrado
     CajaDetallesComponent,
     CajaRestaurarComponent,
     ClientesAdministrarComponent,
-    CotizacionListaProductosComponent
+    CotizacionListaProductosComponent,
     InventariosInvFisicoAlmacenesComponent,
     InventariosInvFisicoHistorialComponent,
     InventariosInvFisicoAlmacenesAltaModalComponent,
