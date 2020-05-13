@@ -1,70 +1,66 @@
 <mat-toolbar *ngIf="!autServicio.estaAutenticado()" color="primary" class="toolbar"></mat-toolbar>
-<div *ngIf="!autServicio.estaAutenticado() " class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-lg-4 col-md-8 col-sm-10 align-self-center " style="margin-top: 10%;">
-            <mat-card class="loginCard sin-borde card">
-                <div class="card-body">
-                    <div class="row justify-content-center mt-4">
-                        <div class="col-12">
-                            <h2 class="text-center">Iniciar sesion</h2>
+<div class="container-fluid" *ngIf="!autServicio.estaAutenticado() " >
+    <mat-card class="loginCard sin-borde card p-0">
+        <div class="card-body">
+            <div class="row justify-content-center mt-4">
+                <div class="col-12">
+                    <h2 class="text-center">Iniciar sesion</h2>
+                </div>
+            </div>
+            <form #usuarioDatos="ngForm">
+                <div class="row justify-content-center">
+                    <div class="col-lg-9 col-md-8 mt-4">
+                        <div class="text-center">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label>Nombre de usuario</mat-label>
+                                <input matInput [(ngModel)]="datosUsuario.username" #username="ngModel"
+                                    name="username" type="text" pattern="^[a-zA-Z0-9]+$"
+                                    placeholder="Nombre de usuario" required>
+                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                                <mat-error
+                                    *ngIf="(username.invalid && (username.dirty || username.touched) && username.errors.required)">
+                                    Porfavor ingresa el campo
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="(username.invalid && (username.dirty || username.touched) && username.errors.pattern)">
+                                    Ingresa solo letras y numeros
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-9 col-md-8 mt-4">
+                        <div class="text-center">
+                            <mat-form-field style="width:100%" appearance="outline">
+                                <mat-label>Contraseña</mat-label>
+                                <input matInput [(ngModel)]="datosUsuario.contrasena" #contrasena="ngModel"
+                                    name="contrasena" type="password" placeholder="Contraseña" required>
+                                <mat-icon matSuffix>vpn_key</mat-icon>
+                                <mat-error
+                                    *ngIf="(contrasena.invalid && (contrasena.dirty || contrasena.touched) && contrasena.errors.required)">
+                                    Porfavor ingresa el campo
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                    <div class=" col-lg-9 col-md-8 mt-4 mb-4">
+                        <div class="text-center">
+                            <button mat-raised-button class="loginBoton text-center" color="primary"
+                                [disabled]="!usuarioDatos.valid" (click)="login()">
+                                <ng-container *ngIf="cargando">Iniciando sesion...</ng-container>
+                                <ng-container *ngIf="!cargando">Iniciar sesion</ng-container>
+                            </button>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <span class="recuperar">¿Olvidaste tu contraseña? </span> <br>
+                            <span class="recuperar">Recuperala <a class="aqui" (click)="abrirRecuperarContrasena()">aqui</a></span>
                         </div>
                     </div>
-                    <form #usuarioDatos="ngForm">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-9 col-md-8 mt-4">
-                                <div class="text-center">
-                                    <mat-form-field style="width:100%" appearance="outline">
-                                        <mat-label>Nombre de usuario</mat-label>
-                                        <input matInput [(ngModel)]="datosUsuario.username" #username="ngModel"
-                                            name="username" type="text" pattern="^[a-zA-Z0-9]+$"
-                                            placeholder="Nombre de usuario" required>
-                                        <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-                                        <mat-error
-                                            *ngIf="(username.invalid && (username.dirty || username.touched) && username.errors.required)">
-                                            Porfavor ingresa el campo
-                                        </mat-error>
-                                        <mat-error
-                                            *ngIf="(username.invalid && (username.dirty || username.touched) && username.errors.pattern)">
-                                            Ingresa solo letras y numeros
-                                        </mat-error>
-                                    </mat-form-field>
-                                </div>
-
-                            </div>
-                            <div class="col-lg-9 col-md-8 mt-4">
-                                <div class="text-center">
-                                    <mat-form-field style="width:100%" appearance="outline">
-                                        <mat-label>Contraseña</mat-label>
-                                        <input matInput [(ngModel)]="datosUsuario.contrasena" #contrasena="ngModel"
-                                            name="contrasena" type="password" placeholder="Contraseña" required>
-                                        <mat-icon matSuffix>vpn_key</mat-icon>
-                                        <mat-error
-                                            *ngIf="(contrasena.invalid && (contrasena.dirty || contrasena.touched) && contrasena.errors.required)">
-                                            Porfavor ingresa el campo
-                                        </mat-error>
-                                    </mat-form-field>
-                                </div>
-
-                            </div>
-                            <div class=" col-lg-9 col-md-8 mt-4 mb-4">
-                                <div class="text-center">
-                                    <button mat-raised-button class="loginBoton text-center" color="primary"
-                                        [disabled]="!usuarioDatos.valid" (click)="login()">
-                                        <ng-container *ngIf="cargando">Iniciando sesion...</ng-container>
-                                        <ng-container *ngIf="!cargando">Iniciar sesion</ng-container>
-                                    </button>
-                                </div>
-                                <hr>
-                                <div class="text-center">
-                                    <span class="recuperar">¿Olvidaste tu contraseña? </span> <br>
-                                    <span class="recuperar">Recuperala <a class="aqui" (click)="abrirRecuperarContrasena()">aqui</a></span>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
                 </div>
-            </mat-card>
-            <mat-progress-bar *ngIf="cargando" mode="indeterminate"></mat-progress-bar>
+            </form>
         </div>
-    </div>
+        <mat-progress-bar *ngIf="cargando" mode="indeterminate"></mat-progress-bar>
+    </mat-card>
 </div>

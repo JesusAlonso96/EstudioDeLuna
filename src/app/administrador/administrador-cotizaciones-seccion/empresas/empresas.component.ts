@@ -1,11 +1,12 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ToastrService } from 'ngx-toastr';
 import { BuscadorComponent } from 'src/app/comun/componentes/buscador/buscador.component';
 import { AltaEmpresaComponent } from 'src/app/comun/componentes/modales/alta-empresa/alta-empresa.component';
 import { EmpresaCot } from 'src/app/comun/modelos/empresa_cot.model';
 import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
-import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
+import { CotizacionesService } from 'src/app/comun/servicios/cotizaciones.service';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 
 @Component({
   selector: 'app-empresas',
@@ -18,21 +19,21 @@ export class EmpresasComponent implements OnInit {
   displayedColumns: string[] = ['nombre', 'contacto', 'email', 'editar', 'eliminar'];
   empresas: EmpresaCot[];
   cargando: boolean = false;
-  constructor(private dialog: MatDialog, private usuarioService: UsuarioService, private toastr: ToastrService) { }
+  constructor(private dialog: MatDialog, private cotizacionesService: CotizacionesService, private toastr: NgToastrService) { }
 
   ngOnInit() {
     this.obtenerEmpresas();
   }
   obtenerEmpresas() {
     this.cargando = true;
-    this.usuarioService.obtenerEmpresas().subscribe(
+    this.cotizacionesService.obtenerEmpresas().subscribe(
       (empresas: EmpresaCot[]) => {
         this.cargando = false;
         this.empresas = empresas;
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
@@ -46,16 +47,16 @@ export class EmpresasComponent implements OnInit {
   }
   agregarEmpresa(empresa: EmpresaCot) {
     this.cargando = true;
-    this.usuarioService.agregarEmpresa(empresa).subscribe(
+    this.cotizacionesService.agregarEmpresa(empresa).subscribe(
       (agregada: Mensaje) => {
         this.cargando = false;
-        this.toastr.success(agregada.detalles, agregada.detalles, { closeButton: true });
+        this.toastr.abrirToastr('exito', agregada.detalles, agregada.detalles);
         this.empresas.push(empresa);
         this.buscador.datosTabla.data = this.empresas;
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }

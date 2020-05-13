@@ -11,7 +11,6 @@ import { Asistencia, IAsistencia } from '../modelos/asistencia.model';
 import { Caja, ICaja } from '../modelos/caja.model';
 import { Compra, ICompra } from '../modelos/compra.model';
 import { Cotizacion, ICotizacion } from '../modelos/cotizacion.model';
-import { DatosEstudio, IDatosEstudio } from '../modelos/datos_estudio.model';
 import { EmpresaCot, IEmpresaCot } from '../modelos/empresa_cot.model';
 import { Familia, IFamilia } from '../modelos/familia.model';
 import { IOrdenCompra, OrdenCompra } from '../modelos/orden_compra.model';
@@ -49,6 +48,9 @@ export let login = (req: Request, res: Response) => {
                     const token = jwt.sign({
                         id: usuarioEncontrado._id,
                         nombre: usuarioEncontrado.nombre,
+                        ape_pat: usuarioEncontrado.ape_pat,
+                        ape_mat: usuarioEncontrado.ape_mat,
+                        correo: usuarioEncontrado.email,
                         rol: usuarioEncontrado.rol,
                         rol_sec: usuarioEncontrado.rol_sec,
                         configuracion: usuarioEncontrado.configuracion,
@@ -68,13 +70,6 @@ export let obtenerPestanas = (req: Request, res: Response) => {
         .exec((err: NativeError, pestanas: IPestana[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: `Error al obtener los módulos de ${req.params.rol}` });
             if (pestanas) return res.json(pestanas);
-        })
-}
-export let obtenerDatosEstudio = (req: Request, res: Response) => {
-    DatosEstudio.findOne()
-        .exec((err: NativeError, datos: IDatosEstudio) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los datos' });
-            return res.json(datos);
         })
 }
 export let crearAsistencia = (req: Request, res: Response) => {
@@ -393,64 +388,6 @@ export let desglosarVentasConRetoquePorFotografo = (req: Request, res: Response)
 
 
 /* Modulo cotizaciones */
-export let obtenerEmpresas = (req: Request, res: Response) => {
-    EmpresaCot.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
-        .exec((err: NativeError, empresas: IEmpresaCot[]) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las empresas' });
-            return res.json(empresas);
-        })
-}
-export let nuevaEmpresa = (req: Request, res: Response) => {
-    const nuevaEmpresa = new EmpresaCot(req.body);
-    nuevaEmpresa.sucursal = res.locals.usuario.sucursal;
-    nuevaEmpresa.save((err: NativeError, guardada: IEmpresaCot) => {
-        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la empresa' });
-        if (guardada) return res.json({ titulo: 'Empresa agregada', detalles: 'Empresa agregada exitosamente' });
-    })
-}
-export let eliminarEmpresa = (req: Request, res: Response) => {
-    EmpresaCot.findByIdAndUpdate(req.body._id, {
-        activa: 0
-    })
-        .exec((err: NativeError, eliminada: IEmpresaCot) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo eliminar la empresa' });
-            if (eliminada) return res.json({ titulo: 'Empresa eliminada', detalles: 'Empresa eliminada exitosamente' });
-        })
-}
-export let editarEmpresa = (req: Request, res: Response) => {
-    EmpresaCot.findByIdAndUpdate(req.body._id, {
-        nombre: req.body.nombre,
-        direccion: req.body.direccion,
-        contacto: req.body.contacto,
-        telefono: req.body.telefono,
-        email: req.body.email,
-        activa: req.body.activa
-    })
-        .exec((err: NativeError, actualizada: IEmpresaCot) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar la empresa' });
-            if (actualizada) return res.json({ titulo: 'Empresa actualizada', detalles: 'Empresa actualizada exitosamente' });
-        })
-}
-export let nuevaCotizacion = (req: Request, res: Response) => {
-    const cotizacion = new Cotizacion(req.body);
-    cotizacion.sucursal = res.locals.usuario.sucursal;
-    cotizacion.save((err: NativeError, guardada: ICotizacion) => {
-        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la cotizacion' });
-        if (guardada) return res.json({ titulo: 'Cotizacion guardada', detalles: 'Cotizacion guardada exitosamente' })
-    });
-}
-export let obtenerCotizaciones = (req: Request, res: Response) => {
-    Cotizacion.find({ sucursal: res.locals.usuario.sucursal }, { __v: 0 })
-        .populate('productos.producto', '-activo -caracteristicas -__v -familia -c_ad -c_r -b_n -nombre -num_fotos')
-        .populate('asesor', '-_id -__v -ape_mat -asistencia -ocupado -pedidosTomados -activo -username -contrasena -rol -rol_sec')
-        .populate('empresa', '-_id -activa -__v')
-        .populate('datos', '-_id -__v')
-        .sort({ num_cotizacion: 'desc' })
-        .exec((err: NativeError, cotizaciones: ICotizacion[]) => {
-            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la cotizacion' });
-            return res.json(cotizaciones);
-        });
-}
 
 /* Modulo de inventarios */
 export let obtenerOrdenesCompra = (req: Request, res: Response) => {

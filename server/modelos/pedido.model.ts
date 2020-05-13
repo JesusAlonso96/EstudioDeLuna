@@ -17,7 +17,13 @@ export interface IPedido extends Document {
     fecha_creacion: Date,
     fecha_entrega: Date,
     comentarios: string;
-    productos: Types.Array<IProducto>;
+    productos: [
+        {
+            producto: IProducto['_id'];
+            precioUnitario: number;
+            cantidad: number;
+        }
+    ]
     status: string;
     total: number;
     c_retoque: boolean;
@@ -36,7 +42,15 @@ const pedidoSchema = new Schema({
     fecha_creacion: { type: Date, required: true },//
     fecha_entrega: { type: Date },//
     comentarios: { type: String },//
-    productos: [{ type: Schema.Types.ObjectId, ref: 'Producto' }],//
+    productos: {
+        type: [
+            {
+                producto: { type: Schema.Types.ObjectId, ref: 'Producto' },
+                precioUnitario: { type: Number, required: true },
+                cantidad:  { type: Number, required: true },
+            }
+        ]
+    },//
     status: { type: String },
     total: { type: Number },//
     c_retoque: { type: Boolean },//

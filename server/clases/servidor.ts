@@ -9,7 +9,6 @@ import rutasEmpleado from '../rutas/empleado';
 import rutasEstados from '../rutas/estados';
 import rutasProductos from '../rutas/productos';
 import rutasUsuario from '../rutas/usuario';
-import rutasDatos from '../rutas/datos_estudio';
 import * as Socket from '../sockets/socket';
 import rutasAlmacen from '../rutas/almacen';
 import { Usuario } from '../modelos/usuario.model';
@@ -22,6 +21,7 @@ import rutasProveedores from '../rutas/proveedores';
 import rutasInventario from '../rutas/inventario';
 import rutasSucursal from '../rutas/sucursal';
 import rutasTraspaso from '../rutas/traspaso';
+import rutasCotizaciones from '../rutas/cotizaciones';
 
 export default class Servidor {
     private static _instance: Servidor;
@@ -63,7 +63,6 @@ export default class Servidor {
         this.app.use('/api/v1/estados', rutasEstados);
         this.app.use('/api/v1/productos', rutasProductos);
         this.app.use('/api/v1/empleados', rutasEmpleado);
-        this.app.use('/api/v1/datos', rutasDatos);
         this.app.use('/api/v1/almacenes', rutasAlmacen);
         this.app.use('/api/v1/inventarios', rutasInventario);
         this.app.use('/api/v1/traspasos', rutasTraspaso);
@@ -72,6 +71,7 @@ export default class Servidor {
         this.app.use('/api/v2/cajas', rutasCaja);
         this.app.use('/api/v2/configuracion', rutasConfiguracion);
         this.app.use('/api/v2/proveedores', rutasProveedores);
+        this.app.use('/api/v2/cotizaciones', rutasCotizaciones);
     }
     iniciar() {
 

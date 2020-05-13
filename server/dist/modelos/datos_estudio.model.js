@@ -8,7 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const datos_estudioSchema = new mongoose_1.Schema({
+const infoSucursalSchema = new mongoose_1.Schema({
     nombre: { type: String, required: true },
     telefono: { type: Number, required: true },
     direccion: { type: String, required: true },
@@ -16,4 +16,4 @@ const datos_estudioSchema = new mongoose_1.Schema({
     email: { type: String, required: true },
     imagen: { type: String, required: false }
 });
-exports.DatosEstudio = mongoose_1.default.model('Datos_estudio', datos_estudioSchema);
+exports.InfoSucursal = mongoose_1.default.model('InfoSucursal', infoSucursalSchema);

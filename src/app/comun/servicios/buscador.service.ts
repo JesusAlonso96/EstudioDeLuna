@@ -23,6 +23,7 @@ import { NgToastrService } from './ng-toastr.service';
 import { UsuarioService } from './usuario.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProveedoresService } from './proveedores.service';
+import { CotizacionesService } from './cotizaciones.service';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,8 @@ export class BuscadorService {
     private almacenService: AlmacenService,
     private _snackBar: MatSnackBar,
     private cajaService: CajaService,
-    private proveedoresService: ProveedoresService) { }
+    private proveedoresService: ProveedoresService,
+    private cotizacionesService: CotizacionesService) { }
   //eliminaciones
   public confirmarEliminacionElemento(tabla: MatTableDataSource<any>, listaElementos: any[], elemento: any, nombre: string, tipo: number) {
     const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
@@ -110,7 +112,7 @@ export class BuscadorService {
   /*Eliminacion de empresas */
   private eliminarEmpresa(tabla: MatTableDataSource<EmpresaCot>, listaEmpresas: EmpresaCot[], empresa: EmpresaCot) {
     this.abrirSnackBar('Eliminando empresa...', '');
-    this.usuarioService.eliminarEmpresa(empresa).subscribe(
+    this.cotizacionesService.eliminarEmpresa(empresa).subscribe(
       (eliminada: Mensaje) => {
         this.cerrarSnackBar();
         this.toastr.abrirToastr('exito', eliminada.titulo, eliminada.detalles);
@@ -378,7 +380,7 @@ export class BuscadorService {
   }
   private editarEmpresa(tabla: MatTableDataSource<EmpresaCot>, listaEmpresas: EmpresaCot[], empresa: EmpresaCot, empresaAuxiliar: EmpresaCot) {
     this.abrirSnackBar('Guardando cambios...', '');
-    this.usuarioService.actualizarEmpresa(empresa).subscribe(
+    this.cotizacionesService.actualizarEmpresa(empresa).subscribe(
       (actualizada: Mensaje) => {
         this.cerrarSnackBar();
         this.toastr.abrirToastr('exito', actualizada.titulo, actualizada.detalles);

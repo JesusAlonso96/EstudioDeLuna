@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Cliente } from 'src/app/comun/modelos/cliente.model';
 import { Familia } from 'src/app/comun/modelos/familia.model';
-import { Pedido } from 'src/app/comun/modelos/pedido.model';
+import { Pedido, ProductoPedido } from 'src/app/comun/modelos/pedido.model';
 import { Producto } from 'src/app/comun/modelos/producto.model';
 import { Usuario } from 'src/app/comun/modelos/usuario.model';
 import { ClienteService } from 'src/app/comun/servicios/cliente.service';
@@ -31,7 +31,8 @@ import { CajaService } from 'src/app/comun/servicios/caja.service';
 
 export interface DialogData {
   num: number,
-  familia: string
+  familia: string,
+  productosActuales: ProductoPedido[];
 }
 export interface DialogData2 {
   crear: boolean,
@@ -132,23 +133,29 @@ export class EmpleadoVentaComponent implements OnInit, AfterViewChecked {
     this.cargando.cargando = evento.cargando;
     this.cargando.texto = evento.texto;
   }
-  obtenerProductoAgregado(evento) {
-    this.agregarProducto(evento);
+  obtenerProductoAgregado(producto: ProductoPedido) {
+    this.agregarProducto(producto);
   }
-  agregarProducto(producto: Producto) {
-    this.pedido.total = this.pedido.total + producto.precio;
+  agregarProducto(producto: ProductoPedido) {
+    this.pedido.total = this.pedido.total + producto.precioUnitario;
     this.pedido.productos.push(producto);
     this.tablaProductos.datosProductos.data = this.pedido.productos;
     this.pedido.c_retoque = this.tieneRetoque();
     this.pedido.c_adherible = this.llevaAdherible();
   }
-  quitarProducto(producto: Producto) {
+  quitarProducto(producto: ProductoPedido) {
     const indice = this.pedido.productos.indexOf(producto);
-    this.pedido.total = this.pedido.total - this.pedido.productos[indice].precio;
+    this.pedido.total = this.pedido.total - this.pedido.productos[indice].precioUnitario;
     this.pedido.productos.splice(indice, 1);
     this.tablaProductos.datosProductos.data = this.pedido.productos;
     this.pedido.c_retoque = this.tieneRetoque();
     this.pedido.importante = false;
+  }
+  existeEnProductos(producto: ProductoPedido): boolean {
+    for (let i = 0; i < this.productos.length; i++) {
+      if (producto.producto._id == this.pedido.productos[i].producto._id) return true;
+    }
+    return false;
   }
   listaProductosValida(): boolean {
     return this.pedido.productos.length > 0 ? true : false;
@@ -201,10 +208,10 @@ export class EmpleadoVentaComponent implements OnInit, AfterViewChecked {
     );
   }
   tieneRetoque(): boolean {
-    return this.pedido.productos.find(producto => producto.c_r) ? true : false;
+    return this.pedido.productos.find(producto => producto.producto.c_r) ? true : false;
   }
   llevaAdherible(): boolean {
-    return this.pedido.productos.find(producto => producto.c_ad) ? true : false;
+    return this.pedido.productos.find(producto => producto.producto.c_ad) ? true : false;
   }
   generarFechaEntrega() {
     if (this.pedido.c_retoque) { // si tiene retoque
@@ -252,8 +259,6 @@ export class EmpleadoVentaComponent implements OnInit, AfterViewChecked {
       this.pedido.fecha_entrega = momento(this.pedido.fecha_creacion).add(15, 'm').toDate();
 
     }
-    //momento(this.pedido.fecha_creacion).locale('es').format('LLLL');
-    //momento(this.pedido.fecha_entrega).locale('es').format('LLLL');
     return true;
   }
   asignarFotografoAleatorio(num_fotografos: number, fotografos: Usuario[]) {
@@ -375,6 +380,7 @@ export class EmpleadoVentaComponent implements OnInit, AfterViewChecked {
     this.generarFechaEntrega();
     this.asignarFotografo(detallesForm, completarForm);
   }
+
 }
 
 //MODALES
@@ -390,8 +396,8 @@ export interface Error {
 export class Modal {
   buscador: boolean = false;
   productoBuscar: any;
-  productosEncontrados: Producto[] = [];
   error: Error;
+  productosPedido: ProductoPedido[] = [];
   constructor(
     public dialogRef: MatDialogRef<Modal>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData, private productoService: ProductosService) {
@@ -399,18 +405,18 @@ export class Modal {
     this.productoBuscar.num_fotos = this.data.num;
     this.productoBuscar.familia = this.data.familia;
     this.buscador = false;
+    console.log(this.data.productosActuales);
   }
   onNoClick(): void {
     this.dialogRef.close();
   }
   buscar() {
-    this.productosEncontrados = [];
     this.error = null;
     this.buscador = true;
     this.productoService.buscarProducto(this.productoBuscar).subscribe(
-      (productos) => {
-        this.productosEncontrados = productos;
+      (productos: Producto[]) => {
         this.buscador = false;
+        this.iniciarProductosPedido(productos);
       },
       (err: HttpErrorResponse) => {
         this.error = err.error;
@@ -418,4 +424,22 @@ export class Modal {
       }
     )
   }
+  agregarProducto(productoPedido: ProductoPedido) {
+   productoPedido.cantidad += 1;
+   this.dialogRef.close(productoPedido);
+  }
+  iniciarProductosPedido(productos: Producto[]) {
+    this.productosPedido = [];
+    for (let producto of productos) {
+      this.productosPedido.push(ProductoPedido.prototype.nuevoProducto(producto, 0, producto.precio));
+    }
+  }
+  existeEnProductos(producto: ProductoPedido): boolean {
+    for (let i = 0; i < this.data.productosActuales.length; i++) {
+      if (producto.producto._id == this.data.productosActuales[i].producto._id) return true;
+    }
+    return false;
+  }
+  
+
 }

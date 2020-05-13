@@ -52,7 +52,6 @@ import { EstadosService } from './servicios/estados.service';
 import { ClienteService } from './servicios/cliente.service';
 import { UsuarioService } from './servicios/usuario.service';
 import { BuscadorService } from './servicios/buscador.service';
-import { DatosService } from './servicios/datos.service';
 //pipes
 import { FiltroPedidosPipe } from './pipes/filtro-pedidos.pipe';
 import { FormatoFechaPipe } from './pipes/formato-fecha.pipe';
@@ -64,6 +63,7 @@ import { AltaAlmacenComponent } from './componentes/modales/alta-almacen/alta-al
 import { EditarAlmacenComponent } from './componentes/modales/editar-almacen/editar-almacen.component';
 import { TemasService } from './servicios/temas.service';
 import { InventarioService } from './servicios/inventario.service';
+import { CotizacionCreadaComponent } from './componentes/cotizacion-creada/cotizacion-creada.component';
 
 @NgModule({
     declarations: [
@@ -113,7 +113,8 @@ import { InventarioService } from './servicios/inventario.service';
         SeleccionarInsumoCompraComponent,
         SeleccionarOrdenDeCompraComponent,
         VerInsumosOrdenDeCompraComponent,
-        AlertaComponent
+        AlertaComponent,
+        CotizacionCreadaComponent
     ],
     imports: [
         CommonModule,
@@ -143,7 +144,8 @@ import { InventarioService } from './servicios/inventario.service';
         ListaPedidosComponent,
         BarraCargandoComponent,
         BuscadorComponent,
-        AlertaComponent
+        AlertaComponent,
+        CotizacionCreadaComponent
 
     ],
     entryComponents: [
@@ -179,7 +181,6 @@ import { InventarioService } from './servicios/inventario.service';
         ClienteService,
         UsuarioService,
         BuscadorService,
-        DatosService,
         AlmacenService,
         TemasService,
         InventarioService

@@ -89,14 +89,20 @@ export class ServicioAutenticacionService {
   public getConfiguracionTema(): any {
     return this.tokenDesencriptado.configuracion.tema;
   }
-  public getIdUsuario(): any {
+  public getIdUsuario(): string {
     return this.tokenDesencriptado.id;
   }
   public getNombreUsuario(): any {
     return this.tokenDesencriptado.nombre;
   }
-  public getNombreUsuarioCompleto(): string {
-    return this.tokenDesencriptado.nombre + ' ' + this.tokenDesencriptado.ape_pat;
+  public getApePatUsuario(): string {
+    return  this.tokenDesencriptado.ape_pat;
+  }
+  public getApeMatUsuario(): string {
+    return  this.tokenDesencriptado.ape_mat ? this.tokenDesencriptado.ape_mat : '';
+  }
+  public getCorreoUsuario(): string {
+    return this.tokenDesencriptado.correo;
   }
   public getIdSucursal(): any {
     return this.tokenDesencriptado.sucursal;

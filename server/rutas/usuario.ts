@@ -24,9 +24,6 @@ rutasUsuario.get('/obtenerPedidosVendidos/:filtro', autenticacionMiddleware, Usu
 rutasUsuario.get('/obtenerPedidosVendidosPorFotografo/:id/:filtro', autenticacionMiddleware, UsuarioCtrl.obtenerPedidosVendidosPorFotografo);
 rutasUsuario.get('/obtenerVentasConRetoquePorFotografo', autenticacionMiddleware, UsuarioCtrl.obtenerVentasConRetoquePorFotografo);
 rutasUsuario.get('/desglosarVentasConRetoquePorFotografo/:id', UsuarioCtrl.desglosarVentasConRetoquePorFotografo);
-rutasUsuario.get('/obtenerEmpresas', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.obtenerEmpresas);
-rutasUsuario.get('/obtenerDatosEstudio', autenticacionMiddleware, UsuarioCtrl.obtenerDatosEstudio);
-rutasUsuario.get('/obtenerCotizaciones', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.obtenerCotizaciones);
 rutasUsuario.get('/ordenesCompra', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.obtenerOrdenesCompra);
 rutasUsuario.get('/sucursales', autenticacionMiddleware, UsuarioCtrl.obtenerSucursales);
 //post
@@ -34,8 +31,6 @@ rutasUsuario.post('/login', UsuarioCtrl.login);
 rutasUsuario.post('/crearAsistencia/:id', UsuarioCtrl.crearAsistencia);
 rutasUsuario.post('/agregarProducto', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.agregarProducto);
 rutasUsuario.post('/agregarFamilia', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.agregarFamilia);
-rutasUsuario.post('/agregarEmpresa', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.nuevaEmpresa);
-rutasUsuario.post('/agregarCotizacion', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.nuevaCotizacion);
 rutasUsuario.post('/ordenCompra', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.nuevaOrdenCompra);
 rutasUsuario.post('/compra', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.registrarCompra)
 //patch
@@ -44,8 +39,6 @@ rutasUsuario.patch('/eliminarFamilia/:id', autenticacionMiddleware, adminOSuperv
 rutasUsuario.patch('/recuperarContrasena/:email', UsuarioCtrl.recuperarContrasena);
 rutasUsuario.patch('/ordenCompra/:id', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.desactivarOrdenComra);
 rutasUsuario.patch('/actualizarProducto', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.actualizarProducto);
-rutasUsuario.patch('/eliminarEmpresa', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.eliminarEmpresa);
-rutasUsuario.patch('/actualizarEmpresa', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.editarEmpresa);
 rutasUsuario.patch('/generarCodigoRecuperacion', UsuarioCtrl.generarCodigoRecuperacion);
 rutasUsuario.patch('/eliminarCodigoRecuperacion', UsuarioCtrl.eliminarCodigoRecuperacion);
 export default rutasUsuario;

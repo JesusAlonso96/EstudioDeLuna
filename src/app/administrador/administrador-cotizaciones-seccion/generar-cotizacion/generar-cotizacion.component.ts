@@ -1,23 +1,21 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormControl, NgModel } from '@angular/forms';
-import { MatDialog, MatTableDataSource } from '@angular/material';
-import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { FormControl, NgForm } from '@angular/forms';
+import { MatDialog, MatStepper, MatTableDataSource } from '@angular/material';
 import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
+import { ModalConfirmacionComponent } from 'src/app/comun/componentes/modal-confirmacion/modal-confirmacion.component';
 import { VerCotizacionComponent } from 'src/app/comun/componentes/modales/ver-cotizacion/ver-cotizacion.component';
 import { Cotizacion } from 'src/app/comun/modelos/cotizacion.model';
-import { DatosEstudio } from 'src/app/comun/modelos/datos_estudio.model';
 import { EmpresaCot } from 'src/app/comun/modelos/empresa_cot.model';
 import { Familia } from 'src/app/comun/modelos/familia.model';
 import { Producto } from 'src/app/comun/modelos/producto.model';
 import { ProductoCot } from 'src/app/comun/modelos/producto_cot.model';
 import { Usuario } from 'src/app/comun/modelos/usuario.model';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { ProductosService } from 'src/app/comun/servicios/productos.service';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
-import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
-import { HttpErrorResponse } from '@angular/common/http';
 import { CotizacionListaProductosComponent } from './cotizacion-lista-productos/cotizacion-lista-productos.component';
+import { CotizacionesService } from 'src/app/comun/servicios/cotizaciones.service';
 
 @Component({
   selector: 'app-generar-cotizacion',
@@ -25,12 +23,12 @@ import { CotizacionListaProductosComponent } from './cotizacion-lista-productos/
   styleUrls: ['./generar-cotizacion.component.scss']
 })
 export class GenerarCotizacionComponent implements OnInit {
-  @ViewChild('listaProductos') listaProductos: CotizacionListaProductosComponent; 
-  @ViewChild('empresa') empresa: NgModel;
+  @ViewChild('listaProductos') listaProductos: CotizacionListaProductosComponent;
+  @ViewChild('stepper') stepper: MatStepper;
+  @ViewChild('datosGeneralesForm') datosGeneralesForm: NgForm;
+  @Output() cargandoEvento = new EventEmitter(true);
   vigencias: number[] = [];
-  cargando: boolean = false;
   empresas: EmpresaCot[] = [];
-  empresasFiltradas: Observable<EmpresaCot[]>;
   cotizacion: Cotizacion = new Cotizacion();
   productos_cot: ProductoCot[] = [];
   familiaSeleccionada: Familia = new Familia();
@@ -38,177 +36,128 @@ export class GenerarCotizacionComponent implements OnInit {
   editarManual: boolean = false;
   fechaEmpiezaEn: Date = new Date(Date.now());
   datosTabla: MatTableDataSource<Producto>;
-  constructor(private usuarioService: UsuarioService, private toastr: ToastrService, private productosService: ProductosService, private autService: ServicioAutenticacionService, private dialog: MatDialog) { }
+  mostrarCotizacion: boolean = false;
+  constructor(private usuarioService: UsuarioService,
+    private cotizacionService: CotizacionesService,
+    private toastr: NgToastrService,
+    private productosService: ProductosService,
+    private autService: ServicioAutenticacionService,
+    private dialog: MatDialog) { }
 
   ngOnInit() {
     this.obtenerEmpresas();
     this.inicializarVigencias();
   }
-  obtenerDatosEstudio() {
-    this.cargando = true;
-    this.usuarioService.obtenerDatosEstudio().subscribe(
-      (datos: DatosEstudio) => {
-        this.cargando = false;
-        this.cotizacion.datos = datos;
-      },
-      (err: HttpErrorResponse) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
-      }
-    );
-  }
   obtenerEmpresas() {
-    this.cargando = true;
-    this.usuarioService.obtenerEmpresas().subscribe(
+    this.crearVistaCargando(true, 'Obteniendo empresas...')
+    this.cotizacionService.obtenerEmpresas().subscribe(
       (empresas: EmpresaCot[]) => {
-        this.cargando = false;
+        this.crearVistaCargando(false);
         this.empresas = empresas;
-        this.obtenerDatosEstudio();
         this.generarAsesorCotizacion();
-        this.iniciarFiltro();
         this.obtenerFamiliasProductos();
       },
-      (err: any) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   obtenerFamiliasProductos() {
-    this.cargando = true;
+    this.crearVistaCargando(true, 'Obteniendo familias de productos...')
     this.productosService.obtenerFamiliasProductos().subscribe(
       (familias: Familia[]) => {
-        this.cargando = false;
+        this.crearVistaCargando(false);
         this.familiasProductos = familias;
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
-  //filtro de empresas
-  iniciarFiltro() {
-    this.empresasFiltradas = this.empresa.valueChanges
-      .pipe(
-        startWith(''),
-        map(valor => typeof valor === 'string' ? valor : valor.nombre),
-        map(nombre => nombre ? this._filtro(nombre) : this.empresas.slice())
-      );
-  }
-  private _filtro(nombre: string): EmpresaCot[] {
-    return this.empresas.filter(opcion => opcion.nombre.toLowerCase().includes(nombre.toLowerCase()));
-  }
-  mostrarEmpresa(empresa?: EmpresaCot) {
-    return empresa ? empresa.nombre : undefined;
-  }
   buscarProductosPorFamilia() {
-    this.cargando = true;
+    this.crearVistaCargando(true, 'Buscando productos...')
     this.productosService.obtenerProductos(this.familiaSeleccionada._id).subscribe(
       (productos: Producto[]) => {
-        this.cargando = false;
+        this.crearVistaCargando(false);
         this.iniciarProductosCotizacion(productos);
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   iniciarProductosCotizacion(productos: Producto[]) {
     this.productos_cot = [];
     for (let producto of productos) {
-      this.productos_cot.push(ProductoCot.prototype.nuevoProducto(producto, 0));
+      this.productos_cot.push(ProductoCot.prototype.nuevoProducto(producto, 0, producto.precio));
     }
-  }
-  agregarCantidadProducto(producto: ProductoCot) {
-    this.agregarProducto(producto);
-  }
-  quitarCantidadProducto(producto: ProductoCot) {
-    producto.cantidad -= 1;
-    this.quitarProducto(producto);
   }
   cantidadIgualCero(producto: ProductoCot): boolean {
     if (producto.cantidad == 0) return true;
     return false;
   }
-  agregarProducto(productoCot: ProductoCot) {
-    if (productoCot.cantidad == 1) {
-      if (!this.listaProductos.existeProducto(productoCot)) {
-        this.cotizacion.productos.push(productoCot);
-      }
-    }
-  }
-  quitarProducto(productoCot: ProductoCot) {
-    if (productoCot.cantidad == 0) {
-      const indice = this.cotizacion.productos.indexOf(productoCot);
-      this.cotizacion.productos.splice(indice, 1);
-    }
-  }
-  editarCantidadesManualmente(productoCot: ProductoCot) {
-    this.quitarProducto(productoCot);
-  }
-  crearFechaCotizacion() {
-    this.cotizacion.fecha = new Date(Date.now());
-  }
   generarCantidadesCotizacion() {
+    this.cotizacion.subtotal = this.cotizacion.total = this.cotizacion.iva = 0;
     for (let producto of this.cotizacion.productos) {
-      this.cotizacion.subtotal = this.cotizacion.subtotal + (producto.cantidad * <number>producto.producto.precio);
+      this.cotizacion.subtotal = this.cotizacion.subtotal + (producto.cantidad * producto.precioUnitario);
     }
     this.cotizacion.iva = this.cotizacion.subtotal * .16;
     this.cotizacion.total = this.cotizacion.subtotal + this.cotizacion.iva;
+    this.mostrarCotizacionGenerada();
   }
   generarAsesorCotizacion() {
-    this.cargando = true;
     this.usuarioService.obtenerUsuario(this.autService.getIdUsuario()).subscribe(
       (asesor: Usuario) => {
-        this.cargando = false;
         this.cotizacion.asesor = asesor;
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
 
-  eligioProductos(): boolean {
-    return this.cotizacion.productos.length > 0 ? true : false;
-  }
   eligioControladorValido(controlador: FormControl): boolean {
     return controlador.status == 'VALID' ? true : false;
   }
-  abrirCotizacion() {
-    if (this.eligioProductos()) {
-      this.cotizacion.empresa = this.empresa.value;
-      this.crearFechaCotizacion();
-      this.generarCantidadesCotizacion();
-      this.generarCotizacion();
-    } else {
-      this.toastr.error('Cotización no generada', 'Por favor, completa todos los datos', { closeButton: true });
-    }
+  abrirConfirmacionCotizacion() {
+    const referenciaModal = this.dialog.open(ModalConfirmacionComponent, {
+      data: { titulo: 'Generar cotizacion', mensaje: '¿Desea crear esta cotizacion?', msgBoton: 'Crear', color: 'warn' }
+    })
+    referenciaModal.afterClosed().subscribe(respuesta => {
+      if (respuesta) this.generarCotizacion();
+    })
   }
   generarCotizacion() {
-    this.cargando = true;
-    this.usuarioService.agregarCotizacion(this.cotizacion).subscribe(
-      (guardada: Mensaje) => {
-        this.cargando = false;
-        this.toastr.success(guardada.detalles, guardada.titulo, { closeButton: true });
-        const dialogRef = this.dialog.open(VerCotizacionComponent, {
-          data: this.cotizacion
+    this.crearVistaCargando(true, 'Creando cotizacion...')
+    this.cotizacionService.agregarCotizacion(this.cotizacion).subscribe(
+      (cotizacion: Cotizacion) => {
+        this.crearVistaCargando(false);
+        this.reiniciarCotizacion();
+        this.toastr.abrirToastr('exito', 'Cotizacion creada', 'Se creo exitosamente la cotizacion');
+        this.dialog.open(VerCotizacionComponent, {
+          data: cotizacion
         });
-        dialogRef.afterClosed().subscribe(r => {
-          this.cotizacion = new Cotizacion();
-        })
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
-
   }
- 
+  reiniciarCotizacion() {
+    this.stepper.previous();
+    this.stepper.previous();
+    this.mostrarCotizacion = false;
+    this.datosGeneralesForm.resetForm();
+    this.cotizacion = new Cotizacion();
+    this.familiaSeleccionada = new Familia();
+    this.productos_cot = [];
+    this.generarAsesorCotizacion();
+  }
+
   listaProductosValida(): boolean {
     return this.cotizacion.productos.length > 0 ? true : false;
   }
@@ -217,5 +166,12 @@ export class GenerarCotizacionComponent implements OnInit {
     for (let i = 0; i < 2; i++) {
       this.vigencias.push(anioVigente + i);
     }
+  }
+  mostrarCotizacionGenerada() {
+    console.log(this.cotizacion);
+    if (this.listaProductosValida()) this.mostrarCotizacion = !this.mostrarCotizacion;
+  }
+  crearVistaCargando(cargando: boolean, texto?: string) {
+    this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
   }
 }

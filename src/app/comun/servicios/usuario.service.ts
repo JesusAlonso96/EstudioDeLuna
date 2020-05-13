@@ -29,13 +29,6 @@ export class UsuarioService {
         return this.http.post(`/api/v1/usuarios/crearAsistencia/${id}`, null);
     }
     
-  
-    public agregarEmpresa(empresa: EmpresaCot): Observable<any> {
-        return this.http.post('/api/v1/usuarios/agregarEmpresa', empresa);
-    }
-    public agregarCotizacion(cotizacion: Cotizacion): Observable<any> {
-        return this.http.post('/api/v1/usuarios/agregarCotizacion', cotizacion);
-    }
     public agregarOrdenCompra(ordenCompra: OrdenCompra): Observable<any> {
         return this.http.post('/api/v1/usuarios/ordenCompra', ordenCompra);
     }
@@ -70,15 +63,7 @@ export class UsuarioService {
     public obtenerDesglosePedidosCRetoque(idUsuario: string): Observable<any> {
         return this.http.get(`/api/v1/usuarios/desglosarVentasConRetoquePorFotografo/${idUsuario}`);
     }
-    public obtenerEmpresas(): Observable<any> {
-        return this.http.get('/api/v1/usuarios/obtenerEmpresas');
-    }
-    public obtenerDatosEstudio(): Observable<any> {
-        return this.http.get('/api/v1/usuarios/obtenerDatosEstudio');
-    }
-    public obtenerCotizacionesRealizadas(): Observable<any> {
-        return this.http.get('/api/v1/usuarios/obtenerCotizaciones');
-    }
+    
     public obtenerPestanas(rol: string): Observable<any> {
         return this.http.get(`/api/v1/usuarios/obtenerPestanas/${rol}`)
     }
@@ -98,12 +83,8 @@ export class UsuarioService {
     public eliminarFamilia(id: string): Observable<any> {
         return this.http.patch(`/api/v1/usuarios/eliminarFamilia/${id}`, null);
     }
-    public eliminarEmpresa(empresa: EmpresaCot): Observable<any> {
-        return this.http.patch('/api/v1/usuarios/eliminarEmpresa', empresa);
-    }
-    public actualizarEmpresa(empresa: EmpresaCot): Observable<any> {
-        return this.http.patch('/api/v1/usuarios/actualizarEmpresa', empresa);
-    }
+    
+    
     public generarCodigoRecuperacion(body: { email: string }): Observable<any> {
         return this.http.patch('/api/v1/usuarios/generarCodigoRecuperacion', body);
     }
@@ -142,6 +123,6 @@ export class UsuarioService {
     }
     //FUNCIONES AUXILIARES
     public obtenerSubtotalPorProducto(producto: ProductoCot): number {
-        return producto.cantidad * <number>producto.producto.precio;
+        return producto.cantidad * producto.precioUnitario;
     }
 }

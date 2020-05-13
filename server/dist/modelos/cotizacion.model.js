@@ -18,13 +18,13 @@ var conexion = mongoose_1.default.createConnection(environment_1.environment.DB_
 mongoose_auto_increment_1.default.initialize(conexion);
 const cotizacionSchema = new mongoose_1.Schema({
     num_cotizacion: { type: Number },
-    fecha: { type: Date, required: true },
+    fechaRegistro: { type: Date, required: true, default: new Date(Date.now()) },
     vigencia: { type: Number, required: true },
     asesor: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Usuario' },
     empresa: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Empresa_cot' },
-    datos: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Datos_estudio' },
     productos: [{
             producto: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Producto', required: true },
+            precioUnitario: { type: Number, required: true },
             cantidad: { type: Number, required: true }
         }],
     subtotal: { type: Number, required: true },

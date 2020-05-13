@@ -1,7 +1,21 @@
 import { Usuario } from './usuario.model';
 import { Cliente } from './cliente.model';
 import { Producto } from './producto.model';
+export class ProductoPedido {
+    producto: Producto;
+    precioUnitario: number;
+    cantidad: number;
+    constructor() {
 
+    }
+    nuevoProducto(producto: Producto, cantidad: number, precioUnitario: number): ProductoPedido {
+        let productoCot: ProductoPedido = new ProductoPedido();
+        productoCot.producto = producto;
+        productoCot.cantidad = cantidad;
+        productoCot.precioUnitario = precioUnitario;
+        return productoCot;
+    }
+}
 export class Pedido {
     _id: string;
     fotografo: Usuario;
@@ -9,7 +23,7 @@ export class Pedido {
     fecha_creacion: Date;
     fecha_entrega: Date;
     comentarios: string;
-    productos: Producto[];
+    productos: ProductoPedido[];
     status: string;
     urgente: boolean;
     total: number;

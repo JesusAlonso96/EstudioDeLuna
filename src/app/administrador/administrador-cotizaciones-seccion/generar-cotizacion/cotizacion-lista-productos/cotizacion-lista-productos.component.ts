@@ -5,43 +5,43 @@ import { ProductosService } from 'src/app/comun/servicios/productos.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material';
+import { MatPaginator, MatDialog } from '@angular/material';
 import { ProductoCot } from 'src/app/comun/modelos/producto_cot.model';
 import { Animaciones } from 'src/app/comun/constantes/animaciones';
+import { CotizacionAdministrarProductosComponent } from '../cotizacion-administrar-productos/cotizacion-administrar-productos.component';
 
 @Component({
   selector: 'app-cotizacion-lista-productos',
   templateUrl: './cotizacion-lista-productos.component.html',
   styleUrls: ['./cotizacion-lista-productos.component.scss'],
-  animations: [Animaciones.deslizar],
-  host: { '(document:click)': 'eventoClickPanel($event)' }
+  animations: [Animaciones.carga]
 })
 export class CotizacionListaProductosComponent implements OnInit, AfterViewInit {
   @ViewChild('paginator') paginator: MatPaginator;
   @Input() productos: ProductoCot[];
   @Input() productosCotizacion: ProductoCot[];
   @Output() productoAgregadoEvento = new EventEmitter(true);
+  @Output() productoEliminadoEvento = new EventEmitter(true);
   columnas: string[] = ['producto', 'acciones'];
   cargando: boolean = false;
-  mostrarAdministracion: string = 'cerrado';
   datosTabla: MatTableDataSource<any>;
   constructor(
-    private toastr: NgToastrService) { }
+    private toastr: NgToastrService,
+    private modal: MatDialog) { }
 
   ngOnInit(): void {
 
   }
   ngAfterViewInit() {
-    console.log(this.productos)
-    this.inicializarTabla();
+    this.inicializarTablas();
   }
-  inicializarTabla() {
+  inicializarTablas() {
     this.datosTabla = new MatTableDataSource(this.productos);
     this.datosTabla.paginator = this.paginator;
   }
   agregarCantidadProducto(producto: ProductoCot) {
     producto.cantidad += 1;
-    this.productoAgregadoEvento.emit(producto);
+    this.productosCotizacion.push(producto);
   }
   existeProducto(producto: ProductoCot): boolean {
     for (let i = 0; i < this.productosCotizacion.length; i++) {
@@ -49,16 +49,10 @@ export class CotizacionListaProductosComponent implements OnInit, AfterViewInit 
     }
     return false;
   }
-  eventoClickPanel(evento: MouseEvent) {
-    console.log(evento.srcElement);
-    if (this.mostrarAdministracion == 'abierto' && evento.target != document.getElementById('administrarProductos') && evento.target != document.getElementById('toggleAdministracion')) {
-      console.log("entre a cerrarlo");
-      this.mostrarAdministracion = 'cerrado';
-    }
-
-  }
   verAdministracionProductos() {
-    console.log("entre ala funcion")
-    this.mostrarAdministracion = this.mostrarAdministracion == 'abierto' ? 'cerrado' : 'abierto';
+    this.modal.open(CotizacionAdministrarProductosComponent, {
+      data: this.productosCotizacion,
+      disableClose: true
+    });
   }
 }

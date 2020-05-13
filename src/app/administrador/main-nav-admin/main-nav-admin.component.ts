@@ -41,7 +41,7 @@ export class MainNavAdminComponent implements OnInit {
   scrollHandler($event: any) {
     let scrollOffset = $event.srcElement.scrollTop;
     if (scrollOffset >= 100) this.mostrarToggleSidebar = true;
-    if (scrollOffset == 0) this.mostrarToggleSidebar = false;
+    if (scrollOffset <= 25) this.mostrarToggleSidebar = false;
   }
   ngOnInit() {
     this.obtenerPestanas();

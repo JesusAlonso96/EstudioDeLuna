@@ -21,9 +21,6 @@ const almacen_model_1 = require("../modelos/almacen.model");
 const asistencia_model_1 = require("../modelos/asistencia.model");
 const caja_model_1 = require("../modelos/caja.model");
 const compra_model_1 = require("../modelos/compra.model");
-const cotizacion_model_1 = require("../modelos/cotizacion.model");
-const datos_estudio_model_1 = require("../modelos/datos_estudio.model");
-const empresa_cot_model_1 = require("../modelos/empresa_cot.model");
 const familia_model_1 = require("../modelos/familia.model");
 const orden_compra_model_1 = require("../modelos/orden_compra.model");
 const pedido_model_1 = require("../modelos/pedido.model");
@@ -60,6 +57,9 @@ exports.login = (req, res) => {
                 const token = jsonwebtoken_1.default.sign({
                     id: usuarioEncontrado._id,
                     nombre: usuarioEncontrado.nombre,
+                    ape_pat: usuarioEncontrado.ape_pat,
+                    ape_mat: usuarioEncontrado.ape_mat,
+                    correo: usuarioEncontrado.email,
                     rol: usuarioEncontrado.rol,
                     rol_sec: usuarioEncontrado.rol_sec,
                     configuracion: usuarioEncontrado.configuracion,
@@ -82,14 +82,6 @@ exports.obtenerPestanas = (req, res) => {
             return res.status(422).send({ titulo: 'Error', detalles: `Error al obtener los módulos de ${req.params.rol}` });
         if (pestanas)
             return res.json(pestanas);
-    });
-};
-exports.obtenerDatosEstudio = (req, res) => {
-    datos_estudio_model_1.DatosEstudio.findOne()
-        .exec((err, datos) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener los datos' });
-        return res.json(datos);
     });
 };
 exports.crearAsistencia = (req, res) => {
@@ -427,74 +419,6 @@ exports.desglosarVentasConRetoquePorFotografo = (req, res) => {
     });
 };
 /* Modulo cotizaciones */
-exports.obtenerEmpresas = (req, res) => {
-    empresa_cot_model_1.EmpresaCot.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
-        .exec((err, empresas) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron obtener las empresas' });
-        return res.json(empresas);
-    });
-};
-exports.nuevaEmpresa = (req, res) => {
-    const nuevaEmpresa = new empresa_cot_model_1.EmpresaCot(req.body);
-    nuevaEmpresa.sucursal = res.locals.usuario.sucursal;
-    nuevaEmpresa.save((err, guardada) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la empresa' });
-        if (guardada)
-            return res.json({ titulo: 'Empresa agregada', detalles: 'Empresa agregada exitosamente' });
-    });
-};
-exports.eliminarEmpresa = (req, res) => {
-    empresa_cot_model_1.EmpresaCot.findByIdAndUpdate(req.body._id, {
-        activa: 0
-    })
-        .exec((err, eliminada) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo eliminar la empresa' });
-        if (eliminada)
-            return res.json({ titulo: 'Empresa eliminada', detalles: 'Empresa eliminada exitosamente' });
-    });
-};
-exports.editarEmpresa = (req, res) => {
-    empresa_cot_model_1.EmpresaCot.findByIdAndUpdate(req.body._id, {
-        nombre: req.body.nombre,
-        direccion: req.body.direccion,
-        contacto: req.body.contacto,
-        telefono: req.body.telefono,
-        email: req.body.email,
-        activa: req.body.activa
-    })
-        .exec((err, actualizada) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo actualizar la empresa' });
-        if (actualizada)
-            return res.json({ titulo: 'Empresa actualizada', detalles: 'Empresa actualizada exitosamente' });
-    });
-};
-exports.nuevaCotizacion = (req, res) => {
-    const cotizacion = new cotizacion_model_1.Cotizacion(req.body);
-    cotizacion.sucursal = res.locals.usuario.sucursal;
-    cotizacion.save((err, guardada) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la cotizacion' });
-        if (guardada)
-            return res.json({ titulo: 'Cotizacion guardada', detalles: 'Cotizacion guardada exitosamente' });
-    });
-};
-exports.obtenerCotizaciones = (req, res) => {
-    cotizacion_model_1.Cotizacion.find({ sucursal: res.locals.usuario.sucursal }, { __v: 0 })
-        .populate('productos.producto', '-activo -caracteristicas -__v -familia -c_ad -c_r -b_n -nombre -num_fotos')
-        .populate('asesor', '-_id -__v -ape_mat -asistencia -ocupado -pedidosTomados -activo -username -contrasena -rol -rol_sec')
-        .populate('empresa', '-_id -activa -__v')
-        .populate('datos', '-_id -__v')
-        .sort({ num_cotizacion: 'desc' })
-        .exec((err, cotizaciones) => {
-        if (err)
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo guardar la cotizacion' });
-        return res.json(cotizaciones);
-    });
-};
 /* Modulo de inventarios */
 exports.obtenerOrdenesCompra = (req, res) => {
     orden_compra_model_1.OrdenCompra.find({ activa: true, sucursal: res.locals.usuario.sucursal })

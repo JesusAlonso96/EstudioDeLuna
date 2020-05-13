@@ -9,6 +9,7 @@ import { TemasService } from 'src/app/comun/servicios/temas.service';
 import { ModalDetallesProductoComponent } from '../modal-detalles-producto/modal-detalles-producto.component';
 import { Producto } from 'src/app/comun/modelos/producto.model';
 import { ModaDetallesTamComponent } from '../modal-detalles-tam/modal-detalles-tam.component';
+import { ProductoPedido } from 'src/app/comun/modelos/pedido.model';
 
 @Component({
   selector: 'app-empleado-venta-lista-productos',
@@ -17,6 +18,7 @@ import { ModaDetallesTamComponent } from '../modal-detalles-tam/modal-detalles-t
 })
 export class EmpleadoVentaListaProductosComponent implements OnInit {
   @Input() familia: Familia;
+  @Input() productos: ProductoPedido[];
   @Output() cargandoEvento = new EventEmitter(true);
   @Output() productoAgregadoEvento = new EventEmitter(true);
 
@@ -29,6 +31,7 @@ export class EmpleadoVentaListaProductosComponent implements OnInit {
     private temasService: TemasService) { }
 
   ngOnInit(): void {
+    console.log("soy los productosss", this.productos);
     this.obtenerProductos();
   }
 
@@ -96,8 +99,7 @@ export class EmpleadoVentaListaProductosComponent implements OnInit {
   /* Modales */
   abrirSeleccionarProductos(num_fotos: number) {
     const referenciaModal = this.modal.open(Modal, {
-      panelClass: this.temasService.obtenerClaseActiva(),
-      data: { num: num_fotos, familia: this.familia.nombre },
+      data: { num: num_fotos, familia: this.familia.nombre, productosActuales: this.productos },
       disableClose: true
     })
     referenciaModal.afterClosed().subscribe(producto => {

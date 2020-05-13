@@ -21,7 +21,6 @@ const empleado_1 = __importDefault(require("../rutas/empleado"));
 const estados_1 = __importDefault(require("../rutas/estados"));
 const productos_1 = __importDefault(require("../rutas/productos"));
 const usuario_1 = __importDefault(require("../rutas/usuario"));
-const datos_estudio_1 = __importDefault(require("../rutas/datos_estudio"));
 const Socket = __importStar(require("../sockets/socket"));
 const almacen_1 = __importDefault(require("../rutas/almacen"));
 const root_1 = __importDefault(require("../rutas/root"));
@@ -31,6 +30,7 @@ const proveedores_1 = __importDefault(require("../rutas/proveedores"));
 const inventario_1 = __importDefault(require("../rutas/inventario"));
 const sucursal_1 = __importDefault(require("../rutas/sucursal"));
 const traspaso_1 = __importDefault(require("../rutas/traspaso"));
+const cotizaciones_1 = __importDefault(require("../rutas/cotizaciones"));
 class Servidor {
     constructor() {
         this.app = express_1.default();
@@ -63,7 +63,6 @@ class Servidor {
         this.app.use('/api/v1/estados', estados_1.default);
         this.app.use('/api/v1/productos', productos_1.default);
         this.app.use('/api/v1/empleados', empleado_1.default);
-        this.app.use('/api/v1/datos', datos_estudio_1.default);
         this.app.use('/api/v1/almacenes', almacen_1.default);
         this.app.use('/api/v1/inventarios', inventario_1.default);
         this.app.use('/api/v1/traspasos', traspaso_1.default);
@@ -72,6 +71,7 @@ class Servidor {
         this.app.use('/api/v2/cajas', caja_1.default);
         this.app.use('/api/v2/configuracion', configuracion_1.default);
         this.app.use('/api/v2/proveedores', proveedores_1.default);
+        this.app.use('/api/v2/cotizaciones', cotizaciones_1.default);
     }
     iniciar() {
         this.inicializarRutas();

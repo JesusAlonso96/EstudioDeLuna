@@ -5,11 +5,9 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
 import { Animaciones } from 'src/app/comun/constantes/animaciones';
-import { DatosEstudio } from 'src/app/comun/modelos/datos_estudio.model';
 import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
 import { Configuracion } from 'src/app/comun/modelos/usuario.model';
 import { ConfiguracionService } from 'src/app/comun/servicios/configuracion.service';
-import { DatosService } from 'src/app/comun/servicios/datos.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { environment } from '../../../environments/environment';
 @Component({
@@ -22,7 +20,6 @@ import { environment } from '../../../environments/environment';
   ]
 })
 export class AdministradorConfiguracionSistemaComponent implements OnInit, OnDestroy {
-  datosEstudio: DatosEstudio = new DatosEstudio();
   cargando: boolean = false;
   cargandoImagen: boolean = false;
   configuracion: Configuracion = new Configuracion();
@@ -32,8 +29,7 @@ export class AdministradorConfiguracionSistemaComponent implements OnInit, OnDes
   logotipoActual: string = '';
   private onDestroy$ = new Subject<boolean>();
 
-  constructor(private datosService: DatosService,
-    private autenticacionService: ServicioAutenticacionService,
+  constructor(private autenticacionService: ServicioAutenticacionService,
     private _serToastr: NgToastrService,
     private configuracionService: ConfiguracionService) { }
 

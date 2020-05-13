@@ -1,0 +1,40 @@
+<mat-dialog-title>
+  <mat-toolbar>
+    <span>Administrar productos agregados</span>
+    <span class="espaciador"></span>
+    <button class="icono-cerrar" mat-icon-button (click)="cerrarModal()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+</mat-dialog-title>
+<mat-dialog-content>
+  <ng-container *ngIf="productos.length > 0">
+    <ul class="list-group list-group-flush position-relative">
+      <li class="list-group-item d-flex justify-content-between align-items-center w-100"
+        *ngFor="let producto of productos">
+        <span>{{producto.producto.nombre | titlecase}} ${{producto.precioUnitario}} MXN</span>
+        <button (click)="agregarCantidadProducto(producto)" mat-icon-button class="icono-exito">
+          <mat-icon>add</mat-icon>
+        </button>
+        <mat-form-field style="width: 15% !important;">
+          <input class="text-center" matInput type="number" [(ngModel)]="producto.cantidad">
+        </mat-form-field>
+        <button (click)="quitarCantidadProducto(producto)" mat-icon-button class="icono-error">
+          <mat-icon>remove</mat-icon>
+        </button>
+      </li>
+    </ul>
+    <mat-toolbar>
+      <span>Total:</span>
+      <span class="espaciador"></span>
+      <span>{{totalCotizacion() | currency}}</span>
+    </mat-toolbar>
+  </ng-container>
+
+  <app-alerta *ngIf="productos.length == 0" tipo="info" tipo_bootstrap="info"
+    mensaje="No hay productos agregados, vuelve a la lista de productos y agregalos para poder administrarlos.">
+  </app-alerta>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="warn" (click)="cerrarModal()">Cerrar</button>
+</mat-dialog-actions>

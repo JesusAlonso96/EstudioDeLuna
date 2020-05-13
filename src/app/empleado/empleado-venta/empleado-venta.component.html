@@ -187,6 +187,7 @@
                         <ng-template matTabContent>
                             <div class="container-fluid mt-2 mb-2">
                                 <app-empleado-venta-lista-productos #listaProductos [familia]="familia"
+                                    [productos]="pedido.productos"
                                     (cargandoEvento)="cargandoProductos($event)"
                                     (productoAgregadoEvento)="obtenerProductoAgregado($event)">
                                 </app-empleado-venta-lista-productos>

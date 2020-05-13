@@ -38,9 +38,9 @@
             </div>
             <div class="col-9 ">
                 <mat-progress-bar *ngIf="buscador" mode="indeterminate"></mat-progress-bar>
-                <div [ngClass]="{'tam-productos': productosEncontrados.length > 1, 'tam-producto': productosEncontrados.length == 1 || productosEncontrados.length == 0}"
+                <div [ngClass]="{'tam-productos': productosPedido.length > 1, 'tam-producto': productosPedido.length == 1 || productosPedido.length == 0}"
                     class="contenedor-productos p-2">
-                    <div class="row" *ngIf="productosEncontrados.length == 0 && !error">
+                    <div class="row" *ngIf="productosPedido.length == 0 && !error">
                         <div class="col-12 p-0">
                             <div class="alert alert-info sin-borde alert-dismissible fade show w-100" role="alert">
                                 Selecciona las especificaciones y busca un producto
@@ -54,20 +54,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" *ngIf="productosEncontrados">
-                        <div *ngFor="let producto of productosEncontrados"
-                            [ngClass]="{'col-lg-4': productosEncontrados.length > 1, 'col-lg-8': productosEncontrados.length == 1}">
+                    <div class="row" *ngIf="productosPedido">
+                        <div *ngFor="let producto of productosPedido"
+                            [ngClass]="{'col-lg-4': productosPedido.length > 1, 'col-lg-8': productosPedido.length == 1}">
                             <mat-card class="card mb-4">
                                 <div class="card-body">
-                                    <h6 class="card-title">{{producto.nombre | titlecase}}</h6>
+                                    <h6 class="card-title">{{producto.producto.nombre | titlecase}}</h6>
                                     <h6 class="card-subtitle mb-2 text-muted">
-                                        {{producto.descripcion ? producto.descripcion: 'Sin descripcion'}}</h6>
-                                    <span>{{producto.c_r ? 'Con retoque' : 'Sin retoque'}}</span> <br>
-                                    <span>{{producto.b_n ? 'Blanco y negro' : 'Color'}}</span> <br>
+                                        {{producto.producto.descripcion ? producto.producto.descripcion: 'Sin descripcion'}}</h6>
+                                    <span>{{producto.producto.c_r ? 'Con retoque' : 'Sin retoque'}}</span> <br>
+                                    <span>{{producto.producto.b_n ? 'Blanco y negro' : 'Color'}}</span> <br>
                                     <span class="precio-titulo"> <strong>Costo:</strong> </span> <span
-                                        class="precio">${{producto.precio}}
+                                        class="precio">${{producto.precioUnitario}}
                                         MXN</span> <br>
-                                    <button mat-raised-button [mat-dialog-close]="producto"
+                                    <button mat-raised-button (click)="agregarProducto(producto)" [disabled]="existeEnProductos(producto)"
                                         color="primary">Agregar</button>
                                 </div>
                             </mat-card>

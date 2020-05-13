@@ -4,7 +4,6 @@ import { environment } from '../global/environment';
 import { IUsuario } from './usuario.model';
 import { IEmpresaCot } from './empresa_cot.model';
 import { IProducto } from './producto.model';
-import { IDatosEstudio } from './datos_estudio.model';
 import { ISucursal } from './sucursal.model';
 
 mongoose.set('useUnifiedTopology', true);
@@ -12,6 +11,7 @@ var conexion = mongoose.createConnection(environment.DB_URL, { useNewUrlParser: 
 autoIncrement.initialize(conexion);
 interface ProductoCot extends Document {
     producto: IProducto['_id'];
+    precioUnitario: number;
     cantidad: number;
 }
 export interface ICotizacion extends Document {
@@ -20,7 +20,6 @@ export interface ICotizacion extends Document {
     vigencia: number;
     asesor: IUsuario['_id'];
     empresa: IEmpresaCot['_id'];
-    datos: IDatosEstudio['_id'];
     productos: Types.Array<ProductoCot>;
     subtotal: number;
     total: number;
@@ -32,13 +31,13 @@ export interface ICotizacion extends Document {
 }
 const cotizacionSchema = new Schema({
     num_cotizacion: { type: Number },
-    fecha: { type: Date, required: true },
+    fechaRegistro: { type: Date, required: true, default: new Date(Date.now()) },
     vigencia: { type: Number, required: true },
     asesor: { type: Schema.Types.ObjectId, ref: 'Usuario' },
     empresa: { type: Schema.Types.ObjectId, ref: 'Empresa_cot' },
-    datos: { type: Schema.Types.ObjectId, ref: 'Datos_estudio' },
     productos: [{
         producto: { type: Schema.Types.ObjectId, ref: 'Producto', required: true },
+        precioUnitario: { type: Number, required: true },
         cantidad: { type: Number, required: true }
     }],
     subtotal: { type: Number, required: true },

@@ -1,24 +1,49 @@
 @import 'variables';
-.loginCard{
-   // width: 100%;
-    height: 40%;
+
+.loginCard {
+  width: 40%;
 }
-.loginBoton{
-    width: 100%;
-    height: 60px;
+
+.loginBoton {
+  width: 100%;
+  height: 60px;
 }
-.container-fluid{
-    background-color: $light-gray-color2;
-    height: 100%;
+
+.container-fluid {
+  background-color: $light-gray-color2;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.toolbar{
-    height: 30%;
-    position: absolute;
+
+.toolbar {
+  height: 50%;
+  position: absolute;
 }
-.recuperar{
-    color: $main-text-color;
+
+.recuperar {
+  color: $main-text-color;
 }
-.aqui{
-    color: $primary;
-    cursor: pointer;
+
+.aqui {
+  color: $primary;
+  cursor: pointer;
 }
+@media (max-width: 860px) {
+    .loginCard {
+        width: 55%;
+      }
+}
+@media (max-width: 768px) {
+    .loginCard {
+        width: 60%;
+      }
+}
+@media (max-width: 580px) {
+    .loginCard {
+        width: 100%;
+      }
+}
+

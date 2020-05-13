@@ -93,6 +93,7 @@ import { InventariosBajaInsumoComponent } from './administrador-inventario-secci
 import { InventariosAlmacenesTraspasosPendientesComponent } from './administrador-inventario-seccion/inventarios-almacenes-traspasos/inventarios-almacenes-traspasos-pendientes/inventarios-almacenes-traspasos-pendientes.component';
 import { InventariosAlmacenesTraspasosAltaComponent } from './administrador-inventario-seccion/inventarios-almacenes-traspasos/inventarios-almacenes-traspasos-alta/inventarios-almacenes-traspasos-alta.component';
 import { InventariosEntradasSalidasDetallesModalComponent } from './administrador-inventario-seccion/inventarios-entradas-salidas/inventarios-entradas-salidas-detalles-modal/inventarios-entradas-salidas-detalles-modal.component';
+import { CotizacionAdministrarProductosComponent } from './administrador-cotizaciones-seccion/generar-cotizacion/cotizacion-administrar-productos/cotizacion-administrar-productos.component';
 
 
 @NgModule({
@@ -159,7 +160,8 @@ import { InventariosEntradasSalidasDetallesModalComponent } from './administrado
     InventariosBajaInsumoComponent,
     InventariosAlmacenesTraspasosPendientesComponent,
     InventariosAlmacenesTraspasosAltaComponent,
-    InventariosEntradasSalidasDetallesModalComponent
+    InventariosEntradasSalidasDetallesModalComponent,
+    CotizacionAdministrarProductosComponent
   ],
   imports: [
     CommonModule,

@@ -1,19 +1,19 @@
 <mat-table class="w-100" [dataSource]="datosProductos" matSort>
     <ng-container matColumnDef="nombre">
         <mat-header-cell *matHeaderCellDef mat-sort>Nombre</mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{producto.nombre}}</mat-cell>
+        <mat-cell *matCellDef="let producto">{{producto.producto.nombre}}</mat-cell>
             <mat-footer-cell class="pie-tabla" *matFooterCellDef> Total </mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="num_fotos">
         <mat-header-cell *matHeaderCellDef mat-sort>Num. Fotos</mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{producto.num_fotos}}</mat-cell>
+        <mat-cell *matCellDef="let producto">{{producto.producto.num_fotos}}</mat-cell>
             <mat-footer-cell *matFooterCellDef> </mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="precio">
         <mat-header-cell *matHeaderCellDef mat-sort>Precio</mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{producto.precio}}</mat-cell>
+        <mat-cell *matCellDef="let producto">{{producto.producto.precio}}</mat-cell>
             <mat-footer-cell *matFooterCellDef> </mat-footer-cell>
     </ng-container>
 
@@ -28,9 +28,15 @@
     <ng-container matColumnDef="borrar">
         <mat-header-cell *matHeaderCellDef>Eliminar</mat-header-cell>
         <mat-cell *matCellDef="let producto">
-            <a (click)="eliminarProducto(producto)" mat-icon-button color="warn">
-                <mat-icon>delete</mat-icon>
-            </a>
+            <button (click)="agregarCantidadProducto(producto)" mat-icon-button class="icono-exito">
+                <mat-icon>add</mat-icon>
+              </button>
+              <mat-form-field style="width: 15% !important;">
+                <input class="text-center" matInput type="number" [(ngModel)]="producto.cantidad">
+              </mat-form-field>
+              <button (click)="quitarProducto(producto)" mat-icon-button class="icono-error">
+                <mat-icon>remove</mat-icon>
+              </button>
         </mat-cell>
             <mat-footer-cell class="pie-tabla" *matFooterCellDef> {{obtenerTotalPedido() | currency}} </mat-footer-cell>
     </ng-container>

@@ -23,7 +23,15 @@ const pedidoSchema = new mongoose_1.Schema({
     fecha_creacion: { type: Date, required: true },
     fecha_entrega: { type: Date },
     comentarios: { type: String },
-    productos: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Producto' }],
+    productos: {
+        type: [
+            {
+                producto: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Producto' },
+                precioUnitario: { type: Number, required: true },
+                cantidad: { type: Number, required: true },
+            }
+        ]
+    },
     status: { type: String },
     total: { type: Number },
     c_retoque: { type: Boolean },

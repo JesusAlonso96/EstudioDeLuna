@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Pedido } from 'src/app/comun/modelos/pedido.model';
+import { Pedido, ProductoPedido } from 'src/app/comun/modelos/pedido.model';
 import { Producto } from 'src/app/comun/modelos/producto.model';
 
 export interface DialogData {
@@ -22,7 +22,7 @@ export class Agrupados {
   styleUrls: ['./modal-generar-ticket.component.scss']
 })
 export class ModalGenerarTicketComponent implements OnInit {
-  tabla_productos: Producto[];
+  tabla_productos: ProductoPedido[];
   dataSource: any;
   columnas_tabla: string[] = ['descripcion', 'precio'];
   debe: number = 0;

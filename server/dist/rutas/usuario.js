@@ -34,9 +34,6 @@ rutasUsuario.get('/obtenerPedidosVendidos/:filtro', middlewares_1.autenticacionM
 rutasUsuario.get('/obtenerPedidosVendidosPorFotografo/:id/:filtro', middlewares_1.autenticacionMiddleware, UsuarioCtrl.obtenerPedidosVendidosPorFotografo);
 rutasUsuario.get('/obtenerVentasConRetoquePorFotografo', middlewares_1.autenticacionMiddleware, UsuarioCtrl.obtenerVentasConRetoquePorFotografo);
 rutasUsuario.get('/desglosarVentasConRetoquePorFotografo/:id', UsuarioCtrl.desglosarVentasConRetoquePorFotografo);
-rutasUsuario.get('/obtenerEmpresas', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.obtenerEmpresas);
-rutasUsuario.get('/obtenerDatosEstudio', middlewares_1.autenticacionMiddleware, UsuarioCtrl.obtenerDatosEstudio);
-rutasUsuario.get('/obtenerCotizaciones', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.obtenerCotizaciones);
 rutasUsuario.get('/ordenesCompra', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.obtenerOrdenesCompra);
 rutasUsuario.get('/sucursales', middlewares_1.autenticacionMiddleware, UsuarioCtrl.obtenerSucursales);
 //post
@@ -44,8 +41,6 @@ rutasUsuario.post('/login', UsuarioCtrl.login);
 rutasUsuario.post('/crearAsistencia/:id', UsuarioCtrl.crearAsistencia);
 rutasUsuario.post('/agregarProducto', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.agregarProducto);
 rutasUsuario.post('/agregarFamilia', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.agregarFamilia);
-rutasUsuario.post('/agregarEmpresa', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.nuevaEmpresa);
-rutasUsuario.post('/agregarCotizacion', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.nuevaCotizacion);
 rutasUsuario.post('/ordenCompra', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.nuevaOrdenCompra);
 rutasUsuario.post('/compra', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.registrarCompra);
 //patch
@@ -54,8 +49,6 @@ rutasUsuario.patch('/eliminarFamilia/:id', middlewares_1.autenticacionMiddleware
 rutasUsuario.patch('/recuperarContrasena/:email', UsuarioCtrl.recuperarContrasena);
 rutasUsuario.patch('/ordenCompra/:id', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.desactivarOrdenComra);
 rutasUsuario.patch('/actualizarProducto', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.actualizarProducto);
-rutasUsuario.patch('/eliminarEmpresa', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.eliminarEmpresa);
-rutasUsuario.patch('/actualizarEmpresa', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorMiddleware, UsuarioCtrl.editarEmpresa);
 rutasUsuario.patch('/generarCodigoRecuperacion', UsuarioCtrl.generarCodigoRecuperacion);
 rutasUsuario.patch('/eliminarCodigoRecuperacion', UsuarioCtrl.eliminarCodigoRecuperacion);
 exports.default = rutasUsuario;

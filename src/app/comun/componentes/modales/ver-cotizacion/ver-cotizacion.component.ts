@@ -34,7 +34,7 @@ export class VerCotizacionComponent implements OnInit {
     html2pdf().from(this.cotizacionPdf.nativeElement).set(opciones).save();
   }
   obtenerSubtotalPorProducto(producto: ProductoCot): number {
-    return producto.cantidad * <number>producto.producto.precio;
+    return producto.cantidad * producto.precioUnitario;
   }
   inicializarTabla() {
     this.listData = new MatTableDataSource(this.cotizacion.productos);

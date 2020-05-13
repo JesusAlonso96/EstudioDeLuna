@@ -1,11 +1,9 @@
 @mixin steppers ($color) {
-  .mat-step-header {
+  .mat-horizontal-stepper-header {
+    pointer-events: none;
   }
 
-  .mat-step-header {
-    border-radius: 5px;
-    transition: all 200ms ease;
-    width: 20%;
-    height: 20%;
+  .mat-vertical-stepper-header {
+    pointer-events: none;
   }
 }

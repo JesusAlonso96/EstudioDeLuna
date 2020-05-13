@@ -54,7 +54,9 @@
     font-size: 14px;
     color: $danger;
   }
-
+  .icono-cerrar{
+    color: $danger;
+  }
   @keyframes pulse {
     0% {
       transform: scale(0.95);
