@@ -43,9 +43,7 @@ export interface DialogData2 {
   selector: 'app-empleado-venta',
   templateUrl: './empleado-venta.component.html',
   styleUrls: ['./empleado-venta.component.scss'],
-  animations: [
-    Animaciones.deslizarAbajo
-  ]
+  animations: [Animaciones.deslizarAbajo, Animaciones.carga]
 })
 export class EmpleadoVentaComponent implements OnInit, AfterViewChecked {
   @ViewChild('tablaProductos') tablaProductos: EmpleadoVentaTablaProductosAgregadosComponent;
@@ -62,6 +60,7 @@ export class EmpleadoVentaComponent implements OnInit, AfterViewChecked {
   productos: Producto[];
   fotografosDisponibles: Usuario[];
   costoExtra: boolean = false;
+  mostrarCantidades: boolean = false;
   cargando = {
     cargando: false,
     texto: ''
@@ -143,13 +142,13 @@ export class EmpleadoVentaComponent implements OnInit, AfterViewChecked {
     this.pedido.c_retoque = this.tieneRetoque();
     this.pedido.c_adherible = this.llevaAdherible();
   }
-  quitarProducto(producto: ProductoPedido) {
-    const indice = this.pedido.productos.indexOf(producto);
-    this.pedido.total = this.pedido.total - this.pedido.productos[indice].precioUnitario;
-    this.pedido.productos.splice(indice, 1);
-    this.tablaProductos.datosProductos.data = this.pedido.productos;
-    this.pedido.c_retoque = this.tieneRetoque();
-    this.pedido.importante = false;
+  obtenerTotalPedido() {
+    let total = 0;
+    this.pedido.productos.forEach((producto) => {
+      total = total + (producto.cantidad * producto.precioUnitario);
+    })
+    this.pedido.total = total;
+    this.mostrarCantidades = true;
   }
   existeEnProductos(producto: ProductoPedido): boolean {
     for (let i = 0; i < this.productos.length; i++) {
@@ -222,7 +221,7 @@ export class EmpleadoVentaComponent implements OnInit, AfterViewChecked {
           this.pedido.fecha_entrega = momento(this.pedido.fecha_creacion).add(60, 'm').toDate();
         } else {
           var aux = momento(this.pedido.fecha_creacion).add(60, 'm').toDate();
-          if (aux.getHours() >= 14) {
+          if (aux.getHours() >= 14 && aux.getHours() <= 15) {//si es mayor a las dos pero menor que las 3
             aux.setHours(16);
             aux.setMinutes(0);
             aux.setSeconds(0);
@@ -257,7 +256,6 @@ export class EmpleadoVentaComponent implements OnInit, AfterViewChecked {
     } else {
       this.pedido.fecha_creacion = new Date(Date.now());
       this.pedido.fecha_entrega = momento(this.pedido.fecha_creacion).add(15, 'm').toDate();
-
     }
     return true;
   }
@@ -380,6 +378,9 @@ export class EmpleadoVentaComponent implements OnInit, AfterViewChecked {
     this.generarFechaEntrega();
     this.asignarFotografo(detallesForm, completarForm);
   }
+  prueba() {
+    console.log(this.pedido);
+  }
 
 }
 
@@ -405,7 +406,6 @@ export class Modal {
     this.productoBuscar.num_fotos = this.data.num;
     this.productoBuscar.familia = this.data.familia;
     this.buscador = false;
-    console.log(this.data.productosActuales);
   }
   onNoClick(): void {
     this.dialogRef.close();
@@ -425,8 +425,8 @@ export class Modal {
     )
   }
   agregarProducto(productoPedido: ProductoPedido) {
-   productoPedido.cantidad += 1;
-   this.dialogRef.close(productoPedido);
+    productoPedido.cantidad += 1;
+    this.dialogRef.close(productoPedido);
   }
   iniciarProductosPedido(productos: Producto[]) {
     this.productosPedido = [];
@@ -440,6 +440,6 @@ export class Modal {
     }
     return false;
   }
-  
+
 
 }

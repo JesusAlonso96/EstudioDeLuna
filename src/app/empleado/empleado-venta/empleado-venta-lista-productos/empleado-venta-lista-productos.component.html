@@ -1,4 +1,4 @@
-<div class="row" *ngIf="productosAgrupados.length == 0">
+<div class="row" *ngIf="productosAgrupados.length == 0" style="overflow: auto; max-height: 70vh;">
     <div class="col-lg-12">
         <div class="alert alert-info sin-borde" role="alert">
             No existen productos en la familia <a href="#" class="alert-link">{{familia.nombre}}</a>. Por favor,
@@ -6,7 +6,7 @@
         </div>
     </div>
 </div>
-<div class="row" *ngIf="!esFamiliaEspecial()">
+<div class="row" *ngIf="!esFamiliaEspecial()" style="overflow: auto; max-height: 70vh;">
     <ng-container *ngFor="let productos of productosAgrupados">
         <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 w-100">
             <mat-card class="sin-borde mb-4 card p-0">
@@ -21,8 +21,8 @@
         </div>
     </ng-container>
 </div>
-<ng-container *ngIf="esFamiliaEspecial()">
-    <div class="row" *ngIf="familiaSeleccionada=='Sesiones'">
+<ng-container *ngIf="esFamiliaEspecial()" >
+    <div class="row" *ngIf="familia.nombre =='Sesiones'" style="overflow: auto; max-height: 70vh;">
         <ng-container *ngFor="let productos of productosAgrupados">
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                 <mat-card class="sin-borde mb-4 card p-0">
@@ -37,7 +37,7 @@
             </div>
         </ng-container>
     </div>
-    <div class="row" *ngIf="familiaSeleccionada !='Sesiones'">
+    <div class="row" *ngIf="familia.nombre !='Sesiones'" style="overflow: auto; max-height: 70vh;">
         <ng-container *ngFor="let producto of productosAgrupados">
             <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
                 <mat-card class="sin-borde mb-4 card" style="padding: 0%;">
@@ -54,7 +54,7 @@
                             <mat-icon>add</mat-icon>
                         </button>
                         <button mat-mini-fab matTooltip="Ver detalles" class="float-right"
-                            (click)="verDetalles(productos)">
+                            (click)="verDetalles(producto)">
                             <mat-icon>visibility</mat-icon>
                         </button>
                     </div>

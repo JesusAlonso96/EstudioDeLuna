@@ -106,7 +106,7 @@ export class InventariosBajaInsumoComponent implements OnInit {
     }
   }
 
-  disminuirBaja(insumo: InsumoAlmacen) {
+  disminuirBaja() {
     if(this.movimiento.cantidadMovimiento > 1) {
       this.movimiento.cantidadMovimiento--;
     } else {

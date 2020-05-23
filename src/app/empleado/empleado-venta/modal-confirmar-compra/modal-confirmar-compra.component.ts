@@ -9,17 +9,10 @@ import * as momento from 'moment';
   styleUrls: ['./modal-confirmar-compra.component.scss']
 })
 export class ModalConfirmarCompraComponent {
-  
-  fecha_creacion: string;
-  fecha_entrega: string;
-
   constructor(public dialogRef: MatDialogRef<ModalConfirmarCompraComponent>,
-    @Inject(MAT_DIALOG_DATA) public pedido: Pedido) {
-      this.fecha_creacion = momento(this.pedido.fecha_creacion).locale('es').format('LLLL');
-      this.fecha_entrega = momento(this.pedido.fecha_entrega).locale('es').format('LLLL');
-     }
+    @Inject(MAT_DIALOG_DATA) public pedido: Pedido) { }
 
-  onNoClick(): void {
+  cerrarModal(): void {
     this.dialogRef.close();
   }
 }

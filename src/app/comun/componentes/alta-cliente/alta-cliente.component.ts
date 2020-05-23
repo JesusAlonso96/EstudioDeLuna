@@ -5,7 +5,7 @@ import { Cliente } from '../../modelos/cliente.model';
 import { EstadosService } from '../../servicios/estados.service';
 import { ClienteService } from '../../servicios/cliente.service';
 import { ToastrService } from 'ngx-toastr';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatStepper } from '@angular/material';
 import { ModalConfirmacionComponent } from '../modal-confirmacion/modal-confirmacion.component';
 import { NgForm } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -16,9 +16,14 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./alta-cliente.component.scss']
 })
 export class AltaClienteComponent implements OnInit {
-  @ViewChild('clienteForm') clienteForm: NgForm;
+  @ViewChild('infoGeneralForm') infoGeneralForm: NgForm;
+  @ViewChild('datosFiscalesForm') datosFiscalesForm: NgForm;
+  @ViewChild('contactoForm') contactoForm: NgForm;
+  @ViewChild('domicilioForm') domicilioForm: NgForm;
+  @ViewChild('stepper') stepper: MatStepper;
+
   @Output() cargandoEvento = new EventEmitter(true);
-  conFactura: string = 'No';
+  conFactura: boolean = false;
   estados: Estado[];
   estado: Estado;
   municipios: Municipio[];
@@ -40,43 +45,29 @@ export class AltaClienteComponent implements OnInit {
       }
     )
   }
-  generarContrasena(): string {
-    let contrasena = '';
-    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < 14; i++) {
-      contrasena += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-    }
-    return contrasena;
-  }
 
-  onChange(e) {
-    this.conFactura = e.checked ? 'Si' : 'No';
-  }
-  seleccionoEstado() {
-    if (this.estado) return true;
-    return false;
+
+  seleccionoEstado(): boolean {
+    return this.estado ? true : false;
   }
   abrirRegistrarCliente() {
     const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
       data: { titulo: 'Registrar cliente', mensaje: '¿Desea registrar este cliente?', msgBoton: 'Registrar', color: 'primary' }
     })
     dialogRef.afterClosed().subscribe(respuesta => {
-      if (respuesta) {
-        this.registrarCliente();
-      }
+      if (respuesta) this.registrarCliente();
     })
   }
   registrarCliente() {
-    this.cliente.fecha_registro = new Date(Date.now());
-    this.cliente.contrasena = this.generarContrasena();
+    this.cliente.razonSocial = this.cliente.ape_mat ? this.cliente.nombre + ' ' + this.cliente.ape_pat + ' ' + this.cliente.ape_mat : this.cliente.nombre + ' ' + this.cliente.ape_pat;
     this.crearVistaCargando(true, 'Registrando cliente...')
     this.clienteService.registrarCliente(this.cliente).subscribe(
       (registrado: any) => {
         this.crearVistaCargando(false);
-        this.clienteForm.resetForm();
+        this.reiniciarFormularios();
         this.toastr.success('Cliente registrado', 'El cliente ha sido registrado exitosamente', { closeButton: true });
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.crearVistaCargando(false);
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
@@ -97,10 +88,16 @@ export class AltaClienteComponent implements OnInit {
     )
 
   }
-  setMunicipio() {
-    this.cliente.municipio = this.municipio.nombre;
-  }
   crearVistaCargando(cargando: boolean, texto?: string) {
     this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
+  }
+  reiniciarFormularios() {
+    for(let i=0; i<3;i++){
+      this.stepper.previous();
+    }
+    this.infoGeneralForm.resetForm();
+    this.datosFiscalesForm.resetForm();
+    this.contactoForm.resetForm();
+    this.domicilioForm.resetForm();
   }
 }

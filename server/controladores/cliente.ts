@@ -3,13 +3,18 @@ import { Cliente, ICliente } from '../modelos/cliente.model';
 import { NativeError } from 'mongoose';
 import Servidor from '../clases/servidor';
 import * as Socket from '../sockets/socket';
+import { generarContrasena } from '../funciones-auxiliares/funciones-auxiliares';
 
 
 export let registrarCliente = (req: Request, res: Response) => {
     const clienteNuevo = new Cliente(req.body);
     clienteNuevo.sucursal = res.locals.usuario.sucursal;
+    clienteNuevo.contrasena = generarContrasena();
     clienteNuevo.save((err: NativeError, cliente: ICliente) => {
-        if (err) return res.status(422).send({ titulo: 'No se pudo crear el registro' });
+        if (err) {
+            console.log(err);
+            return res.status(422).send({ titulo: 'No se pudo crear el registro' });
+        }
         obtenerNuevoCliente(cliente, res, 0);
         return res.json(cliente);
     });
