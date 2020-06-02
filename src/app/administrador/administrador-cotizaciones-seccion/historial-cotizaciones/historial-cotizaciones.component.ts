@@ -1,13 +1,13 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { MatDialog, MatTableDataSource, PageEvent } from '@angular/material';
-import { ToastrService } from 'ngx-toastr';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, PageEvent } from '@angular/material';
 import { Observable } from 'rxjs';
 import { VerCotizacionComponent } from 'src/app/comun/componentes/modales/ver-cotizacion/ver-cotizacion.component';
-import { Cotizacion } from 'src/app/comun/modelos/cotizacion.model';
-import { ProductoCot } from 'src/app/comun/modelos/producto_cot.model';
-import { CotizacionesService } from 'src/app/comun/servicios/cotizaciones.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Animaciones } from 'src/app/comun/constantes/animaciones';
+import { Cotizacion } from 'src/app/comun/modelos/cotizacion.model';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
+import { CotizacionesService } from 'src/app/comun/servicios/cotizaciones.service';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 
 @Component({
   selector: 'app-historial-cotizaciones',
@@ -16,27 +16,30 @@ import { Animaciones } from 'src/app/comun/constantes/animaciones';
   animations: [Animaciones.carga]
 })
 export class HistorialCotizacionesComponent implements OnInit {
-  @Output() cargandoEvento = new EventEmitter(true);
   cotizaciones: Cotizacion[] = [];
   filtroCotizaciones: Observable<Cotizacion[]>;
   page_size: number = 10;
   page_number: number = 1;
   busquedaCotizacion: string = '';
-  constructor(public cotizacionService: CotizacionesService, private toastr: ToastrService, private dialog: MatDialog) { }
+  constructor(
+    public cotizacionService: CotizacionesService, 
+    private toastr: NgToastrService, 
+    private dialog: MatDialog,
+    private cargandoService: CargandoService) { }
 
   ngOnInit() {
     this.obtenerCotizacionesRealizadas();
   }
   obtenerCotizacionesRealizadas() {
-    this.crearVistaCargando(true, 'Obteniendo cotizaciones...')
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo cotizaciones...')
     this.cotizacionService.obtenerCotizacionesRealizadas().subscribe(
       (cotizaciones: Cotizacion[]) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.cotizaciones = cotizaciones;
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
   }
@@ -51,8 +54,5 @@ export class HistorialCotizacionesComponent implements OnInit {
   }
   borrarBusqueda() {
     this.busquedaCotizacion = '';
-  }
-  crearVistaCargando(cargando: boolean, texto?: string) {
-    this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
   }
 }

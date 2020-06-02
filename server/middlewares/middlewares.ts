@@ -49,7 +49,20 @@ export let adminOSupervisorORecepcionistaMiddleware = (req: Request, res: Respon
         return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' })
     }
 }
-
+export let fotografoMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    if (res.locals.usuario.rol !== 0 && res.locals.rol_sec !== 1) {
+        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para crear un pedido' })
+    } else {
+        next();
+    }
+}
+export let recepcionistaMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    if (res.locals.usuario.rol == 0 && res.locals.usuario.rol_sec == 2) {
+        next();
+    } else {
+        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para crear un pedido' })
+    }
+}
 
 
 

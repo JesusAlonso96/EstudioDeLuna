@@ -22,6 +22,7 @@ import rutasInventario from '../rutas/inventario';
 import rutasSucursal from '../rutas/sucursal';
 import rutasTraspaso from '../rutas/traspaso';
 import rutasCotizaciones from '../rutas/cotizaciones';
+import rutasPedidos from '../rutas/pedidos';
 
 export default class Servidor {
     private static _instance: Servidor;
@@ -72,6 +73,7 @@ export default class Servidor {
         this.app.use('/api/v2/configuracion', rutasConfiguracion);
         this.app.use('/api/v2/proveedores', rutasProveedores);
         this.app.use('/api/v2/cotizaciones', rutasCotizaciones);
+        this.app.use('/api/v2/pedidos', rutasPedidos);
     }
     iniciar() {
 

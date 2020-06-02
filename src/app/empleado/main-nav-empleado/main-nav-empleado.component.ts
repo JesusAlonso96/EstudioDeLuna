@@ -11,6 +11,7 @@ import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { Animaciones } from 'src/app/comun/constantes/animaciones';
 import MenuRecepcionista from 'src/app/comun/constantes/menus/menu-empleado-recepcionista.constant';
 import MenuFotografo from 'src/app/comun/constantes/menus/menu-empleado-fotografo';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-main-nav-empleado',
@@ -23,17 +24,31 @@ export class MainNavEmpleadoComponent implements OnInit {
   pestanasActivas: boolean[] = [];
   navbarAbierto: boolean = true;
   moduloActual: string = '';
+  cargando = {
+    cargando: false,
+    texto: ''
+  }
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver,
+  constructor(
+    private cargandoService: CargandoService,
+    private breakpointObserver: BreakpointObserver,
     public autenticacionService: ServicioAutenticacionService,
     public temasService: TemasService,
     private toastr: NgToastrService,
-    private rutas: Router) { }
+    private rutas: Router) {
+    this.cargandoService.cambioEmitido$.subscribe(
+      cargando => {
+        this.cargando.cargando = cargando.cargando;
+        this.cargando.texto = cargando.texto;
+      }
+    )
+  }
+
   ngOnInit(): void {
     this.temasService.iniciarTemas();
     this.iniciarMenus();

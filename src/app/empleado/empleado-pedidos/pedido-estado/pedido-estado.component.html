@@ -40,7 +40,7 @@
         </button>
         <button class="boton" *ngIf="estadoActual == 'Finalizado'" mat-raised-button color="primary"
             (click)="entregarPedido()"
-            [disabled]="cargando.cargando">{{cargando.cargando ? cargando.texto : 'Entregar'}}</button>
+            >Entregar</button>
         <button mat-raised-button (click)="onNoClick()" cdkFocusInitial>Cerrar</button>
     </div>
     <div *ngIf="!pedidoPagado()">
@@ -61,13 +61,13 @@
                 </mat-error>
             </mat-form-field>
             <button mat-raised-button color="primary" *ngIf="estadoActual !== 'Finalizado'"
-                [disabled]="!pagadoForm.valid || cargando.cargando"
-                (click)="pagarPedido()">{{cargando.cargando ? cargando.texto : 'Pagar'}}</button>
+                [disabled]="!pagadoForm.valid"
+                (click)="pagarPedido()">Pagar</button>
 
             <button class="boton" *ngIf="estadoActual == 'Finalizado'"
-                [disabled]="!pagadoForm.valid || cargando.cargando" mat-raised-button color="primary"
-                (click)="pagarYEntregarPedido()"> {{cargando.cargando ? cargando.texto : 'Pagar y entregar'}} </button>
-            <button mat-button (click)="onNoClick()" [disabled]="cargando.cargando" cdkFocusInitial>Cancelar</button>
+                [disabled]="!pagadoForm.valid" mat-raised-button color="primary"
+                (click)="pagarYEntregarPedido()">Pagar y entregar</button>
+            <button mat-button (click)="onNoClick()" cdkFocusInitial>Cancelar</button>
         </form>
     </div>
 </div>

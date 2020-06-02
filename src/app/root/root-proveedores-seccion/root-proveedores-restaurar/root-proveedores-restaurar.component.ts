@@ -6,6 +6,7 @@ import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service'
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { takeUntil } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-root-proveedores-restaurar',
@@ -14,13 +15,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class RootProveedoresRestaurarComponent implements OnInit, OnDestroy {
   @ViewChild('buscador') buscador: BuscadorComponent;
-  @Output() cargandoEvento = new EventEmitter(true);
   columnas: string[] = ['nombre', 'rfc', 'telefono', 'ciudad', 'restaurar'];
   proveedores: Proveedor[];
   private onDestroy$ = new Subject<boolean>();
   constructor(
     private proveedoresService: ProveedoresService,
-    private toastr: NgToastrService) { }
+    private toastr: NgToastrService,
+    private cargandoService: CargandoService) { }
 
   ngOnInit(): void {
     this.obtenerProveedoresEliminados();
@@ -32,14 +33,14 @@ export class RootProveedoresRestaurarComponent implements OnInit, OnDestroy {
     this.onDestroy$.complete();
   }
   obtenerProveedoresEliminados() {
-    this.crearVistaCargando(true, 'Obteniendo proveedores eliminados...')
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo proveedores eliminados...')
     this.proveedoresService.obtenerProveedoresEliminados().subscribe(
       (proveedoresEliminados: Proveedor[]) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.proveedores = proveedoresEliminados;
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
@@ -72,9 +73,6 @@ export class RootProveedoresRestaurarComponent implements OnInit, OnDestroy {
           this.toastr.abrirToastr('advertencia', 'Cliente restaurado', 'Se ha restaurado un cliente');
         }
       )
-  }
-  crearVistaCargando(cargando: boolean, texto?: string) {
-    this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
   }
 
 }

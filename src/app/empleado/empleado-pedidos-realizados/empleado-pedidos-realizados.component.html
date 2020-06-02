@@ -1,49 +1,62 @@
-<app-cargando *ngIf="cargandoPedidos" texto="Cargando pedidos..."></app-cargando>
-<div class="container-fluid margin-top">
-    <div class="row">
-        <mat-card class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <mat-form-field class="full-width" appearance="outline">
-                        <mat-label>Buscar por numero de pedido</mat-label>
-                        <input matInput [(ngModel)]="parametroBusqueda" type="text" placeholder="Numero de pedido">
-                        <button *ngIf="parametroBusqueda" (click)="borrarBusqueda()" mat-button matSuffix
-                            mat-icon-button aria-label="Clear">
-                            <mat-icon>close</mat-icon>
-                        </button>
-                    </mat-form-field>
-                </div>
-                <ng-container *ngFor="let pedido of pedidos | filtroPedidos:parametroBusqueda">
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <mat-card class="sin-borde mb-4">
-                            <mat-card-header>
-                                <img mat-card-avatar class="foto" *ngIf="!pedido.foto"
-                                    src="../../../assets/imagenes/profile_user.gif">
-                                <img mat-card-avatar class="foto" *ngIf="pedido.foto" [src]="url_fotos + pedido.foto">
-                                <mat-card-title>Pedido {{pedido.num_pedido}}</mat-card-title>
-                                <mat-card-subtitle>Creado en {{pedido.fecha_creacion | date:"dd-MM-yyyy, h:mm a"}}
-                                </mat-card-subtitle>
-                            </mat-card-header>
-                            <mat-card-content>
-                                <p>
-                                    <strong>Estado actual:</strong> {{pedido.status}} <br>
-                                    <strong>Cliente:</strong> {{pedido.cliente}} <br>
-                                    <strong>Anticipo:</strong> ${{pedido.anticipo}} <br>
-                                    <strong>Total:</strong> ${{pedido.total}} <br>
-                                    <strong>Debe:</strong> ${{pedido.total - pedido.anticipo}} <br>
-                                </p>
-                                <div align="end">
-                                    <button mat-raised-button (click)="verDetalles(pedido)">Ver detalles</button>
-                                </div>
-                            </mat-card-content>
-                            <mat-card-footer class="card-footer text-muted">
-                                <span align="start">Fecha de entrega:
-                                    {{pedido.fecha_entrega | date:"dd-MM-yyyy, h:mm a"}}</span>
-                            </mat-card-footer>
-                        </mat-card>
-                    </div>
-                </ng-container>
-            </div>
-        </mat-card>
+<app-cargando [cargando]="cargando.cargando" [texto]="cargando.texto"></app-cargando>
+<mat-card class="card container margin-top p-0">
+  <div class="container-fluid">
+    <div class="d-flex h-100 mt-4 mb-4">
+      <button class="btn-titulo w-25" mat-raised-button color="accent">
+        <h5>{{nombreFiltroActual}}</h5>
+      </button>
+      <span class="espaciador"></span>
+      <mat-radio-group [(ngModel)]="tipoFiltro" (change)="cambio()" class="d-flex justify-content-center"
+        aria-label="Selecciona un filtro">
+        <mat-radio-button class="mr-4" [value]="1">Hoy</mat-radio-button>
+        <mat-radio-button class="mr-4" [value]="2">Esta semana</mat-radio-button>
+        <mat-radio-button class="mr-4" [value]="3">Este mes</mat-radio-button>
+        <mat-radio-button class="mr-4" [value]="4">Ultimos 3 meses</mat-radio-button>
+        <mat-radio-button class="mr-4" [value]="5">Todos</mat-radio-button>
+      </mat-radio-group>
     </div>
-</div>
+    <div class="row">
+      <div class="col-lg-12">
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Buscar por numero de pedido</mat-label>
+          <input matInput [(ngModel)]="parametroBusqueda" (keyup)="aplicarFiltro()" type="text"
+            placeholder="Numero de pedido">
+          <button *ngIf="parametroBusqueda" (click)="borrarBusqueda()" mat-button matSuffix mat-icon-button
+            aria-label="Clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div *ngFor="let pedido of pedidosFiltrados" class="col-lg-4 col-md-6 col-sm-12">
+        <mat-card class="card mb-4">
+          <mat-card-header class="card-header border-0 bg-transparent">
+            <img mat-card-avatar class="foto" *ngIf="!pedido.foto" src="../../../assets/imagenes/profile_user.gif">
+            <img mat-card-avatar class="foto" *ngIf="pedido.foto" [src]="url_fotos + pedido.foto">
+            <mat-card-title>Pedido {{pedido.num_pedido}}</mat-card-title>
+            <mat-card-subtitle>Creado en {{pedido.fecha_creacion | date:"dd-MM-yyyy, h:mm a"}}
+            </mat-card-subtitle>
+          </mat-card-header>
+          <div class="card-body">
+            <button mat-raised-button class="btn-info"  (click)="verDetalles(pedido)">
+              <mat-icon class="mb-1 mr-1">visibility</mat-icon>Ver detalles
+            </button>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+    <div class="row" *ngIf="pedidos.length == 0">
+      <div class="col-lg-12">
+        <app-alerta tipo="info" tipo_bootstrap="info" mensaje="No hay pedidos realizados hasta el momento.">
+        </app-alerta>
+      </div>
+    </div>
+    <div class="row" *ngIf="pedidosFiltrados.length == 0">
+      <div class="col-lg-12">
+        <app-alerta tipo="info" tipo_bootstrap="info" mensaje="No existe un pedido con este numero de pedido.">
+        </app-alerta>
+      </div>
+    </div>
+  </div>
+</mat-card>

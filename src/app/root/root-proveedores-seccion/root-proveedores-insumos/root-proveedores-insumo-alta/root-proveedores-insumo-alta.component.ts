@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Proveedor } from 'src/app/comun/modelos/proveedor.model';
 import { Observable } from 'rxjs';
 import { ProductoProveedor } from 'src/app/comun/modelos/producto_proveedor.model';
@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material';
 import { SeleccionarProveedorComponent } from 'src/app/comun/componentes/modales/seleccionar-proveedor/seleccionar-proveedor.component';
 import { startWith, map } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-root-proveedores-insumo-alta',
@@ -16,7 +17,6 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./root-proveedores-insumo-alta.component.scss']
 })
 export class RootProveedoresInsumoAltaComponent implements OnInit {
-  @Output() cargandoEvento = new EventEmitter(true);
   proveedores: Proveedor[];
   proveedorSeleccionado: Proveedor;
   opcionesFiltradas: Observable<Proveedor[]>;
@@ -25,21 +25,22 @@ export class RootProveedoresInsumoAltaComponent implements OnInit {
   constructor(
     private proveedoresService: ProveedoresService,
     private toastr: NgToastrService,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog,
+    private cargandoService: CargandoService) { }
 
   ngOnInit(): void {
     this.obtenerProveedores();
   }
   obtenerProveedores() {
-    this.crearVistaCargando(true, 'Obteniendo proveedores..')
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo proveedores..')
     this.proveedoresService.obtenerProveedores().subscribe(
       (proveedores: Proveedor[]) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.proveedores = proveedores;
         this.iniciarFiltro();
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
@@ -67,23 +68,20 @@ export class RootProveedoresInsumoAltaComponent implements OnInit {
     return proveedor ? proveedor.nombre : undefined;
   }
   agregarProducto(formulario: NgForm) {
-    this.crearVistaCargando(true, 'Agregando producto...')
+    this.cargandoService.crearVistaCargando(true, 'Agregando producto...')
     this.producto.proveedor = this.controlador.value;
     this.proveedoresService.agregarProductoProveedor(this.producto).subscribe(
       (guardado: any) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', guardado.titulo, guardado.detalles);
         formulario.resetForm();
         this.controlador = new FormControl();
         this.iniciarFiltro();
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
-  }
-  crearVistaCargando(cargando: boolean, texto?: string) {
-    this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
   }
 }

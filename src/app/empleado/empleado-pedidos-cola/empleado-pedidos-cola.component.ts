@@ -5,7 +5,7 @@ import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-aut
 import { MatTableDataSource, MatSort, MatPaginator, MatDialog } from '@angular/material';
 import { ConfirmarModalComponent } from './confirmar-modal/confirmar-modal.component';
 import { ToastrService } from 'ngx-toastr';
-import { PedidosService } from '../servicio-empleado/pedidos.service';
+import { PedidosService } from 'src/app/comun/servicios/pedidos.service';
 
 @Component({
   selector: 'app-empleado-pedidos-cola',
@@ -27,7 +27,7 @@ export class EmpleadoPedidosColaComponent implements OnInit {
     this.quitarPedidoEnTiempoReal();
   }
   obtenerPedidosEnCola() {
-    this.empleadoService.obtenerPedidosEnCola().subscribe(
+    this.pedidosService.obtenerPedidosEnCola().subscribe(
       (pedidos: Pedido[]) => {
         this.pedidos = pedidos;
         this.inicializarTabla();
@@ -64,13 +64,13 @@ export class EmpleadoPedidosColaComponent implements OnInit {
   }
   tomarPedido(pedido: Pedido) {
     this.cargando = true;
-    this.empleadoService.tomarPedido(pedido._id, this.autService.getIdUsuario()).subscribe(
+    this.pedidosService.tomarPedido(pedido._id, this.autService.getIdUsuario()).subscribe(
       (pedidos: Pedido[]) => {
         this.pedidos = pedidos;
         this.listData.data = this.pedidos;
         this.cargando = false;
         this.toastr.success('Ve a la pestaña de Pedidos en proceso para ver el pedido', 'Pedido tomado con exito', { closeButton: true });
-        this.empleadoService.eliminarNotificacionPorPedido(pedido.num_pedido).subscribe();
+        this.pedidosService.eliminarNotificacionPorPedido(pedido.num_pedido).subscribe();
       },
       (err: any) => {
         this.cargando = false;

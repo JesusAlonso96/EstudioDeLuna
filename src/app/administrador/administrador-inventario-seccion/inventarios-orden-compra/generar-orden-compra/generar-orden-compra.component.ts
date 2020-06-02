@@ -8,6 +8,8 @@ import { ToastrService } from 'ngx-toastr';
 import { OrdenCompra, ProductoOrdenCompra } from 'src/app/comun/modelos/orden_compra.model';
 import { SeleccionarProductoProveedorComponent } from 'src/app/comun/componentes/modales/seleccionar-producto-proveedor/seleccionar-producto-proveedor.component';
 import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-generar-orden-compra',
@@ -30,7 +32,7 @@ export class GenerarOrdenCompraComponent implements OnInit {
   iva: boolean;
   //FORMULARIO
   constructor(private dialog: MatDialog,
-    private toastr: ToastrService,
+    private toastr: NgToastrService,
     private usuarioService: UsuarioService,
     private proveedoresService: ProveedoresService) { }
 
@@ -64,9 +66,9 @@ export class GenerarOrdenCompraComponent implements OnInit {
         this.cargando = false;
         this.productos = productos;
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     );
   }
@@ -102,26 +104,26 @@ export class GenerarOrdenCompraComponent implements OnInit {
         this.idBusqueda = undefined;
       }
     } else {
-      this.toastr.warning('Selecciona un producto del proveedor', '', { closeButton: true });
+      this.toastr.abrirToastr('advertencia', '', 'Selecciona un producto del proveedor');
     }
   }
   generarOrdenCompra() {
     let error: boolean = false;
     console.log(this.ordenCompra.proveedor)
     if (this.ordenCompra.proveedor.nombre == 'Sin proveedor seleccionado') {
-      this.toastr.error('Por favor, ingresa el proveedor', 'Proveedor requerido', { closeButton: true });
+      this.toastr.abrirToastr('error', 'Por favor, ingresa el proveedor', 'Proveedor requerido');
       error = true;
     }
     if (!this.fechaPedido) {
-      this.toastr.error('Por favor, ingresa la fecha del pedido', 'Fecha del pedido requerida', { closeButton: true });
+      this.toastr.abrirToastr('error', 'Por favor, ingresa la fecha del pedido', 'Fecha del pedido requerida');
       error = true;
     }
     if (!this.fechaEntrega) {
-      this.toastr.error('Por favor, ingresa la fecha de entrega', 'Fecha de entrega requerida', { closeButton: true });
+      this.toastr.abrirToastr('error', 'Por favor, ingresa la fecha de entrega', 'Fecha de entrega requerida');
       error = true;
     }
     if (this.ordenCompra.productosOrdenCompra.length == 0 || !this.ordenCompra.productosOrdenCompra) {
-      this.toastr.error('Por favor, ingresa productos a la orden', 'Productos requeridos', { closeButton: true });
+      this.toastr.abrirToastr('error', 'Por favor, ingresa productos a la orden', 'Productos requeridos');
       error = true;
     }
     if (!error) {
@@ -145,12 +147,12 @@ export class GenerarOrdenCompraComponent implements OnInit {
     this.usuarioService.agregarOrdenCompra(ordenCompra).subscribe(
       (ordenGuardada: OrdenCompra) => {
         this.cargando = false;
-        this.toastr.success('Se ha creado exitosamente la orden de compra', 'Orden de compra creada', { closeButton: true });
+        this.toastr.abrirToastr('exito', 'Se ha creado exitosamente la orden de compra', 'Orden de compra creada');
         this.resetearFormulario();
       },
       (err: any) => {
         this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     );
   }
@@ -176,7 +178,7 @@ export class GenerarOrdenCompraComponent implements OnInit {
   importarTodosLosProductos() {
     this.ordenCompra.productosOrdenCompra = [];
     if (this.productos.length == 0) {
-      this.toastr.info('Este proveedor no cuenta con productos', 'Sin productos', { closeButton: true });
+      this.toastr.abrirToastr('info', 'Este proveedor no cuenta con productos', 'Sin productos');
     } else {
       for (let i = 0; i < this.productos.length; i++) {
         this.ordenCompra.productosOrdenCompra.push({

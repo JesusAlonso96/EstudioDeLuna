@@ -8,6 +8,8 @@ import { environment } from '../../../environments/environment';
 import { EmpleadoService } from '../servicio-empleado/empleado.service';
 import { PedidoEstadoComponent } from './pedido-estado/pedido-estado.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ModalConfirmacionComponent } from 'src/app/comun/componentes/modal-confirmacion/modal-confirmacion.component';
+import { PedidosService } from 'src/app/comun/servicios/pedidos.service';
 
 @Component({
   selector: 'app-empleado-pedidos',
@@ -23,14 +25,16 @@ export class EmpleadoPedidosComponent implements OnInit {
   url_fotos: string = environment.url_fotos;;
   page_size: number = 5;
   page_number: number = 1;
-  constructor(public dialog: MatDialog, private empleadoService: EmpleadoService, private toastr: NgToastrService, private temasService: TemasService) { }
+  fechaPedidos: number = 2;
+  nombreFiltroActual: string = 'Pedidos esta semana';
+  constructor(public dialog: MatDialog, private pedidosService: PedidosService, private toastr: NgToastrService, private temasService: TemasService) { }
 
   ngOnInit() {
-    this.obtenerPedidos();
+    this.obtenerPedidos(this.fechaPedidos);
   }
-  obtenerPedidos() {
+  obtenerPedidos(filtro: number) {
     this.cargando = true;
-    this.empleadoService.obtenerPedidos().subscribe(
+    this.pedidosService.obtenerPedidos(filtro).subscribe(
       (pedidos: Pedido[]) => {
         this.pedidos = this.pedidosFiltrados = pedidos;
         this.cargando = false;
@@ -43,6 +47,7 @@ export class EmpleadoPedidosComponent implements OnInit {
   }
   borrarBusqueda() {
     this.parametroBusqueda = '';
+    this.aplicarFiltro();
   }
   manejarPaginacion(e: PageEvent) {
     this.page_size = e.pageSize;
@@ -55,6 +60,44 @@ export class EmpleadoPedidosComponent implements OnInit {
     this.pedidosFiltrados = this.pedidos.filter(pedido => {
       return (pedido.num_pedido.toString().trim().toLowerCase().indexOf(this.parametroBusqueda.trim().toLowerCase()) !== -1);
     })
+  }
+  cambio() {
+    switch (this.fechaPedidos) {
+      case 1:
+        this.nombreFiltroActual = 'Pedidos de hoy';
+        this.obtenerPedidos(this.fechaPedidos);
+        break;
+      case 2:
+        this.nombreFiltroActual = 'Pedidos esta semana';
+        this.obtenerPedidos(this.fechaPedidos);
+        break;
+      case 3:
+        this.nombreFiltroActual = 'Pedidos este mes';
+        this.obtenerPedidos(this.fechaPedidos);
+        break;
+      case 4:
+        this.nombreFiltroActual = 'Pedidos en 3 meses';
+        this.obtenerPedidos(this.fechaPedidos);
+        break;
+      case 5:
+        const referenciaModal = this.dialog.open(ModalConfirmacionComponent, {
+          data: {
+            titulo: '¿Estas seguro que deseas ver todos los pedidos?',
+            mensaje: ' Esta busqueda podria demorar algunos minutos',
+            msgBoton: 'Buscar',
+            color: 'primary'
+          }
+        })
+        referenciaModal.afterClosed().subscribe(buscar => {
+          if (buscar) this.obtenerPedidos(this.fechaPedidos);
+          else {
+            this.fechaPedidos = 2;
+            this.obtenerPedidos(this.fechaPedidos);
+          }
+        })
+        break;
+    }
+
   }
 
 }

@@ -21,4 +21,18 @@
     color: #ffffff;
     background-color: $warn;
   }
+  .btn-titulo {
+    border-radius: 5px;
+    text-align: start;
+    height: 60px;
+    position: absolute;
+    top: 0;
+    margin-top: -2%;
+  
+    h5 {
+      font-weight: 300;
+  
+      line-height: 1.4em;
+    }
+  }
 }

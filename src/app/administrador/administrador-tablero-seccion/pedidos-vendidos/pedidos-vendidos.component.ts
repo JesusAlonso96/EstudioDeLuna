@@ -8,6 +8,7 @@ import { Usuario } from 'src/app/comun/modelos/usuario.model';
 import { MostrarVentasFotografosComponent } from 'src/app/comun/componentes/modales/mostrar-ventas-fotografos/mostrar-ventas-fotografos.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-pedidos-vendidos',
@@ -15,27 +16,27 @@ import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
   styleUrls: ['./pedidos-vendidos.component.scss']
 })
 export class PedidosVendidosComponent implements OnInit {
-  @Output() cargandoEvento = new EventEmitter(true);
   pedidos: Pedido[];
   cargando: boolean = false;
   empleadoSeleccionado: Usuario;
   filtro: number = 1;
-  constructor(private usuarioService: UsuarioService, private toastr: NgToastrService, private dialog: MatDialog) { }
+  constructor(private usuarioService: UsuarioService, private toastr: NgToastrService, private dialog: MatDialog,
+    private cargandoService: CargandoService) { }
 
   ngOnInit() {
     this.obtenerPedidosVendidos();
   }
 
   obtenerPedidosVendidos() {
-    this.cargandoEv(true,'Obteniendo pedidos vendidos...');
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo pedidos vendidos...');
     this.usuarioService.obtenerPedidosVendidos(this.filtro).subscribe(
       (pedidos: Pedido[]) => {
-        this.cargandoEv(false);
+        this.cargandoService.crearVistaCargando(false);
         this.pedidos = pedidos;
       },
       (err: HttpErrorResponse) => {
-        this.cargandoEv(false);
-        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
+        this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     );
   }
@@ -49,15 +50,15 @@ export class PedidosVendidosComponent implements OnInit {
     })
   }
   obtenerPedidosVendidosPorEmpleado(empleado: Usuario) {
-    this.cargandoEv(true,'Obteniendo pedidos vendidos...');
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo pedidos vendidos...');
     this.usuarioService.obtenerPedidosVendidosPorFotografo(<string>empleado._id, this.filtro).subscribe(
       (pedidos: Pedido[]) => {
-        this.cargandoEv(false);
+        this.cargandoService.crearVistaCargando(false);
         this.pedidos = pedidos;
       },
       (err: HttpErrorResponse) => {
-        this.cargandoEv(false);
-        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
+        this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     );
   }
@@ -73,25 +74,22 @@ export class PedidosVendidosComponent implements OnInit {
     }
   }
   obtenerVendidos() {
-    this.cargandoEv(true,'Obteniendo pedidos...');
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo pedidos...');
     this.usuarioService.obtenerVentasConRetoquePorFotografo().subscribe(
       (resultado) => {
-        this.cargandoEv(false);
+        this.cargandoService.crearVistaCargando(false);
         this.mostrarVentasFotografosCRetoque(resultado);
       },
       (err: HttpErrorResponse) => {
-        this.cargandoEv(false);
-        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
+        this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     );
   }
-  mostrarVentasFotografosCRetoque(ventas: any){
+  mostrarVentasFotografosCRetoque(ventas: any) {
     this.dialog.open(MostrarVentasFotografosComponent, {
       width: '60%',
       data: ventas
     })
-  }
-  cargandoEv(cargando: boolean, texto?: string) {
-    this.cargandoEvento.emit({ cargando, texto: texto ? texto: '' });
   }
 }

@@ -1,10 +1,27 @@
 @import 'variables';
-.pedido{
-    margin-bottom: 10px;
-    mat-card-header{
-        .img{
-            height: 70px;
-            width: 70px;
-        }
+
+.pedido {
+  margin-bottom: 10px;
+
+  mat-card-header {
+    .img {
+      height: 70px;
+      width: 70px;
     }
+  }
+}
+
+.btn-titulo {
+  border-radius: 5px;
+  text-align: start;
+  height: 60px;
+  position: absolute;
+  top: 0;
+  margin-top: -2%;
+
+  h5 {
+    font-weight: 300;
+
+    line-height: 1.4em;
+  }
 }

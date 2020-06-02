@@ -1,9 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Estado } from 'src/app/comun/modelos/estado.model';
 import { Municipio } from 'src/app/comun/modelos/municipio.model';
 import { Proveedor } from 'src/app/comun/modelos/proveedor.model';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 import { EstadosService } from 'src/app/comun/servicios/estados.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service';
@@ -14,7 +15,6 @@ import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service'
   styleUrls: ['./root-proveedores-alta.component.scss']
 })
 export class RootProveedoresAltaComponent implements OnInit {
-  @Output() cargandoEvento = new EventEmitter(true);
   proveedor: Proveedor = new Proveedor();
   estados: Estado[];
   estado: Estado;
@@ -25,7 +25,8 @@ export class RootProveedoresAltaComponent implements OnInit {
   constructor(
     private estadoService: EstadosService,
     private toastr: NgToastrService,
-    private proveedoresService: ProveedoresService) { }
+    private proveedoresService: ProveedoresService,
+    private cargandoService: CargandoService) { }
 
   ngOnInit(): void {
     this.obtenerEstados();
@@ -62,20 +63,17 @@ export class RootProveedoresAltaComponent implements OnInit {
     this.proveedor.ciudad = this.municipio.nombre;
   }
   registrarProveedor(formulario: NgForm) {
-    this.crearVistaCargando(true, 'Registrando proveedor...');
+    this.cargandoService.crearVistaCargando(true, 'Registrando proveedor...');
     this.proveedoresService.nuevoProveedor(this.proveedor).subscribe(
       (registrado: any) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', registrado.detalles, registrado.titulo);
         formulario.resetForm();
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     );
-  }
-  crearVistaCargando(cargando: boolean, texto?: string) {
-    this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
   }
 }

@@ -6,17 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./administrador-caja-seccion.component.scss']
 })
 export class AdministradorCajaSeccionComponent implements OnInit {
-  cargando: any = {
-    cargando: false,
-    texto: ''
-  }
   constructor() { }
-
   ngOnInit() {
-  }
-  cargandoEv(evento: any) {
-    this.cargando.cargando = evento.cargando;
-    this.cargando.texto = evento.texto;
   }
 
 }

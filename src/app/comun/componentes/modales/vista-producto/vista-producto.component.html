@@ -1,0 +1,91 @@
+<div mat-dialog-title>
+  <mat-toolbar>
+    <span>Detalles del producto</span>
+    <span class="espaciador"></span>
+    <button class="icono-cerrar" mat-icon-button (click)="cerrarModal()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+</div>
+<div mat-dialog-content>
+  <div class="container-fluid w-100">
+    <div class="row">
+      <div class="col-lg-6">
+        <label for="">Retoque</label>
+      </div>
+      <div class="col-lg-6 text-right">
+        <mat-icon [ngClass]="{'icono-exito-contorno': producto.producto.c_r,
+            'icono-error-contorno': !producto.producto.c_r}">{{producto.producto.c_r ? 'done':'close'}}</mat-icon>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6">
+        <label for="">Con adherible</label>
+      </div>
+      <div class="col-lg-6 text-right">
+        <mat-icon [ngClass]="{'icono-exito-contorno': producto.producto.c_ad,
+            'icono-error-contorno': !producto.producto.c_ad}">{{producto.producto.c_ad ? 'done':'close'}}</mat-icon>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6">
+        <label for="">{{producto.producto.b_n ? 'Blanco y negro':'A color'}}</label>
+      </div>
+      <div class="col-lg-6 text-right">
+        <mat-icon [ngClass]="{'icono-exito-contorno': !producto.producto.b_n,
+            'icono-producto-b_n': producto.producto.b_n}">
+          {{producto.producto.b_n ? 'invert_colors':'fiber_manual_record'}}
+        </mat-icon>
+      </div>
+    </div>
+    <ng-container *ngIf="producto.producto.caracteristicas && producto.producto.caracteristicas.length > 0">
+      <div class="row mt-4">
+        <div class="col-lg-12">
+          <h6 class="titulo-caracteristicas">Caracteristicas</h6>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <mat-chip-list>
+            <mat-chip selected color="warn" *ngFor="let caracteristica of producto.producto.caracteristicas">
+              {{caracteristica}}
+            </mat-chip>
+          </mat-chip-list>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="producto.producto.alto && producto.producto.ancho">
+      <div class="row mt-4">
+        <div class="col-lg-12">
+          <h6 class="titulo-caracteristicas">Tamaño</h6>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3">
+          <button mat-raised-button color="primary">
+              <mat-icon>border_top</mat-icon>
+            Ancho
+          </button>
+        </div>
+        <div class="col-lg-3 text-start">
+          {{producto.producto.ancho}} Pulgadas
+        </div>
+      </div>
+      <div class="row mt-2 mb-4">
+        <div class="col-lg-3">
+          <button mat-raised-button color="primary">
+            <mat-icon>height</mat-icon>
+            Alto
+          </button>
+        </div>
+        <div class="col-lg-3 text-start">
+          {{producto.producto.alto}} Pulgadas
+        </div>
+      </div>
+      
+    </ng-container>
+  </div>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button color="warn" (click)="cerrarModal()">Cerrar</button>
+</div>

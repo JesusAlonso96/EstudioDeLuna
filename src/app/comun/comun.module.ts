@@ -64,6 +64,8 @@ import { EditarAlmacenComponent } from './componentes/modales/editar-almacen/edi
 import { TemasService } from './servicios/temas.service';
 import { InventarioService } from './servicios/inventario.service';
 import { CotizacionCreadaComponent } from './componentes/cotizacion-creada/cotizacion-creada.component';
+import { ListaProductosPedidoComponent } from './componentes/lista-productos-pedido/lista-productos-pedido.component';
+import { VistaProductoComponent } from './componentes/modales/vista-producto/vista-producto.component';
 
 @NgModule({
     declarations: [
@@ -114,7 +116,9 @@ import { CotizacionCreadaComponent } from './componentes/cotizacion-creada/cotiz
         SeleccionarOrdenDeCompraComponent,
         VerInsumosOrdenDeCompraComponent,
         AlertaComponent,
-        CotizacionCreadaComponent
+        CotizacionCreadaComponent,
+        ListaProductosPedidoComponent,
+        VistaProductoComponent
     ],
     imports: [
         CommonModule,
@@ -145,45 +149,14 @@ import { CotizacionCreadaComponent } from './componentes/cotizacion-creada/cotiz
         BarraCargandoComponent,
         BuscadorComponent,
         AlertaComponent,
-        CotizacionCreadaComponent
-
+        CotizacionCreadaComponent,
+        ListaProductosPedidoComponent,
+        VistaProductoComponent
     ],
     entryComponents: [
-        AgregarProductoComponent,
-        EliminarProductoComponent,
-        EditarProductoComponent,
-        AgregarFamiliaComponent,
-        EliminarFamiliaComponent,
-        DatosClienteComponent,
-        EditarClienteComponent,
-        PedidosClienteComponent,
-        ModalConfirmacionComponent,
-        EditarUsuarioComponent,
-        SeleccionarEmpleadoComponent,
-        DetallesProductoComponent,
-        MostrarVentasFotografosComponent,
-        DesgloseVentasFotografosComponent,
-        EditarProveedorComponent,
-        SeleccionarProveedorComponent,
-        EditarProductoProveedorComponent,
-        AltaEmpresaComponent,
-        EditarEmpresaComponent,
-        VerCotizacionComponent,
-        AltaAlmacenComponent,
-        EditarAlmacenComponent,
-        SeleccionarProductoProveedorComponent,
-        SeleccionarInsumoCompraComponent,
-        SeleccionarOrdenDeCompraComponent,
-        VerInsumosOrdenDeCompraComponent
+       
     ],
     providers: [
-        EstadosService,
-        ClienteService,
-        UsuarioService,
-        BuscadorService,
-        AlmacenService,
-        TemasService,
-        InventarioService
     ],
 })
 export class ComunModule { }

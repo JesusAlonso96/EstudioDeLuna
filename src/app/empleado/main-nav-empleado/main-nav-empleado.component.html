@@ -1,3 +1,4 @@
+<app-cargando [cargando]="cargando.cargando" [texto]="cargando.texto"></app-cargando>
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #drawer class="sidebar" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">

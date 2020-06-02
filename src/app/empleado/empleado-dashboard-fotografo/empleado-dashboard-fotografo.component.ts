@@ -1,7 +1,7 @@
 import { Component, OnInit  } from '@angular/core';
 import { EmpleadoService } from '../servicio-empleado/empleado.service';
 import { ToastrService } from 'ngx-toastr';
-import { PedidosService } from '../servicio-empleado/pedidos.service';
+import { PedidosService } from 'src/app/comun/servicios/pedidos.service';
 
 @Component({
   selector: 'app-empleado-dashboard-fotografo',
@@ -25,8 +25,8 @@ export class EmpleadoDashboardFotografoComponent implements OnInit {
   }
   obtenerNumPedidosEnCola() {
     this.cargando = true;
-    this.empleadoService.obtenerNumPedidosEnCola().subscribe(
-      (num) => {
+    this.pedidosService.obtenerNumPedidosEnCola().subscribe(
+      (num: any) => {
         this.numPedidosCola = num;
         this.cargando = false;
       },
@@ -44,7 +44,7 @@ export class EmpleadoDashboardFotografoComponent implements OnInit {
   }
   obtenerNumPedidosEnProceso() {
     this.cargando = true;
-    this.empleadoService.obtenerNumPedidosEnProceso().subscribe(
+    this.pedidosService.obtenerNumPedidosEnProceso().subscribe(
       (num) => {
         if(num.length > 0) {
           this.numPedidosProceso = num[0].contador;
@@ -60,7 +60,7 @@ export class EmpleadoDashboardFotografoComponent implements OnInit {
   }
   obtenerNumPedidosRealizados() {
     this.cargando = true;
-    this.empleadoService.obtenerNumPedidosRealizados().subscribe(
+    this.pedidosService.obtenerNumPedidosRealizados().subscribe(
       (num) => {
         if(num.length > 0){
           this.numPedidosRealizados = num[0].contador;

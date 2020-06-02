@@ -9,6 +9,8 @@ import { MatDialog, MatStepper } from '@angular/material';
 import { ModalConfirmacionComponent } from '../modal-confirmacion/modal-confirmacion.component';
 import { NgForm } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NgToastrService } from '../../servicios/ng-toastr.service';
+import { CargandoService } from '../../servicios/cargando.service';
 
 @Component({
   selector: 'app-alta-cliente',
@@ -21,15 +23,18 @@ export class AltaClienteComponent implements OnInit {
   @ViewChild('contactoForm') contactoForm: NgForm;
   @ViewChild('domicilioForm') domicilioForm: NgForm;
   @ViewChild('stepper') stepper: MatStepper;
-
-  @Output() cargandoEvento = new EventEmitter(true);
   conFactura: boolean = false;
   estados: Estado[];
   estado: Estado;
   municipios: Municipio[];
   municipio: Municipio;
   cliente: Cliente = new Cliente();
-  constructor(private estadosService: EstadosService, private clienteService: ClienteService, private toastr: ToastrService, private dialog: MatDialog) { }
+  constructor(
+    private estadosService: EstadosService,
+    private clienteService: ClienteService,
+    private toastr: NgToastrService,
+    private dialog: MatDialog,
+    private cargandoService: CargandoService) { }
 
   ngOnInit() {
     this.cliente.estado = '';
@@ -40,8 +45,8 @@ export class AltaClienteComponent implements OnInit {
       (estados: Estado[]) => {
         this.estados = estados;
       },
-      (err) => {
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     )
   }
@@ -60,39 +65,36 @@ export class AltaClienteComponent implements OnInit {
   }
   registrarCliente() {
     this.cliente.razonSocial = this.cliente.ape_mat ? this.cliente.nombre + ' ' + this.cliente.ape_pat + ' ' + this.cliente.ape_mat : this.cliente.nombre + ' ' + this.cliente.ape_pat;
-    this.crearVistaCargando(true, 'Registrando cliente...')
+    this.cargandoService.crearVistaCargando(true, 'Registrando cliente...')
     this.clienteService.registrarCliente(this.cliente).subscribe(
       (registrado: any) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.reiniciarFormularios();
-        this.toastr.success('Cliente registrado', 'El cliente ha sido registrado exitosamente', { closeButton: true });
+        this.toastr.abrirToastr('exito','Cliente registrado', 'El cliente ha sido registrado exitosamente');
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
   }
   buscarMunicipios() {
     this.cliente.estado = this.estado.nombre;
-    this.crearVistaCargando(true, 'Obteniendo municipios...')
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo municipios...')
     this.estadosService.obtenerMunicipios(this.estado._id).subscribe(
       (municipios) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.municipios = municipios;
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     )
 
   }
-  crearVistaCargando(cargando: boolean, texto?: string) {
-    this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
-  }
   reiniciarFormularios() {
-    for(let i=0; i<3;i++){
+    for (let i = 0; i < 3; i++) {
       this.stepper.previous();
     }
     this.infoGeneralForm.resetForm();

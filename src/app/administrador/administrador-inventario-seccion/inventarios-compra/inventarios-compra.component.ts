@@ -11,6 +11,8 @@ import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { SeleccionarOrdenDeCompraComponent } from 'src/app/comun/componentes/modales/seleccionar-orden-de-compra/seleccionar-orden-de-compra.component';
 import { ProductoOrdenCompra, OrdenCompra } from 'src/app/comun/modelos/orden_compra.model';
 import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-inventarios-compra',
@@ -34,7 +36,7 @@ export class InventariosCompraComponent implements OnInit {
     private proveedoresService: ProveedoresService,
     private usuarioService: UsuarioService,
     private almacenesService: AlmacenService,
-    private toastr: ToastrService) { }
+    private toastr: NgToastrService) { }
 
   ngOnInit() {
     this.obtenerAlmacenes();
@@ -53,7 +55,7 @@ export class InventariosCompraComponent implements OnInit {
       },
       (err: any) => {
         this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
   }
@@ -110,9 +112,9 @@ export class InventariosCompraComponent implements OnInit {
         this.cargando = false;
         this.productos = productos;
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true })
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
   }
@@ -138,21 +140,21 @@ export class InventariosCompraComponent implements OnInit {
           this.usuarioService.desactivarOrdenCompra(this.idOrdenCompra).subscribe(
             (desactivada: OrdenCompra) => {
               this.cargando = false;
-              this.toastr.info('La orden de compra no puede volver a usarse', 'Se ha desactivado la orden de compra', { closeButton: true });
+              this.toastr.abrirToastr('info','La orden de compra no puede volver a usarse', 'Se ha desactivado la orden de compra');
             },
-            (err: any) => {
+            (err: HttpErrorResponse) => {
               this.cargando = false;
-              this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+              this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
             }
           );
         }
 
-        this.toastr.success('Se ha registrado exitosamente la compra, los productos se han agregado al almacen', 'Compra registrada', { closeButton: true });
+        this.toastr.abrirToastr('exito','Se ha registrado exitosamente la compra, los productos se han agregado al almacen', 'Compra registrada');
         this.resetearFormulario();
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
 
@@ -221,7 +223,7 @@ export class InventariosCompraComponent implements OnInit {
   importarTodosLosProductos() {
     this.compra.insumosCompra = [];
     if (this.productos.length == 0) {
-      this.toastr.info('Este proveedor no cuenta con productos', 'Sin productos', { closeButton: true });
+      this.toastr.abrirToastr('info','Sin productos','Este proveedor no cuenta con productos' );
     } else {
       for (let i = 0; i < this.productos.length; i++) {
         this.compra.insumosCompra.push({

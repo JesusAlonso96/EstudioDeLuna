@@ -1,24 +1,23 @@
-<app-cargando [cargando]="cargando.cargando" [texto]="cargando.texto"></app-cargando>
 <mat-card class="container-fluid contenedor-cotizaciones mx-auto mb-4">
     <mat-tab-group>
         <mat-tab label="Agregar">
             <ng-template matTabContent>
-                <app-generar-cotizacion (cargandoEvento)="cargandoEv($event)"></app-generar-cotizacion>
+                <app-generar-cotizacion></app-generar-cotizacion>
             </ng-template>
         </mat-tab>
         <mat-tab label="Cotizaciones">
             <ng-template matTabContent>
-                <app-historial-cotizaciones (cargandoEvento)="cargandoEv($event)"></app-historial-cotizaciones>
+                <app-historial-cotizaciones></app-historial-cotizaciones>
             </ng-template>
         </mat-tab>
         <mat-tab label="Empresas">
             <ng-template matTabContent>
-                <app-empresas (cargandoEvento)="cargandoEv($event)"></app-empresas>
+                <app-empresas></app-empresas>
             </ng-template>
         </mat-tab>
         <mat-tab label="Restaurar empresa">
             <ng-template matTabContent>
-                <app-restaurar-empresa (cargandoEvento)="cargandoEv($event)"></app-restaurar-empresa>
+                <app-restaurar-empresa></app-restaurar-empresa>
             </ng-template>
         </mat-tab>
     </mat-tab-group>

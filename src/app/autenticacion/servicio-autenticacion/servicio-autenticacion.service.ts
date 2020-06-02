@@ -87,6 +87,7 @@ export class ServicioAutenticacionService {
     return this.tokenDesencriptado.configuracion.notificaciones;
   }
   public getConfiguracionTema(): any {
+    console.log("temaa",this.tokenDesencriptado.configuracion.tema)
     return this.tokenDesencriptado.configuracion.tema;
   }
   public getIdUsuario(): string {

@@ -17,10 +17,10 @@ export class DetallesProductoComponent {
   constructor(
     public dialogRef: MatDialogRef<DetallesProductoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Data) {
-      this.foto = environment.url_fotos + this.data.pedido.foto;
-     }
+    this.foto = environment.url_fotos + this.data.pedido.foto;
+  }
 
-  onNoClick(): void {
+  cerrarModal(): void {
     this.dialogRef.close();
   }
 

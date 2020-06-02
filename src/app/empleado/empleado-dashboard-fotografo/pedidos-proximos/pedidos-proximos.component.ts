@@ -4,6 +4,7 @@ import { Pedido } from 'src/app/comun/modelos/pedido.model';
 import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
 import * as momento from 'moment';
 import {environment} from '../../../../environments/environment';
+import { PedidosService } from 'src/app/comun/servicios/pedidos.service';
 
 @Component({
   selector: 'app-pedidos-proximos',
@@ -15,13 +16,13 @@ export class PedidosProximosComponent implements OnInit {
   pedidosProximos: Pedido[] = [];
   url_fotos: string = environment.url_fotos;
   num_pedidos: number = 0;
-  constructor(private empleadoService: EmpleadoService, private authService: ServicioAutenticacionService) { }
+  constructor(private pedidosService: PedidosService, private authService: ServicioAutenticacionService) { }
 
   ngOnInit() : any{
     this.obtenerPedidos()
   }
   obtenerPedidos(){
-    this.empleadoService.obtenerPedidosEnProceso(this.authService.getIdUsuario()).subscribe(
+    this.pedidosService.obtenerPedidosEnProceso(this.authService.getIdUsuario()).subscribe(
       (pedidos)=>{
         this.pedidos = pedidos[0].pedido
         this.obtenerPedidosProximos();

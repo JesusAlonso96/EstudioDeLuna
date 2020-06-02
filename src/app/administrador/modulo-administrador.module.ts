@@ -181,9 +181,6 @@ import { CotizacionAdministrarProductosComponent } from './administrador-cotizac
     CambiarPermisosComponent
   ],
   providers: [
-    AdministradorService,
-    TemasService,
-    AutenticacionGuard
   ]
 })
 export class AdministradorModule { }

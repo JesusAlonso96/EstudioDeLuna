@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { OrdenCompra } from 'src/app/comun/modelos/orden_compra.model';
-import { ToastrService } from 'ngx-toastr';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-historial-ordenes-compra',
@@ -11,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 export class HistorialOrdenesCompraComponent implements OnInit {
   ordenes: OrdenCompra[] = [];
   cargando: boolean = false;
-  constructor(private usuarioService: UsuarioService, private toastr: ToastrService) { }
+  constructor(private usuarioService: UsuarioService, private toastr: NgToastrService) { }
 
   ngOnInit() {
     this.obtenerOrdenesCompra();
@@ -25,9 +26,9 @@ export class HistorialOrdenesCompraComponent implements OnInit {
         this.ordenes = ordenes;
         console.log(this.ordenes);
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
   }

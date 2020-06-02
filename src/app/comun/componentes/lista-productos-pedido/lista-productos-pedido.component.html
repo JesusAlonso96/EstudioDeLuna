@@ -1,0 +1,64 @@
+<mat-accordion class="example-headers-align">
+  <mat-expansion-panel *ngFor="let producto of productos">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{producto.producto.nombre | titlecase}}
+      </mat-panel-title>
+      <mat-panel-description>
+        {{obtenerNombreCantidadProductos(producto)}} x {{producto.precioUnitario | currency}} =
+        {{obtenerTotalPorProducto(producto) | currency}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div class="container-fluid w-100">
+      <div class="row">
+        <div class="col-lg-6">
+          <label for="">Retoque</label>
+        </div>
+        <div class="col-lg-6 text-right">
+          <mat-icon [ngClass]="{'icono-exito-contorno': producto.producto.c_r,
+          'icono-error-contorno': !producto.producto.c_r}">{{producto.producto.c_r ? 'done':'close'}}</mat-icon>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6">
+          <label for="">Con adherible</label>
+        </div>
+        <div class="col-lg-6 text-right">
+          <mat-icon [ngClass]="{'icono-exito-contorno': producto.producto.c_ad,
+          'icono-error-contorno': !producto.producto.c_ad}">{{producto.producto.c_ad ? 'done':'close'}}</mat-icon>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6">
+          <label for="">{{producto.producto.b_n ? 'Blanco y negro':'A color'}}</label>
+        </div>
+        <div class="col-lg-6 text-right">
+          <mat-icon [ngClass]="{'icono-exito-contorno': !producto.producto.b_n,
+          'icono-producto-b_n': producto.producto.b_n}">
+            {{producto.producto.b_n ? 'invert_colors':'fiber_manual_record'}}
+          </mat-icon>
+        </div>
+      </div>
+      <ng-container *ngIf="producto.producto.caracteristicas && producto.producto.caracteristicas.length > 0">
+        <div class="row">
+          <div class="col-lg-12">
+            <h6 class="titulo-caracteristicas">Caracteristicas</h6>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <mat-chip-list>
+              <mat-chip selected color="warn" *ngFor="let caracteristica of producto.producto.caracteristicas">
+                {{caracteristica}}
+              </mat-chip>
+            </mat-chip-list>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+    <mat-action-row>
+      <button (click)="verDetallesProducto(producto)" mat-raised-button color="primary">Ver mas</button>
+    </mat-action-row>
+  </mat-expansion-panel>
+</mat-accordion>
