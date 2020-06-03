@@ -335,6 +335,253 @@
                             [ngClass]="{'hide':!(datosTabla!=null && datosTabla.data.length == 0)}"></mat-footer-row>
                     </mat-table>
                 </ng-container>
+                <ng-container *ngSwitchCase="'tipo de gasto general'">
+                    <mat-table [dataSource]="datosTabla" matSort>
+                        <ng-container matColumnDef="id">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.id}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="nombre">
+                            <mat-header-cell *matHeaderCellDef>Nombre</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.nombre}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="rfcEmisor">
+                            <mat-header-cell *matHeaderCellDef>RFC Emisor</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.rfc}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="razonSocial">
+                            <mat-header-cell *matHeaderCellDef>Razón social</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{obtenerRazonSocial(element)}}</mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="accion == 'administrar'" matColumnDef="editar">
+                            <mat-header-cell *matHeaderCellDef>Editar</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <button mat-icon-button class="icono-advertencia" (click)="confirmarEdicionTipoGastoGeneral(element)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="accion == 'administrar'" matColumnDef="eliminar">
+                            <mat-header-cell *matHeaderCellDef>Eliminar</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <button mat-icon-button class="icono-error"
+                                    (click)="confirmarEliminacionElemento(element,'tipo de gasto general',6)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="noData">
+                            <mat-footer-cell *matFooterCellDef colspan="6">
+                                No hay tipos de gasto generales registrados
+                            </mat-footer-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+                        <mat-row *matRowDef="let row;columns: columnas;"></mat-row>
+                        <mat-footer-row *matFooterRowDef="['noData']"
+                            [ngClass]="{'hide':!(datosTabla!=null && datosTabla.data.length == 0)}"></mat-footer-row>
+                    </mat-table>
+                </ng-container>
+                <ng-container *ngSwitchCase="'gasto general'">
+                    <mat-table [dataSource]="datosTabla" matSort>
+                        <ng-container matColumnDef="fecha">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de registro</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.fecha | date}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="nombre">
+                            <mat-header-cell *matHeaderCellDef>Nombre</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.nombre}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="rfcEmisor">
+                            <mat-header-cell *matHeaderCellDef>RFC Emisor</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.rfc}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="razonSocial">
+                            <mat-header-cell *matHeaderCellDef>Razón social</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.razonSocial}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="metodoPago">
+                            <mat-header-cell *matHeaderCellDef>Método de pago</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{obtenerMetodoPago(element.metodoPago)}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="subtotal">
+                            <mat-header-cell *matHeaderCellDef>Subtotal</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.subtotal  | currency}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="iva">
+                            <mat-header-cell *matHeaderCellDef>IVA</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.iva | currency}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="ieps">
+                            <mat-header-cell *matHeaderCellDef>IEPS</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.ieps ? (element.ieps | currency) : '-'}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="total">
+                            <mat-header-cell *matHeaderCellDef>Total</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.total | currency}}</mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="accion == 'administrar'" matColumnDef="observaciones">
+                            <mat-header-cell *matHeaderCellDef>Observaciones</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <button *ngIf="element.observaciones" mat-icon-button class="icono-info" [matTooltip]="element.observaciones">
+                                    <mat-icon>comment</mat-icon>
+                                </button>
+                                <span *ngIf="!element.observaciones">-</span>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="accion == 'administrar'" matColumnDef="editar">
+                            <mat-header-cell *matHeaderCellDef>Editar</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <button mat-icon-button class="icono-advertencia" (click)="confirmarEdicionGastoGeneral(element)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="accion == 'administrar'" matColumnDef="eliminar">
+                            <mat-header-cell *matHeaderCellDef>Eliminar</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <button mat-icon-button class="icono-error" (click)="confirmarEliminacionElemento(element,'gasto general',7)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="noData">
+                            <mat-footer-cell *matFooterCellDef colspan="6">
+                                No hay gasto generales registrados
+                            </mat-footer-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+                        <mat-row *matRowDef="let row;columns: columnas;"></mat-row>
+                        <mat-footer-row *matFooterRowDef="['noData']"
+                            [ngClass]="{'hide':!(datosTabla!=null && datosTabla.data.length == 0)}"></mat-footer-row>
+                    </mat-table>
+                </ng-container>
+                <ng-container *ngSwitchCase="'compra de insumos'">
+                    <mat-table [dataSource]="datosTabla" matSort>
+                        <ng-container matColumnDef="fechaRegistro">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de registro</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.fecha | date}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="fechaCompra">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de compra</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.compra.fecha | date}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="numFactura">
+                            <mat-header-cell *matHeaderCellDef>No. Factura</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.compra.numFactura != null ? element.compra.numFactura : '-'}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="rfcEmisor">
+                            <mat-header-cell *matHeaderCellDef>RFC Emisor</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.rfc}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="razonSocial">
+                            <mat-header-cell *matHeaderCellDef>Razón social</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.razonSocial}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="metodoPago">
+                            <mat-header-cell *matHeaderCellDef>Método de pago</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{obtenerMetodoPago(element.compra.metodoPago)}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="subtotal">
+                            <mat-header-cell *matHeaderCellDef>Subtotal</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.compra.subtotal  | currency}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="iva">
+                            <mat-header-cell *matHeaderCellDef>IVA</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.compra.iva | currency}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="costoEnvio">
+                            <mat-header-cell *matHeaderCellDef>Costo de envío</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{(element.compra.costoEnvio != null ? (element.compra.costoEnvio | currency) : '')}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="total">
+                            <mat-header-cell *matHeaderCellDef>Total</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.compra.total | currency}}</mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="accion == 'administrar'" matColumnDef="observaciones">
+                            <mat-header-cell *matHeaderCellDef>Observaciones</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <button *ngIf="element.observaciones" mat-icon-button class="icono-info" [matTooltip]="element.observaciones">
+                                    <mat-icon>comment</mat-icon>
+                                </button>
+                                <span *ngIf="!element.observaciones">-</span>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="accion == 'administrar'" matColumnDef="editar">
+                            <mat-header-cell *matHeaderCellDef>Editar</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <button mat-icon-button class="icono-advertencia" (click)="confirmarEdicionGastoInsumo(element)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="noData">
+                            <mat-footer-cell *matFooterCellDef colspan="6">
+                                No hay gasto de insumos registrados
+                            </mat-footer-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+                        <mat-row *matRowDef="let row;columns: columnas;"></mat-row>
+                        <mat-footer-row *matFooterRowDef="['noData']"
+                            [ngClass]="{'hide':!(datosTabla!=null && datosTabla.data.length == 0)}"></mat-footer-row>
+                    </mat-table>
+                </ng-container>
+                <ng-container *ngSwitchCase="'compra'">
+                    <mat-table [dataSource]="datosTabla" matSort>
+                        <ng-container matColumnDef="fechaCompra">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de compra</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.fecha | date}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="numFactura">
+                            <mat-header-cell *matHeaderCellDef>No. Factura</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.numFactura != null ? element.numFactura : '-'}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="rfcEmisor">
+                            <mat-header-cell *matHeaderCellDef>RFC Emisor</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.proveedor.rfc}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="razonSocial">
+                            <mat-header-cell *matHeaderCellDef>Razón social</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.proveedor.nombre}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="metodoPago">
+                            <mat-header-cell *matHeaderCellDef>Método de pago</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{obtenerMetodoPago(element.metodoPago)}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="subtotal">
+                            <mat-header-cell *matHeaderCellDef>Subtotal</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.subtotal  | currency}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="iva">
+                            <mat-header-cell *matHeaderCellDef>IVA</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.iva | currency}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="costoEnvio">
+                            <mat-header-cell *matHeaderCellDef>Costo de envío</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{(element.costoEnvio != null ? (element.costoEnvio | currency) : '')}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="total">
+                            <mat-header-cell *matHeaderCellDef>Total</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.total | currency}}</mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="accion == 'sin registrar'" matColumnDef="registrar">
+                            <mat-header-cell *matHeaderCellDef>Registrar</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <button mat-icon-button class="icono-exito" (click)="nuevoGastoInsumo(element)">
+                                    <mat-icon>done</mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="noData">
+                            <mat-footer-cell *matFooterCellDef colspan="6">
+                                No hay compras pendientes de registrar
+                            </mat-footer-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+                        <mat-row *matRowDef="let row;columns: columnas;"></mat-row>
+                        <mat-footer-row *matFooterRowDef="['noData']"
+                            [ngClass]="{'hide':!(datosTabla!=null && datosTabla.data.length == 0)}"></mat-footer-row>
+                    </mat-table>
+                </ng-container>
                 <ng-container *ngSwitchCase="'cajas'">
                     <table mat-table *ngIf="!(datosTabla!=null && datosTabla.data.length == 0)" class="w-100" 
                         [dataSource]="datosTabla" multiTemplateDataRows matSort>

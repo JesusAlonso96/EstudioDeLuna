@@ -24,6 +24,17 @@ import { UsuarioService } from './usuario.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProveedoresService } from './proveedores.service';
 import { CotizacionesService } from './cotizaciones.service';
+import { TipoGastoGeneral } from '../modelos/tipo_gasto_general.model';
+import { EditarTipoGastoGeneralComponent } from '../componentes/modales/editar-tipo-gasto-general/editar-tipo-gasto-general.component';
+import { TipoGastoGeneralService } from './tipo-gasto-general.service';
+import { GastoGeneralService } from './gasto-general.service';
+import { GastoGeneral } from '../modelos/gasto_general.model';
+import { EditarGastoGeneralComponent } from '../componentes/modales/editar-gasto-general/editar-gasto-general.component';
+import { GastoInsumo } from '../modelos/gasto_insumo.model';
+import { EditarGastoInsumoComponent } from '../componentes/modales/editar-gasto-insumo/editar-gasto-insumo.component';
+import { GastoInsumoService } from './gasto-insumo.service';
+import { Compra } from '../modelos/compra.model';
+import { AltaGastoInsumoComponent } from '../componentes/modales/alta-gasto-insumo/alta-gasto-insumo.component';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +50,10 @@ export class BuscadorService {
     private _snackBar: MatSnackBar,
     private cajaService: CajaService,
     private proveedoresService: ProveedoresService,
-    private cotizacionesService: CotizacionesService) { }
+    private cotizacionesService: CotizacionesService,
+    private tipoGastoGeneralService: TipoGastoGeneralService,
+    private gastoGeneralService: GastoGeneralService,
+    private gastoInsumoService: GastoInsumoService) { }
   //eliminaciones
   public confirmarEliminacionElemento(tabla: MatTableDataSource<any>, listaElementos: any[], elemento: any, nombre: string, tipo: number) {
     const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
@@ -54,6 +68,9 @@ export class BuscadorService {
           case 3: this.eliminarEmpresa(tabla, listaElementos, elemento); break;
           case 4: this.eliminarAlmacen(tabla, listaElementos, elemento); break;
           case 5: this.eliminarCaja(tabla, listaElementos, elemento); break;
+          case 6: this.eliminarTipoGastoGeneral(tabla, listaElementos, elemento); break;
+          case 7: this.eliminarGastoGeneral(tabla, listaElementos, elemento); break;
+          //case 8: this.eliminarGastoInsumo(tabla, listaElementos, elemento); break;
         }
       }
     })
@@ -152,6 +169,48 @@ export class BuscadorService {
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       });
   }
+  /*Eliminacion de tipo de gasto general */
+  private eliminarTipoGastoGeneral(tabla: MatTableDataSource<TipoGastoGeneral>, listaTiposGastoGeneral: TipoGastoGeneral[], tipoGastoGeneral: TipoGastoGeneral) {
+    this.abrirSnackBar('Eliminando tipo de gasto general...', '');
+    this.tipoGastoGeneralService.eliminarTipoGastoGeneral(tipoGastoGeneral._id).subscribe(
+      (eliminada: Mensaje) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('exito', eliminada.detalles, eliminada.titulo);
+        this.quitarElementoTabla(tabla, listaTiposGastoGeneral, tipoGastoGeneral);
+      },
+      (err: HttpErrorResponse) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+      });
+  }
+  /*Eliminacion de gasto general */
+  private eliminarGastoGeneral(tabla: MatTableDataSource<GastoGeneral>, listaGastosGenerales: GastoGeneral[], gastoGeneral: GastoGeneral) {
+    this.abrirSnackBar('Eliminando gasto general...', '');
+    this.gastoGeneralService.eliminarGastoGeneral(gastoGeneral._id).subscribe(
+      (eliminada: Mensaje) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('exito', eliminada.detalles, eliminada.titulo);
+        this.quitarElementoTabla(tabla, listaGastosGenerales, gastoGeneral);
+      },
+      (err: HttpErrorResponse) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+      });
+  }
+  /*Eliminacion de gasto de insumos */
+  /*private eliminarGastoInsumo(tabla: MatTableDataSource<GastoInsumo>, listaGastosInsumos: GastoInsumo[], gastoInsumo: GastoInsumo) {
+    this.abrirSnackBar('Eliminando gasto general...', '');
+    this.gastoInsumoService.eliminarGastoInsumo(gastoInsumo._id).subscribe(
+      (eliminada: Mensaje) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('exito', eliminada.detalles, eliminada.titulo);
+        this.quitarElementoTabla(tabla, listaGastosInsumos, gastoInsumo);
+      },
+      (err: HttpErrorResponse) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+      });
+  }*/
   //restauraciones
   public confirmarRestauracionElemento(tabla: MatTableDataSource<any>, listaElementos: any[], elemento: any, nombre: string, tipo: number) {
     const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
@@ -420,6 +479,117 @@ export class BuscadorService {
     );
 
   }
+  /*Edicion de tipo de gasto general */
+  public confirmarEditarTipoGastoGeneral(tabla: MatTableDataSource<TipoGastoGeneral>, listaTiposGastoGeneral: TipoGastoGeneral[], tipoGastoGeneral: TipoGastoGeneral) {
+    const tipoGastoGeneralAux: TipoGastoGeneral = TipoGastoGeneral.prototype.nuevoTipoGastoGeneral(tipoGastoGeneral._id, tipoGastoGeneral.id, tipoGastoGeneral.nombre, tipoGastoGeneral.descripcion, tipoGastoGeneral.tipoDePersona, tipoGastoGeneral.nombre_persona, tipoGastoGeneral.ape_pat_persona, tipoGastoGeneral.ape_mat_persona, tipoGastoGeneral.razonSocial, tipoGastoGeneral.rfc);
+    const dialogRef = this.dialog.open(EditarTipoGastoGeneralComponent, { width: '50%', data: tipoGastoGeneral });
+    dialogRef.afterClosed().subscribe(respuesta => {
+      if (respuesta) {
+        this.editarTipoGastoGeneral(tabla, listaTiposGastoGeneral, tipoGastoGeneral, tipoGastoGeneralAux);
+      } else {
+        this.restablecerDatosElemento(tabla, listaTiposGastoGeneral, tipoGastoGeneral, tipoGastoGeneralAux);
+      }
+    }
+    );
+  }
+  private editarTipoGastoGeneral(tabla: MatTableDataSource<TipoGastoGeneral>, listaTiposGastoGeneral: TipoGastoGeneral[], tipoGastoGeneral: TipoGastoGeneral, tipoGastoGeneralAux: TipoGastoGeneral) {
+    this.abrirSnackBar('Guardando cambios...', '');
+    tipoGastoGeneral.rfc = tipoGastoGeneral.rfc.toUpperCase();
+    this.tipoGastoGeneralService.actualizarTipoGastoGeneral(tipoGastoGeneral, tipoGastoGeneral._id).subscribe(
+      (actualizada: Mensaje) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('exito', actualizada.titulo, actualizada.detalles);
+      },
+      (err: HttpErrorResponse) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+        this.restablecerDatosElemento(tabla, listaTiposGastoGeneral, tipoGastoGeneral, tipoGastoGeneralAux);
+      }
+    );
+  }
+  /*Edicion de gasto general */
+  public confirmarEditarGastoGeneral(tabla: MatTableDataSource<GastoGeneral>, listaGastosGenerales: GastoGeneral[], gastoGeneral: GastoGeneral) {
+    const gastoGeneralAux: GastoGeneral = GastoGeneral.prototype.nuevoGastoGeneral(gastoGeneral._id, gastoGeneral.id, gastoGeneral.tipoGastoGeneral, gastoGeneral.metodoPago, gastoGeneral.nombre, gastoGeneral.razonSocial, gastoGeneral.rfc, gastoGeneral.subtotal, gastoGeneral.ieps, gastoGeneral.porcentajeIva, gastoGeneral.iva, gastoGeneral.total, gastoGeneral.observaciones);
+    const dialogRef = this.dialog.open(EditarGastoGeneralComponent, { width: '50%', data: gastoGeneral });
+    dialogRef.afterClosed().subscribe(respuesta => {
+      if (respuesta) {
+        this.editarGastoGeneral(tabla, listaGastosGenerales, gastoGeneral, gastoGeneralAux);
+      } else {
+        this.restablecerDatosElemento(tabla, listaGastosGenerales, gastoGeneral, gastoGeneralAux);
+      }
+    }
+    );
+  }
+  private editarGastoGeneral(tabla: MatTableDataSource<GastoGeneral>, listaGastosGenerales: GastoGeneral[], gastoGeneral: GastoGeneral, gastoGeneralAux: GastoGeneral) {
+    this.abrirSnackBar('Guardando cambios...', '');
+    this.gastoGeneralService.actualizarGastoGeneral(gastoGeneral, gastoGeneral._id).subscribe(
+      (actualizada: Mensaje) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('exito', actualizada.titulo, actualizada.detalles);
+      },
+      (err: HttpErrorResponse) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+        this.restablecerDatosElemento(tabla, listaGastosGenerales, gastoGeneral, gastoGeneralAux);
+      }
+    );
+  }
+  /*Edicion de gasto de insumos */
+  public confirmarEditarGastoInsumo(tabla: MatTableDataSource<GastoInsumo>, listaGastosInsumos: GastoInsumo[], gastoInsumo: GastoInsumo) {
+    const gastoInsumoAux: GastoInsumo = 
+    GastoInsumo.prototype.nuevoGastoInsumo(gastoInsumo._id, gastoInsumo.id, gastoInsumo.compra, gastoInsumo.razonSocial, gastoInsumo.rfc, gastoInsumo.observaciones);
+    const dialogRef = this.dialog.open(EditarGastoInsumoComponent, { width: '50%', data: gastoInsumo });
+    dialogRef.afterClosed().subscribe(respuesta => {
+      if (respuesta) {
+        this.editarGastoInsumo(tabla, listaGastosInsumos, gastoInsumo, gastoInsumoAux);
+      } else {
+        this.restablecerDatosElemento(tabla, listaGastosInsumos, gastoInsumo, gastoInsumoAux);
+      }
+    }
+    );
+  }
+  private editarGastoInsumo(tabla: MatTableDataSource<GastoInsumo>, listaGastosInsumos: GastoInsumo[], gastoInsumo: GastoInsumo, gastoInsumoAux: GastoInsumo) {
+    this.abrirSnackBar('Guardando cambios...', '');
+    this.gastoInsumoService.actualizarGastoInsumo(gastoInsumo, gastoInsumo._id).subscribe(
+      (actualizada: Mensaje) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('exito', actualizada.titulo, actualizada.detalles);
+      },
+      (err: HttpErrorResponse) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+        this.restablecerDatosElemento(tabla, listaGastosInsumos, gastoInsumo, gastoInsumoAux);
+      }
+    );
+  }
+  /*Alta de un gasto de insumo*/
+  public nuevoGastoInsumo(tabla: MatTableDataSource<Compra>, listaCompras: Compra[], compra: Compra) {
+    const dialogRef = this.dialog.open(AltaGastoInsumoComponent, {
+      data: compra,
+      width: '50%'
+    });
+    dialogRef.afterClosed().subscribe(gastoInsumo => {
+      if (gastoInsumo) {
+        this.agregarGastoInsumo(gastoInsumo, tabla, listaCompras, compra);
+      }
+    })
+  }
+
+  private agregarGastoInsumo(gastoInsumo: GastoInsumo, tabla: MatTableDataSource<Compra>, listaCompras: Compra[], compra: Compra) {
+    this.abrirSnackBar('Registrando gasto de insumos...', '');
+    this.gastoInsumoService.nuevoGastoInsumo(gastoInsumo).subscribe(
+      (gastoInsumo: GastoInsumo) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('exito',`Se ha registrado exitosamente el gasto de insumos ${gastoInsumo.id}`, 'Gasto de insumos agregado exitosamente');
+        this.quitarElementoTabla(tabla, listaCompras, compra);
+      },
+      (err: HttpErrorResponse) => {
+        this.cerrarSnackBar();
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
+      }
+    )
+  }
+
   //auxiliares
   private quitarElementoTabla(tabla: MatTableDataSource<any>, listaElementos: any[], elemento: any) {
     const indice = listaElementos.indexOf(elemento);

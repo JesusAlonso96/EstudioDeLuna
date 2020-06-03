@@ -20,7 +20,7 @@ export class Compra {
     subtotal: number;
     iva: number;
     costoEnvio: number;
-    metodoPago: number;
+    metodoPago: string;
     total: number;
     sucursal: any;
 
