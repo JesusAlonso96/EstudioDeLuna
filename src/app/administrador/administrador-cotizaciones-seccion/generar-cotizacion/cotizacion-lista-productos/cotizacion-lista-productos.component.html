@@ -25,7 +25,7 @@
     </div>
     <div class="col-lg-3">
       <button matTooltip="Administrar productos agregados" class="btn-administrar-productos" mat-raised-button
-        color="accent" *ngIf="productosCotizacion.length > 0" [@carga]='in' (click)="verAdministracionProductos()">
+        color="accent" *ngIf="productosCotizacion.length > 0" [@carga]="'in'" (click)="verAdministracionProductos()">
         Administrar productos
         <mat-icon>settings</mat-icon>
       </button>

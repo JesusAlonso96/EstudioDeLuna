@@ -9,6 +9,10 @@ import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { Animaciones } from 'src/app/comun/constantes/animaciones';
+import MenuRecepcionista from 'src/app/comun/constantes/menus/menu-empleado-recepcionista.constant';
+import MenuFotografo from 'src/app/comun/constantes/menus/menu-empleado-fotografo';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
+
 @Component({
   selector: 'app-main-nav-empleado',
   templateUrl: './main-nav-empleado.component.html',
@@ -16,20 +20,40 @@ import { Animaciones } from 'src/app/comun/constantes/animaciones';
   animations: [Animaciones.toggle, Animaciones.rotacion]
 })
 export class MainNavEmpleadoComponent implements OnInit {
+  menus: any = [];
+  pestanasActivas: boolean[] = [];
   navbarAbierto: boolean = true;
+  moduloActual: string = '';
+  cargando = {
+    cargando: false,
+    texto: ''
+  }
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver,
+  constructor(
+    private cargandoService: CargandoService,
+    private breakpointObserver: BreakpointObserver,
     public autenticacionService: ServicioAutenticacionService,
     public temasService: TemasService,
     private toastr: NgToastrService,
-    private rutas: Router) { }
+    private rutas: Router) {
+    this.cargandoService.cambioEmitido$.subscribe(
+      cargando => {
+        this.cargando.cargando = cargando.cargando;
+        this.cargando.texto = cargando.texto;
+      }
+    )
+  }
+
   ngOnInit(): void {
     this.temasService.iniciarTemas();
+    this.iniciarMenus();
+    this.iniciarPestanas();
+    this.buscarPestanaActiva();
   }
   cerrarSesion() {
     this.autenticacionService.cerrarSesion();
@@ -52,10 +76,37 @@ export class MainNavEmpleadoComponent implements OnInit {
       }
     );
   }
-  toggleNavbar(){
+  toggleNavbar() {
     this.navbarAbierto = !this.navbarAbierto;
   }
   ocultarNavbar(): boolean {
     return this.rutas.url.indexOf('nuevaVenta') !== -1
+  }
+  obtenerNombreUsuario(): string {
+    return this.autenticacionService.getNombreUsuario();
+  }
+  iniciarMenus() {
+    if (this.esRecepcionista()) this.menus = MenuRecepcionista;
+    else this.menus = MenuFotografo;
+  }
+  iniciarPestanas() {
+    for (let i = 0; i < this.menus.length; i++) {
+      this.pestanasActivas[i] = false;
+    }
+  }
+  activarPestana(indice: number, nombre: string) {
+    this.activarModuloActivo(nombre);
+    this.pestanasActivas[indice] = true;
+  }
+  activarModuloActivo(nombre: string) {
+    this.moduloActual = nombre;
+    localStorage.setItem('moduloActual', nombre);
+    this.iniciarPestanas();
+  }
+  buscarPestanaActiva() {
+    const nombre: string = localStorage.getItem('moduloActual');
+    this.moduloActual = nombre;
+    const pestana = this.menus.find(menu => menu.nombre == nombre);
+    this.pestanasActivas[this.menus.indexOf(pestana)] = true;
   }
 }

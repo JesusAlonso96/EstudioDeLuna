@@ -29,26 +29,12 @@ rutasEmpleado.get('/fotografos', middlewares_1.autenticacionMiddleware, Empleado
 rutasEmpleado.get('/asignarFotografo/:fecha', middlewares_1.autenticacionMiddleware, EmpleadoCtrl.asignarFotografo);
 rutasEmpleado.get('/asistioTrabajador/:id/:fecha', EmpleadoCtrl.tieneAsistenciaTrabajador);
 rutasEmpleado.get('/obtenerNotificaciones/:id/:fecha', EmpleadoCtrl.obtenerNotificaciones);
-rutasEmpleado.get('/numPedidos', middlewares_1.autenticacionMiddleware, EmpleadoCtrl.numPedidosFotografo);
-rutasEmpleado.get('/obtenerPedidos', middlewares_1.autenticacionMiddleware, EmpleadoCtrl.recepcionistaMiddleware, EmpleadoCtrl.obtenerPedidos);
-rutasEmpleado.get('/obtenerPedidosPorEmpleado/:id', EmpleadoCtrl.obtenerPedidosPorEmpleado);
-rutasEmpleado.get('/obtenerNumPedidosPorEmpleado', middlewares_1.autenticacionMiddleware, EmpleadoCtrl.obtenerNumPedidosPorEmpleado);
-rutasEmpleado.get('/obtenerPedidosEnProceso/:id', middlewares_1.autenticacionMiddleware, EmpleadoCtrl.obtenerPedidosEnProceso);
-rutasEmpleado.get('/obtenerNumPedidosEnProceso', middlewares_1.autenticacionMiddleware, EmpleadoCtrl.obtenerNumPedidosEnProceso);
-rutasEmpleado.get('/obtenerPedidosEnCola', middlewares_1.autenticacionMiddleware, EmpleadoCtrl.obtenerPedidosEnCola);
-rutasEmpleado.get('/obtenerNumPedidosEnCola', middlewares_1.autenticacionMiddleware, EmpleadoCtrl.obtenerNumPedidosEnCola);
-rutasEmpleado.get('/obtenerProductosPorPedido/:id', EmpleadoCtrl.obtenerProductosPorPedido);
 //post
-rutasEmpleado.post('/crearPedido/:id', middlewares_1.autenticacionMiddleware, EmpleadoCtrl.recepcionistaMiddleware, EmpleadoCtrl.crearPedido);
 rutasEmpleado.post('/crearVenta/:cantidadACaja/:metodoPago/:id', middlewares_1.autenticacionMiddleware, middlewares_1.adminOSupervisorORecepcionistaMiddleware, EmpleadoCtrl.realizarVenta);
 //patch
 rutasEmpleado.patch('/crearImagen/:id', upload.single('imagen'), EmpleadoCtrl.crearFoto);
-rutasEmpleado.patch('/tomarPedido/:idPedido/:id', middlewares_1.autenticacionMiddleware, EmpleadoCtrl.tomarPedido);
-rutasEmpleado.patch('/actualizarEstado', EmpleadoCtrl.actualizarEstadoPedido);
-rutasEmpleado.patch('/actualizarAnticipo/:id/:anticipo', EmpleadoCtrl.actualizarAnticipoPedido);
 rutasEmpleado.patch('/actualizarOcupado/:id', EmpleadoCtrl.actualizarOcupado);
 rutasEmpleado.patch('/actualizarCaja/:cantidadACaja/:metodoPago/:id', EmpleadoCtrl.actualizarCaja);
 //delete
 rutasEmpleado.delete('/eliminarNotificacion/:id', EmpleadoCtrl.eliminarNotificacion);
-rutasEmpleado.delete('/eliminarNotificacionPorPedido/:num', EmpleadoCtrl.eliminarNotificacionPorPedido);
 exports.default = rutasEmpleado;

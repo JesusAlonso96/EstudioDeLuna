@@ -6,6 +6,7 @@ import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service';
 import { takeUntil } from 'rxjs/operators';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-root-proveedores-editar',
@@ -14,13 +15,13 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class RootProveedoresEditarComponent implements OnInit, OnDestroy {
   @ViewChild('buscador') buscador: BuscadorComponent;
-  @Output() cargandoEvento = new EventEmitter(true);
   columnas: string[] = ['nombre', 'rfc', 'telefono', 'ciudad', 'editar'];
   proveedores: Proveedor[];
   private onDestroy$ = new Subject<boolean>();
   constructor(
     private proveedoresService: ProveedoresService,
-    private toastr: NgToastrService) { }
+    private toastr: NgToastrService,
+    private cargandoService: CargandoService) { }
   ngOnDestroy(): void {
     this.onDestroy$.next(true);
     this.onDestroy$.complete();
@@ -32,14 +33,14 @@ export class RootProveedoresEditarComponent implements OnInit, OnDestroy {
     this.obtenerNuevosProveedoresEliminados();
   }
   obtenerProveedores() {
-    this.crearVistaCargando(true, 'Obteniendo proveedores...')
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo proveedores...')
     this.proveedoresService.obtenerProveedores().subscribe(
       (proveedores: Proveedor[]) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.proveedores = proveedores;
       },
       (err: any) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     );
@@ -86,8 +87,5 @@ export class RootProveedoresEditarComponent implements OnInit, OnDestroy {
           this.toastr.abrirToastr('advertencia', 'Nuevo cliente eliminado', 'Se ha eliminado un cliente');
         }
       )
-  }
-  crearVistaCargando(cargando: boolean, texto?: string) {
-    this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
   }
 }

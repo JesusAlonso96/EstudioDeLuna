@@ -13,12 +13,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cliente_model_1 = require("../modelos/cliente.model");
 const servidor_1 = __importDefault(require("../clases/servidor"));
 const Socket = __importStar(require("../sockets/socket"));
+const funciones_auxiliares_1 = require("../funciones-auxiliares/funciones-auxiliares");
 exports.registrarCliente = (req, res) => {
     const clienteNuevo = new cliente_model_1.Cliente(req.body);
     clienteNuevo.sucursal = res.locals.usuario.sucursal;
+    clienteNuevo.contrasena = funciones_auxiliares_1.generarContrasena();
     clienteNuevo.save((err, cliente) => {
-        if (err)
+        if (err) {
+            console.log(err);
             return res.status(422).send({ titulo: 'No se pudo crear el registro' });
+        }
         obtenerNuevoCliente(cliente, res, 0);
         return res.json(cliente);
     });

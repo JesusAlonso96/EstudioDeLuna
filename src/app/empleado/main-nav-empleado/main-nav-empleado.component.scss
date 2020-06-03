@@ -22,7 +22,43 @@
 .btn-toolbar{
   position: absolute;
   margin-top: 0.5%;
-  margin-left: 0.5%;
+  margin-left: 1.2%;
   left: 0;
   z-index: 2;
+  &:hover {
+    -webkit-box-shadow: -1px 0px 13px 3px rgba(#555, 0.75);
+    -moz-box-shadow: -1px 0px 13px 3px rgba(#555, 0.75);
+    box-shadow: -1px 0px 13px 3px rgba(#555, 0.75);
+  }
+}
+
+.sin-scroll{
+  overflow: hidden;
+}
+
+
+.navbar {
+  background: inherit;
+  display: flex;
+
+  .btn-toggle {
+    z-index: 0;
+    background-color: #ffffff;
+    color: #555;
+    margin-right: 2%;
+    transition: all 100ms linear;
+    -webkit-transition: all 100ms linear;
+    -ms-transition: all 100ms linear;
+
+    &:hover {
+      -webkit-box-shadow: -1px 0px 13px 3px rgba(#555, 0.75);
+      -moz-box-shadow: -1px 0px 13px 3px rgba(#555, 0.75);
+      box-shadow: -1px 0px 13px 3px rgba(#555, 0.75);
+    }
+  }
+
+  .btn-nav {
+    visibility: visible;
+    color: #555;
+  }
 }

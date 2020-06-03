@@ -20,8 +20,6 @@ export class CotizacionListaProductosComponent implements OnInit, AfterViewInit 
   @ViewChild('paginator') paginator: MatPaginator;
   @Input() productos: ProductoCot[];
   @Input() productosCotizacion: ProductoCot[];
-  @Output() productoAgregadoEvento = new EventEmitter(true);
-  @Output() productoEliminadoEvento = new EventEmitter(true);
   columnas: string[] = ['producto', 'acciones'];
   cargando: boolean = false;
   datosTabla: MatTableDataSource<any>;

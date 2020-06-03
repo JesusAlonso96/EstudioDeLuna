@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Cliente } from '../../modelos/cliente.model';
 import { ClienteService } from '../../servicios/cliente.service';
 import { ToastrService } from 'ngx-toastr';
@@ -7,6 +6,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BuscadorComponent } from '../buscador/buscador.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CargandoService } from '../../servicios/cargando.service';
 
 @Component({
   selector: 'app-restaurar-cliente',
@@ -15,12 +15,15 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class RestaurarClienteComponent implements OnInit, OnDestroy {
   @ViewChild('buscador') buscador: BuscadorComponent;
-  @Output() cargandoEvento = new EventEmitter(true);
   columnas: string[] = ['nombre', 'ape_pat', 'ape_mat', 'email', 'telefono', 'opciones'];
   cargando: boolean = false;
   clientes: Cliente[];
   private onDestroy$ = new Subject<boolean>();
-  constructor(private clienteService: ClienteService, private toastr: ToastrService, private dialog: MatDialog) { }
+  constructor(
+    private clienteService: ClienteService, 
+    private toastr: ToastrService,
+    private cargandoService: CargandoService
+    ) { }
 
   ngOnInit() {
     this.obtenerClientesEliminados();
@@ -28,14 +31,14 @@ export class RestaurarClienteComponent implements OnInit, OnDestroy {
     this.obtenerNuevoClienteRestaurado();
   }
   obtenerClientesEliminados() {
-    this.crearVistaCargando(true, 'Obteniendo clientes eliminados..')
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo clientes eliminados..')
     this.clienteService.obtenerClientesEliminados().subscribe(
       (clientesEliminados: Cliente[]) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.clientes = clientesEliminados;
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );
@@ -72,8 +75,5 @@ export class RestaurarClienteComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.onDestroy$.next(true);
     this.onDestroy$.complete();
-  }
-  crearVistaCargando(cargando: boolean, texto?: string) {
-    this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
   }
 }

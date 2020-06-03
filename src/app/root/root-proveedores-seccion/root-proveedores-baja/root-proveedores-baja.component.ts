@@ -1,11 +1,12 @@
-import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { BuscadorComponent } from 'src/app/comun/componentes/buscador/buscador.component';
 import { Proveedor } from 'src/app/comun/modelos/proveedor.model';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root-proveedores-baja',
@@ -14,13 +15,13 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class RootProveedoresBajaComponent implements OnInit, OnDestroy {
   @ViewChild('buscador') buscador: BuscadorComponent;
-  @Output() cargandoEvento = new EventEmitter(true);
   columnasTabla: string[] = ['nombre', 'rfc', 'telefono', 'ciudad', 'borrar'];
   proveedores: Proveedor[];
   private onDestroy$ = new Subject<boolean>();
   constructor(
     private proveedoresService: ProveedoresService,
-    private toastr: NgToastrService) { }
+    private toastr: NgToastrService,
+    private cargandoService: CargandoService) { }
 
   ngOnInit(): void {
     this.obtenerProveedores();
@@ -32,14 +33,14 @@ export class RootProveedoresBajaComponent implements OnInit, OnDestroy {
     this.onDestroy$.complete();
   }
   obtenerProveedores() {
-    this.crearVistaCargando(true, 'Obteniendo proveedores...')
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo proveedores...')
     this.proveedoresService.obtenerProveedores().subscribe(
       (proveedores: Proveedor[]) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.proveedores = proveedores;
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     );
@@ -71,8 +72,5 @@ export class RootProveedoresBajaComponent implements OnInit, OnDestroy {
           this.toastr.abrirToastr('info', 'Nuevo cliente', 'Se ha editado un nuevo cliente');
         }
       )
-  }
-  crearVistaCargando(cargando: boolean, texto?: string) {
-    this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
   }
 }

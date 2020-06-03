@@ -1,11 +1,14 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
 import { Pedido } from 'src/app/comun/modelos/pedido.model';
-import { EmpleadoService } from 'src/app/empleado/servicio-empleado/empleado.service';
 import { ToastrService } from 'ngx-toastr';
 import { SeleccionarEmpleadoComponent } from 'src/app/comun/componentes/modales/seleccionar-empleado/seleccionar-empleado.component';
 import { Usuario } from 'src/app/comun/modelos/usuario.model';
 import { DetallesProductoComponent } from 'src/app/comun/componentes/modales/detalles-producto/detalles-producto.component';
+import { PedidosService } from 'src/app/comun/servicios/pedidos.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 
 @Component({
   selector: 'app-pedidos-cola',
@@ -15,7 +18,6 @@ import { DetallesProductoComponent } from 'src/app/comun/componentes/modales/det
 export class PedidosColaComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @Output() cargandoEvento = new EventEmitter(true);
   pedidos: Pedido[];
   pedidoSeleccionado: Pedido;
   empleadoSeleccionado: Usuario;
@@ -23,23 +25,25 @@ export class PedidosColaComponent implements OnInit {
   displayedColumns: string[] = ['num_pedido', 'status', 'fecha_entrega', 'total', 'anticipo', 'asignar', 'verDetalles'];
   asignar: boolean = false;
 
-  constructor(private empleadoService: EmpleadoService, private toastr: ToastrService, private dialog: MatDialog) { }
+  constructor(private pedidosService: PedidosService, 
+    private toastr: NgToastrService, 
+    private cargandoService: CargandoService,
+    private dialog: MatDialog) { }
 
   ngOnInit() {
     this.obtenerPedidosEnCola();
   }
   obtenerPedidosEnCola() {
-    this.cargandoEv(true,'Obteniendo pedidos...');
-    this.empleadoService.obtenerPedidosEnCola().subscribe(
+    this.cargandoService.crearVistaCargando(true,'Obteniendo pedidos...');
+    this.pedidosService.obtenerPedidosEnCola().subscribe(
       (pedidos: Pedido[]) => {
-        this.cargandoEv(false);
+        this.cargandoService.crearVistaCargando(false);
         this.pedidos = pedidos;
-        console.log(this.pedidos);
         this.inicializarTabla(this.pedidos);
       },
-      (err) => {
-        this.cargandoEv(false);
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
   }
@@ -72,22 +76,19 @@ export class PedidosColaComponent implements OnInit {
     this.pedidoSeleccionado = undefined;
   }
   asignarPedidoConfirmado() {
-    this.cargandoEv(true,'Asignando pedido...');
-    this.empleadoService.tomarPedido(this.pedidoSeleccionado._id, <string>this.empleadoSeleccionado._id).subscribe(
+    this.cargandoService.crearVistaCargando(true,'Asignando pedido...');
+    this.pedidosService.tomarPedido(this.pedidoSeleccionado._id, <string>this.empleadoSeleccionado._id).subscribe(
       (pedidos: Pedido[]) => {
-        this.cargandoEv(false);
+        this.cargandoService.crearVistaCargando(false);
         this.pedidos = pedidos;
         this.listData.data = this.pedidos;
-        this.toastr.success('Pedido asignado exitosamente', '', { closeButton: true });
+        this.toastr.abrirToastr('exito','','Pedido asignado exitosamente');
         this.eliminarAsignacion();
       },
-      (err) => {
-        this.cargandoEv(false);
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
-  }
-  cargandoEv(cargando: boolean, texto?: string) {
-    this.cargandoEvento.emit({ cargando, texto: texto ? texto: '' });
   }
 }

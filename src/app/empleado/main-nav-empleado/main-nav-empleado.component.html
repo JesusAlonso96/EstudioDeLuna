@@ -1,62 +1,49 @@
+<app-cargando [cargando]="cargando.cargando" [texto]="cargando.texto"></app-cargando>
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="'over'" [opened]="false">
-    <mat-toolbar color="primary">Menu</mat-toolbar>
+  <mat-sidenav #drawer class="sidebar" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+    <mat-nav-list class="mt-4">
+      <mat-list-item class="mx-auto mb-1" [matMenuTriggerFor]="menuPerfil">
+        <mat-icon mat-list-icon>account_circle</mat-icon>
+        <h5 mat-line>{{obtenerNombreUsuario() | titlecase}}</h5>
+        <mat-icon>expand_more</mat-icon>
+      </mat-list-item>
+      <mat-menu #menuPerfil="matMenu">
+        <button (click)="activarModuloActivo('Perfil')" [routerLink]="['/usuario/perfil']"
+          routerLinkActive="router-link-active" class="mx-auto" mat-menu-item>
+          <mat-icon>account_circle</mat-icon>
+          <span>Perfil personal</span>
+        </button>
+        <button class="mx-auto mb-1 mt-1" mat-menu-item>
+          <mat-icon>create</mat-icon>
+          <span>Editar perfil</span>
+        </button>
+        <button class="mx-auto" (click)="cerrarSesion()" mat-menu-item>
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Cerrar sesion</span>
+        </button>
+      </mat-menu>
+    </mat-nav-list>
+    <hr>
     <mat-nav-list>
-      <mat-list>
-        <ng-container *ngIf="esRecepcionista()">
-          <h3 mat-subheader>Clientes</h3>
-          <mat-list-item routerLink="/usuario/registrar">
-            <mat-icon mat-list-icon>person_add</mat-icon>
-            <h5 mat-line>Registrar cliente</h5>
-          </mat-list-item>
-          <mat-list-item routerLink="/usuario/nuevaVenta">
-            <mat-icon mat-list-icon>add_a_photo</mat-icon>
-            <h5 mat-line>Realizar pedido</h5>
-          </mat-list-item>
-          <mat-list-item routerLink="/usuario/pedidos">
-            <mat-icon mat-list-icon>search</mat-icon>
-            <h5 mat-line>Buscar pedido</h5>
-          </mat-list-item>
-          <mat-divider></mat-divider>
-        </ng-container>
-        <ng-container *ngIf="!esRecepcionista()">
-          <h3 mat-subheader>Tablero general</h3>
-          <mat-list-item routerLink="/usuario/dashboard">
-            <mat-icon mat-list-icon>dashboard</mat-icon>
-            <h5 mat-line>Tablero</h5>
-          </mat-list-item>
-          <h3 mat-subheader>Pedidos</h3>
-          <mat-list-item routerLink="/usuario/pedidos-realizados">
-            <mat-icon mat-list-icon>done</mat-icon>
-            <h5 mat-line>Pedidos realizados</h5>
-          </mat-list-item>
-          <mat-list-item routerLink="/usuario/pedidos-proceso">
-            <mat-icon mat-list-icon>flip_camera_ios</mat-icon>
-            <h5 mat-line>Pedidos en proceso</h5>
-          </mat-list-item>
-          <mat-list-item routerLink="/usuario/pedidos-cola">
-            <mat-icon mat-list-icon>list</mat-icon>
-            <h5 mat-line>Pedidos en cola</h5>
-          </mat-list-item>
-          <mat-divider></mat-divider>
-        </ng-container>
-        <mat-list-item routerLink="/usuario/perfil">
-          <mat-icon mat-list-icon>account_circle</mat-icon>
-          <h5 mat-line>Perfil</h5>
-        </mat-list-item>
-      </mat-list>
+      <mat-list-item *ngFor="let menu of menus; let i=index" class="mx-auto mb-1"
+        (click)="activarPestana(i, menu.nombre)" [ngClass]="{'menu-seleccionado':pestanasActivas[i] == true }"
+        [routerLink]="menu.ruta">
+        <mat-icon mat-list-icon>{{menu.icono}}</mat-icon>
+        <h5 mat-line>{{menu.nombre}}</h5>
+      </mat-list-item>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content>
-    <mat-toolbar [@openClose]="navbarAbierto ? 'open' : 'closed'" color="primary" class="navbar">
-      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+  <mat-sidenav-content [ngClass]="{'sin-scroll': ocultarNavbar()}">
+    <div [@openClose]="navbarAbierto ? 'open' : 'closed'" color="primary" class="navbar">
+      <button mat-mini-fab class="btn-toggle" aria-label="Toggle sidenav" (click)="drawer.toggle()">
+        <mat-icon [@rotacion]="drawer.opened ? 'rotado' : 'inicial' ">{{drawer.opened ? 'more_vert' : 'view_list'}}
+        </mat-icon>
       </button>
-      <span>Usuario</span>
+      <span style="color: #555;">{{moduloActual}}</span>
       <span class="espaciador"></span>
       <app-empleado-notificaciones *ngIf="!esRecepcionista()"></app-empleado-notificaciones>
-      <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" style="color:#ffff" matTooltip="Temas">
+      <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-nav" color="primary" matTooltip="Temas">
         <mat-icon>palette</mat-icon>
       </button>
       <mat-menu #menu="matMenu" style="padding: 1;">
@@ -65,16 +52,15 @@
         <button mat-menu-item class="dot-azul mr-4 ml-2" (click)="cambiarTema('tema-azul')"></button>
         <button mat-menu-item class="dot-verde mr-2" (click)="cambiarTema('tema-verde')"></button>
       </mat-menu>
-      <button class="iconos" mat-icon-button color="primary" matTooltip="Ayuda" style="color:#ffff;">
+      <button class="iconos" mat-icon-button class="btn-nav" color="primary" matTooltip="Ayuda">
         <mat-icon>help_outline</mat-icon>
       </button>
-      <button class="iconos" mat-icon-button color="primary" (click)="cerrarSesion()" matTooltip="Cerrar sesion"
-        style="color: #ffff;">
+      <button class="iconos" mat-icon-button class="btn-nav" color="primary" (click)="cerrarSesion()"
+        matTooltip="Cerrar sesion">
         <mat-icon>exit_to_app</mat-icon>
       </button>
-    </mat-toolbar>
-    <button *ngIf="ocultarNavbar()" mat-mini-fab color="primary" class="btn-toolbar"
-      (click)="toggleNavbar()">
+    </div>
+    <button *ngIf="ocultarNavbar()" mat-mini-fab color="primary" class="btn-toolbar" (click)="toggleNavbar()">
       <mat-icon [@rotacion]="navbarAbierto ? 'rotado' : 'inicial' ">arrow_downward</mat-icon>
     </button>
     <ng-content></ng-content>

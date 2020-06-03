@@ -1,49 +1,49 @@
 <mat-table class="w-100" [dataSource]="datosProductos" matSort>
-    <ng-container matColumnDef="nombre">
-        <mat-header-cell *matHeaderCellDef mat-sort>Nombre</mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{producto.producto.nombre}}</mat-cell>
-            <mat-footer-cell class="pie-tabla" *matFooterCellDef> Total </mat-footer-cell>
-    </ng-container>
+  <ng-container matColumnDef="nombre">
+    <mat-header-cell *matHeaderCellDef mat-sort>Nombre</mat-header-cell>
+    <mat-cell *matCellDef="let producto">{{producto.producto.nombre}}</mat-cell>
+    <mat-footer-cell class="pie-tabla" *matFooterCellDef> Total </mat-footer-cell>
+  </ng-container>
 
-    <ng-container matColumnDef="num_fotos">
-        <mat-header-cell *matHeaderCellDef mat-sort>Num. Fotos</mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{producto.producto.num_fotos}}</mat-cell>
-            <mat-footer-cell *matFooterCellDef> </mat-footer-cell>
-    </ng-container>
+  <ng-container matColumnDef="num_fotos">
+    <mat-header-cell *matHeaderCellDef mat-sort>Num. Fotos</mat-header-cell>
+    <mat-cell *matCellDef="let producto">{{producto.producto.num_fotos}}</mat-cell>
+    <mat-footer-cell *matFooterCellDef> </mat-footer-cell>
+  </ng-container>
 
-    <ng-container matColumnDef="precio">
-        <mat-header-cell *matHeaderCellDef mat-sort>Precio</mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{producto.producto.precio}}</mat-cell>
-            <mat-footer-cell *matFooterCellDef> </mat-footer-cell>
-    </ng-container>
+  <ng-container matColumnDef="precio">
+    <mat-header-cell *matHeaderCellDef mat-sort>Precio</mat-header-cell>
+    <mat-cell *matCellDef="let producto">{{producto.producto.precio}}</mat-cell>
+    <mat-footer-cell *matFooterCellDef> </mat-footer-cell>
+  </ng-container>
 
-    <ng-container matColumnDef="noData">
-        <mat-footer-cell class="p-0 mt-3" *matFooterCellDef colspan="6">
-            <div class="alert alert-info sin-borde alert-dismissible fade show w-100 sin-borde" role="alert">
-                No hay productos agregados
-            </div>
-        </mat-footer-cell>
-    </ng-container>
+  <ng-container matColumnDef="noData">
+    <mat-footer-cell class="p-0 mt-3" *matFooterCellDef colspan="6">
+      <div class="alert alert-info sin-borde alert-dismissible fade show w-100 sin-borde" role="alert">
+        No hay productos agregados
+      </div>
+    </mat-footer-cell>
+  </ng-container>
 
-    <ng-container matColumnDef="borrar">
-        <mat-header-cell *matHeaderCellDef>Eliminar</mat-header-cell>
-        <mat-cell *matCellDef="let producto">
-            <button (click)="agregarCantidadProducto(producto)" mat-icon-button class="icono-exito">
-                <mat-icon>add</mat-icon>
-              </button>
-              <mat-form-field style="width: 15% !important;">
-                <input class="text-center" matInput type="number" [(ngModel)]="producto.cantidad">
-              </mat-form-field>
-              <button (click)="quitarProducto(producto)" mat-icon-button class="icono-error">
-                <mat-icon>remove</mat-icon>
-              </button>
-        </mat-cell>
-            <mat-footer-cell class="pie-tabla" *matFooterCellDef> {{obtenerTotalPedido() | currency}} </mat-footer-cell>
-    </ng-container>
+  <ng-container matColumnDef="administrar">
+    <mat-header-cell *matHeaderCellDef>Administrar</mat-header-cell>
+    <mat-cell *matCellDef="let producto">
+      <button (click)="agregarProducto(producto)" mat-icon-button class="icono-exito">
+        <mat-icon>add</mat-icon>
+      </button>
+      <div class="m-2">
+        {{producto.cantidad}}
+      </div>
+      <button (click)="quitarProducto(producto)" mat-icon-button class="icono-error">
+        <mat-icon>remove</mat-icon>
+      </button>
+    </mat-cell>
+    <mat-footer-cell class="pie-tabla" *matFooterCellDef> {{obtenerTotalPedido() | currency}} </mat-footer-cell>
+  </ng-container>
 
-    <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
-    <mat-row *matRowDef="let row;columns: columnas;"></mat-row>
-        <mat-footer-row *matFooterRowDef="columnas" [ngClass]="{'hide':datosProductos.data.length == 0}"></mat-footer-row>
-    <mat-footer-row *matFooterRowDef="['noData']"
-        [ngClass]="{'hide':!(datosProductos!=null && datosProductos.data.length == 0)}"></mat-footer-row>
+  <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+  <mat-row *matRowDef="let row;columns: columnas;"></mat-row>
+  <mat-footer-row *matFooterRowDef="columnas" [ngClass]="{'hide':datosProductos.data.length == 0}"></mat-footer-row>
+  <mat-footer-row *matFooterRowDef="['noData']"
+    [ngClass]="{'hide':!(datosProductos!=null && datosProductos.data.length == 0)}"></mat-footer-row>
 </mat-table>

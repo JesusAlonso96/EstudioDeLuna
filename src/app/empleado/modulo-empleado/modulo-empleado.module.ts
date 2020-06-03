@@ -37,7 +37,6 @@ import { EmpleadoVentaTablaProductosAgregadosComponent } from '../empleado-venta
 
 //servicios
 import { EmpleadoService } from '../servicio-empleado/empleado.service';
-import { PedidosService } from '../servicio-empleado/pedidos.service';
 import { EmpleadoRoutingModule } from './empleado-routing.module';
 import { ImageCropperModule } from 'ngx-image-cropper';
 
@@ -94,7 +93,6 @@ import { ImageCropperModule } from 'ngx-image-cropper';
     EstadosService,
     ProductosService,
     UsuarioService,
-    PedidosService
   ],
   entryComponents: [
     Modal,

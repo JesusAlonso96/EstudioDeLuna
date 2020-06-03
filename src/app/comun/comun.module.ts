@@ -70,6 +70,8 @@ import { AltaGastoGeneralComponent } from './componentes/modales/alta-gasto-gene
 import { EditarGastoGeneralComponent } from './componentes/modales/editar-gasto-general/editar-gasto-general.component';
 import { EditarGastoInsumoComponent } from './componentes/modales/editar-gasto-insumo/editar-gasto-insumo.component';
 import { AltaGastoInsumoComponent } from './componentes/modales/alta-gasto-insumo/alta-gasto-insumo.component';
+import { ListaProductosPedidoComponent } from './componentes/lista-productos-pedido/lista-productos-pedido.component';
+import { VistaProductoComponent } from './componentes/modales/vista-producto/vista-producto.component';
 
 @NgModule({
     declarations: [
@@ -126,7 +128,9 @@ import { AltaGastoInsumoComponent } from './componentes/modales/alta-gasto-insum
         AltaGastoGeneralComponent,
         EditarGastoGeneralComponent,
         EditarGastoInsumoComponent,
-        AltaGastoInsumoComponent
+        AltaGastoInsumoComponent,
+        ListaProductosPedidoComponent,
+        VistaProductoComponent
     ],
     imports: [
         CommonModule,
@@ -157,45 +161,14 @@ import { AltaGastoInsumoComponent } from './componentes/modales/alta-gasto-insum
         BarraCargandoComponent,
         BuscadorComponent,
         AlertaComponent,
-        CotizacionCreadaComponent
-
+        CotizacionCreadaComponent,
+        ListaProductosPedidoComponent,
+        VistaProductoComponent
     ],
     entryComponents: [
-        AgregarProductoComponent,
-        EliminarProductoComponent,
-        EditarProductoComponent,
-        AgregarFamiliaComponent,
-        EliminarFamiliaComponent,
-        DatosClienteComponent,
-        EditarClienteComponent,
-        PedidosClienteComponent,
-        ModalConfirmacionComponent,
-        EditarUsuarioComponent,
-        SeleccionarEmpleadoComponent,
-        DetallesProductoComponent,
-        MostrarVentasFotografosComponent,
-        DesgloseVentasFotografosComponent,
-        EditarProveedorComponent,
-        SeleccionarProveedorComponent,
-        EditarProductoProveedorComponent,
-        AltaEmpresaComponent,
-        EditarEmpresaComponent,
-        VerCotizacionComponent,
-        AltaAlmacenComponent,
-        EditarAlmacenComponent,
-        SeleccionarProductoProveedorComponent,
-        SeleccionarInsumoCompraComponent,
-        SeleccionarOrdenDeCompraComponent,
-        VerInsumosOrdenDeCompraComponent
+       
     ],
     providers: [
-        EstadosService,
-        ClienteService,
-        UsuarioService,
-        BuscadorService,
-        AlmacenService,
-        TemasService,
-        InventarioService
     ],
 })
 export class ComunModule { }

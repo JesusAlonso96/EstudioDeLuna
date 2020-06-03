@@ -55,6 +55,22 @@ exports.adminOSupervisorORecepcionistaMiddleware = (req, res, next) => {
         return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para realizar esta accion' });
     }
 };
+exports.fotografoMiddleware = (req, res, next) => {
+    if (res.locals.usuario.rol !== 0 && res.locals.rol_sec !== 1) {
+        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para crear un pedido' });
+    }
+    else {
+        next();
+    }
+};
+exports.recepcionistaMiddleware = (req, res, next) => {
+    if (res.locals.usuario.rol == 0 && res.locals.usuario.rol_sec == 2) {
+        next();
+    }
+    else {
+        return res.status(422).send({ titulo: 'No autorizado', detalles: 'No tienes permisos para crear un pedido' });
+    }
+};
 function parseToken(token) {
     return jsonwebtoken_1.default.verify(token.split(' ')[1], environment_1.environment.SECRET);
 }

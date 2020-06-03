@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, NgForm } from '@angular/forms';
 import { MatDialog, MatStepper, MatTableDataSource } from '@angular/material';
 import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
@@ -11,11 +11,12 @@ import { Familia } from 'src/app/comun/modelos/familia.model';
 import { Producto } from 'src/app/comun/modelos/producto.model';
 import { ProductoCot } from 'src/app/comun/modelos/producto_cot.model';
 import { Usuario } from 'src/app/comun/modelos/usuario.model';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
+import { CotizacionesService } from 'src/app/comun/servicios/cotizaciones.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { ProductosService } from 'src/app/comun/servicios/productos.service';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { CotizacionListaProductosComponent } from './cotizacion-lista-productos/cotizacion-lista-productos.component';
-import { CotizacionesService } from 'src/app/comun/servicios/cotizaciones.service';
 
 @Component({
   selector: 'app-generar-cotizacion',
@@ -26,7 +27,6 @@ export class GenerarCotizacionComponent implements OnInit {
   @ViewChild('listaProductos') listaProductos: CotizacionListaProductosComponent;
   @ViewChild('stepper') stepper: MatStepper;
   @ViewChild('datosGeneralesForm') datosGeneralesForm: NgForm;
-  @Output() cargandoEvento = new EventEmitter(true);
   vigencias: number[] = [];
   empresas: EmpresaCot[] = [];
   cotizacion: Cotizacion = new Cotizacion();
@@ -42,49 +42,50 @@ export class GenerarCotizacionComponent implements OnInit {
     private toastr: NgToastrService,
     private productosService: ProductosService,
     private autService: ServicioAutenticacionService,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog,
+    private cargandoService: CargandoService) { }
 
   ngOnInit() {
     this.obtenerEmpresas();
     this.inicializarVigencias();
   }
   obtenerEmpresas() {
-    this.crearVistaCargando(true, 'Obteniendo empresas...')
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo empresas...')
     this.cotizacionService.obtenerEmpresas().subscribe(
       (empresas: EmpresaCot[]) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.empresas = empresas;
         this.generarAsesorCotizacion();
         this.obtenerFamiliasProductos();
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   obtenerFamiliasProductos() {
-    this.crearVistaCargando(true, 'Obteniendo familias de productos...')
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo familias de productos...')
     this.productosService.obtenerFamiliasProductos().subscribe(
       (familias: Familia[]) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.familiasProductos = familias;
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   buscarProductosPorFamilia() {
-    this.crearVistaCargando(true, 'Buscando productos...')
+    this.cargandoService.crearVistaCargando(true, 'Buscando productos...')
     this.productosService.obtenerProductos(this.familiaSeleccionada._id).subscribe(
       (productos: Producto[]) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.iniciarProductosCotizacion(productos);
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
@@ -131,10 +132,10 @@ export class GenerarCotizacionComponent implements OnInit {
     })
   }
   generarCotizacion() {
-    this.crearVistaCargando(true, 'Creando cotizacion...')
+    this.cargandoService.crearVistaCargando(true, 'Creando cotizacion...')
     this.cotizacionService.agregarCotizacion(this.cotizacion).subscribe(
       (cotizacion: Cotizacion) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.reiniciarCotizacion();
         this.toastr.abrirToastr('exito', 'Cotizacion creada', 'Se creo exitosamente la cotizacion');
         this.dialog.open(VerCotizacionComponent, {
@@ -142,7 +143,7 @@ export class GenerarCotizacionComponent implements OnInit {
         });
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
@@ -168,10 +169,6 @@ export class GenerarCotizacionComponent implements OnInit {
     }
   }
   mostrarCotizacionGenerada() {
-    console.log(this.cotizacion);
     if (this.listaProductosValida()) this.mostrarCotizacion = !this.mostrarCotizacion;
-  }
-  crearVistaCargando(cargando: boolean, texto?: string) {
-    this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
   }
 }

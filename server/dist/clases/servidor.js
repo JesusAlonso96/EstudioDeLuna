@@ -31,6 +31,7 @@ const inventario_1 = __importDefault(require("../rutas/inventario"));
 const sucursal_1 = __importDefault(require("../rutas/sucursal"));
 const traspaso_1 = __importDefault(require("../rutas/traspaso"));
 const cotizaciones_1 = __importDefault(require("../rutas/cotizaciones"));
+const pedidos_1 = __importDefault(require("../rutas/pedidos"));
 class Servidor {
     constructor() {
         this.app = express_1.default();
@@ -72,6 +73,7 @@ class Servidor {
         this.app.use('/api/v2/configuracion', configuracion_1.default);
         this.app.use('/api/v2/proveedores', proveedores_1.default);
         this.app.use('/api/v2/cotizaciones', cotizaciones_1.default);
+        this.app.use('/api/v2/pedidos', pedidos_1.default);
     }
     iniciar() {
         this.inicializarRutas();

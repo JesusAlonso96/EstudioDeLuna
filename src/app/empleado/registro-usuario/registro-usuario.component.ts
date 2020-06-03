@@ -6,7 +6,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./registro-usuario.component.scss']
 })
 export class RegistroUsuarioComponent implements OnInit {
+  cargando: any = {
+    cargando: false,
+    texto: ''
+  }
   constructor() { }
   ngOnInit() {
-  }  
+  }
+  cargandoEv(evento: any) {
+    this.cargando.cargando = evento.cargando;
+    this.cargando.texto = evento.texto;
+  }
 }

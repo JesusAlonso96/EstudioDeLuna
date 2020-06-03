@@ -193,9 +193,6 @@ import { ComprasGastosInsumosPendientesComponent } from './administrador-compras
     CambiarPermisosComponent
   ],
   providers: [
-    AdministradorService,
-    TemasService,
-    AutenticacionGuard
   ]
 })
 export class AdministradorModule { }

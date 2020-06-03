@@ -1,0 +1,14 @@
+@mixin paginador ($color) {
+  .mat-paginator-range-actions {
+    .mat-paginator-navigation-previous,
+    .mat-paginator-navigation-next {
+      transition: all 100ms linear;
+      -webkit-transition: all 100ms linear;
+      -ms-transition: all 100ms linear;
+      &:hover:not(:disabled) {
+        background-color: $color;
+        color: #ffff;
+      }
+    }
+  }
+}

@@ -5,7 +5,9 @@ import { Subscription } from 'rxjs';
 import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
 import { Notificacion } from 'src/app/comun/modelos/notificacion.model';
 import { EmpleadoService } from '../servicio-empleado/empleado.service';
-import { PedidosService } from '../servicio-empleado/pedidos.service';
+import { PedidosService } from 'src/app/comun/servicios/pedidos.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 declare var $: any;
 
 @Component({
@@ -17,7 +19,7 @@ export class EmpleadoNotificacionesComponent implements OnInit {
   notificaciones: Notificacion[] = [];
   subscripcionNotificaciones: Subscription;
   cargandoEliminacion: boolean;
-  constructor(private toastr: ToastrService, private empleadoService: EmpleadoService, private autService: ServicioAutenticacionService, private pedidosService: PedidosService) { }
+  constructor(private toastr: NgToastrService, private empleadoService: EmpleadoService, private autService: ServicioAutenticacionService, private pedidosService: PedidosService) { }
 
   ngOnInit() {
     this.obtenerNotificaciones();
@@ -30,7 +32,11 @@ export class EmpleadoNotificacionesComponent implements OnInit {
     var fecha = momento(hoy).format('YYYY-MM-DD');
     this.empleadoService.obtenerNotificaciones(this.autService.getIdUsuario(), fecha).subscribe(
       (notificaciones) => {
+        console.log("notificacioness", notificaciones)
         this.notificaciones = notificaciones;
+      },
+      (err: HttpErrorResponse) => {
+        this.toastr.abrirToastr('error',err.error.titulo,err.error.detalles);
       }
     );
   }
@@ -45,7 +51,7 @@ export class EmpleadoNotificacionesComponent implements OnInit {
     this.subscripcionNotificaciones = this.pedidosService.obtenerNotificaciones().subscribe(
       (notificacion: Notificacion) => {
         this.notificaciones.unshift(notificacion);
-        this.toastr.info('Nueva notificacion');
+        this.toastr.abrirToastr('info','Nueva notificacion','');
       }
     )
   }
@@ -54,8 +60,8 @@ export class EmpleadoNotificacionesComponent implements OnInit {
       (eliminada: any) => {
         this.notificaciones.splice(indice, 1);
       },
-      (err: any) => {
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.toastr.error('error',err.error.detalles, err.error.titulo);
       }
     );
   }

@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { BuscadorComponent } from 'src/app/comun/componentes/buscador/buscador.component';
 import { Cliente } from 'src/app/comun/modelos/cliente.model';
-import { Subject } from 'rxjs';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 import { ClienteService } from 'src/app/comun/servicios/cliente.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
-import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
-import { takeUntil } from 'rxjs/operators';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-clientes-administrar',
@@ -15,13 +15,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class ClientesAdministrarComponent implements OnInit {
   @ViewChild('buscador') buscador: BuscadorComponent;
-  @Output() cargandoEvento = new EventEmitter(true);
   columnas: string[] = ['nombre', 'ape_pat', 'ape_mat', 'email', 'telefono', 'opciones'];
   clientes: Cliente[];
   private onDestroy$ = new Subject<boolean>();
-  constructor(private clienteService: ClienteService,
+  constructor(
+    private clienteService: ClienteService,
     private toastr: NgToastrService,
-    private authService: ServicioAutenticacionService) { }
+    private cargandoService: CargandoService) { }
 
   ngOnInit(): void {
     this.obtenerClientes();
@@ -30,14 +30,14 @@ export class ClientesAdministrarComponent implements OnInit {
     this.obtenerNuevosClientesEliminados();
   }
   obtenerClientes() {
-    this.crearVistaCargando(true, 'Obteniendo clientes..')
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo clientes..')
     this.clienteService.obtenerDatosClientes().subscribe(
       (clientes: Cliente[]) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.clientes = clientes;
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
@@ -88,8 +88,5 @@ export class ClientesAdministrarComponent implements OnInit {
   ngOnDestroy(): void {
     this.onDestroy$.next(true);
     this.onDestroy$.complete();
-  }
-  crearVistaCargando(cargando: boolean, texto?: string) {
-    this.cargandoEvento.emit({ cargando, texto: texto ? texto : '' });
   }
 }

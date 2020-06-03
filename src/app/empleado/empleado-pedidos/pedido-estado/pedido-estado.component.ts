@@ -7,6 +7,8 @@ import { ModalGenerarTicketComponent } from '../../empleado-venta/modal-generar-
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Venta } from 'src/app/comun/modelos/venta.model';
+import { PedidosService } from 'src/app/comun/servicios/pedidos.service';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 class Pago {
   metodoPago: string;
   monto: number;
@@ -27,12 +29,12 @@ export class PedidoEstadoComponent implements OnInit {
   inputDebe: number;//eliminar
   metodoPago: string = '';
   cantidadRestante: number;
-  cargando = {
-    cargando: false,
-    texto: ''
-  }
   constructor(public matDialog: MatDialog,
-    public dialogRef: MatDialogRef<PedidoEstadoComponent>, @Inject(MAT_DIALOG_DATA) public data: Pedido, private toastr: NgToastrService, private empleadoService: EmpleadoService) { }
+    public dialogRef: MatDialogRef<PedidoEstadoComponent>, @Inject(MAT_DIALOG_DATA) public data: Pedido,
+    private toastr: NgToastrService, 
+    private empleadoService: EmpleadoService,
+    private cargandoService: CargandoService,
+    private pedidosService: PedidosService) { }
   ngOnInit() {
     this.cantidadRestante = this.data.total - this.data.anticipo;
     this.obtenerProductos();
@@ -61,13 +63,9 @@ export class PedidoEstadoComponent implements OnInit {
     }
     this.estadoActual = this.estadosNuevo.pop();
   }
-  crearVistaCargando(cargando: boolean, texto?: string) {
-    this.cargando.cargando = cargando;
-    this.cargando.texto = texto;
-  }
 
   obtenerProductos() {
-    this.empleadoService.obtenerProductosPorPedido(this.data._id).subscribe(
+    this.pedidosService.obtenerProductosPorPedido(this.data._id).subscribe(
       (productos) => {
         this.data.productos = productos;
       }
@@ -94,37 +92,37 @@ export class PedidoEstadoComponent implements OnInit {
     return this.data.total == this.data.anticipo ? true : false;
   }
   actualizarAnticipoPedido() {
-    this.crearVistaCargando(true, 'Actualizando el anticipo del pedido...')
-    this.empleadoService.actualizarAnticipo(this.data._id, this.data.anticipo).subscribe(
+    this.cargandoService.crearVistaCargando(true, 'Actualizando el anticipo del pedido...')
+    this.pedidosService.actualizarAnticipo(this.data._id, this.data.anticipo).subscribe(
       (pedidoActualizado: Pedido) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', 'El pedido se ha actualizado satisfactoriamente', '');
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   actualizarEstadoPedido() {
-    this.crearVistaCargando(true, 'Actualizando el estado del pedido...')
-    this.empleadoService.actualizarEstado(this.data).subscribe(
+    this.cargandoService.crearVistaCargando(true, 'Actualizando el estado del pedido...')
+    this.pedidosService.actualizarEstado(this.data).subscribe(
       (pedidoActualizado: Pedido) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', 'El pedido se ha actualizado correctamente', '');
         this.onNoClick();
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     )
   }
   crearVenta(pedido: Pedido, debe: Number, metodoPago: string) {
-    this.crearVistaCargando(true, 'Creando venta...')
+    this.cargandoService.crearVistaCargando(true, 'Creando venta...')
     this.empleadoService.crearVenta(pedido, debe, metodoPago, localStorage.getItem('c_a')).subscribe(
       (ventaRealizada: Venta) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', 'Se realizo la venta satisfactoriamente', '');
         this.matDialog.open(ModalGenerarTicketComponent,
           {
@@ -133,7 +131,7 @@ export class PedidoEstadoComponent implements OnInit {
         this.onNoClick();
       },
       (err: HttpErrorResponse) => {
-        this.crearVistaCargando(false);
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );

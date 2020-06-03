@@ -92,7 +92,7 @@
                             <mat-progress-bar *ngIf="cargando2" mode="indeterminate"></mat-progress-bar>
                             <mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Municipio</mat-label>
-                                <mat-select  [(ngModel)]="sucursal.direccion.municipio"
+                                <mat-select  [(ngModel)]="sucursal.direccion.ciudad"
                                     #municipio="ngModel" name="municipio" required>
                                     <mat-option  *ngFor="let municipio of municipios"
                                         [value]="municipio.nombre">

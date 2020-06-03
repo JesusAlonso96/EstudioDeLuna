@@ -147,7 +147,7 @@ export class InventariosAlmacenesTraspasosAltaComponent implements OnInit {
     }
   }
 
-  disminuirTraspaso(insumo: InsumoAlmacen) {
+  disminuirTraspaso() {
     if(this.traspaso.cantidadMovimiento > 1) {
       this.traspaso.cantidadMovimiento--;
     } else {

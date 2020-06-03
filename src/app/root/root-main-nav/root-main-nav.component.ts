@@ -4,6 +4,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-root-main-nav',
@@ -11,10 +12,21 @@ import { map, shareReplay } from 'rxjs/operators';
   styleUrls: ['./root-main-nav.component.scss']
 })
 export class RootMainNavComponent implements OnInit {
-
+  cargando = {
+    cargando: false,
+    texto: ''
+  }
   constructor(private breakpointObserver: BreakpointObserver,
     private autenticacionService: ServicioAutenticacionService,
-    private rutas: Router) { }
+    private cargandoService: CargandoService,
+    private rutas: Router) {
+    this.cargandoService.cambioEmitido$.subscribe(
+      cargando => {
+        this.cargando.cargando = cargando.cargando;
+        this.cargando.texto = cargando.texto;
+      }
+    )
+  }
 
   ngOnInit() {
   }

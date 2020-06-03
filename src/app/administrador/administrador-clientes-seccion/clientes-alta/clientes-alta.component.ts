@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-clientes-alta',
@@ -6,10 +6,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./clientes-alta.component.scss']
 })
 export class ClientesAltaComponent {
-  @Output() cargandoEventoHijos = new EventEmitter(true);
 
   constructor() { }
-  cargandoEv(evento: any){
-    this.cargandoEventoHijos.emit({ cargando:evento.cargando, texto: evento.texto ? evento.texto : '' });
-  }
+ 
 }

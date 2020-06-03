@@ -12,7 +12,7 @@ const clienteSchema = new mongoose_1.Schema({
     nombre: { type: String, required: true },
     username: { type: String, required: false },
     ape_pat: { type: String, required: true },
-    ape_mat: { type: String, required: true },
+    ape_mat: { type: String, required: false },
     email: { type: String, required: false },
     telefono: { type: Number, required: false },
     contrasena: { type: String, required: true },
@@ -23,11 +23,11 @@ const clienteSchema = new mongoose_1.Schema({
     municipio: { type: String, required: true },
     estado: { type: String, required: true },
     cp: { type: Number, required: true },
-    num_ext: { type: Number, required: true },
-    num_int: { type: Number, required: false },
+    num_ext: { type: String, required: true },
+    num_int: { type: String, required: false },
     pedidos: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Pedido' }],
     sucursal: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Sucursal' },
-    fecha_registro: { type: Date, required: true },
+    fechaRegistro: { type: Date, required: true, default: new Date(Date.now()) },
     activo: { type: Number, default: 1 }
 });
 exports.Cliente = mongoose_1.default.model('Cliente', clienteSchema);

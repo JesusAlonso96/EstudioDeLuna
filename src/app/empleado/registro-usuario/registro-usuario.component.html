@@ -1,1 +1,4 @@
-<app-alta-cliente></app-alta-cliente>
+<app-cargando [cargando]="cargando.cargando" [texto]="cargando.texto"></app-cargando>
+<mat-card class="container">
+    <app-alta-cliente (cargandoEvento)="cargandoEv($event)"></app-alta-cliente>
+</mat-card>

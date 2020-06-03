@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { EmpresaCot } from 'src/app/comun/modelos/empresa_cot.model';
 import { AdministradorService } from '../../servicio-administrador/servicio-administrador.service';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-restaurar-empresa',
@@ -13,7 +15,7 @@ export class RestaurarEmpresaComponent implements OnInit {
   columnas: string[] = ['nombre', 'contacto', 'email', 'restaurar'];
   cargando: boolean = false;
 
-  constructor(private adminService: AdministradorService, private toastr: ToastrService) { }
+  constructor(private adminService: AdministradorService, private toastr: NgToastrService) { }
 
   ngOnInit() {
     this.obtenerEmpresasEliminadas();
@@ -25,9 +27,9 @@ export class RestaurarEmpresaComponent implements OnInit {
         this.cargando = false;
         this.empresas = empresasEliminadas;
       },
-      (err: any) => {
+      (err: HttpErrorResponse) => {
         this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
 
     );

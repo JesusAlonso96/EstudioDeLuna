@@ -13,6 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ConfiguracionService } from 'src/app/comun/servicios/configuracion.service';
 import { environment } from 'src/environments/environment';
 import { Animaciones } from 'src/app/comun/constantes/animaciones';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-main-nav-admin',
@@ -28,15 +29,27 @@ export class MainNavAdminComponent implements OnInit {
   logotipoActual: string = '';
   moduloActual: string = '';
   mostrarToggleSidebar: boolean = false;
+  cargando = {
+    cargando: false,
+    texto: ''
+  }
   private onDestroy$ = new Subject<boolean>();
 
-  constructor(private breakpointObserver: BreakpointObserver,
+  constructor(
+    private cargandoService: CargandoService,
+    private breakpointObserver: BreakpointObserver,
     public autenticacionService: ServicioAutenticacionService,
     public temasService: TemasService,
     private rutas: Router,
     private usuarioService: UsuarioService,
     private toastr: NgToastrService,
     private configuracionService: ConfiguracionService) {
+    this.cargandoService.cambioEmitido$.subscribe(
+      cargando => {
+        this.cargando.cargando = cargando.cargando;
+        this.cargando.texto = cargando.texto;
+      }
+    )
   }
   scrollHandler($event: any) {
     let scrollOffset = $event.srcElement.scrollTop;
