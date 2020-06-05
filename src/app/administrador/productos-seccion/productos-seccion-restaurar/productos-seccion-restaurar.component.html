@@ -2,37 +2,21 @@
     <mat-tab *ngFor="let familia of familias; let i = index" [label]="familia.nombre">
         <ng-template matTabContent>
             <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <button mat-raised-button color="warn" (click)="abrirAgregarProducto(familia, i)"
-                            matTooltip="Agregar un nuevo producto" class="agregarProducto">
-                            <mat-icon>add</mat-icon> Nuevo producto
-                        </button>
-                    </div>
-                </div>
-                <div class="row mt-4">
+                <div class="row mt-1">
                     <div class="col-lg-12 ">
                         <div class="row">
                             <ng-container *ngFor="let producto of familia.productos; let j = index">
                                 <div class="col-lg-4 col-md-6  col-sm-6 col-xs-12 mb-1">
                                     <mat-card class="card p-0">
-                                        <button class="eliminarProducto icono-error-contorno" (click)="abrirEliminarProducto(i,j)"
+                                        <button class="restaurar icono-advertencia-contorno" (click)="abrirRestaurarProducto(i,j)"
                                             mat-icon-button>
-                                            <mat-icon>close</mat-icon>
+                                            <mat-icon>restore_from_trash</mat-icon>
                                         </button>
                                         <div class="card-body">
                                             <h5 class="card-title">
                                                 {{producto.nombre | titlecase}}, {{producto.num_fotos}} fotos
                                             </h5>
                                             <p class="card-text"> {{producto.precio | currency}} MXN</p>
-                                            <div class="d-flex justify-content-between">
-                                                <button mat-raised-button class="btn-info"
-                                                    (click)="verDetalles(producto)">Ver
-                                                    detalles</button>
-                                                <button mat-raised-button class="btn-advertencia"
-                                                    (click)="abrirEditarProducto(producto,i,j)">Editar</button>
-                                            </div>
-
                                         </div>
                                         <!--<mat-card-header>
                                             <button class="eliminarProducto" (click)="abrirEliminarProducto(i,j)"
@@ -53,7 +37,7 @@
                         <div *ngIf="familia.productos.length == 0" class="row">
                             <div class="col-lg-12">
                                 <app-alerta tipo_bootstrap="info" tipo="info"
-                                    mensaje="No existen productos en esta familia"></app-alerta>
+                                    mensaje="No existen productos eliminados en esta familia"></app-alerta>
                             </div>
                         </div>
                     </div>

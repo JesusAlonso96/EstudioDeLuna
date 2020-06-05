@@ -13,8 +13,8 @@ export class ProductosService {
     public obtenerFamiliasProductos(): Observable<any> {
         return this.http.get('/api/v1/productos/familias');
     }
-    public obtenerProductos(id: string): Observable<any> {
-        return this.http.get(`/api/v1/productos/obtenerProductos/${id}`);
+    public obtenerProductos(idFamilia: string): Observable<any> {
+        return this.http.get(`/api/v1/productos/${idFamilia}`);
     }
     public obtenerProductosPorCantidad(idFamilia: string): Observable<any> {
         return this.http.get(`/api/v1/productos/obtenerProductosPorCantidad/${idFamilia}`)
@@ -23,7 +23,10 @@ export class ProductosService {
         return this.http.get(`/api/v1/productos/obtenerProductosPorTam/${id}`)
     }
     public obtenerProductosPorFamilia(): Observable<any> {
-        return this.http.get('/api/v1/productos/obtenerFamiliasYProductos')
+        return this.http.get('/api/v1/productos/familias-productos')
+    }
+    public obtenerProductosPorFamiliaInactivos(): Observable<any> {
+        return this.http.get('/api/v1/productos/familias-productos/inactivos')
     }
     public buscarProducto(especificaciones: Producto): Observable<any> {
         return this.http.post('/api/v1/productos/buscarProducto', especificaciones);
@@ -33,5 +36,8 @@ export class ProductosService {
     }
     public guardarProducto(producto: Producto): Observable<any> {
         return this.http.post('/api/v1/productos', producto);
+    }
+    public restaurarProducto(idProducto: string): Observable<any>{
+        return this.http.patch(`/api/v1/productos/${idProducto}`, null);
     }
 }

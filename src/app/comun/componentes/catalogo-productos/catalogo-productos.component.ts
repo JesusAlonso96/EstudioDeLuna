@@ -12,6 +12,8 @@ import { EditarProductoComponent } from './editar-producto/editar-producto.compo
 import { NgToastrService } from '../../servicios/ng-toastr.service';
 import { CargandoService } from '../../servicios/cargando.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { VistaProductoComponent } from '../modales/vista-producto/vista-producto.component';
+import { ProductoPedido } from '../../modelos/pedido.model';
 
 @Component({
   selector: 'app-catalogo-productos',
@@ -52,8 +54,13 @@ export class CatalogoProductosComponent implements OnInit {
     );
   }
   verDetalles(producto) {
-    this.dialog.open(ModalDetallesProductoComponent, {
-      data: { producto }
+    const productoPedido = {
+      producto
+    }
+    console.log(productoPedido)
+    this.dialog.open(VistaProductoComponent, {
+      data: productoPedido,
+      width:'45%'
     })
   }
   abrirAgregarProducto(familia, indice) {
@@ -90,7 +97,7 @@ export class CatalogoProductosComponent implements OnInit {
       }
     })
   }
-  eliminarProducto(indiceFamilia, indiceProducto) {
+  eliminarProducto(indiceFamilia: number, indiceProducto: number) {
     this.cargandoService.crearVistaCargando(true, 'Eliminando producto')
     this.usuarioService.eliminarProducto(<string>this.familias[indiceFamilia].productos[indiceProducto]._id, <string>this.familias[indiceFamilia]._id).subscribe(
       (eliminado) => {

@@ -11,11 +11,14 @@ export let obtenerFamilias = (req: Request, res: Response) => {
         })
 }
 export let obtenerProductos = (req: Request, res: Response) => {
-    Producto.find({ familia: req.params.id, activo: 1 })
+    Producto.find({ familia: req.params.idFamilia, activo: 1 })
         .exec((err: NativeError, productosEncontrados: IProducto[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron cargar los productos de la familia' });
             return res.json(productosEncontrados);
         })
+}
+export let obtenerProductosInactivos = (req: Request, res: Response) => {
+
 }
 export let obtenerFamiliasYProductos = (req: Request, res: Response) => {
     Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
@@ -29,6 +32,18 @@ export let obtenerFamiliasYProductos = (req: Request, res: Response) => {
             res.json(familias);
         })
 
+}
+export let obtenerFamiliasYProductosInactivos = (req: Request, res: Response) => {
+    Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
+        .populate({
+            path: 'productos',
+            match: { activo: 0 }
+        })
+        .sort({ nombre: 1 })
+        .exec((err: NativeError, familias: IFamilia[]) => {
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un problema intentando obtener los productos' });
+            res.json(familias);
+        })
 }
 export let obtenerProductosPorTam = (req: Request, res: Response) => {
     Producto
@@ -148,4 +163,12 @@ export let actualizarFotoProducto = (req: Request, res: Response) => {
             if (!productoActualizado) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al subir la imagen, por favor intentalo de nuevo' });
             else return res.status(200).json({ foto: productoActualizado.foto });
         });
+}
+export let restaurarProducto = (req: Request, res: Response) => {
+    Producto.findOneAndUpdate({ _id: req.params.idProducto }, {
+        activo: 1
+    }).exec((err: NativeError, eliminado: IProducto) => {
+        if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo eliminar el producto' });
+        return res.json(eliminado);
+    })
 }

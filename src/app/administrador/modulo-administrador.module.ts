@@ -100,6 +100,7 @@ import { ComprasGastosGeneralesTiposComponent } from './administrador-compras-se
 import { ComprasGastosGeneralesDetallesComponent } from './administrador-compras-seccion/compras-gastos-generales/compras-gastos-generales-detalles/compras-gastos-generales-detalles.component';
 import { ComprasGastosInsumosRegistradosComponent } from './administrador-compras-seccion/compras-gastos-insumos/compras-gastos-insumos-registrados/compras-gastos-insumos-registrados.component';
 import { ComprasGastosInsumosPendientesComponent } from './administrador-compras-seccion/compras-gastos-insumos/compras-gastos-insumos-pendientes/compras-gastos-insumos-pendientes.component';
+import { ProductosSeccionRestaurarComponent } from './productos-seccion/productos-seccion-restaurar/productos-seccion-restaurar.component';
 
 
 @NgModule({
@@ -173,7 +174,8 @@ import { ComprasGastosInsumosPendientesComponent } from './administrador-compras
     ComprasGastosGeneralesTiposComponent,
     ComprasGastosGeneralesDetallesComponent,
     ComprasGastosInsumosRegistradosComponent,
-    ComprasGastosInsumosPendientesComponent
+    ComprasGastosInsumosPendientesComponent,
+    ProductosSeccionRestaurarComponent
   ],
   imports: [
     CommonModule,

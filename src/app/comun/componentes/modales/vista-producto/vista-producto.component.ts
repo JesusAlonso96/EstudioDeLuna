@@ -11,7 +11,7 @@ import { DetallesProductoComponent } from '../detalles-producto/detalles-product
 export class VistaProductoComponent implements OnInit {
 
   constructor(
-    public dialogRef: MatDialogRef<DetallesProductoComponent>,
+    public dialogRef: MatDialogRef<VistaProductoComponent>,
     @Inject(MAT_DIALOG_DATA) public producto: ProductoPedido
   ) { }
 

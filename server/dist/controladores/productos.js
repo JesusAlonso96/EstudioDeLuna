@@ -12,18 +12,33 @@ exports.obtenerFamilias = (req, res) => {
     });
 };
 exports.obtenerProductos = (req, res) => {
-    producto_model_1.Producto.find({ familia: req.params.id, activo: 1 })
+    producto_model_1.Producto.find({ familia: req.params.idFamilia, activo: 1 })
         .exec((err, productosEncontrados) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron cargar los productos de la familia' });
         return res.json(productosEncontrados);
     });
 };
+exports.obtenerProductosInactivos = (req, res) => {
+};
 exports.obtenerFamiliasYProductos = (req, res) => {
     familia_model_1.Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
         .populate({
         path: 'productos',
         match: { activo: 1 }
+    })
+        .sort({ nombre: 1 })
+        .exec((err, familias) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un problema intentando obtener los productos' });
+        res.json(familias);
+    });
+};
+exports.obtenerFamiliasYProductosInactivos = (req, res) => {
+    familia_model_1.Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
+        .populate({
+        path: 'productos',
+        match: { activo: 0 }
     })
         .sort({ nombre: 1 })
         .exec((err, familias) => {
@@ -153,5 +168,14 @@ exports.actualizarFotoProducto = (req, res) => {
             return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al subir la imagen, por favor intentalo de nuevo' });
         else
             return res.status(200).json({ foto: productoActualizado.foto });
+    });
+};
+exports.restaurarProducto = (req, res) => {
+    producto_model_1.Producto.findOneAndUpdate({ _id: req.params.idProducto }, {
+        activo: 1
+    }).exec((err, eliminado) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo eliminar el producto' });
+        return res.json(eliminado);
     });
 };

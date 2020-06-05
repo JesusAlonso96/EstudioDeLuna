@@ -3,6 +3,6 @@
     <p class="text-center">¿Seguro que desea eliminar el producto?</p>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
-    <button mat-button color="warn" [mat-dialog-close]="true">Eliminar</button>
-    <button mat-button (click)="onNoClick()">Cancelar</button>
+    <button mat-raised-button class="btn-error" [mat-dialog-close]="true">Eliminar</button>
+    <button mat-raised-button (click)="onNoClick()">Cancelar</button>
 </mat-dialog-actions>
