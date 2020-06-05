@@ -8,6 +8,12 @@ import { Usuario } from '../../modelos/usuario.model';
 import { BuscadorService } from '../../servicios/buscador.service';
 import { Almacen } from '../../modelos/almacen.model';
 import { Animaciones } from '../../constantes/animaciones';
+import { TipoGastoGeneral } from '../../modelos/tipo_gasto_general.model';
+import { TiposDePersona } from '../../enumeraciones/tipos-de-persona.enum';
+import { MetodosPago } from '../../enumeraciones/metodos-pago.enum';
+import { GastoGeneral } from '../../modelos/gasto_general.model';
+import { GastoInsumo } from '../../modelos/gasto_insumo.model';
+import { Compra } from '../../modelos/compra.model';
 
 @Component({
   selector: 'app-buscador',
@@ -73,6 +79,21 @@ export class BuscadorComponent implements OnInit, AfterViewInit {
   confirmarEdicionAlmacen(almacen: Almacen) {
     this.buscadorService.confirmarEditarAlmacen(this.datosTabla, this.elementos, almacen);
   }
+  //tipos de gasto general
+  confirmarEdicionTipoGastoGeneral(tipoGastoGeneral: TipoGastoGeneral) {
+    this.buscadorService.confirmarEditarTipoGastoGeneral(this.datosTabla, this.elementos, tipoGastoGeneral);
+  }
+  //gastos generales
+  confirmarEdicionGastoGeneral(gastoGeneral: GastoGeneral) {
+    this.buscadorService.confirmarEditarGastoGeneral(this.datosTabla, this.elementos, gastoGeneral);
+  }
+  //gastos de insumos
+  confirmarEdicionGastoInsumo(gastoInsumo: GastoInsumo) {
+    this.buscadorService.confirmarEditarGastoInsumo(this.datosTabla, this.elementos, gastoInsumo);
+  }
+  nuevoGastoInsumo(compra: Compra) {
+    this.buscadorService.nuevoGastoInsumo(this.datosTabla, this.elementos, compra);
+  }
   //Funcion general para restaurar cualquier elemento
   confirmarRestauracionElemento(elemento: any, nombre: string, tipo: number) {
     this.buscadorService.confirmarRestauracionElemento(this.datosTabla, this.elementos, elemento, nombre, tipo);
@@ -87,5 +108,17 @@ export class BuscadorComponent implements OnInit, AfterViewInit {
   }
   esAdministrador(): boolean {
     return this.autService.getTipoUsuario() == 2 ? true : false;
+  }
+  obtenerRazonSocial(tipoGastoGeneral: TipoGastoGeneral): string {
+    switch (tipoGastoGeneral.tipoDePersona) {
+      case TiposDePersona.Moral: return tipoGastoGeneral.razonSocial;
+      case TiposDePersona.Fisica: return tipoGastoGeneral.nombre_persona + ' ' + tipoGastoGeneral.ape_pat_persona + (tipoGastoGeneral.ape_mat_persona ? (' ' + tipoGastoGeneral.ape_mat_persona) : '');
+    }
+  }
+  obtenerMetodoPago(metodoPago: string): string {
+    switch (metodoPago) {
+      case MetodosPago.Efectivo: return 'Efectivo';
+      case MetodosPago.TransferenciaElectronicaDeFondos: return 'Transferencia electrónica de fondos';
+    }
   }
 }

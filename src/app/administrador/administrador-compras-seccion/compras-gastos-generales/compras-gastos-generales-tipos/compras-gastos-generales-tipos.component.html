@@ -1,0 +1,10 @@
+<app-barra-cargando [cargando]="cargando"></app-barra-cargando>
+<mat-toolbar>
+    <button mat-raised-button color="primary" (click)="nuevoTipoGastoGeneral()">
+        <mat-icon>add</mat-icon>
+        Nuevo tipo de gasto general
+    </button>
+</mat-toolbar>
+<app-buscador #buscador *ngIf="tiposGastoGeneral" [elementos]="tiposGastoGeneral" [columnas]="columnas" nombre="tipo de gasto general"
+    accion="administrar">
+</app-buscador>

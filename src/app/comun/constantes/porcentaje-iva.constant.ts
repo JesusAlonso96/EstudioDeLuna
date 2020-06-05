@@ -1,0 +1,1 @@
+export const PORCENTAJE_IVA = 16;

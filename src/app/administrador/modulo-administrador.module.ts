@@ -94,6 +94,12 @@ import { InventariosAlmacenesTraspasosPendientesComponent } from './administrado
 import { InventariosAlmacenesTraspasosAltaComponent } from './administrador-inventario-seccion/inventarios-almacenes-traspasos/inventarios-almacenes-traspasos-alta/inventarios-almacenes-traspasos-alta.component';
 import { InventariosEntradasSalidasDetallesModalComponent } from './administrador-inventario-seccion/inventarios-entradas-salidas/inventarios-entradas-salidas-detalles-modal/inventarios-entradas-salidas-detalles-modal.component';
 import { CotizacionAdministrarProductosComponent } from './administrador-cotizaciones-seccion/generar-cotizacion/cotizacion-administrar-productos/cotizacion-administrar-productos.component';
+import { ComprasGastosGeneralesComponent } from './administrador-compras-seccion/compras-gastos-generales/compras-gastos-generales.component';
+import { ComprasGastosInsumosComponent } from './administrador-compras-seccion/compras-gastos-insumos/compras-gastos-insumos.component';
+import { ComprasGastosGeneralesTiposComponent } from './administrador-compras-seccion/compras-gastos-generales/compras-gastos-generales-tipos/compras-gastos-generales-tipos.component';
+import { ComprasGastosGeneralesDetallesComponent } from './administrador-compras-seccion/compras-gastos-generales/compras-gastos-generales-detalles/compras-gastos-generales-detalles.component';
+import { ComprasGastosInsumosRegistradosComponent } from './administrador-compras-seccion/compras-gastos-insumos/compras-gastos-insumos-registrados/compras-gastos-insumos-registrados.component';
+import { ComprasGastosInsumosPendientesComponent } from './administrador-compras-seccion/compras-gastos-insumos/compras-gastos-insumos-pendientes/compras-gastos-insumos-pendientes.component';
 
 
 @NgModule({
@@ -161,7 +167,13 @@ import { CotizacionAdministrarProductosComponent } from './administrador-cotizac
     InventariosAlmacenesTraspasosPendientesComponent,
     InventariosAlmacenesTraspasosAltaComponent,
     InventariosEntradasSalidasDetallesModalComponent,
-    CotizacionAdministrarProductosComponent
+    CotizacionAdministrarProductosComponent,
+    ComprasGastosGeneralesComponent,
+    ComprasGastosInsumosComponent,
+    ComprasGastosGeneralesTiposComponent,
+    ComprasGastosGeneralesDetallesComponent,
+    ComprasGastosInsumosRegistradosComponent,
+    ComprasGastosInsumosPendientesComponent
   ],
   imports: [
     CommonModule,

@@ -22,6 +22,10 @@ import rutasInventario from '../rutas/inventario';
 import rutasSucursal from '../rutas/sucursal';
 import rutasTraspaso from '../rutas/traspaso';
 import rutasCotizaciones from '../rutas/cotizaciones';
+import rutasTipoGastoGeneral from '../rutas/tipo_gasto_general';
+import rutasGastoGeneral from '../rutas/gasto_general';
+import rutasGastoInsumo from '../rutas/gasto_insumo';
+import rutasCompras from '../rutas/compras';
 import rutasPedidos from '../rutas/pedidos';
 
 export default class Servidor {
@@ -68,6 +72,10 @@ export default class Servidor {
         this.app.use('/api/v1/inventarios', rutasInventario);
         this.app.use('/api/v1/traspasos', rutasTraspaso);
         this.app.use('/api/v1/sucursales', rutasSucursal);
+        this.app.use('/api/v1/tipos-gasto-general', rutasTipoGastoGeneral);
+        this.app.use('/api/v1/gastos-generales', rutasGastoGeneral);
+        this.app.use('/api/v1/gastos-insumos', rutasGastoInsumo);
+        this.app.use('/api/v1/compras', rutasCompras);
         this.app.use('/api/v2/root', rutasRoot);
         this.app.use('/api/v2/cajas', rutasCaja);
         this.app.use('/api/v2/configuracion', rutasConfiguracion);

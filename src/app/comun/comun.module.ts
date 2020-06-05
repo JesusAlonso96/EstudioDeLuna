@@ -63,6 +63,12 @@ import { EditarAlmacenComponent } from './componentes/modales/editar-almacen/edi
 import { TemasService } from './servicios/temas.service';
 import { InventarioService } from './servicios/inventario.service';
 import { CotizacionCreadaComponent } from './componentes/cotizacion-creada/cotizacion-creada.component';
+import { AltaTipoGastoGeneralComponent } from './componentes/modales/alta-tipo-gasto-general/alta-tipo-gasto-general.component';
+import { EditarTipoGastoGeneralComponent } from './componentes/modales/editar-tipo-gasto-general/editar-tipo-gasto-general.component';
+import { AltaGastoGeneralComponent } from './componentes/modales/alta-gasto-general/alta-gasto-general.component';
+import { EditarGastoGeneralComponent } from './componentes/modales/editar-gasto-general/editar-gasto-general.component';
+import { EditarGastoInsumoComponent } from './componentes/modales/editar-gasto-insumo/editar-gasto-insumo.component';
+import { AltaGastoInsumoComponent } from './componentes/modales/alta-gasto-insumo/alta-gasto-insumo.component';
 import { ListaProductosPedidoComponent } from './componentes/lista-productos-pedido/lista-productos-pedido.component';
 import { VistaProductoComponent } from './componentes/modales/vista-producto/vista-producto.component';
 
@@ -115,6 +121,12 @@ import { VistaProductoComponent } from './componentes/modales/vista-producto/vis
         VerInsumosOrdenDeCompraComponent,
         AlertaComponent,
         CotizacionCreadaComponent,
+        AltaTipoGastoGeneralComponent,
+        EditarTipoGastoGeneralComponent,
+        AltaGastoGeneralComponent,
+        EditarGastoGeneralComponent,
+        EditarGastoInsumoComponent,
+        AltaGastoInsumoComponent,
         ListaProductosPedidoComponent,
         VistaProductoComponent
     ],
