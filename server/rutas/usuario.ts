@@ -29,7 +29,6 @@ rutasUsuario.get('/sucursales', autenticacionMiddleware, UsuarioCtrl.obtenerSucu
 //post
 rutasUsuario.post('/login', UsuarioCtrl.login);
 rutasUsuario.post('/crearAsistencia/:id', UsuarioCtrl.crearAsistencia);
-rutasUsuario.post('/agregarProducto', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.agregarProducto);
 rutasUsuario.post('/agregarFamilia', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.agregarFamilia);
 rutasUsuario.post('/ordenCompra', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.nuevaOrdenCompra);
 rutasUsuario.post('/compra', autenticacionMiddleware, adminOSupervisorMiddleware, UsuarioCtrl.registrarCompra)

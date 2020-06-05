@@ -177,28 +177,6 @@ exports.obtenerUsuario = (req, res) => {
         return res.json(usuarioEncontrado);
     });
 };
-exports.agregarProducto = (req, res) => {
-    const producto = new producto_model_1.Producto(req.body);
-    producto.save((err, guardado) => {
-        if (err) {
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo agregar el producto' });
-        }
-        else {
-            familia_model_1.Familia.findOneAndUpdate({ _id: req.body.familia._id }, {
-                $push: {
-                    productos: guardado
-                }
-            })
-                .exec((err, actualizada) => {
-                if (err) {
-                    return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo agregar el producto' });
-                }
-                console.log(actualizada);
-            });
-            return res.json(guardado);
-        }
-    });
-};
 exports.eliminarProducto = (req, res) => {
     producto_model_1.Producto.findOneAndUpdate({ _id: req.params.id }, {
         activo: 0
@@ -436,8 +414,10 @@ exports.nuevaOrdenCompra = (req, res) => {
     orden.sucursal = res.locals.usuario.sucursal;
     orden.usuario = res.locals.usuario;
     orden.save((err, ordenGuardada) => {
-        if (err)
+        if (err) {
+            console.log(err);
             return res.status(422).send({ titulo: 'Error al crear orden', detalles: 'Ocurrio un error al crear la orden de compra, intentalo de nuevo mas tarde' });
+        }
         return res.status(200).json(ordenGuardada);
     });
 };

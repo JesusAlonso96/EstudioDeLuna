@@ -4,13 +4,14 @@ import { UsuarioLogin } from '../compartido/usuarioLogin.model';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { tokenDesencriptado } from '../compartido/tokenDesencriptado.model';
-import { map } from 'rxjs/operators';
+import { map, delay } from 'rxjs/operators';
 const jwt = new JwtHelperService();
 import * as momento from 'moment';
 import 'rxjs/Rx';
 import { Router } from '@angular/router';
 import { WebSocketService } from 'src/app/comun/servicios/websocket.service';
 import { environment } from '../../../environments/environment'
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +19,11 @@ import { environment } from '../../../environments/environment'
 export class ServicioAutenticacionService {
   private tokenDesencriptado;
   private urlFotos = environment.url_fotos;
+  temas: string[] = ['default', 'tema-rojo', 'tema-azul', 'tema-verde'];
 
-  constructor(private http: HttpClient, private rutas: Router, private wsService: WebSocketService) {
+  constructor(private http: HttpClient, private rutas: Router, 
+    private wsService: WebSocketService,
+    private overlayContainer: OverlayContainer) {
     this.tokenDesencriptado = JSON.parse(localStorage.getItem('usuario_meta')) || new tokenDesencriptado();
   }
   private guardarToken(token: string) {
@@ -41,9 +45,12 @@ export class ServicioAutenticacionService {
     return this.tokenDesencriptado;
   }
   public login(datosUsuario: UsuarioLogin): Observable<any> {
-    return this.http.post('/api/v1/usuarios/login', datosUsuario).pipe(map((token: string) => this.guardarToken(token)));
+    return this.http.post('/api/v1/usuarios/login', datosUsuario)
+    .pipe(delay(0))
+    .pipe(map((token: string) => this.guardarToken(token)));
   }
   public cerrarSesion() {
+    this.overlayContainer.getContainerElement().classList.remove(...this.temas)
     this.wsService.cerrarSesionWS().then(() => {
       localStorage.removeItem('usuario_auth');
       localStorage.removeItem('usuario_meta');

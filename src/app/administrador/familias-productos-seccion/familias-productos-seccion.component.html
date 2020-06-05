@@ -1,12 +1,14 @@
-<mat-tab-group>
-    <mat-tab label="Familias">
-        <ng-template matTabContent>
-            <app-catalogo-familias></app-catalogo-familias>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Restaurar familia">
-        <ng-template matTabContent>
-            <app-familias-producto-restaurar></app-familias-producto-restaurar>
-        </ng-template>
-    </mat-tab>
-</mat-tab-group>
+<mat-card class="container mt-3 mb-4">
+    <mat-tab-group>
+        <mat-tab label="Familias">
+            <ng-template matTabContent>
+                <app-catalogo-familias></app-catalogo-familias>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Restaurar familia">
+            <ng-template matTabContent>
+                <app-familias-producto-restaurar></app-familias-producto-restaurar>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+</mat-card>

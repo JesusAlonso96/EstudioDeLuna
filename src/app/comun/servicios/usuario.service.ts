@@ -18,9 +18,6 @@ export class UsuarioService {
 
     constructor(private http: HttpClient, private wsService: WebSocketService) { }
     //post
-    public agregarNuevoProducto(producto: Producto): Observable<any> {
-        return this.http.post('/api/v1/usuarios/agregarProducto', producto);
-    }
     public agregarNuevaFamilia(familia: Familia): Observable<any> {
         return this.http.post('/api/v1/usuarios/agregarFamilia', familia);
     }

@@ -1,44 +1,42 @@
 <app-cargando [cargando]="cargando.cargando" [texto]="cargando.texto"></app-cargando>
 <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    <mat-sidenav #drawer class="sidebar" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
         [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
-        <mat-toolbar color="primary">
-            Menu
-        </mat-toolbar>
-        <mat-nav-list>
-            <mat-list>
-                <h3 mat-subheader>Secciones</h3>
-                <mat-list-item routerLink="/root/dashboard">
-                    <mat-icon mat-list-icon>dashboard</mat-icon>
-                    <h5 mat-line>Tablero principal</h5>
-                </mat-list-item>
-                <mat-list-item routerLink="/root/sucursales">
-                    <mat-icon mat-list-icon>home_work</mat-icon>
-                    <h5 mat-line>Sucursales</h5>
-                </mat-list-item>
-                <mat-list-item routerLink="/root/usuarios">
-                    <mat-icon mat-list-icon>account_circle</mat-icon>
-                    <h5 mat-line>Usuarios</h5>
-                </mat-list-item>
-                <mat-list-item routerLink="/root/proveedores">
-                    <mat-icon mat-list-icon>assignment_ind</mat-icon>
-                    <h5 mat-line>Proveedores</h5>
-                </mat-list-item>
-            </mat-list>
+        <mat-nav-list class="mt-4">
+            <mat-list-item class="mx-auto mb-1">
+                <mat-icon mat-list-icon>account_circle</mat-icon>
+                <h5 mat-line>Root</h5>
+            </mat-list-item>
+            <mat-list-item *ngFor="let menu of menus; let i=index" class="mx-auto mb-1"
+                (click)="activarPestana(i, menu.nombre)" [ngClass]="{'menu-seleccionado':pestanasActivas[i] == true }"
+                [routerLink]="menu.ruta">
+                <mat-icon mat-list-icon>{{menu.icono}}</mat-icon>
+                <h5 mat-line>{{menu.nombre}}</h5>
+            </mat-list-item>
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
-        <mat-toolbar color="primary">
-            <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
-                <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-            </button>
-            <span>Root</span>
-            <span class="espaciador"></span>
-            <button mat-icon-button color="primary" (click)="cerrarSesion()" style="color:#ffff"
+        <div  class="navbar" color="primary">
+            <button mat-mini-fab class="btn-toggle" aria-label="Toggle sidenav" (click)="drawer.toggle()">
+                <mat-icon [@rotacion]="drawer.opened ? 'rotado' : 'inicial' ">{{drawer.opened ? 'more_vert' : 'view_list'}}
+                </mat-icon>
+              </button>
+              <span style="color: #555;">{{moduloActual}}</span>
+              <span class="espaciador"></span>
+              <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-nav" color="primary" matTooltip="Temas">
+                <mat-icon>palette</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu" style="padding: 1;">
+                <button mat-menu-item class="dot mr-4 ml-2" (click)="cambiarTema('default')"></button>
+                <button mat-menu-item class="dot-rojo mr-2" (click)="cambiarTema('tema-rojo')"></button> <br>
+                <button mat-menu-item class="dot-azul mr-4 ml-2" (click)="cambiarTema('tema-azul')"></button>
+                <button mat-menu-item class="dot-verde mr-2" (click)="cambiarTema('tema-verde')"></button>
+              </mat-menu>
+            <button mat-icon-button class="btn-nav" (click)="cerrarSesion()" 
                 matTooltip="Cerrar sesion">
                 <mat-icon>exit_to_app</mat-icon>
             </button>
-        </mat-toolbar>
+        </div>
         <ng-content></ng-content>
     </mat-sidenav-content>
 </mat-sidenav-container>

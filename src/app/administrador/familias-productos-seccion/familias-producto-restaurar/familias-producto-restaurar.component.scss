@@ -1,0 +1,19 @@
+@import 'variables';
+.card-familias{
+    margin: 10px 10px;
+    
+    span{
+        color: $light-gray-color;
+    }
+}
+.tituloFam{
+    margin: 10px 10px;
+}
+.agregarFamilia{
+    color: $light-gray-color;
+}
+.eliminarFamilia{
+    position: absolute;
+    top: 0;
+    right: 0;
+}

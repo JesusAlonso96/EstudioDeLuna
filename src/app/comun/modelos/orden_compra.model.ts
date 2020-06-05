@@ -17,7 +17,7 @@ export class OrdenCompra {
     terminosPago: string;
     lugarEntrega: string;
     subtotal: number;
-    iva: number;
+    iva: boolean;
     total: number;
     costoEnvio: number;
     productosOrdenCompra: ProductoOrdenCompra[] = [];

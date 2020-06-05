@@ -2,131 +2,143 @@
 <div class="container-fluid full-width mt-2">
     <mat-card class="mb-4">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h4>Nueva orden de compra</h4>
-                    <hr>
+            <form #ordenCompraForm="ngForm">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4>Nueva orden de compra</h4>
+                        <hr>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="row">
-                        <div class="col-lg-5">
-                            <mat-form-field appearance="outline" class="full-width input">
-                                <mat-label>Proveedor</mat-label>
-                                <input matInput type="text" [(ngModel)]="ordenCompra.proveedor.nombre" disabled>
-                                <button mat-icon-button matSuffix color="primary" (click)="seleccionaProveedor()">
-                                    <mat-icon>add</mat-icon>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Proveedor</mat-label>
+                                    <mat-select [(ngModel)]="ordenCompra.proveedor" #proveedor="ngModel" name="proveedor"
+                                        required>
+                                        <mat-option disabled>Selecciona un proveedor</mat-option>
+                                        <mat-option (click)="obtenerProductosProveedor()" [value]="proveedor"
+                                            *ngFor="let proveedor of proveedores">
+                                            {{proveedor.nombre}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error
+                                        *ngIf="(proveedor.invalid && (proveedor.dirty || proveedor.touched) && proveedor.errors.required)">
+                                        Por favor ingresa el proveedor
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-lg-7">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Fecha del pedido</mat-label>
+                                            <input matInput [matDatepicker]="picker" [(ngModel)]="ordenCompra.fechaPedido"
+                                                name="fechaPedido" #fechaPedido="ngModel" [min]="fechaEmpiezaEn" required>
+                                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                            <mat-datepicker #picker></mat-datepicker>
+                                            <mat-error
+                                                *ngIf="(fechaPedido.invalid && (fechaPedido.dirty || fechaPedido.touched) && fechaPedido.errors.required)">
+                                                Porfavor ingresa la fecha del pedido
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Fecha de entrega requerida</mat-label>
+                                            <input matInput [matDatepicker]="picker2" [(ngModel)]="ordenCompra.fechaEntrega"
+                                                name="fechaEntrega" #fechaEntrega="ngModel" [min]="fechaEmpiezaEn" required>
+                                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                            <mat-datepicker #picker2></mat-datepicker>
+                                            <mat-error
+                                                *ngIf="(fechaEntrega.invalid && (fechaEntrega.dirty || fechaEntrega.touched) && fechaEntrega.errors.required)">
+                                                Porfavor ingresa la fecha de entrega del pedido
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+    
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Terminos de entrega</mat-label>
+                                    <input matInput type="text" [(ngModel)]="ordenCompra.terminosEntrega"
+                                        name="terminosEntrega" #terminosEntrega="ngModel">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-lg-6">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Terminos de pago</mat-label>
+                                    <input matInput type="text" [(ngModel)]="ordenCompra.terminosPago" name="terminosPago"
+                                        #terminosPago="ngModel">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Lugar de entrega</mat-label>
+                                    <input matInput type="text" [(ngModel)]="ordenCompra.lugarEntrega" name="lugarEntrega"
+                                        #lugarEntrega="ngModel">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-lg-4">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Costo de envio</mat-label>
+                                    <input matInput type="number" [(ngModel)]="ordenCompra.costoEnvio" name="costoEnvio"
+                                        #costoEnvio="ngModel">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="row">
+                            <div class="col-lg-12 mb-2">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <span>Subtotal: ${{calcularSubtotalOrden()}}</span>
+                                        <hr>
+                                        <div class="d-flex">
+                                            <span class="mr-auto p-2">Total: ${{calcularTotalOrden()}}</span>
+                                            <mat-checkbox class=" p-2" [(ngModel)]="ordenCompra.iva" name="iva"
+                                                #iva="ngModel">Agregar iva</mat-checkbox>
+                                        </div>
+                                        <hr>
+                                        <div class="d-flex">
+                                            <button mat-raised-button class="mr-auto p-2" color="primary" [disabled]="!ordenCompraForm.valid || ordenCompra.productosOrdenCompra.length == 0"
+                                                (click)="generarOrdenCompra()">Generar orden</button>
+                                            <button mat-raised-button class="p-2" color="warn"
+                                                (click)="resetearFormulario()">Limpiar formulario</button>
+                                        </div>
+    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <button class="full-width" mat-raised-button mat-button color="primary"
+                                    (click)="buscarProductosProveedor()" [disabled]="!proveedorSeleccionado()">
+                                    <mat-icon>search</mat-icon>
+                                    Buscar productos por proveedor
                                 </button>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-7">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <mat-form-field appearance="outline" class="full-width input">
-                                        <mat-label>Fecha del pedido</mat-label>
-                                        <input matInput [matDatepicker]="picker" [(ngModel)]="fechaPedido"
-                                            name="fechaPedido2" #fechaPedido2="ngModel" required>
-                                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                        <mat-datepicker #picker></mat-datepicker>
-                                        <mat-error
-                                            *ngIf="(fechaPedido2.invalid && (fechaPedido2.dirty || fechaPedido2.touched) && fechaPedido2.errors.required)">
-                                            Porfavor ingresa la fecha del pedido
-                                        </mat-error>
-                                    </mat-form-field>
-                                </div>
-                                <div class="col-lg-6">
-                                    <mat-form-field appearance="outline" class="full-width input">
-                                        <mat-label>Fecha de entrega requerida</mat-label>
-                                        <input matInput [matDatepicker]="picker2" [(ngModel)]="fechaEntrega"
-                                            name="fechaEntrega2" #fechaEntrega2="ngModel" required>
-                                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                                        <mat-datepicker #picker2></mat-datepicker>
-                                        <mat-error
-                                            *ngIf="(fechaEntrega2.invalid && (fechaEntrega2.dirty || fechaEntrega2.touched) && fechaEntrega2.errors.required)">
-                                            Porfavor ingresa la fecha de entrega del pedido
-                                        </mat-error>
-                                    </mat-form-field>
-                                </div>
                             </div>
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <mat-form-field appearance="outline" class="full-width input">
-                                <mat-label>Terminos de entrega</mat-label>
-                                <input matInput type="text" [(ngModel)]="ordenCompra.terminosEntrega"
-                                    name="terminosEntrega" #terminosEntrega="ngModel">
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6">
-                            <mat-form-field appearance="outline" class="full-width input">
-                                <mat-label>Terminos de pago</mat-label>
-                                <input matInput type="text" [(ngModel)]="ordenCompra.terminosPago" name="terminosPago"
-                                    #terminosPago="ngModel">
-                            </mat-form-field>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <mat-form-field appearance="outline" class="full-width input">
-                                <mat-label>Lugar de entrega</mat-label>
-                                <input matInput type="text" [(ngModel)]="ordenCompra.lugarEntrega" name="lugarEntrega"
-                                    #lugarEntrega="ngModel">
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-4">
-                            <mat-form-field appearance="outline" class="full-width input">
-                                <mat-label>Costo de envio</mat-label>
-                                <input matInput type="number" [(ngModel)]="ordenCompra.costoEnvio" name="costoEnvio"
-                                    #costoEnvio="ngModel">
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="row">
-                        <div class="col-lg-12 mb-2">
-                            <div class="card">
-                                <div class="card-body">
-                                    <span>Subtotal: ${{calcularSubtotalOrden()}}</span>
-                                    <hr>
-                                    <div class="d-flex">
-                                        <span class="mr-auto p-2">Total: ${{calcularTotalOrden()}}</span>
-                                        <mat-checkbox class=" p-2" [(ngModel)]="iva">Agregar iva</mat-checkbox>
-                                    </div>
-                                    <hr>
-                                    <div class="d-flex">
-                                        <button mat-raised-button class="mr-auto p-2" color="primary"
-                                            (click)="generarOrdenCompra()">Generar orden</button>
-                                        <button mat-raised-button class="p-2" color="warn"
-                                            (click)="resetearFormulario()">Limpiar formulario</button>
-                                    </div>
-
-                                </div>
+                            <div class="col-lg-12 mt-2">
+                                <button class="full-width" mat-raised-button mat-button
+                                    (click)="importarTodosLosProductos()" color="primary"
+                                    [disabled]="!proveedorSeleccionado()">
+                                    <mat-icon></mat-icon>
+                                    Importar todos los productos
+                                </button>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <button class="full-width" mat-raised-button mat-button color="primary"
-                                (click)="buscarProductosProveedor()" [disabled]="!proveedorSeleccionado()">
-                                <mat-icon>search</mat-icon>
-                                Buscar productos por proveedor
-                            </button>
-                        </div>
-                        <div class="col-lg-12 mt-2">
-                            <button class="full-width" mat-raised-button mat-button
-                                (click)="importarTodosLosProductos()" color="primary"
-                                [disabled]="!proveedorSeleccionado()">
-                                <mat-icon></mat-icon>
-                                Importar todos los productos
-                            </button>
-                        </div>
-                    </div>
                 </div>
-            </div>
+            </form>
+            
             <div class="row">
                 <div class="col-lg-12">
                     <hr>
@@ -135,20 +147,20 @@
             </div>
             <div class="row">
                 <div class="col-lg-2 centrado">
-                    <mat-form-field appearance="outline" class="full-width input">
-                        <mat-label>Buscar por id</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Buscar por codigo</mat-label>
                         <input matInput type="number" [(ngModel)]="idBusqueda" (keyup)="filtroProducto()"
                             [disabled]="!proveedorSeleccionado()">
                     </mat-form-field>
                 </div>
                 <div class="col-lg-4">
-                    <mat-form-field appearance="outline" class="full-width input">
+                    <mat-form-field appearance="outline">
                         <mat-label>Producto</mat-label>
                         <input matInput [(ngModel)]="nombreProductoSeleccionado" type="text" disabled>
                     </mat-form-field>
                 </div>
                 <div class="col-lg-2 centrado">
-                    <mat-form-field appearance="outline" class="full-width input">
+                    <mat-form-field appearance="outline">
                         <mat-label>Cantidad</mat-label>
                         <input matInput type="number" [(ngModel)]="productoOrdenCompra.cantidadOrden"
                             [disabled]="!proveedorSeleccionado()">
@@ -189,9 +201,9 @@
                                 </a>
                             </td>
                         </ng-container>
-                        <ng-container matColumnDef="costo">
+                        <ng-container matColumnDef="cantidades">
                             <th mat-header-cell *matHeaderCellDef>Costo </th>
-                            <td mat-cell *matCellDef="let element"> {{element.insumo.costo}} </td>
+                            <td mat-cell *matCellDef="let element"> {{element.cantidadOrden}} x {{element.insumo.costo}} = {{(element.cantidadOrden*element.insumo.costo) | currency}}MXN</td>
                         </ng-container>
                         <tr mat-header-row *matHeaderRowDef="columnas"></tr>
                         <tr mat-row *matRowDef="let row; columns: columnas;"></tr>

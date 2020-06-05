@@ -104,9 +104,9 @@ exports.buscarProducto = (req, res) => {
     })
         .match({
         'familia.nombre': familia,
-        b_n: b_n,
-        c_r: c_r,
-        num_fotos: num_fotos
+        b_n,
+        c_r,
+        num_fotos
     })
         .project('-familia')
         .exec((err, productos) => {
@@ -119,5 +119,39 @@ exports.buscarProducto = (req, res) => {
         else {
             return res.status(422).send({ titulo: 'Error', detalles: 'No existe un producto con estas especificaciones' });
         }
+    });
+};
+exports.guardarProducto = (req, res) => {
+    const producto = new producto_model_1.Producto(req.body);
+    producto.save((err, guardado) => {
+        if (err) {
+            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo agregar el producto' });
+        }
+        else {
+            familia_model_1.Familia.findOneAndUpdate({ _id: req.body.familia._id }, {
+                $push: {
+                    productos: guardado
+                }
+            })
+                .exec((err, actualizada) => {
+                if (err) {
+                    return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo agregar el producto' });
+                }
+                console.log(actualizada);
+            });
+            return res.json(guardado);
+        }
+    });
+};
+exports.actualizarFotoProducto = (req, res) => {
+    var foto = req.file.path.split('\\', 2)[1];
+    producto_model_1.Producto.findOneAndUpdate({ _id: req.params.idProducto }, { foto }, { new: true })
+        .exec((err, productoActualizado) => {
+        if (err)
+            return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al subir la imagen, por favor intentalo de nuevo' });
+        if (!productoActualizado)
+            return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al subir la imagen, por favor intentalo de nuevo' });
+        else
+            return res.status(200).json({ foto: productoActualizado.foto });
     });
 };

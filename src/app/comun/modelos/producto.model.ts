@@ -14,6 +14,7 @@ export class Producto {
     ancho: number;
     alto: number;
     activo: number;
+    foto: string;
     constructor() {
         this.b_n = this.c_r = this.c_ad = false;
     }

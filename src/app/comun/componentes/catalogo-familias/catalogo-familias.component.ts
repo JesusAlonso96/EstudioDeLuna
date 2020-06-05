@@ -7,7 +7,9 @@ import { Familia } from '../../modelos/familia.model';
 import { ProductosService } from '../../servicios/productos.service';
 import { UsuarioService } from '../../servicios/usuario.service';
 import { AgregarFamiliaComponent } from './agregar-familia/agregar-familia.component';
-import { EliminarFamiliaComponent } from './eliminar-familia/eliminar-familia.component';
+import { ModalConfirmacionComponent } from '../modal-confirmacion/modal-confirmacion.component';
+import { CargandoService } from '../../servicios/cargando.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-catalogo-familias',
@@ -23,6 +25,7 @@ export class CatalogoFamiliasComponent implements OnInit, OnDestroy {
   constructor(private productosService: ProductosService,
     private toastr: ToastrService,
     public dialog: MatDialog,
+    private cargandoService: CargandoService,
     private usuarioService: UsuarioService) { }
 
   ngOnInit() {
@@ -31,15 +34,15 @@ export class CatalogoFamiliasComponent implements OnInit, OnDestroy {
     this.obtenerNuevaFamiliaEliminada();
   }
   obtenerFamilias() {
-    this.cargando = true;
+    this.cargandoService.crearVistaCargando(true,'Obteniendo familias')
     this.productosService.obtenerFamiliasProductos().subscribe(
       (familias) => {
         this.familias = familias;
-        this.cargando = false;
+        this.cargandoService.crearVistaCargando(false);
       },
       (err) => {
         this.toastr.error(err.error.detalles, err.error.titulo);
-        this.cargando = false;
+        this.cargandoService.crearVistaCargando(false);
       }
     );
   }
@@ -102,7 +105,14 @@ export class CatalogoFamiliasComponent implements OnInit, OnDestroy {
     );
   }
   abrirEliminarFamilia(indice) {
-    const dialogRef = this.dialog.open(EliminarFamiliaComponent);
+    const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
+      data: {
+        titulo: 'Eliminar familia de productos',
+        detalles: '¿Estas seguro que deseas eliminar esta familia?',
+        msgBoton: 'Eliminar',
+        color: 'primary'
+      }
+    });
     dialogRef.afterClosed().subscribe(respuesta => {
       if (respuesta) {
         this.eliminarFamilia(indice);
@@ -110,12 +120,15 @@ export class CatalogoFamiliasComponent implements OnInit, OnDestroy {
     })
   }
   eliminarFamilia(indice) {
+    this.cargandoService.crearVistaCargando(true,'Eliminado familia');
     this.usuarioService.eliminarFamilia(<string>this.familias[indice]._id).subscribe(
       () => {
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.success('Familia eliminada correctamente', '', { closeButton: true });
         this.familias.splice(indice, 1);
       },
-      (err) => {
+      (err: HttpErrorResponse) => {
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     );

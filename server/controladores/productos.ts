@@ -100,9 +100,9 @@ export let buscarProducto = (req: Request, res: Response) => {
         })
         .match({
             'familia.nombre': familia,
-            b_n: b_n,
-            c_r: c_r,
-            num_fotos: num_fotos
+            b_n,
+            c_r,
+            num_fotos
         })
         .project('-familia')
         .exec((err: NativeError, productos: any[]) => {
@@ -115,4 +115,37 @@ export let buscarProducto = (req: Request, res: Response) => {
                 return res.status(422).send({ titulo: 'Error', detalles: 'No existe un producto con estas especificaciones' });
             }
         })
+}
+export let guardarProducto = (req: Request, res: Response) => {
+    const producto = new Producto(req.body);
+    producto.save((err: NativeError, guardado: IProducto) => {
+        if (err) {
+            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo agregar el producto' });
+        } else {
+            Familia.findOneAndUpdate({ _id: req.body.familia._id }, {
+                $push: {
+                    productos: guardado
+                }
+            })
+                .exec((err: NativeError, actualizada: any) => {
+                    if (err) {
+                        return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo agregar el producto' });
+                    }
+                    console.log(actualizada);
+                })
+            return res.json(guardado);
+        }
+    })
+}
+export let actualizarFotoProducto = (req: Request, res: Response) => {
+    var foto = req.file.path.split('\\', 2)[1];
+    Producto.findOneAndUpdate(
+        { _id: req.params.idProducto },
+        { foto },
+        { new: true })
+        .exec((err: NativeError, productoActualizado: IProducto | null) => {
+            if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al subir la imagen, por favor intentalo de nuevo' });
+            if (!productoActualizado) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al subir la imagen, por favor intentalo de nuevo' });
+            else return res.status(200).json({ foto: productoActualizado.foto });
+        });
 }

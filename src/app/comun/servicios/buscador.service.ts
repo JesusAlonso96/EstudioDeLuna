@@ -24,6 +24,7 @@ import { UsuarioService } from './usuario.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProveedoresService } from './proveedores.service';
 import { CotizacionesService } from './cotizaciones.service';
+import { CargandoService } from './cargando.service';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,7 @@ export class BuscadorService {
     private _snackBar: MatSnackBar,
     private cajaService: CajaService,
     private proveedoresService: ProveedoresService,
+    private cargandoService: CargandoService,
     private cotizacionesService: CotizacionesService) { }
   //eliminaciones
   public confirmarEliminacionElemento(tabla: MatTableDataSource<any>, listaElementos: any[], elemento: any, nombre: string, tipo: number) {
@@ -60,31 +62,31 @@ export class BuscadorService {
   }
   /*Eliminacion de proveedores */
   private eliminarProveedor(tabla: MatTableDataSource<Proveedor>, listaProveedores: Proveedor[], proveedor: Proveedor) {
-    this.abrirSnackBar('Eliminando proveedor...', '');
+    this.cargandoService.crearVistaCargando(true, 'Eliminando proveedor');
     const indice = listaProveedores.indexOf(proveedor);
     this.proveedoresService.eliminarProveedor(proveedor).subscribe(
       (eliminado: Mensaje) => {
         this.toastr.abrirToastr('exito', eliminado.titulo, eliminado.detalles);
         this.quitarElementoTabla(tabla, listaProveedores, proveedor);
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   /*Eliminacion de clientes */
   private eliminarCliente(tabla: MatTableDataSource<Cliente>, listaClientes: Cliente[], cliente: Cliente) {
-    this.abrirSnackBar('Eliminando cliente...', '');
+    this.cargandoService.crearVistaCargando(true, 'Eliminando cliente');
     this.clienteService.eliminarCliente(cliente).subscribe(
       (eliminado: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', eliminado.titulo, eliminado.detalles);
         this.quitarElementoTabla(tabla, listaClientes, cliente);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
@@ -92,15 +94,15 @@ export class BuscadorService {
   /*Eliminacion de usuarios */
   private eliminarUsuario(tabla: MatTableDataSource<Usuario>, listaUsuarios: Usuario[], usuario: Usuario) {
     if (!usuario.ocupado) {
-      this.abrirSnackBar('Eliminando usuario...', '');
+      this.cargandoService.crearVistaCargando(true, 'Eliminar usuario');
       this.adminService.eliminarUsuario(usuario).subscribe(
         (eliminado: Mensaje) => {
-          this.cerrarSnackBar();
+          this.cargandoService.crearVistaCargando(false);
           this.toastr.abrirToastr('exito', eliminado.titulo, eliminado.detalles);
           this.quitarElementoTabla(tabla, listaUsuarios, usuario);
         },
         (err: HttpErrorResponse) => {
-          this.cerrarSnackBar();
+          this.cargandoService.crearVistaCargando(false);
           this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
         }
       );
@@ -111,44 +113,44 @@ export class BuscadorService {
   }
   /*Eliminacion de empresas */
   private eliminarEmpresa(tabla: MatTableDataSource<EmpresaCot>, listaEmpresas: EmpresaCot[], empresa: EmpresaCot) {
-    this.abrirSnackBar('Eliminando empresa...', '');
+    this.cargandoService.crearVistaCargando(true, 'Eliminando empresa');
     this.cotizacionesService.eliminarEmpresa(empresa).subscribe(
       (eliminada: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', eliminada.titulo, eliminada.detalles);
         this.quitarElementoTabla(tabla, listaEmpresas, empresa);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   /*Eliminacion de almacenes */
   private eliminarAlmacen(tabla: MatTableDataSource<Almacen>, listaAlmacenes: Almacen[], almacen: Almacen) {
-    this.abrirSnackBar('Eliminando empresa...', '');
+    this.cargandoService.crearVistaCargando(true, 'Eliminando almacen');
     this.almacenService.eliminarAlmacen(almacen._id).subscribe(
       (eliminada: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', eliminada.detalles, eliminada.titulo);
         this.quitarElementoTabla(tabla, listaAlmacenes, almacen);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       });
   }
   /*Eliminacion de cajas */
   private eliminarCaja(tabla: MatTableDataSource<Caja>, listaCajas: Caja[], caja: Caja) {
-    this.abrirSnackBar('Eliminando empresa...', '');
+    this.cargandoService.crearVistaCargando(true, 'Eliminando caja');
     this.cajaService.eliminarCaja(caja).subscribe(
       (eliminada: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', eliminada.detalles, eliminada.titulo);
         this.quitarElementoTabla(tabla, listaCajas, caja);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       });
   }
@@ -173,75 +175,75 @@ export class BuscadorService {
   }
   /*Restauracion de proveedores */
   private restaurarProveedorEliminado(tabla: MatTableDataSource<Proveedor>, listaProveedores: Proveedor[], proveedor: Proveedor) {
-    this.abrirSnackBar('Restaurando proveedor...', '');
+    this.cargandoService.crearVistaCargando(true, 'Restaurando proveedor');
     this.proveedoresService.restaurarProveedor(proveedor).subscribe(
       (restaurado: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', restaurado.titulo, restaurado.detalles);
         this.quitarElementoTabla(tabla, listaProveedores, proveedor);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   /*Restauracion de clientes */
   private restaurarClienteEliminado(tabla: MatTableDataSource<Cliente>, listaClientes: Cliente[], cliente: Cliente) {
-    this.abrirSnackBar('Restaurando cliente...', '');
+    this.cargandoService.crearVistaCargando(true, 'Restaurando cliente');
     this.clienteService.restaurarCliente(cliente).subscribe(
       (restaurado: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', restaurado.titulo, restaurado.detalles);
         this.quitarElementoTabla(tabla, listaClientes, cliente);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   /*Restauracion de usuarios */
   private restaurarUsuarioEliminado(tabla: MatTableDataSource<Usuario>, listaUsuarios: Usuario[], usuario: Usuario) {
-    this.abrirSnackBar('Restaurando usuario...', '');
+    this.cargandoService.crearVistaCargando(true, 'Restaurando usuario');
     this.adminService.restaurarUsuario(usuario).subscribe(
       (restaurado: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', restaurado.titulo, restaurado.detalles);
         this.quitarElementoTabla(tabla, listaUsuarios, usuario);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   /*Restauracion de empresas */
   private restaurarEmpresaEliminada(tabla: MatTableDataSource<EmpresaCot>, listaEmpresas: EmpresaCot[], empresa: EmpresaCot) {
-    this.abrirSnackBar('Restaurando usuario...', '');
+    this.cargandoService.crearVistaCargando(true, 'Restaurando empresa');
     this.adminService.restaurarEmpresa(empresa).subscribe(
       (restaurado: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', restaurado.titulo, restaurado.detalles);
         this.quitarElementoTabla(tabla, listaEmpresas, empresa);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   /*Restauracion de familias */
   private restaurarFamiliaEliminada(tabla: MatTableDataSource<Familia>, listaFamilias: Familia[], familia: Familia) {
-    this.abrirSnackBar('Restaurando familia...', '');
+    this.cargandoService.crearVistaCargando(true, 'Restaurando familia');
     this.adminService.restaurarFamilia(familia).subscribe(
       (restaurada: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', restaurada.titulo, restaurada.detalles);
         this.quitarElementoTabla(tabla, listaFamilias, familia);
       },
-      (err) => {
-        this.cerrarSnackBar();
+      (err: HttpErrorResponse) => {
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
@@ -249,30 +251,30 @@ export class BuscadorService {
   }
   /*Restauracion de almacenes */
   private restaurarAlmacenEliminado(tabla: MatTableDataSource<Almacen>, listaAlmacenes: Almacen[], almacen: Almacen) {
-    this.abrirSnackBar('Restaurando familia...', '');
+    this.cargandoService.crearVistaCargando(true, 'Restaurando almacen');
     this.almacenService.restaurarAlmacen(almacen._id).subscribe(
       (restaurada: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', restaurada.titulo, restaurada.detalles);
         this.quitarElementoTabla(tabla, listaAlmacenes, almacen);
       },
       (err) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   /*Restauracion de almacenes */
   private restaurarCajaEliminada(tabla: MatTableDataSource<Caja>, listaCajas: Caja[], caja: Caja) {
-    this.abrirSnackBar('Restaurando familia...', '');
+    this.cargandoService.crearVistaCargando(true, 'Restaurando caja');
     this.cajaService.restaurarCaja(caja).subscribe(
       (restaurada: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', restaurada.titulo, restaurada.detalles);
         this.quitarElementoTabla(tabla, listaCajas, caja);
       },
       (err) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
@@ -293,14 +295,14 @@ export class BuscadorService {
     })
   }
   private editarProveedor(tabla: MatTableDataSource<Proveedor>, listaProveedores: Proveedor[], proveedor: Proveedor, proveedorAuxiliar: Proveedor) {
-    this.abrirSnackBar('Guardando cambios...', '');
+    this.cargandoService.crearVistaCargando(true, 'Actualizando proveedor');
     this.proveedoresService.editarProveedor(proveedor).subscribe(
       (actualizado: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', actualizado.titulo, actualizado.detalles);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
         this.restablecerDatosElemento(tabla, listaProveedores, proveedor, proveedorAuxiliar);
       }
@@ -319,14 +321,14 @@ export class BuscadorService {
     });
   }
   private editarCliente(tabla: MatTableDataSource<Cliente>, listaClientes: Cliente[], cliente: Cliente, clienteAuxiliar: Cliente) {
-    this.abrirSnackBar('Guardando cambios...', '');
+    this.cargandoService.crearVistaCargando(true, 'Actualizando cliente');
     this.clienteService.editarCliente(cliente).subscribe(
       (actualizado: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', actualizado.titulo, actualizado.detalles);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
         this.restablecerDatosElemento(tabla, listaClientes, cliente, clienteAuxiliar);
       }
@@ -347,14 +349,14 @@ export class BuscadorService {
     })
   }
   private editarUsuario(tabla: MatTableDataSource<Usuario>, listaUsuarios: Usuario[], usuario: Usuario, usuarioAuxiliar: Usuario) {
-    this.abrirSnackBar('Guardado cambios...', '');
+    this.cargandoService.crearVistaCargando(true, 'Actualizando usuario');
     this.adminService.editarUsuario(usuario).subscribe(
       (actualizado: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', actualizado.titulo, actualizado.detalles);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
         this.restablecerDatosElemento(tabla, listaUsuarios, usuario, usuarioAuxiliar);
       }
@@ -379,14 +381,14 @@ export class BuscadorService {
     );
   }
   private editarEmpresa(tabla: MatTableDataSource<EmpresaCot>, listaEmpresas: EmpresaCot[], empresa: EmpresaCot, empresaAuxiliar: EmpresaCot) {
-    this.abrirSnackBar('Guardando cambios...', '');
+    this.cargandoService.crearVistaCargando(true, 'Actualizando empresa');
     this.cotizacionesService.actualizarEmpresa(empresa).subscribe(
       (actualizada: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', actualizada.titulo, actualizada.detalles);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
         this.restablecerDatosElemento(tabla, listaEmpresas, empresa, empresaAuxiliar);
       }
@@ -406,14 +408,14 @@ export class BuscadorService {
     );
   }
   private editarAlmacen(tabla: MatTableDataSource<Almacen>, listaAlmacenes: Almacen[], almacen: Almacen, almacenAuxiliar: Almacen) {
-    this.abrirSnackBar('Guardando cambios...', '');
+    this.cargandoService.crearVistaCargando(true, 'Actualizando almacen');
     this.almacenService.actualizarAlmacen(almacen, almacen._id).subscribe(
       (actualizada: Mensaje) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', actualizada.titulo, actualizada.detalles);
       },
       (err: HttpErrorResponse) => {
-        this.cerrarSnackBar();
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
         this.restablecerDatosElemento(tabla, listaAlmacenes, almacen, almacenAuxiliar);
       }
@@ -431,13 +433,5 @@ export class BuscadorService {
     listaElementos[indice] = elementoAuxiliar;
     tabla.data = listaElementos;
   }
-  //snackbar
-  private abrirSnackBar(mensaje: string, accion: string) {
-    this._snackBar.open(mensaje, accion, {
-      duration: 6000
-    });
-  }
-  private cerrarSnackBar() {
-    this._snackBar.dismiss();
-  }
+
 }

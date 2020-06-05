@@ -1,5 +1,5 @@
 <mat-toolbar>
-    <button mat-button matTooltip="Agregar nueva familia" class="agregarFamilia"
+    <button mat-raised-button color="primary" matTooltip="Agregar nueva familia" class="agregarFamilia"
         (click)="abrirAgregarFamilia()">
         <mat-icon>add</mat-icon> Nueva familia
     </button>
@@ -8,12 +8,10 @@
     <div class="row">
         <div class="col-lg-3 col-md-6" *ngFor="let familia of familias; let i = index ">
             <mat-card class="card-familias">
-                <button class="eliminarFamilia" (click)="abrirEliminarFamilia(i)" mat-icon-button
-                    color="warn">
+                <button class="eliminarFamilia icono-cerrar"  (click)="abrirEliminarFamilia(i)" mat-icon-button>
                     <mat-icon>close</mat-icon>
                 </button>
                 <h3>{{familia.nombre}}</h3>
-                <span> <strong>Id:</strong></span> <span> {{familia._id}}</span> <br>
                 <span>{{familia.productos.length}} productos</span>
             </mat-card>
         </div>

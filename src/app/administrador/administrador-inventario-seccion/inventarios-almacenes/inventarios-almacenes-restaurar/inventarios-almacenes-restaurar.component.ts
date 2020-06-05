@@ -5,6 +5,7 @@ import { AlmacenService } from 'src/app/comun/servicios/almacen.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-inventarios-almacenes-restaurar',
@@ -17,21 +18,22 @@ export class InventariosAlmacenesRestaurarComponent implements OnInit {
   almacenes: Almacen[];
   cargando: boolean = false;
   constructor(private almacenService: AlmacenService,
+    private cargandoService: CargandoService,
     private toastr: NgToastrService) { }
 
   ngOnInit() {
     this.obtenerAlmacenes();
   }
   obtenerAlmacenes() {
-    this.cargando = true;
+    this.cargandoService.crearVistaCargando(true,'Cargando almacenes');
     this.almacenService.obtenerAlmacenesEliminados().subscribe(
       (almacenes: Almacen[]) => {
-        this.cargando = false;
+        this.cargandoService.crearVistaCargando(false);
         this.almacenes = almacenes;
         console.log(this.almacenes);
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     )

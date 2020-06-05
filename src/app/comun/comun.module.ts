@@ -13,7 +13,6 @@ import { AgregarProductoComponent } from './componentes/catalogo-productos/agreg
 import { EliminarProductoComponent } from './componentes/catalogo-productos/eliminar-producto/eliminar-producto.component';
 import { EditarProductoComponent } from './componentes/catalogo-productos/editar-producto/editar-producto.component';
 import { AgregarFamiliaComponent } from './componentes/catalogo-familias/agregar-familia/agregar-familia.component';
-import { EliminarFamiliaComponent } from './componentes/catalogo-familias/eliminar-familia/eliminar-familia.component';
 import { BajaClienteComponent } from './componentes/baja-cliente/baja-cliente.component';
 import { RestaurarClienteComponent } from './componentes/restaurar-cliente/restaurar-cliente.component';
 import { ConsultaClienteComponent } from './componentes/consulta-cliente/consulta-cliente.component';
@@ -83,7 +82,6 @@ import { VistaProductoComponent } from './componentes/modales/vista-producto/vis
         EliminarProductoComponent,
         EditarProductoComponent,
         AgregarFamiliaComponent,
-        EliminarFamiliaComponent,
         BajaClienteComponent,
         RestaurarClienteComponent,
         ConsultaClienteComponent,

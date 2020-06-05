@@ -157,27 +157,7 @@ export let obtenerUsuario = (req: Request, res: Response) => {
             return res.json(usuarioEncontrado);
         })
 }
-export let agregarProducto = (req: Request, res: Response) => {
-    const producto = new Producto(req.body);
-    producto.save((err: NativeError, guardado: IProducto) => {
-        if (err) {
-            return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo agregar el producto' });
-        } else {
-            Familia.findOneAndUpdate({ _id: req.body.familia._id }, {
-                $push: {
-                    productos: guardado
-                }
-            })
-                .exec((err: NativeError, actualizada: any) => {
-                    if (err) {
-                        return res.status(422).send({ titulo: 'Error', detalles: 'No se pudo agregar el producto' });
-                    }
-                    console.log(actualizada);
-                })
-            return res.json(guardado);
-        }
-    })
-}
+
 export let eliminarProducto = (req: Request, res: Response) => {
     Producto.findOneAndUpdate({ _id: req.params.id }, {
         activo: 0
@@ -405,7 +385,10 @@ export let nuevaOrdenCompra = (req: Request, res: Response) => {
     orden.sucursal = res.locals.usuario.sucursal;
     orden.usuario = res.locals.usuario;
     orden.save((err: any, ordenGuardada: IOrdenCompra) => {
-        if (err) return res.status(422).send({ titulo: 'Error al crear orden', detalles: 'Ocurrio un error al crear la orden de compra, intentalo de nuevo mas tarde' });
+        if (err) {
+            console.log(err);
+            return res.status(422).send({ titulo: 'Error al crear orden', detalles: 'Ocurrio un error al crear la orden de compra, intentalo de nuevo mas tarde' });
+        }
         return res.status(200).json(ordenGuardada);
     })
 }
