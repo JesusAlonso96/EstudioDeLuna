@@ -4,6 +4,9 @@ import { ToastrService } from 'ngx-toastr';
 import { OrdenCompra } from 'src/app/comun/modelos/orden_compra.model';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { VerInsumosOrdenDeCompraComponent } from '../ver-insumos-orden-de-compra/ver-insumos-orden-de-compra.component';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-seleccionar-orden-de-compra',
@@ -17,23 +20,24 @@ export class SeleccionarOrdenDeCompraComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<SeleccionarOrdenDeCompraComponent>,
     private usuarioService: UsuarioService,
-    private toastr: ToastrService,
+    private toastr: NgToastrService,
+    private cargandoService: CargandoService,
     private dialog: MatDialog) { }
 
   ngOnInit() {
     this.obtenerOrdenesDeCompra();
   }
   obtenerOrdenesDeCompra() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo ordenes de compra');
     this.usuarioService.obtenerOrdenesCompra().subscribe(
       (ordenes: OrdenCompra[]) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.ordenes = ordenes;
         console.log(ordenes)
       },
-      (err: any) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.cargando = this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error',err.error.titulo, err.error.detalles);
       }
     );
   }

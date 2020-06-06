@@ -5,6 +5,7 @@ import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
 import { FormGroup } from '@angular/forms';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-inventarios-baja-insumo',
@@ -27,7 +28,8 @@ export class InventariosBajaInsumoComponent implements OnInit {
 
   constructor(
     private almacenService: AlmacenService,
-    private toastr: NgToastrService
+    private toastr: NgToastrService,
+    private cargandoService: CargandoService
   ) { }
 
   ngOnInit() {
@@ -36,14 +38,14 @@ export class InventariosBajaInsumoComponent implements OnInit {
   }
 
   obtenerAlmacenes() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo almacenes');
     this.almacenService.obtenerAlmacenes().subscribe(
       (almacenes: Almacen[]) => {
         this.almacenes= almacenes;
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )
@@ -51,17 +53,17 @@ export class InventariosBajaInsumoComponent implements OnInit {
 
   obtenerAlmacen() {
     if(this.almacen != null) {
-      this.cargando = true;
+      this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo almacen');
       this.insumosAlmacen = this.insumosAlmacenFiltrados = [];
       this.movimiento.insumo = null;
       this.movimiento.observaciones = '';
       this.almacenService.obtenerAlmacenPorId(this.almacen._id).subscribe(
         (almacen: Almacen) => {
           this.insumosAlmacen = this.insumosAlmacenFiltrados = almacen.insumos;
-          this.cargando = false;
+          this.cargando = this.cargandoService.crearVistaCargando(false);
         },
         (err: HttpErrorResponse) => {
-          this.cargando = false;
+          this.cargando = this.cargandoService.crearVistaCargando(false);
           this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
         }
       )
@@ -115,15 +117,15 @@ export class InventariosBajaInsumoComponent implements OnInit {
   }
 
   actualizarInsumoAlmacen(){
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Actualizando insumo');
     this.almacenService.actualizarInsumoAlmacen(this.almacen._id, this.movimiento.insumo._id, this.movimiento).subscribe(
       (almacen: Almacen) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito','Baja realizada exitosamente', `Se ha realizado la baja exitosamente del almacen ${this.almacen.nombre} al insumo ${this.movimiento.insumo.nombre}`);
         this.resetearFormulario();
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     )

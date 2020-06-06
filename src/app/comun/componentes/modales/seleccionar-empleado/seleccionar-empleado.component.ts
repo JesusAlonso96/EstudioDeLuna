@@ -3,6 +3,9 @@ import { Usuario } from 'src/app/comun/modelos/usuario.model';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialogRef } from '@angular/material';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-seleccionar-empleado',
@@ -14,22 +17,25 @@ export class SeleccionarEmpleadoComponent implements OnInit {
   cargando: boolean = false;
   seleccionados: boolean[] = [];
   seleccionado: Usuario;
-  constructor(public dialogRef: MatDialogRef<SeleccionarEmpleadoComponent>, private usuarioService: UsuarioService, private toastr: ToastrService) { }
+  constructor(public dialogRef: MatDialogRef<SeleccionarEmpleadoComponent>, 
+    private usuarioService: UsuarioService, 
+    private toastr: NgToastrService,
+    private cargandoService: CargandoService) { }
 
   ngOnInit() {
     this.obtenerFotografos();
   }
   obtenerFotografos() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo fotografos');
     this.usuarioService.obtenerFotografos().subscribe(
       (fotografos: Usuario[]) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.empleados = fotografos;
         this.iniciarSeleccionados();
       },
-      (err: any) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.cargando = this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error',err.error.titulo, err.error.detalles);
       }
     );
   }

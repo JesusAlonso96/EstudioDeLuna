@@ -1,152 +1,148 @@
 <app-barra-cargando [cargando]="cargando"></app-barra-cargando>
-<div class="container-fluid full-width mt-2">
-  <mat-card class="mb-4">
-    <div class="container-fluid">
-      <form #traspasoInsumoForm="ngForm">
-        <div class="row">
-          <div class="col-lg-12">
-            <h4>Nuevo traspaso</h4>
-            <hr>
-          </div>
-          <div class="col-12">
-            <mat-form-field appearance="outline" class="full-width input">
-              <mat-label>Almacen origen</mat-label>
-              <mat-select [(ngModel)]="traspaso.almacenOrigen" name="traspasoAlmacenOrigen" #traspasoAlmacenOrigen="ngModel"
-                (ngModelChange)="obtenerAlmacen()" required>
-                <mat-option *ngFor="let almacen of almacenesOrigen" [value]="almacen">
-                  {{almacen.nombre}}
-                </mat-option>
-              </mat-select>
-              <mat-error
-                *ngIf="(traspasoAlmacenOrigen.invalid && (traspasoAlmacenOrigen.dirty || traspasoAlmacenOrigen.touched) && traspasoAlmacenOrigen.errors.required)">
-                Por favor seleccione el almacen de origen
-              </mat-error>
-            </mat-form-field>
-          </div>
-        </div>
-        <div class="row" *ngIf="traspaso.almacenOrigen && insumosAlmacen.length == 0 && !cargando">
-          <div class="col-lg-12">
-            <div class="w-100 alert fondo-info">No hay insumos registrados para este almacen</div>
-          </div>
-        </div>
-        <div class="row" *ngIf="insumosAlmacen.length > 0">
-          <div class="col-md-6 col-12">
-            <mat-form-field appearance="outline" class="full-width input">
-              <mat-label>Sucursal destino</mat-label>
-              <mat-select [(ngModel)]="sucursalDestino" name="sucursalDestino1" #sucursalDestino1="ngModel"
-                [disabled]="sucursales.length == 0"
-                (ngModelChange)="obtenerAlmacenesSucursal()" required>
-                <mat-option *ngFor="let sucursal of sucursales" [value]="sucursal">
-                  {{sucursal.nombre}}
-                </mat-option>
-              </mat-select>
-              <mat-error
-                *ngIf="(sucursalDestino1.invalid && (sucursalDestino1.dirty || sucursalDestino1.touched) && sucursalDestino1.errors.required)">
-                Por favor seleccione la sucursal de destino
-              </mat-error>
-            </mat-form-field>
-          </div>
-          <div class="col-md-6 col-12">
-            <mat-form-field appearance="outline" class="full-width input">
-              <mat-label>Almacen destino</mat-label>
-              <mat-select [(ngModel)]="traspaso.almacenDestino" name="traspasoAlmacenDestino" #traspasoAlmacenDestino="ngModel"
-                [disabled]="almacenesDestino.length == 0" required>
-                <mat-option *ngFor="let almacen of almacenesDestino" [value]="almacen" [disabled]="almacen._id == traspaso.almacenOrigen._id">
-                  {{almacen.nombre}}
-                </mat-option>
-              </mat-select>
-              <mat-error
-                *ngIf="(traspasoAlmacenDestino.invalid && (traspasoAlmacenDestino.dirty || traspasoAlmacenDestino.touched) && traspasoAlmacenDestino.errors.required)">
-                Por favor seleccione el almacen de destino
-              </mat-error>
-            </mat-form-field>
-          </div>
-        </div>
-        <div class="row" *ngIf="sucursalDestino && almacenesDestino.length == 0 && !cargando">
-            <div class="col-lg-12">
-              <div class="w-100 alert fondo-info">No hay almacenes registrados para esta sucursal</div>
-            </div>
-          </div>
-        <div class="row" *ngIf="insumosAlmacen.length > 0">
-          <div class="col-md-6 col-12">
-            <mat-form-field class="full-width input" appearance="outline">
-              <mat-label>Buscar insumo</mat-label>
-              <input matInput [(ngModel)]="busquedaElemento" name="buscarElemento1" #buscarElemento1="ngModel"
-                placeholder="Buscar por nombre" (keyup)="aplicarFiltroBusqueda()" autocomplete="off">
-              <button *ngIf="busquedaElemento" [disabled]="insumosAlmacen.length == 0" (click)="borrarBusqueda()"
-                mat-button matSuffix mat-icon-button aria-label="Clear">
-                <mat-icon>close</mat-icon>
-              </button>
-            </mat-form-field>
-          </div>
-          <div class="col-md-6 col-12">
-            <mat-form-field appearance="outline" class="full-width input">
-              <mat-label>Seleccionar insumo</mat-label>
-              <mat-select [(ngModel)]="traspaso.insumo" name="traspasoInsumo" #traspasoInsumo="ngModel"
-                (ngModelChange)="inicializarDatosInsumo()" required>
-                <mat-option *ngFor="let insumoAlmacenFiltrado of insumosAlmacenFiltrados"
-                  [value]="insumoAlmacenFiltrado.insumo">
-                  {{insumoAlmacenFiltrado.insumo.nombre}}
-                </mat-option>
-              </mat-select>
-              <mat-error
-                *ngIf="(traspasoInsumo.invalid && (traspasoInsumo.dirty || traspasoInsumo.touched) && traspasoInsumo.errors.required)">
-                Por favor seleccione un producto
-              </mat-error>
-            </mat-form-field>
-          </div>
-        </div>
-        <div class="row" *ngIf="traspaso.insumo && existenciaActual == 0">
-          <div class="col-lg-12">
-            <div class="w-100 alert fondo-info">Este insumo tiene una existencia de 0 por lo que no se puede realizar
-              ninguna baja</div>
-          </div>
-        </div>
-        <div class="row" *ngIf="traspaso.insumo && existenciaActual > 0">
-          <div class="col-sm-4 col-lg-5 col-12">
-            <mat-form-field class="full-width input" appearance="outline">
-              <mat-label>Cantidad en existencia</mat-label>
-              <input matInput [(ngModel)]="existenciaActual" name="existenciaActual1" #existenciaActual1="ngModel" disabled>
-            </mat-form-field>
-          </div>
-          <div class="col-sm-4 col-lg-5 col-12">
-            <mat-form-field class="full-width input" appearance="outline">
-              <mat-label>Cantidad a traspasar</mat-label>
-              <input matInput [(ngModel)]="traspaso.cantidadMovimiento" name="traspasoCantidadMovimiento" disabled
-                #traspasoCantidadMovimiento="ngModel">
-            </mat-form-field>
-          </div>
-          <div class="col-sm-2 col-lg-1 col-6 d-flex align-items-center justify-content-center">
-            <button mat-icon-button class="success" (click)="aumentarTraspaso()">
-              <mat-icon>add</mat-icon>
-            </button>
-          </div>
-          <div class="col-sm-2 col-lg-1 col-6 d-flex align-items-center justify-content-center">
-            <button mat-icon-button class="danger" (click)="disminuirTraspaso()">
-              <mat-icon>remove</mat-icon>
-            </button>
-          </div>
-        </div>
-        <div class="row" [hidden]="insumosAlmacen.length == 0 || !traspaso.insumo || existenciaActual == 0">
-          <div class="col-12">
-            <mat-form-field class="full-width input" appearance="outline">
-              <mat-label>Observaciones</mat-label>
-              <input matInput type="text" [(ngModel)]="traspaso.observaciones" #traspasoObservaciones="ngModel" name="traspasoObservaciones"
-                required>
-              <mat-error
-                *ngIf="(traspasoObservaciones.invalid && (traspasoObservaciones.dirty || traspasoObservaciones.touched)) && traspasoObservaciones.errors.required">
-                Por favor ingrese el motivo de la transferencia de la exitencia
-              </mat-error>
-            </mat-form-field>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <button mat-raised-button class="float-right p-2" [disabled]="traspasoInsumoForm.invalid || cargando"
-              (click)="nuevoTraspaso()" color="primary">Agregar</button>
-          </div>
-        </div>
-      </form>
+<div class="container-fluid w-100 mt-4">
+  <form #traspasoInsumoForm="ngForm">
+    <div class="row">
+      <div class="col-lg-12">
+        <h4>Nuevo traspaso</h4>
+        <hr>
+      </div>
+      <div class="col-12">
+        <mat-form-field appearance="outline" class="full-width input">
+          <mat-label>Almacen origen</mat-label>
+          <mat-select [(ngModel)]="traspaso.almacenOrigen" name="traspasoAlmacenOrigen" #traspasoAlmacenOrigen="ngModel"
+            (ngModelChange)="obtenerAlmacen()" required>
+            <mat-option *ngFor="let almacen of almacenesOrigen" [value]="almacen">
+              {{almacen.nombre}}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="(traspasoAlmacenOrigen.invalid && (traspasoAlmacenOrigen.dirty || traspasoAlmacenOrigen.touched) && traspasoAlmacenOrigen.errors.required)">
+            Por favor seleccione el almacen de origen
+          </mat-error>
+        </mat-form-field>
+      </div>
     </div>
-  </mat-card>
+    <div class="row" *ngIf="traspaso.almacenOrigen && insumosAlmacen.length == 0 && !cargando">
+      <div class="col-lg-12">
+        <div class="w-100 alert fondo-info">No hay insumos registrados para este almacen</div>
+      </div>
+    </div>
+    <div class="row" *ngIf="insumosAlmacen.length > 0">
+      <div class="col-md-6 col-12">
+        <mat-form-field appearance="outline" class="full-width input">
+          <mat-label>Sucursal destino</mat-label>
+          <mat-select [(ngModel)]="sucursalDestino" name="sucursalDestino1" #sucursalDestino1="ngModel"
+            [disabled]="sucursales.length == 0" (ngModelChange)="obtenerAlmacenesSucursal()" required>
+            <mat-option *ngFor="let sucursal of sucursales" [value]="sucursal">
+              {{sucursal.nombre}}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="(sucursalDestino1.invalid && (sucursalDestino1.dirty || sucursalDestino1.touched) && sucursalDestino1.errors.required)">
+            Por favor seleccione la sucursal de destino
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6 col-12">
+        <mat-form-field appearance="outline" class="full-width input">
+          <mat-label>Almacen destino</mat-label>
+          <mat-select [(ngModel)]="traspaso.almacenDestino" name="traspasoAlmacenDestino"
+            #traspasoAlmacenDestino="ngModel" [disabled]="almacenesDestino.length == 0" required>
+            <mat-option *ngFor="let almacen of almacenesDestino" [value]="almacen"
+              [disabled]="almacen._id == traspaso.almacenOrigen._id">
+              {{almacen.nombre}}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="(traspasoAlmacenDestino.invalid && (traspasoAlmacenDestino.dirty || traspasoAlmacenDestino.touched) && traspasoAlmacenDestino.errors.required)">
+            Por favor seleccione el almacen de destino
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row" *ngIf="sucursalDestino && almacenesDestino.length == 0 && !cargando">
+      <div class="col-lg-12">
+        <div class="w-100 alert fondo-info">No hay almacenes registrados para esta sucursal</div>
+      </div>
+    </div>
+    <div class="row" *ngIf="insumosAlmacen.length > 0">
+      <div class="col-md-6 col-12">
+        <mat-form-field class="full-width input" appearance="outline">
+          <mat-label>Buscar insumo</mat-label>
+          <input matInput [(ngModel)]="busquedaElemento" name="buscarElemento1" #buscarElemento1="ngModel"
+            placeholder="Buscar por nombre" (keyup)="aplicarFiltroBusqueda()" autocomplete="off">
+          <button *ngIf="busquedaElemento" [disabled]="insumosAlmacen.length == 0" (click)="borrarBusqueda()" mat-button
+            matSuffix mat-icon-button aria-label="Clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6 col-12">
+        <mat-form-field appearance="outline" class="full-width input">
+          <mat-label>Seleccionar insumo</mat-label>
+          <mat-select [(ngModel)]="traspaso.insumo" name="traspasoInsumo" #traspasoInsumo="ngModel"
+            (ngModelChange)="inicializarDatosInsumo()" required>
+            <mat-option *ngFor="let insumoAlmacenFiltrado of insumosAlmacenFiltrados"
+              [value]="insumoAlmacenFiltrado.insumo">
+              {{insumoAlmacenFiltrado.insumo.nombre}}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="(traspasoInsumo.invalid && (traspasoInsumo.dirty || traspasoInsumo.touched) && traspasoInsumo.errors.required)">
+            Por favor seleccione un producto
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row" *ngIf="traspaso.insumo && existenciaActual == 0">
+      <div class="col-lg-12">
+        <div class="w-100 alert fondo-info">Este insumo tiene una existencia de 0 por lo que no se puede realizar
+          ninguna baja</div>
+      </div>
+    </div>
+    <div class="row" *ngIf="traspaso.insumo && existenciaActual > 0">
+      <div class="col-sm-4 col-lg-5 col-12">
+        <mat-form-field class="full-width input" appearance="outline">
+          <mat-label>Cantidad en existencia</mat-label>
+          <input matInput [(ngModel)]="existenciaActual" name="existenciaActual1" #existenciaActual1="ngModel" disabled>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-4 col-lg-5 col-12">
+        <mat-form-field class="full-width input" appearance="outline">
+          <mat-label>Cantidad a traspasar</mat-label>
+          <input matInput [(ngModel)]="traspaso.cantidadMovimiento" name="traspasoCantidadMovimiento" disabled
+            #traspasoCantidadMovimiento="ngModel">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-2 col-lg-1 col-6 d-flex align-items-center justify-content-center">
+        <button mat-icon-button class="success" (click)="aumentarTraspaso()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+      <div class="col-sm-2 col-lg-1 col-6 d-flex align-items-center justify-content-center">
+        <button mat-icon-button class="danger" (click)="disminuirTraspaso()">
+          <mat-icon>remove</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="row" [hidden]="insumosAlmacen.length == 0 || !traspaso.insumo || existenciaActual == 0">
+      <div class="col-12">
+        <mat-form-field class="full-width input" appearance="outline">
+          <mat-label>Observaciones</mat-label>
+          <input matInput type="text" [(ngModel)]="traspaso.observaciones" #traspasoObservaciones="ngModel"
+            name="traspasoObservaciones" required>
+          <mat-error
+            *ngIf="(traspasoObservaciones.invalid && (traspasoObservaciones.dirty || traspasoObservaciones.touched)) && traspasoObservaciones.errors.required">
+            Por favor ingrese el motivo de la transferencia de la exitencia
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <button mat-raised-button class="float-right p-2" [disabled]="traspasoInsumoForm.invalid || cargando"
+          (click)="nuevoTraspaso()" color="primary">Agregar</button>
+      </div>
+    </div>
+  </form>
 </div>

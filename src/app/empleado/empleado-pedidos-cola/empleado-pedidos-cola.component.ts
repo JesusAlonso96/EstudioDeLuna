@@ -6,6 +6,8 @@ import { MatTableDataSource, MatSort, MatPaginator, MatDialog } from '@angular/m
 import { ConfirmarModalComponent } from './confirmar-modal/confirmar-modal.component';
 import { ToastrService } from 'ngx-toastr';
 import { PedidosService } from 'src/app/comun/servicios/pedidos.service';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-empleado-pedidos-cola',
@@ -20,7 +22,12 @@ export class EmpleadoPedidosColaComponent implements OnInit {
   listData: MatTableDataSource<any>
   cargando: boolean = false;
   displayedColumns: string[] = ['acciones', 'num_pedido', 'status', 'fecha_entrega', 'total', 'anticipo']
-  constructor(public dialog: MatDialog, private empleadoService: EmpleadoService, private autService: ServicioAutenticacionService, private toastr: ToastrService, private pedidosService: PedidosService) { }
+  constructor(public dialog: MatDialog, 
+    private empleadoService: EmpleadoService, 
+    private autService: ServicioAutenticacionService, 
+    private toastr: NgToastrService, 
+    private cargandoService: CargandoService,
+    private pedidosService: PedidosService) { }
   ngOnInit() {
     this.obtenerPedidosEnCola();
     this.obtenerPedidosEnColaTiempoReal();
@@ -33,7 +40,7 @@ export class EmpleadoPedidosColaComponent implements OnInit {
         this.inicializarTabla();
       },
       (err: any) => {
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
   }
@@ -51,7 +58,7 @@ export class EmpleadoPedidosColaComponent implements OnInit {
         const indice = this.pedidos.indexOf(pedido);
         this.pedidos.splice(indice, 1);
         if (pedido.fotografo._id !== this.autService.getIdUsuario()) {
-          this.toastr.info(`El pedido ${pedido.num_pedido} fue tomado por ${pedido.fotografo.nombre}`, 'Pedido tomado', { closeButton: true });
+          this.toastr.abrirToastr('info',`El pedido ${pedido.num_pedido} fue tomado por ${pedido.fotografo.nombre}`, 'Pedido tomado');
         }
       }
     );
@@ -63,18 +70,18 @@ export class EmpleadoPedidosColaComponent implements OnInit {
     })
   }
   tomarPedido(pedido: Pedido) {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Tomando pedido');
     this.pedidosService.tomarPedido(pedido._id, this.autService.getIdUsuario()).subscribe(
       (pedidos: Pedido[]) => {
         this.pedidos = pedidos;
         this.listData.data = this.pedidos;
-        this.cargando = false;
-        this.toastr.success('Ve a la pestaña de Pedidos en proceso para ver el pedido', 'Pedido tomado con exito', { closeButton: true });
+        this.cargando = this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('exito','Ve a la pestaña de Pedidos en proceso para ver el pedido', 'Pedido tomado con exito');
         this.pedidosService.eliminarNotificacionPorPedido(pedido.num_pedido).subscribe();
       },
       (err: any) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.cargando = this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
   }

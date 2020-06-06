@@ -5,6 +5,9 @@ import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BuscadorComponent } from 'src/app/comun/componentes/buscador/buscador.component';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-usuarios-baja',
@@ -18,7 +21,9 @@ export class UsuariosBajaComponent implements OnInit, OnDestroy {
   cargando: boolean = false;
   private onDestroy$ = new Subject<boolean>();
 
-  constructor(private usuarioService: UsuarioService, private toastr: ToastrService) { }
+  constructor(private usuarioService: UsuarioService,
+     private toastr: NgToastrService,
+     private cargandoService: CargandoService) { }
 
   ngOnInit() {
     this.obtenerUsuarios();
@@ -27,15 +32,15 @@ export class UsuariosBajaComponent implements OnInit, OnDestroy {
   }
 
   obtenerUsuarios() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo usuarios');
     this.usuarioService.obtenerUsuarios().subscribe(
       (usuarios: Usuario[]) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.usuarios = usuarios;
       },
-      (err) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.cargando = this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
   }
@@ -48,7 +53,7 @@ export class UsuariosBajaComponent implements OnInit, OnDestroy {
         (usuario: Usuario) => {
           this.usuarios.push(usuario);
           this.buscador.datosTabla.data = this.usuarios;
-          this.toastr.info('Se ha agregado un nuevo usuario', 'Nuevo usuario', { closeButton: true });
+          this.toastr.abrirToastr('info','Se ha agregado un nuevo usuario', 'Nuevo usuario');
         }
       );
   }
@@ -63,7 +68,7 @@ export class UsuariosBajaComponent implements OnInit, OnDestroy {
           const indice = this.usuarios.indexOf(clienteEncontrado);
           this.usuarios[indice] = usuario;
           this.buscador.datosTabla.data = this.usuarios;
-          this.toastr.info('Se ha editado un usuario', 'Nuevo usuario', { closeButton: true });
+          this.toastr.abrirToastr('info','Se ha editado un usuario', 'Nuevo usuario');
         }
       );
   }

@@ -5,21 +5,25 @@
   .btn-exito {
     color: #ffffff;
     background-color: $success;
+    outline: none;
   }
 
   .btn-error {
     color: #ffffff;
     background-color: $danger;
+    outline: none;
   }
 
   .btn-info {
     color: #ffffff;
     background-color: $info;
+    outline: none;
   }
 
   .btn-advertencia {
     color: #ffffff;
     background-color: $warn;
+    outline: none;
   }
   .btn-titulo {
     border-radius: 5px;
@@ -28,6 +32,7 @@
     position: absolute;
     top: 0;
     margin-top: -2%;
+    outline: none;
   
     h5 {
       font-weight: 300;

@@ -8,6 +8,7 @@ import { NgModel } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-modal-empleado-abrir-caja',
@@ -22,6 +23,7 @@ export class ModalEmpleadoAbrirCajaComponent implements OnInit {
   cargando: boolean = false;
   constructor(public dialogRef: MatDialogRef<ModalEmpleadoAbrirCajaComponent>,
     private cajasService: CajaService,
+    private cargandoService: CargandoService,
     private toastr: NgToastrService) { }
 
   ngOnInit(): void {
@@ -29,10 +31,10 @@ export class ModalEmpleadoAbrirCajaComponent implements OnInit {
   }
 
   obtenerCajasDisponibles() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo cajas disponibles');
     this.cajasService.obtenerCajasDesocupadas().subscribe(
       (cajas: Caja[]) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.cajasDisponibles = cajas;
         this.cajasFiltradas = this.cajaSeleccionada2.valueChanges
           .pipe(
@@ -42,23 +44,23 @@ export class ModalEmpleadoAbrirCajaComponent implements OnInit {
           );
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   abrirCaja() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Abriendo caja');
     console.log(this.cajaSeleccionada._id)
     this.cajasService.abrirCaja(this.cajaSeleccionada._id).subscribe(
       (resp: Mensaje) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', resp.titulo, '');
         localStorage.setItem('c_a', this.cajaSeleccionada._id);
         this.dialogRef.close();
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );

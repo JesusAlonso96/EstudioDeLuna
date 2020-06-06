@@ -8,6 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { InventariosInvFisicoAlmacenesExistenciasModalComponent } from './inventarios-inv-fisico-almacenes-existencias-modal/inventarios-inv-fisico-almacenes-existencias-modal.component';
 import { InventariosInvFisicoAlmacenesAltaModalComponent } from './inventarios-inv-fisico-almacenes-alta-modal/inventarios-inv-fisico-almacenes-alta-modal.component';
 import { Inventario, InsumoInventario } from 'src/app/comun/modelos/inventario.model';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-inventarios-inv-fisico-almacenes',
@@ -27,7 +28,8 @@ export class InventariosInvFisicoAlmacenesComponent implements OnInit {
     private almacenService: AlmacenService,
     private inventarioService: InventarioService,
     private toastr: NgToastrService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cargandoService: CargandoService
   ) { }
 
   ngOnInit() {
@@ -35,14 +37,14 @@ export class InventariosInvFisicoAlmacenesComponent implements OnInit {
   }
 
   obtenerAlmacenes() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Cargando almacenes');
     this.almacenService.obtenerAlmacenes().subscribe(
       (almacenes: Almacen[]) => {
         this.inicializarTabla(almacenes);
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )
@@ -71,49 +73,10 @@ export class InventariosInvFisicoAlmacenesComponent implements OnInit {
       data: almacen
     });
   }
-
-  /*nuevoInventario(almacen: Almacen) {
-    const dialogRef = this.dialog.open(InventariosInvFisicoAlmacenesAltaModalComponent, {
-      data: almacen
-    });
-    dialogRef.afterClosed().subscribe((res: {inventario: Inventario, insumosAlmacen: InsumoAlmacen[]}) => {
-      if (res) {
-        this.agregarInventario(res.inventario, res.insumosAlmacen);
-      }
-    })
-  }
-
-  agregarInventario(inventario: Inventario, insumosAlmacen: InsumoAlmacen[]) {
-    this.cargando = true;
-    this.inventarioService.nuevoInventario(inventario).subscribe(
-      (inventario: Inventario) => {
-        this.cargando = false;
-        this.actualizarInsumosAlmacen(<string>inventario.almacen, insumosAlmacen);
-        this.toastr.abrirToastr('exito',`Se ha agregado exitosamente el inventario del almacen ${inventario.almacen}`, 'Inventario agregado exitosamente');
-      },
-      (err: HttpErrorResponse) => {
-        this.cargando = false;
-        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
-      }
-    )
-  }
-
-  actualizarInsumosAlmacen(idAlmacen: string, insumosAlmacen: InsumoAlmacen[]) {
-    this.cargando = true;
-    this.almacenService.actualizarInsumosAlmacen(idAlmacen, insumosAlmacen).subscribe(
-      (almacen: Almacen) => {
-        this.cargando = false;
-        this.toastr.abrirToastr('exito',`Se han actualizado exitosamente las existencias del almacen ${idAlmacen}`, 'Existencias actualizadas exitosamente');
-      },
-      (err: HttpErrorResponse) => {
-        this.cargando = false;
-        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
-      }
-    )
-  }*/
-
   nuevoInventario(almacen: Almacen) {
     const dialogRef = this.dialog.open(InventariosInvFisicoAlmacenesAltaModalComponent, {
+      disableClose:true,
+      width:'80%',
       data: almacen
     });
     dialogRef.afterClosed().subscribe((res: Inventario) => {
@@ -124,7 +87,7 @@ export class InventariosInvFisicoAlmacenesComponent implements OnInit {
   }
 
   agregarInventario(inventarioActualizar: Inventario) {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Agregando inventario');
     this.contadorInsumosActualizados = 0;
     this.inventarioService.nuevoInventario(inventarioActualizar).subscribe(
       (inventario: Inventario) => {
@@ -139,7 +102,7 @@ export class InventariosInvFisicoAlmacenesComponent implements OnInit {
         });
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     )
@@ -161,13 +124,13 @@ export class InventariosInvFisicoAlmacenesComponent implements OnInit {
         console.log("Si se actualizo");
         this.contadorInsumosActualizados--;
         if (this.contadorInsumosActualizados == 0) {
-          this.cargando = false;
+          this.cargando = this.cargandoService.crearVistaCargando(false);
           this.toastr.abrirToastr('exito',`Se han actualizado exitosamente las existencias del almacen ${idAlmacen}`, 'Existencias actualizadas exitosamente');
         }
       }, (err: HttpErrorResponse) => {
         this.contadorInsumosActualizados--;
         if (this.contadorInsumosActualizados == 0) {
-          this.cargando = false;
+          this.cargando = this.cargandoService.crearVistaCargando(false);
         }
         this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }

@@ -13,6 +13,7 @@ import { ProductoOrdenCompra, OrdenCompra } from 'src/app/comun/modelos/orden_co
 import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-inventarios-compra',
@@ -36,6 +37,7 @@ export class InventariosCompraComponent implements OnInit {
     private proveedoresService: ProveedoresService,
     private usuarioService: UsuarioService,
     private almacenesService: AlmacenService,
+    private cargandoService: CargandoService,
     private toastr: NgToastrService) { }
 
   ngOnInit() {
@@ -47,14 +49,14 @@ export class InventariosCompraComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.compra.insumosCompra);
   }
   obtenerAlmacenes() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo almacenes');
     this.almacenesService.obtenerAlmacenes().subscribe(
       (almacenes: Almacen[]) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.almacenes = almacenes;
       },
-      (err: any) => {
-        this.cargando = false;
+      (err: HttpErrorResponse) => {
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
@@ -106,14 +108,14 @@ export class InventariosCompraComponent implements OnInit {
     this.dataSource.data = this.compra.insumosCompra;
   }
   obtenerProductosProveedor(idProveedor: string) {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo insumos del proveedor');
     this.proveedoresService.obtenerProductosProveedor(idProveedor).subscribe(
       (productos: ProductoProveedor[]) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.productos = productos;
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );
@@ -129,21 +131,20 @@ export class InventariosCompraComponent implements OnInit {
   generarCompra() {
     this.compra.subtotal = this.calcularSubtotalCompra();
     this.compra.total = this.calcularTotalCompra();
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true);
     console.log(this.compra);
     this.usuarioService.generarCompra(this.compra).subscribe(
       (compraGuardada: any) => {
-        console.log(compraGuardada)
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         if (this.idOrdenCompra !== '') {
-          this.cargando = true;
+          this.cargando = this.cargandoService.crearVistaCargando(true,'Generando compra');
           this.usuarioService.desactivarOrdenCompra(this.idOrdenCompra).subscribe(
             (desactivada: OrdenCompra) => {
-              this.cargando = false;
+              this.cargando = this.cargandoService.crearVistaCargando(false);
               this.toastr.abrirToastr('info','La orden de compra no puede volver a usarse', 'Se ha desactivado la orden de compra');
             },
             (err: HttpErrorResponse) => {
-              this.cargando = false;
+              this.cargando = this.cargandoService.crearVistaCargando(false);
               this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
             }
           );
@@ -153,7 +154,7 @@ export class InventariosCompraComponent implements OnInit {
         this.resetearFormulario();
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     );

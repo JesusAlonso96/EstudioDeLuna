@@ -5,6 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Movimiento } from 'src/app/comun/modelos/almacen.model';
 import { Inventario } from 'src/app/comun/modelos/inventario.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-inventarios-entradas-salidas-detalles-modal',
@@ -18,6 +19,7 @@ export class InventariosEntradasSalidasDetallesModalComponent implements OnInit 
   constructor(
     private almacenService: AlmacenService,
     private toastr: NgToastrService,
+    private cargandoService: CargandoService,
     public dialogRef: MatDialogRef<InventariosEntradasSalidasDetallesModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Movimiento) { 
     }
@@ -27,15 +29,14 @@ export class InventariosEntradasSalidasDetallesModalComponent implements OnInit 
   }
   
   obtenerMovimientoAlmacen() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo movimiento');
     this.almacenService.obtenerMovimientoAlmacenPorId(this.data.almacen._id, this.data._id).subscribe(
       (movimiento: Movimiento) => {
         this.movimiento = movimiento;
-        console.log(movimiento);
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )

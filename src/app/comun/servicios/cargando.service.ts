@@ -11,5 +11,6 @@ export class CargandoService {
   constructor() { }
   crearVistaCargando(cargando: boolean, texto?: string) {
     this.emitirFuenteCambio.next({ cargando, texto });
+    return cargando;
   }
 }

@@ -7,6 +7,7 @@ import { Municipio } from 'src/app/comun/modelos/municipio.model';
 import { ToastrService } from 'ngx-toastr';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
 import { Sucursal } from 'src/app/comun/modelos/sucursal.model';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-alta-almacen',
@@ -23,6 +24,7 @@ export class AltaAlmacenComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<AltaAlmacenComponent>,
     private usuarioService: UsuarioService,
     private estadosService: EstadosService,
+    private cargandoService: CargandoService,
     private toastr: ToastrService) { }
 
   ngOnInit() {
@@ -45,14 +47,14 @@ export class AltaAlmacenComponent implements OnInit {
   }
   buscarMunicipios() {
     this.nuevoAlmacen.direccion.estado = this.estado.nombre;
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Buscando municipios');
     this.estadosService.obtenerMunicipios(this.estado._id).subscribe(
       (municipios) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.municipios = municipios;
       },
       (err) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
       }
     )

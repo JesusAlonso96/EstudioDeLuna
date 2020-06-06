@@ -7,6 +7,7 @@ import { EmpresaCot } from 'src/app/comun/modelos/empresa_cot.model';
 import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
 import { CotizacionesService } from 'src/app/comun/servicios/cotizaciones.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-empresas',
@@ -18,21 +19,22 @@ export class EmpresasComponent implements OnInit {
   @ViewChild('buscador') buscador: BuscadorComponent;
   displayedColumns: string[] = ['nombre', 'contacto', 'email', 'editar', 'eliminar'];
   empresas: EmpresaCot[];
-  cargando: boolean = false;
-  constructor(private dialog: MatDialog, private cotizacionesService: CotizacionesService, private toastr: NgToastrService) { }
+  constructor(private dialog: MatDialog, private cotizacionesService: CotizacionesService, 
+    private toastr: NgToastrService,
+    private cargandoService: CargandoService) { }
 
   ngOnInit() {
     this.obtenerEmpresas();
   }
   obtenerEmpresas() {
-    this.cargando = true;
+    this.cargandoService.crearVistaCargando(true,'Obteniendo empresas');
     this.cotizacionesService.obtenerEmpresas().subscribe(
       (empresas: EmpresaCot[]) => {
-        this.cargando = false;
+        this.cargandoService.crearVistaCargando(false);
         this.empresas = empresas;
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
@@ -46,16 +48,16 @@ export class EmpresasComponent implements OnInit {
     })
   }
   agregarEmpresa(empresa: EmpresaCot) {
-    this.cargando = true;
+    this.cargandoService.crearVistaCargando(true,'Agregando empresa');
     this.cotizacionesService.agregarEmpresa(empresa).subscribe(
       (agregada: Mensaje) => {
-        this.cargando = false;
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', agregada.detalles, agregada.detalles);
         this.empresas.push(empresa);
         this.buscador.datosTabla.data = this.empresas;
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );

@@ -5,6 +5,8 @@ import { ClienteService } from '../../servicios/cliente.service';
 import { BuscadorComponent } from '../buscador/buscador.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { NgToastrService } from '../../servicios/ng-toastr.service';
+import { CargandoService } from '../../servicios/cargando.service';
 
 @Component({
   selector: 'app-baja-cliente',
@@ -18,7 +20,9 @@ export class BajaClienteComponent implements OnInit, OnDestroy {
   cargando: boolean = false;
   private onDestroy$ = new Subject<boolean>();
 
-  constructor(private clienteService: ClienteService, private toastr: ToastrService) { }
+  constructor(private clienteService: ClienteService, 
+    private toastr: NgToastrService,
+    private cargandoService: CargandoService) { }
 
   ngOnInit() {
     this.obtenerClientes();
@@ -27,16 +31,16 @@ export class BajaClienteComponent implements OnInit, OnDestroy {
   }
 
   obtenerClientes() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo clientes');
     this.clienteService.obtenerDatosClientes().subscribe(
       (clientes: Cliente[]) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.clientes = clientes;
         console.log(this.clientes);
       },
       (err: any) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+        this.cargando = this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error',err.error.titulo, err.error.detalles);
       }
     );
   }
@@ -49,7 +53,7 @@ export class BajaClienteComponent implements OnInit, OnDestroy {
         (cliente: Cliente) => {
           this.clientes.push(cliente);
           this.buscador.datosTabla.data = this.clientes;
-          this.toastr.info('Se ha agregado un nuevo cliente', 'Nuevo cliente', { closeButton: true });
+          this.toastr.abrirToastr('info','Se ha agregado un nuevo cliente', 'Nuevo cliente');
         }
       );
   }
@@ -64,7 +68,7 @@ export class BajaClienteComponent implements OnInit, OnDestroy {
           const indice = this.clientes.indexOf(clienteEncontrado);
           this.clientes[indice] = cliente;
           this.buscador.datosTabla.data = this.clientes;
-          this.toastr.info('Se ha editado un nuevo cliente', 'Nuevo cliente', { closeButton: true });
+          this.toastr.abrirToastr('info','Se ha editado un nuevo cliente', 'Nuevo cliente');
         }
       );
   }

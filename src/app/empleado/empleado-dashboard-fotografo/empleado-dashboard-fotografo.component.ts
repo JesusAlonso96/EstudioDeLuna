@@ -2,6 +2,8 @@ import { Component, OnInit  } from '@angular/core';
 import { EmpleadoService } from '../servicio-empleado/empleado.service';
 import { ToastrService } from 'ngx-toastr';
 import { PedidosService } from 'src/app/comun/servicios/pedidos.service';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-empleado-dashboard-fotografo',
@@ -15,7 +17,10 @@ export class EmpleadoDashboardFotografoComponent implements OnInit {
   numPedidosRealizados: number = 0;
   numPedidosProximos: number = 0;
   cargando: boolean = false;
-  constructor(private empleadoService: EmpleadoService, private toastr: ToastrService, private pedidosService: PedidosService) { }
+  constructor(private empleadoService: EmpleadoService,
+     private toastr: NgToastrService, 
+     private cargandoService: CargandoService,
+     private pedidosService: PedidosService) { }
 
   ngOnInit() {
     this.obtenerNumPedidosEnCola();
@@ -24,15 +29,15 @@ export class EmpleadoDashboardFotografoComponent implements OnInit {
     this.obtenerNumPedidosRealizados();
   }
   obtenerNumPedidosEnCola() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo numero de pedidos en cola');
     this.pedidosService.obtenerNumPedidosEnCola().subscribe(
       (num: any) => {
         this.numPedidosCola = num;
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       },
       (err) => {
-        this.toastr.error(err.error.details, err.error.title);
-        this.cargando = false;
+        this.toastr.abrirToastr('error',err.error.details, err.error.title);
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       }
     )
   }
@@ -43,33 +48,33 @@ export class EmpleadoDashboardFotografoComponent implements OnInit {
       })
   }
   obtenerNumPedidosEnProceso() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo numero de pedidos en proceso');
     this.pedidosService.obtenerNumPedidosEnProceso().subscribe(
       (num) => {
         if(num.length > 0) {
           this.numPedidosProceso = num[0].contador;
         }        
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
 
       },
       (err) => {
-        this.toastr.error(err.error.details, err.error.title);
-        this.cargando = false;
+        this.toastr.abrirToastr('error',err.error.details, err.error.title);
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       }
     );
   }
   obtenerNumPedidosRealizados() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo numero de pedidos realizados');
     this.pedidosService.obtenerNumPedidosRealizados().subscribe(
       (num) => {
         if(num.length > 0){
           this.numPedidosRealizados = num[0].contador;
         }
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       },
       (err) => {
-        this.toastr.error(err.error.details, err.error.title)
-        this.cargando = false;
+        this.toastr.abrirToastr('error',err.error.details, err.error.title)
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       }
     );
   }

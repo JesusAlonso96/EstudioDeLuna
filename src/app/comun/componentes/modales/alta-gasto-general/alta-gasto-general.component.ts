@@ -8,6 +8,7 @@ import { TipoGastoGeneral } from 'src/app/comun/modelos/tipo_gasto_general.model
 import { HttpErrorResponse } from '@angular/common/http';
 import { MetodosPago } from 'src/app/comun/enumeraciones/metodos-pago.enum';
 import { isNumber } from 'util';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-alta-gasto-general',
@@ -23,6 +24,7 @@ export class AltaGastoGeneralComponent implements OnInit {
   
   constructor(public dialogRef: MatDialogRef<AltaGastoGeneralComponent>,
     private tipoGastoGeneralService: TipoGastoGeneralService,
+    private cargandoService: CargandoService,
     private toastr: NgToastrService) { }
 
   ngOnInit() {
@@ -31,14 +33,14 @@ export class AltaGastoGeneralComponent implements OnInit {
   }
 
   obtenerTiposGastoGeneral() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo tipos de gasto');
     this.tipoGastoGeneralService.obtenerTiposGastoGeneral().subscribe(
       (tiposGastoGeneral: TipoGastoGeneral[]) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.tiposGastoGeneral = tiposGastoGeneral;
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )

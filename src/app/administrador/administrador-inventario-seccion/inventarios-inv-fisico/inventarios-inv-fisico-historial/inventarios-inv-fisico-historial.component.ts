@@ -7,6 +7,7 @@ import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { InventariosInvFisicoHistorialExistenciasModalComponent } from './inventarios-inv-fisico-historial-existencias-modal/inventarios-inv-fisico-historial-existencias-modal.component';
 import { Almacen } from 'src/app/comun/modelos/almacen.model';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-inventarios-inv-fisico-historial',
@@ -25,7 +26,8 @@ export class InventariosInvFisicoHistorialComponent implements OnInit {
     private almacenService: AlmacenService,
     private inventarioService: InventarioService,
     private toastr: NgToastrService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cargandoService: CargandoService
   ) { }
 
   ngOnInit() {
@@ -33,14 +35,14 @@ export class InventariosInvFisicoHistorialComponent implements OnInit {
   }
 
   obtenerInventarios() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo inventarios');
     this.inventarioService.obtenerInventarios().subscribe(
       (inventarios: Inventario[]) => {
         this.inicializarTabla(inventarios);
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )

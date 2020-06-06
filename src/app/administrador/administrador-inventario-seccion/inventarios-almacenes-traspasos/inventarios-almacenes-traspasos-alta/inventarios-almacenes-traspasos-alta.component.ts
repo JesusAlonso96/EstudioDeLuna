@@ -9,6 +9,7 @@ import { Sucursal } from 'src/app/comun/modelos/sucursal.model';
 import { TraspasoService } from 'src/app/comun/servicios/traspaso.service';
 import { Traspaso } from 'src/app/comun/modelos/traspaso.model';
 import { FormGroup } from '@angular/forms';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-inventarios-almacenes-traspasos-alta',
@@ -35,7 +36,8 @@ export class InventariosAlmacenesTraspasosAltaComponent implements OnInit {
     private almacenService: AlmacenService,
     private sucursalService: SucursalService,
     private traspasoService: TraspasoService,
-    private toastr: NgToastrService
+    private toastr: NgToastrService,
+    private cargandoService: CargandoService
   ) { }
 
   ngOnInit() {
@@ -45,45 +47,45 @@ export class InventariosAlmacenesTraspasosAltaComponent implements OnInit {
   }
 
   obtenerAlmacenes() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true, 'Obteniendo almacenes')
     this.almacenService.obtenerAlmacenes().subscribe(
       (almacenes: Almacen[]) => {
         this.almacenesOrigen = almacenes;
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )
   }
 
   obtenerSucursales() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true, 'Obteniendo sucursales');
     this.sucursalService.obtenerSucursales().subscribe(
       (sucursales: Sucursal[]) => {
         this.sucursales = sucursales;
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )
   }
 
   obtenerAlmacenesSucursal() {
-    if(this.sucursalDestino != null) {
-      this.cargando = true;
+    if (this.sucursalDestino != null) {
+      this.cargando = this.cargandoService.crearVistaCargando(true, 'Obteniendo almacenes de sucursal');
       this.traspaso.almacenDestino = null;
       this.almacenesDestino = [];
       this.sucursalService.obtenerAlmacenesSucursal(this.sucursalDestino._id).subscribe(
         (almacenes: Almacen[]) => {
           this.almacenesDestino = almacenes;
-          this.cargando = false;
+          this.cargando = this.cargandoService.crearVistaCargando(false);
         },
         (err: HttpErrorResponse) => {
-          this.cargando = false;
+          this.cargando = this.cargandoService.crearVistaCargando(false);
           this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
         }
       )
@@ -91,18 +93,18 @@ export class InventariosAlmacenesTraspasosAltaComponent implements OnInit {
   }
 
   obtenerAlmacen() {
-    if(this.traspaso.almacenOrigen != null) {
-      this.cargando = true;
+    if (this.traspaso.almacenOrigen != null) {
+      this.cargando = this.cargandoService.crearVistaCargando(true, 'Obteniendo almacen');
       this.insumosAlmacen = this.insumosAlmacenFiltrados = [];
       this.traspaso.insumo = null;
       this.traspaso.observaciones = '';
       this.almacenService.obtenerAlmacenPorId(this.traspaso.almacenOrigen._id).subscribe(
         (almacen: Almacen) => {
           this.insumosAlmacen = this.insumosAlmacenFiltrados = almacen.insumos;
-          this.cargando = false;
+          this.cargando = this.cargandoService.crearVistaCargando(false);
         },
         (err: HttpErrorResponse) => {
-          this.cargando = false;
+          this.cargando = this.cargandoService.crearVistaCargando(false);
           this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
         }
       )
@@ -128,7 +130,7 @@ export class InventariosAlmacenesTraspasosAltaComponent implements OnInit {
     }
   }
 
-  inicializarDatosInsumo() {
+  inicializarDatosInsumo() {
     let posicionInsumoAlmacen = this.insumosAlmacenFiltrados.findIndex(insumoAlmacenFiltrado => {
       return insumoAlmacenFiltrado.insumo._id == this.traspaso.insumo._id;
     });
@@ -140,7 +142,7 @@ export class InventariosAlmacenesTraspasosAltaComponent implements OnInit {
   }
 
   aumentarTraspaso() {
-    if(this.existenciaActual > this.traspaso.cantidadMovimiento) {
+    if (this.existenciaActual > this.traspaso.cantidadMovimiento) {
       this.traspaso.cantidadMovimiento++;
     } else {
       this.toastr.abrirToastr('error', 'No es posible aumentar la cantidad del traspaso', 'Cantidad del traspaso igual a la existencia de ' + this.traspaso.insumo.nombre);
@@ -148,35 +150,35 @@ export class InventariosAlmacenesTraspasosAltaComponent implements OnInit {
   }
 
   disminuirTraspaso() {
-    if(this.traspaso.cantidadMovimiento > 1) {
+    if (this.traspaso.cantidadMovimiento > 1) {
       this.traspaso.cantidadMovimiento--;
     } else {
       this.toastr.abrirToastr('error', 'No es posible disminuir la cantidad del traspaso', 'Cantidad del traspaso en ' + this.traspaso.insumo.nombre + ' en 1');
     }
   }
 
-  nuevoTraspaso(){
-    this.cargando = true;
+  nuevoTraspaso() {
+    this.cargando = this.cargandoService.crearVistaCargando(true, 'Realizando traspaso');
     this.traspasoService.nuevoTraspaso(this.traspaso).subscribe(
       (traspaso: Traspaso) => {
         this.actualizarInsumoAlmacen(traspaso);
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
-        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
+        this.cargando = this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )
   }
 
-  actualizarInsumoAlmacen(traspaso: Traspaso){
+  actualizarInsumoAlmacen(traspaso: Traspaso) {
     this.almacenService.actualizarInsumoAlmacen(this.traspaso.almacenOrigen._id, this.traspaso.insumo._id, this.obtenerDatosMovimiento(traspaso)).subscribe(
       (almacen: Almacen) => {
-        this.cargando = false;
-        this.toastr.abrirToastr('exito','Traspaso realizado exitosamente', `Se ha realizado la baja exitosamente del almacen ${this.traspaso.almacenOrigen.nombre} al insumo ${this.traspaso.insumo.nombre}`);
+        this.cargando = this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('exito', 'Traspaso realizado exitosamente', `Se ha realizado la baja exitosamente del almacen ${this.traspaso.almacenOrigen.nombre} al insumo ${this.traspaso.insumo.nombre}`);
         this.resetearFormulario();
       }, (err: HttpErrorResponse) => {
-        this.cargando = false;
-        this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
+        this.cargando = this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )
   }

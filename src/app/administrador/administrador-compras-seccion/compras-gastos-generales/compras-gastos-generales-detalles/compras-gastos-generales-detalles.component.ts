@@ -6,6 +6,7 @@ import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { MatDialog } from '@angular/material';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AltaGastoGeneralComponent } from 'src/app/comun/componentes/modales/alta-gasto-general/alta-gasto-general.component';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-compras-gastos-generales-detalles',
@@ -20,6 +21,7 @@ export class ComprasGastosGeneralesDetallesComponent implements OnInit {
   
   constructor(private gastoGeneralService: GastoGeneralService,
     private toastr: NgToastrService,
+    private cargandoService: CargandoService,
     private dialog: MatDialog) { }
 
   ngOnInit() {
@@ -27,14 +29,14 @@ export class ComprasGastosGeneralesDetallesComponent implements OnInit {
   }
 
   obtenerGastosGenerales() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo gastos generales');
     this.gastoGeneralService.obtenerGastosGenerales().subscribe(
       (gastosGenerales: GastoGeneral[]) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.gastosGenerales = gastosGenerales;
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )
@@ -52,16 +54,16 @@ export class ComprasGastosGeneralesDetallesComponent implements OnInit {
   }
 
   agregarGastoGeneral(gastoGeneral: GastoGeneral) {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Agregando gasto general');
     this.gastoGeneralService.nuevoGastoGeneral(gastoGeneral).subscribe(
       (gastoGeneral: GastoGeneral) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito',`Se ha agregado exitosamente el gasto general ${gastoGeneral.id}`, 'Gasto general agregado exitosamente');
         this.gastosGenerales.push(gastoGeneral);
         this.buscador.datosTabla.data = this.gastosGenerales;
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     )

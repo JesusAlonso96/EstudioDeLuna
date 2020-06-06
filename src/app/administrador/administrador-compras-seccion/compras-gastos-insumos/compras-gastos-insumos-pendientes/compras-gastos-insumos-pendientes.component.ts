@@ -4,6 +4,7 @@ import { CompraService } from 'src/app/comun/servicios/compra.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { BuscadorComponent } from 'src/app/comun/componentes/buscador/buscador.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-compras-gastos-insumos-pendientes',
@@ -17,6 +18,7 @@ export class ComprasGastosInsumosPendientesComponent implements OnInit {
   cargando: boolean = false;
   
   constructor(private compraService: CompraService,
+    private cargandoService: CargandoService,
     private toastr: NgToastrService) { }
 
   ngOnInit() {
@@ -24,14 +26,14 @@ export class ComprasGastosInsumosPendientesComponent implements OnInit {
   }
 
   obtenerComprasSinRegistrar() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo compras sin registrar');
     this.compraService.obtenerComprasSinRegistrar().subscribe(
       (compras: Compra[]) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.comprasSinRegistrar = compras;
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )

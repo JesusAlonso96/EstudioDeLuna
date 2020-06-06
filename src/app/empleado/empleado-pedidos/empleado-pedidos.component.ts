@@ -10,6 +10,7 @@ import { PedidoEstadoComponent } from './pedido-estado/pedido-estado.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ModalConfirmacionComponent } from 'src/app/comun/componentes/modal-confirmacion/modal-confirmacion.component';
 import { PedidosService } from 'src/app/comun/servicios/pedidos.service';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-empleado-pedidos',
@@ -27,21 +28,24 @@ export class EmpleadoPedidosComponent implements OnInit {
   page_number: number = 1;
   fechaPedidos: number = 2;
   nombreFiltroActual: string = 'Pedidos esta semana';
-  constructor(public dialog: MatDialog, private pedidosService: PedidosService, private toastr: NgToastrService, private temasService: TemasService) { }
+  constructor(public dialog: MatDialog, private pedidosService: PedidosService, 
+    private toastr: NgToastrService, 
+    private cargandoService: CargandoService,
+    private temasService: TemasService) { }
 
   ngOnInit() {
     this.obtenerPedidos(this.fechaPedidos);
   }
   obtenerPedidos(filtro: number) {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo pedidos');
     this.pedidosService.obtenerPedidos(filtro).subscribe(
       (pedidos: Pedido[]) => {
         this.pedidos = this.pedidosFiltrados = pedidos;
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       },
       (err: HttpErrorResponse) => {
         this.toastr.error(err.error.detalles, err.error.titulo);
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       }
     );
   }
@@ -54,7 +58,7 @@ export class EmpleadoPedidosComponent implements OnInit {
     this.page_number = e.pageIndex + 1;
   }
   verDetalles(pedido: Pedido) {
-    this.dialog.open(PedidoEstadoComponent, { data: pedido, panelClass: this.temasService.obtenerClaseActiva(), disableClose: true })
+    this.dialog.open(PedidoEstadoComponent, { data: pedido, disableClose: true })
   }
   aplicarFiltro() {
     this.pedidosFiltrados = this.pedidos.filter(pedido => {

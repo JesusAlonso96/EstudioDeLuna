@@ -10,6 +10,7 @@ import { Configuracion } from 'src/app/comun/modelos/usuario.model';
 import { ConfiguracionService } from 'src/app/comun/servicios/configuracion.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { environment } from '../../../environments/environment';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 @Component({
   selector: 'app-administrador-configuracion-sistema',
   templateUrl: './administrador-configuracion-sistema.component.html',
@@ -31,6 +32,7 @@ export class AdministradorConfiguracionSistemaComponent implements OnInit, OnDes
 
   constructor(private autenticacionService: ServicioAutenticacionService,
     private _serToastr: NgToastrService,
+    private cargandoService: CargandoService,
     private configuracionService: ConfiguracionService) { }
 
   ngOnDestroy(): void {
@@ -44,14 +46,14 @@ export class AdministradorConfiguracionSistemaComponent implements OnInit, OnDes
     this.obtenerNuevoLogotipo();
   }
   obtenerConfiguracion() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo configuracion');
     this.configuracionService.obtenerConfiguracion().subscribe(
       (configuracion: Configuracion) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.configuracion = configuracion;
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this._serToastr.error(err.error.titulo, err.error.detalles);
       }
     );
@@ -69,14 +71,14 @@ export class AdministradorConfiguracionSistemaComponent implements OnInit, OnDes
       );
   }
   guardarConfiguracionNotificaciones() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Guardando configuracion');
     this.configuracionService.guardarConfiguracionNotificaciones(this.configuracion.notificaciones).subscribe(
       (resp: Mensaje) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this._serToastr.exito(resp.titulo, resp.detalles, this.configuracion.notificaciones.botonCerrar, this.configuracion.notificaciones.tiempo, this.configuracion.notificaciones.posicion, this.configuracion.notificaciones.barraProgreso);
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this._serToastr.error(err.error.titulo, err.error.detalles, this.configuracion.notificaciones.botonCerrar, this.configuracion.notificaciones.tiempo, this.configuracion.notificaciones.posicion, this.configuracion.notificaciones.barraProgreso);
       }
     );
@@ -92,9 +94,9 @@ export class AdministradorConfiguracionSistemaComponent implements OnInit, OnDes
   ////cropper
   cambioArchivoEvento(event: any) {
     if (event.target.value == '') {
-      this.cargando = false;
+      this.cargando = this.cargandoService.crearVistaCargando(false);
     } else {
-      this.cargando = true;
+      this.cargando = this.cargandoService.crearVistaCargando(true);
       this.eventoCambioImagenLogotipo = event;
     }
   }
@@ -103,17 +105,17 @@ export class AdministradorConfiguracionSistemaComponent implements OnInit, OnDes
   }
   imagenCargada() {
     // show cropper
-    this.cargando = false;
+    this.cargando = this.cargandoService.crearVistaCargando(false);
 
   }
   cortadorListo() {
     // cropper ready
-    this.cargando = false;
+    this.cargando = this.cargandoService.crearVistaCargando(false);
 
   }
   cargarImagenFallida() {
     // show message
-    this.cargando = false;
+    this.cargando = this.cargandoService.crearVistaCargando(false);
   }
   eliminarImagen() {
     this.imagenLogoRecortada = '';
@@ -123,16 +125,16 @@ export class AdministradorConfiguracionSistemaComponent implements OnInit, OnDes
     return this.imagenLogoRecortada != '' ? true : false;
   }
   guardarImagen() {
-    this.cargandoImagen = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Guardando imagen');
     this.configuracionService.cambiarLogotipo(this.convertirImagen()).subscribe(
       (resp: Mensaje) => {
-        this.cargandoImagen = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this._serToastr.abrirToastr('exito', resp.titulo, resp.detalles);
         this.eliminarImagen();
 
       },
       (err: HttpErrorResponse) => {
-        this.cargandoImagen = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this._serToastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );

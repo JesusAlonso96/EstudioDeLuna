@@ -8,6 +8,7 @@ import { Traspaso } from 'src/app/comun/modelos/traspaso.model';
 import { Movimiento, Almacen } from 'src/app/comun/modelos/almacen.model';
 import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
 import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-inventarios-almacenes-traspasos-pendientes',
@@ -28,7 +29,8 @@ export class InventariosAlmacenesTraspasosPendientesComponent implements OnInit 
     private traspasoService: TraspasoService,
     private servicioAutenticacionService: ServicioAutenticacionService,
     private toastr: NgToastrService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cargandoService: CargandoService
   ) { }
 
   ngOnInit() {
@@ -37,15 +39,15 @@ export class InventariosAlmacenesTraspasosPendientesComponent implements OnInit 
   }
 
   obtenerTraspasosPendientes() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Cargando traspasos pendientes');
     this.traspasoService.obtenerTraspasosPendientes().subscribe(
       (traspasos: Traspaso[]) => {
         console.log(traspasos);
         this.inicializarTabla(traspasos);
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )
@@ -71,7 +73,7 @@ export class InventariosAlmacenesTraspasosPendientesComponent implements OnInit 
   }
 
   recibirTraspaso(traspaso: Traspaso) {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Aceptando traspaso');
     this.traspasoService.actualizarEstadoTraspaso(traspaso._id, 'Recibido').subscribe(
       (mensaje: Mensaje) => {
         this.toastr.abrirToastr('exito',mensaje.titulo, mensaje.detalles);
@@ -86,17 +88,16 @@ export class InventariosAlmacenesTraspasosPendientesComponent implements OnInit 
         this.actualizarInsumoAlmacen(traspaso.almacenDestino._id, traspaso, 'Recepcion traspaso');
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     )
   }
 
   eliminarTraspaso(traspaso: Traspaso){
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Eliminando traspaso');
     this.traspasoService.eliminarTraspaso(traspaso._id).subscribe(
       (mensaje: Mensaje) => {
-        //this.toastr.abrirToastr('exito', mensaje.titulo, mensaje.detalles);
         let posicionTraspaso = this.datosTabla.data.findIndex((traspasoBusqueda: Traspaso) => {
           return traspasoBusqueda._id == traspaso._id;
         });
@@ -108,7 +109,7 @@ export class InventariosAlmacenesTraspasosPendientesComponent implements OnInit 
         this.actualizarInsumoAlmacen(traspaso.almacenOrigen._id, traspaso, 'Traspaso eliminado');
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     )
@@ -117,11 +118,11 @@ export class InventariosAlmacenesTraspasosPendientesComponent implements OnInit 
   actualizarInsumoAlmacen(idAlmacen: string, traspaso: Traspaso, tipo: string){
     this.almacenService.actualizarInsumoAlmacen(idAlmacen, traspaso.insumo._id, this.obtenerDatosMovimiento(traspaso, tipo)).subscribe(
       (almacen: Almacen) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito','Traspaso recibido exitosamente', `Se ha realizado el incremento exitosamente al almacen ${traspaso.almacenDestino.nombre} del insumo ${traspaso.insumo.nombre}`);
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     )

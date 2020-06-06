@@ -3,6 +3,9 @@ import { MatDialogRef } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { Proveedor } from 'src/app/comun/modelos/proveedor.model';
 import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-seleccionar-proveedor',
@@ -15,22 +18,23 @@ export class SeleccionarProveedorComponent implements OnInit {
   seleccionados: boolean[] = [];
   seleccionado: Proveedor;
   constructor(public dialogRef: MatDialogRef<SeleccionarProveedorComponent>, 
-    private proveedoresService: ProveedoresService, private toastr: ToastrService) { }
+    private proveedoresService: ProveedoresService, private toastr: NgToastrService,
+    private cargandoService: CargandoService) { }
 
   ngOnInit() {
     this.obtenerProveedores();
   }
   obtenerProveedores() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(false);
     this.proveedoresService.obtenerProveedores().subscribe(
       (proveedores: Proveedor[]) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.proveedores = proveedores;
         this.iniciarSeleccionados();
       },
-      (err: any) => {
-        this.cargando = false;
-        this.toastr.error(err.error.detalles, err.error.titulo);
+      (err: HttpErrorResponse) => {
+        this.cargando = this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error',err.error.titulo, err.error.detalles);
       }
     );
   }

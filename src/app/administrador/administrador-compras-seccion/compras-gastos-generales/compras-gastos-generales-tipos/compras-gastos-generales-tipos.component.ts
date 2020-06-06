@@ -6,6 +6,7 @@ import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { MatDialog } from '@angular/material';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AltaTipoGastoGeneralComponent } from 'src/app/comun/componentes/modales/alta-tipo-gasto-general/alta-tipo-gasto-general.component';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-compras-gastos-generales-tipos',
@@ -20,6 +21,7 @@ export class ComprasGastosGeneralesTiposComponent implements OnInit {
   
   constructor(private tipoGastoGeneralService: TipoGastoGeneralService,
     private toastr: NgToastrService,
+    private cargandoService: CargandoService,
     private dialog: MatDialog) { }
 
   ngOnInit() {
@@ -27,14 +29,14 @@ export class ComprasGastosGeneralesTiposComponent implements OnInit {
   }
 
   obtenerTiposGastoGeneral() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo tipos de gasto');
     this.tipoGastoGeneralService.obtenerTiposGastoGeneral().subscribe(
       (tiposGastoGeneral: TipoGastoGeneral[]) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.tiposGastoGeneral = tiposGastoGeneral;
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     )
@@ -52,17 +54,17 @@ export class ComprasGastosGeneralesTiposComponent implements OnInit {
   }
 
   agregarTipoGastoGeneral(tipoGastoGeneral: TipoGastoGeneral) {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Agregando tipo de gasto general');
     tipoGastoGeneral.rfc = tipoGastoGeneral.rfc.toUpperCase();
     this.tipoGastoGeneralService.nuevoTipoGastoGeneral(tipoGastoGeneral).subscribe(
       (tipoGastoGeneral: TipoGastoGeneral) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito',`Se ha agregado exitosamente el tipo de gasto general ${tipoGastoGeneral.id}`, 'Tipo de gasto general agregado exitosamente');
         this.tiposGastoGeneral.push(tipoGastoGeneral);
         this.buscador.datosTabla.data = this.tiposGastoGeneral;
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error',err.error.detalles, err.error.titulo);
       }
     )
