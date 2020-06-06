@@ -4,6 +4,8 @@ import { autenticacionMiddleware } from '../middlewares/middlewares';
 
 const rutasGastoGeneral = Router();
 /* GET */
+rutasGastoGeneral.get('/reporte-por-fecha', autenticacionMiddleware, GastoGeneralCtrl.obteneReporteGastosGeneralesPorFecha);
+rutasGastoGeneral.get('/reporte-por-tipo-gasto-general', autenticacionMiddleware, GastoGeneralCtrl.obteneReporteGastosGeneralesPorTipoGastoGeneral);
 rutasGastoGeneral.get('/eliminados', autenticacionMiddleware, GastoGeneralCtrl.obtenerGastosGeneralesEliminados);
 rutasGastoGeneral.get('/:id', autenticacionMiddleware, GastoGeneralCtrl.obtenerGastoGeneralPorId);
 rutasGastoGeneral.get('', autenticacionMiddleware, GastoGeneralCtrl.obtenerGastosGenerales);

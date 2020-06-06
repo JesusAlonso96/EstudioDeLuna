@@ -1,0 +1,1 @@
+export const ANIO_BASE_REPORTES = 2020;

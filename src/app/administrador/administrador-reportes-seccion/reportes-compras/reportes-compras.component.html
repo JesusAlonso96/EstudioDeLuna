@@ -1,0 +1,126 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-6 col-12">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Periodo</mat-label>
+        <mat-select [(ngModel)]="tipoReporte" (ngModelChange)="inicializarDatos()" required [disabled]="cargandoGastosInsumos || cargandoGastosGenerales">
+          <mat-option [value]="TiposReporte.Anual">
+            {{obtenerTipoReporte(TiposReporte.Anual)}}
+          </mat-option>
+          <mat-option [value]="TiposReporte.Mensual">
+            {{obtenerTipoReporte(TiposReporte.Mensual)}}
+          </mat-option>
+          <mat-option [value]="TiposReporte.Diario">
+            {{obtenerTipoReporte(TiposReporte.Diario)}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-lg-6 col-12">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Año</mat-label>
+        <mat-select [(ngModel)]="anioSeleccionado" required [disabled]="cargandoGastosInsumos || cargandoGastosGenerales">
+          <mat-option *ngFor="let anio of anios" [value]="anio">
+            {{anio}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-lg-6 col-12" *ngIf="tipoReporte != TiposReporte.Anual">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Mes</mat-label>
+        <mat-select [(ngModel)]="mesSeleccionado" required (ngModelChange)="inicializarDatos()" [disabled]="cargandoGastosInsumos || cargandoGastosGenerales">
+          <mat-option [value]="Meses.Enero">
+            {{obtenerMes(Meses.Enero)}}
+          </mat-option>
+          <mat-option [value]="Meses.Febrero">
+            {{obtenerMes(Meses.Febrero)}}
+          </mat-option>
+          <mat-option [value]="Meses.Marzo">
+            {{obtenerMes(Meses.Marzo)}}
+          </mat-option>
+          <mat-option [value]="Meses.Abril">
+            {{obtenerMes(Meses.Abril)}}
+          </mat-option>
+          <mat-option [value]="Meses.Mayo">
+            {{obtenerMes(Meses.Mayo)}}
+          </mat-option>
+          <mat-option [value]="Meses.Junio">
+            {{obtenerMes(Meses.Junio)}}
+          </mat-option>
+          <mat-option [value]="Meses.Julio">
+            {{obtenerMes(Meses.Julio)}}
+          </mat-option>
+          <mat-option [value]="Meses.Agosto">
+            {{obtenerMes(Meses.Agosto)}}
+          </mat-option>
+          <mat-option [value]="Meses.Septiembre">
+            {{obtenerMes(Meses.Septiembre)}}
+          </mat-option>
+          <mat-option [value]="Meses.Octubre">
+            {{obtenerMes(Meses.Octubre)}}
+          </mat-option>
+          <mat-option [value]="Meses.Noviembre">
+            {{obtenerMes(Meses.Noviembre)}}
+          </mat-option>
+          <mat-option [value]="Meses.Diciembre">
+            {{obtenerMes(Meses.Diciembre)}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-lg-6 col-12" *ngIf="tipoReporte == TiposReporte.Diario">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Dia</mat-label>
+        <mat-select [(ngModel)]="diaSeleccionado" required [disabled]="cargandoGastosInsumos || cargandoGastosGenerales">
+          <mat-option *ngFor="let dia of dias" [value]="dia">
+            {{dia}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 d-felx justify-content-end">
+      <button mat-raised-button color="primary" (click)="obtenerReportes()">
+        <mat-icon>show_chart</mat-icon>
+        Generar reporte
+      </button>
+    </div>
+  </div>
+</div>
+<div class="w-100 d-flex justify-content-center" *ngIf="!cargandoGastosInsumos && !cargandoGastosGenerales bg-danger">
+  <ngx-charts-area-chart-stacked [view]="vistaReportePorFecha" [scheme]="coloresReportePorFecha" [legend]="legend"
+    [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxis]="xAxis" [yAxis]="yAxis"
+    [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel" [timeline]="timeline" [results]="datosReportePorFecha"
+    (select)="onSelect($event)">
+  </ngx-charts-area-chart-stacked>
+</div>
+<div class="w-100 text-center" *ngIf="!cargandoGastosGeneralesPorTipoDeGastoGeneral">
+    <h6>Desglose de los gastos generales</h6>
+    <div *ngIf="datosReportePorTipoGastoGeneral.length == 0">
+        <div class="w-100 alert fondo-info">No hay resultados de gastos generales para el periodo solocitado</div>
+    </div>
+    <div class="d-flex justify-content-center" *ngIf="datosReportePorTipoGastoGeneral.length > 0">
+        <ngx-charts-pie-grid
+        [view]="vistaReportePorTipoGastoGeneral"
+        [scheme]="coloresReportePorTipoGastoGeneral"
+        [results]="datosReportePorTipoGastoGeneral"
+        (select)="onSelect($event)">
+      </ngx-charts-pie-grid>
+    </div>
+</div>
+<div class="w-100 text-center" *ngIf="!cargandoGastosInsumosPorProveedor">
+    <h6>Desglose de las compras</h6>
+    <div *ngIf="datosReportePorProveedor.length == 0">
+        <div class="w-100 alert fondo-info">No hay resultados de compras para el periodo solocitado</div>
+    </div>
+    <div class="d-flex justify-content-center" *ngIf="datosReportePorProveedor.length > 0">
+        <ngx-charts-pie-grid
+        [view]="vistaReportePorProveedor"
+        [scheme]="coloresReportePorProveedor"
+        [results]="datosReportePorProveedor"
+        (select)="onSelect($event)">
+      </ngx-charts-pie-grid>
+    </div>
+</div>

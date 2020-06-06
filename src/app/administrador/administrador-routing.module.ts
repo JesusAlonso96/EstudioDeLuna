@@ -19,6 +19,7 @@ import { AdministradorCotizacionesSeccionComponent } from './administrador-cotiz
 import { AdministradorFacturacionSeccionComponent } from './administrador-facturacion-seccion/administrador-facturacion-seccion.component';
 import { AdministradorConfiguracionSistemaComponent } from './administrador-configuracion-sistema/administrador-configuracion-sistema.component';
 import { AdministradorCajaSeccionComponent } from './administrador-caja-seccion/administrador-caja-seccion.component';
+import { AdministradorReportesSeccionComponent } from './administrador-reportes-seccion/administrador-reportes-seccion.component';
 
 
 
@@ -87,6 +88,11 @@ export const adminRoutes: Routes = [
     {
         path: 'configuracion',
         component: AdministradorConfiguracionSistemaComponent,
+        canActivate: [AutenticacionGuard]
+    },
+    {
+        path: 'reportes',
+        component: AdministradorReportesSeccionComponent,
         canActivate: [AutenticacionGuard]
     }
 ]

@@ -100,6 +100,10 @@ import { ComprasGastosGeneralesTiposComponent } from './administrador-compras-se
 import { ComprasGastosGeneralesDetallesComponent } from './administrador-compras-seccion/compras-gastos-generales/compras-gastos-generales-detalles/compras-gastos-generales-detalles.component';
 import { ComprasGastosInsumosRegistradosComponent } from './administrador-compras-seccion/compras-gastos-insumos/compras-gastos-insumos-registrados/compras-gastos-insumos-registrados.component';
 import { ComprasGastosInsumosPendientesComponent } from './administrador-compras-seccion/compras-gastos-insumos/compras-gastos-insumos-pendientes/compras-gastos-insumos-pendientes.component';
+import { AdministradorReportesSeccionComponent } from './administrador-reportes-seccion/administrador-reportes-seccion.component';
+import { ReportesComprasComponent } from './administrador-reportes-seccion/reportes-compras/reportes-compras.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -173,7 +177,9 @@ import { ComprasGastosInsumosPendientesComponent } from './administrador-compras
     ComprasGastosGeneralesTiposComponent,
     ComprasGastosGeneralesDetallesComponent,
     ComprasGastosInsumosRegistradosComponent,
-    ComprasGastosInsumosPendientesComponent
+    ComprasGastosInsumosPendientesComponent,
+    AdministradorReportesSeccionComponent,
+    ReportesComprasComponent
   ],
   imports: [
     CommonModule,
@@ -185,7 +191,9 @@ import { ComprasGastosInsumosPendientesComponent } from './administrador-compras
     NgxPrintModule,
     ReactiveFormsModule,
     FormsModule,
-    ImageCropperModule
+    ImageCropperModule,
+    NgxChartsModule,
+    BrowserAnimationsModule 
   ],
   entryComponents: [
     ListadoVentasMesComponent,

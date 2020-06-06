@@ -4,6 +4,8 @@ import { autenticacionMiddleware } from '../middlewares/middlewares';
 
 const rutasGastoInsumo = Router();
 /* GET */
+rutasGastoInsumo.get('/reporte-por-fecha', autenticacionMiddleware, GastoInsumoCtrl.obteneReporteGastosInsumosPorFecha);
+rutasGastoInsumo.get('/reporte-por-proveedor', autenticacionMiddleware, GastoInsumoCtrl.obteneReporteGastosInsumosPorProveedor);
 rutasGastoInsumo.get('/eliminados', autenticacionMiddleware, GastoInsumoCtrl.obtenerGastosInsumosEliminados);
 rutasGastoInsumo.get('/:id', autenticacionMiddleware, GastoInsumoCtrl.obtenerGastoInsumoPorId);
 rutasGastoInsumo.get('', autenticacionMiddleware, GastoInsumoCtrl.obtenerGastosInsumos);

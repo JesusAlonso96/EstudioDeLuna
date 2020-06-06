@@ -17,6 +17,12 @@ export class GastoGeneralService {
   public obtenerGastosGeneralesEliminados(): Observable<any>{
     return this.http.get('/api/v1/gastos-generales/eliminados');
   }
+  public obtenerReporteGastosGeneralesPorFecha(tipo: number, anio: number, mes: number, dia: number): Observable<any>{
+    return this.http.get('/api/v1/gastos-generales/reporte-por-fecha?tipo=' + tipo + '&anio=' + anio + '&mes=' + mes + '&dia=' + dia);
+  }
+  public obtenerReporteGastosGeneralesPorTipoGastoGeneral(tipo: number, anio: number, mes: number, dia: number): Observable<any>{
+    return this.http.get('/api/v1/gastos-generales/reporte-por-tipo-gasto-general?tipo=' + tipo + '&anio=' + anio + '&mes=' + mes + '&dia=' + dia);
+  }
   public obtenerGastoGeneralPorId(id: string): Observable<any> {
     return this.http.get(`/api/v1/gastos-generales/${id}`)
   }

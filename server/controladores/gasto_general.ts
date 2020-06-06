@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { NativeError, Types } from 'mongoose';
 import { GastoGeneral, IGastoGeneral } from '../modelos/gasto_general.model';
 import { MetodosPago } from '../enumeraciones/metodos_pago';
+import { TiposReporte } from '../enumeraciones/tipos_enumeraciones';
 
 
 
@@ -46,10 +47,8 @@ export let editarGastoGeneral = (req: Request, res: Response) => {
         nombre: gastoGeneral.nombre,
         razonSocial: gastoGeneral.razonSocial,
         rfc: gastoGeneral.rfc,
-        //porcentajeIeps: gastoGeneral.porcentajeIeps,
         subtotal: gastoGeneral.subtotal,
         ieps: gastoGeneral.ieps,
-        //porcentajeIva: gastoGeneral.porcentajeIva,
         iva: gastoGeneral.iva,
         total: gastoGeneral.total,
         observaciones: gastoGeneral.observaciones
@@ -78,6 +77,93 @@ export let restaurarGastoGeneral = (req: Request, res: Response) => {
         })
 }
 
+export let obteneReporteGastosGeneralesPorFecha = (req: Request, res: Response) => {
+    let seccionMatch;
+    let seccionGroup;
+    switch(Number(req.query.tipo)){
+        case TiposReporte.Anual:
+            seccionMatch = { 'anio': Number(req.query.anio) };
+            seccionGroup = { $month: '$fecha' };
+            break;
+        case TiposReporte.Mensual:
+            seccionMatch = { 'anio': Number(req.query.anio), 'mes': Number(req.query.mes) };
+            seccionGroup = { $dayOfMonth: '$fecha' };
+            break;
+        case TiposReporte.Diario:
+            seccionMatch = { 'anio': Number(req.query.anio), 'mes': Number(req.query.mes), 'dia': Number(req.query.dia) };
+            seccionGroup = { $hour: '$fecha' };
+            break;
+    }
+    GastoGeneral.aggregate()
+        .match({
+            sucursal: res.locals.usuario.sucursal,
+            activo: 1
+        })
+        .project({
+            _id: '$_id',
+            id: '$id',
+            anio: {$year: '$fecha'},
+            mes: {$month: '$fecha'},
+            dia: {$dayOfMonth: '$fecha'},
+            total: '$total',
+            fecha: '$fecha'
+        })
+        .match(seccionMatch)
+        .group({
+            _id: seccionGroup,
+            total: {$sum: '$total'}
+        })
+        .exec((err: NativeError, datosGastosGenerales: any[]) => {
+            if (err) return res.status(422).send({ titulo: 'Error al obtener', detalles: 'No se pudieron obtener los datos de los gastos generales, intentalo de nuevo mas tarde' });
+            return res.status(200).json(datosGastosGenerales);
+        })
+}
+
+export let obteneReporteGastosGeneralesPorTipoGastoGeneral = (req: Request, res: Response) => {
+    let seccionMatch;
+    switch(Number(req.query.tipo)){
+        case TiposReporte.Anual:
+            seccionMatch = { 'anio': Number(req.query.anio) };
+            break;
+        case TiposReporte.Mensual:
+            seccionMatch = { 'anio': Number(req.query.anio), 'mes': Number(req.query.mes) };
+            break;
+        case TiposReporte.Diario:
+            seccionMatch = { 'anio': Number(req.query.anio), 'mes': Number(req.query.mes), 'dia': Number(req.query.dia) };
+            break;
+    }
+    GastoGeneral.aggregate()
+        .match({
+            sucursal: res.locals.usuario.sucursal,
+            activo: 1
+        })
+        .lookup({
+            from: 'tipogastogenerals',
+            localField: 'tipoGastoGeneral',
+            foreignField: '_id',
+            as: 'tipoGastoGeneral',
+        })
+        .unwind('tipoGastoGeneral')
+        .project({
+            _id: '$_id',
+            id: '$id',
+            anio: {$year: '$fecha'},
+            mes: {$month: '$fecha'},
+            dia: {$dayOfMonth: '$fecha'},
+            total: '$total',
+            fecha: '$fecha',
+            tipoGastoGeneral: '$tipoGastoGeneral'
+        })
+        .match(seccionMatch)
+        .group({
+            _id: '$tipoGastoGeneral',
+            total: {$sum: '$total'}
+        })
+        .exec((err: NativeError, datosGastosGenerales: any[]) => {
+            if (err) return res.status(422).send({ titulo: 'Error al obtener', detalles: 'No se pudieron obtener los datos de los gastos generales, intentalo de nuevo mas tarde' });
+            return res.status(200).json(datosGastosGenerales);
+        })
+}
 /* FUNCIONES AUXILIARES */
 function validarCamposGastoGeneral(gastoGeneral: IGastoGeneral): { error: boolean, titulo: string, detalles: string } {
     if (!gastoGeneral.tipoGastoGeneral) return { error: true, titulo: 'Campo tipo de gasto general obligatorio', detalles: 'Por favor, ingresa el campo tipo de gasto general' };

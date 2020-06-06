@@ -17,6 +17,12 @@ export class GastoInsumoService {
   public obtenerGastosInsumosEliminados(): Observable<any>{
     return this.http.get('/api/v1/gastos-insumos/eliminados');
   }
+  public obtenerReporteGastosInsumosPorFecha(tipo: number, anio: number, mes: number, dia: number): Observable<any>{
+    return this.http.get('/api/v1/gastos-insumos/reporte-por-fecha?tipo=' + tipo + '&anio=' + anio + '&mes=' + mes + '&dia=' + dia);
+  }
+  public obtenerReporteGastosInsumosPorProveedor(tipo: number, anio: number, mes: number, dia: number): Observable<any>{
+    return this.http.get('/api/v1/gastos-insumos/reporte-por-proveedor?tipo=' + tipo + '&anio=' + anio + '&mes=' + mes + '&dia=' + dia);
+  }
   public obtenerGastoInsumoPorId(id: string): Observable<any> {
     return this.http.get(`/api/v1/gastos-insumos/${id}`)
   }
