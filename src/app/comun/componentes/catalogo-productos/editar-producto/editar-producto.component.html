@@ -147,6 +147,6 @@
     </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button [mat-dialog-close]="producto" [disabled]="!productoForm.valid" cdkFocusInitial>Guardar</button>
-    <button mat-button (click)="onNoClick()">Cancelar</button>
+    <button mat-raised-button class="btn-advertencia" [mat-dialog-close]="producto" [disabled]="!productoForm.valid" cdkFocusInitial>Guardar</button>
+    <button mat-raised-button (click)="onNoClick()">Cancelar</button>
 </mat-dialog-actions>

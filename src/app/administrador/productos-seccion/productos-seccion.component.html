@@ -1,1 +1,14 @@
-<app-catalogo-productos></app-catalogo-productos>
+<mat-card class="container-fluid contenedor-productos mx-auto mb-4">
+    <mat-tab-group>
+        <mat-tab label="Administrar">
+            <ng-template matTabContent>
+                <app-catalogo-productos></app-catalogo-productos>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Restaurar">
+            <ng-template matTabContent>
+                <app-productos-seccion-restaurar></app-productos-seccion-restaurar>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+</mat-card>

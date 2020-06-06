@@ -6,6 +6,10 @@ import { AdministradorService } from '../../servicio-administrador/servicio-admi
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
+import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-familias-producto-restaurar',
@@ -13,15 +17,14 @@ import { UsuarioService } from 'src/app/comun/servicios/usuario.service';
   styleUrls: ['./familias-producto-restaurar.component.scss']
 })
 export class FamiliasProductoRestaurarComponent implements OnInit, OnDestroy {
-  @ViewChild('buscador') buscador: BuscadorComponent;
-  columnasTabla: string[] = ['id', 'nombre', 'restaurar'];
   familiasEliminadas: Familia[];
   cargando: boolean = false;
   private onDestroy$ = new Subject<boolean>();
 
   constructor(private adminService: AdministradorService,
-    private toastr: ToastrService,
-    private usuarioService: UsuarioService) { }
+    private toastr: NgToastrService,
+    private usuarioService: UsuarioService,
+    private cargandoService: CargandoService) { }
 
   ngOnInit() {
     this.obtenerFamiliasEliminadas();
@@ -29,15 +32,15 @@ export class FamiliasProductoRestaurarComponent implements OnInit, OnDestroy {
     this.obtenerNuevaFamiliaRestaurada();
   }
   obtenerFamiliasEliminadas() {
-    this.cargando = true;
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo familias')
     this.adminService.obtenerFamiliasEliminadas().subscribe(
       (familiasEliminadas: Familia[]) => {
         this.familiasEliminadas = familiasEliminadas;
-        this.cargando = false;
+        this.cargandoService.crearVistaCargando(false);
       },
-      (err) => {
+      (err: HttpErrorResponse) => {
         this.toastr.error(err.error.detalles, err.error.titulo);
-        this.cargando = false;
+        this.cargandoService.crearVistaCargando(false);
       }
     );
   }
@@ -49,8 +52,7 @@ export class FamiliasProductoRestaurarComponent implements OnInit, OnDestroy {
       .subscribe(
         (familia: Familia) => {
           this.familiasEliminadas.push(familia);
-          this.buscador.datosTabla.data = this.familiasEliminadas;
-          this.toastr.warning('Nueva familia eliminado', 'Se ha eliminado una familia de productos', { closeButton: true });
+          this.toastr.abrirToastr('info', 'Nueva familia eliminado', 'Se ha eliminado una familia de productos');
         }
       )
   }
@@ -64,13 +66,26 @@ export class FamiliasProductoRestaurarComponent implements OnInit, OnDestroy {
           const proveedorRestaurado = this.familiasEliminadas.find(familiaFil => { return familiaFil._id == familia._id });
           const indice = this.familiasEliminadas.indexOf(proveedorRestaurado);
           this.familiasEliminadas.splice(indice, 1);
-          this.buscador.datosTabla.data = this.familiasEliminadas;
-          this.toastr.warning('Se ha restaurado una familia', 'Familia restaurada', { closeButton: true });
+          this.toastr.abrirToastr('advertencia', 'Se ha restaurado una familia', 'Familia restaurada');
         }
       )
   }
   ngOnDestroy() {
     this.onDestroy$.next(true);
     this.onDestroy$.complete();
+  }
+  abrirRestaurarFamilia(familia: Familia) {
+    this.cargandoService.crearVistaCargando(true, 'Restaurando familia');
+    this.adminService.restaurarFamilia(familia).subscribe(
+      (restaurada: Mensaje) => {
+        this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('exito', restaurada.titulo, restaurada.detalles);
+        this.familiasEliminadas.splice(this.familiasEliminadas.indexOf(familia), 1);
+      },
+      (err: HttpErrorResponse) => {
+        this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+      }
+    );
   }
 }

@@ -9,6 +9,11 @@ import { AgregarProductoComponent } from './agregar-producto/agregar-producto.co
 import { UsuarioService } from '../../servicios/usuario.service';
 import { EliminarProductoComponent } from './eliminar-producto/eliminar-producto.component';
 import { EditarProductoComponent } from './editar-producto/editar-producto.component';
+import { NgToastrService } from '../../servicios/ng-toastr.service';
+import { CargandoService } from '../../servicios/cargando.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { VistaProductoComponent } from '../modales/vista-producto/vista-producto.component';
+import { ProductoPedido } from '../../modelos/pedido.model';
 
 @Component({
   selector: 'app-catalogo-productos',
@@ -16,15 +21,18 @@ import { EditarProductoComponent } from './editar-producto/editar-producto.compo
   styleUrls: ['./catalogo-productos.component.scss']
 })
 export class CatalogoProductosComponent implements OnInit {
-  familias: Familia[];
+  familias: Familia[] = [];
   page_size: number = 12;
   page_number: number = 1;
   tabLoadTimes: Date[] = [];
   paginadorDesactivado: boolean = false;
-  cargando: boolean = false;
-  cargandoProducto: boolean = false;
   cargandoEliminado: boolean = false;
-  constructor(private productosService: ProductosService, private toastr: ToastrService, private dialog: MatDialog, private usuarioService: UsuarioService) {
+  constructor(
+    private productosService: ProductosService,
+    private toastr: NgToastrService,
+    private dialog: MatDialog,
+    private usuarioService: UsuarioService,
+    private cargandoService: CargandoService) {
     this.familias = [];
   }
 
@@ -32,18 +40,27 @@ export class CatalogoProductosComponent implements OnInit {
     this.obtenerFamiliasYProductos();
   }
   obtenerFamiliasYProductos() {
-    this.cargando = true;
+    this.cargandoService.crearVistaCargando(true, 'Obteniendo productos');
     this.productosService.obtenerProductosPorFamilia().subscribe(
       (familias) => {
-        this.cargando = false;
+        this.cargandoService.crearVistaCargando(false);
         this.familias = familias;
-        console.log(this.familias);
+        console.log(this.familias[0].productos)
+      },
+      (err: HttpErrorResponse) => {
+        this.cargandoService.crearVistaCargando(false);
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
       }
     );
   }
   verDetalles(producto) {
-    this.dialog.open(ModalDetallesProductoComponent, {
-      data: { producto }
+    const productoPedido = {
+      producto
+    }
+    console.log(productoPedido)
+    this.dialog.open(VistaProductoComponent, {
+      data: productoPedido,
+      width:'45%'
     })
   }
   abrirAgregarProducto(familia, indice) {
@@ -59,17 +76,16 @@ export class CatalogoProductosComponent implements OnInit {
     })
   }
   agregarProducto(producto, indice) {
-    this.cargandoProducto = true;
-    this.usuarioService.agregarNuevoProducto(producto).subscribe(
+    this.cargandoService.crearVistaCargando(true, 'Agregando producto');
+    this.productosService.guardarProducto(producto).subscribe(
       (productoGuardado) => {
         this.familias[indice].productos.push(productoGuardado);
-        this.toastr.success('Producto agregado correctamente', '', { closeButton: true });
-        this.cargandoProducto = false;
-
+        this.toastr.abrirToastr('exito', 'Producto agregado correctamente', '');
+        this.cargandoService.crearVistaCargando(false);
       },
-      (err) => {
-        this.toastr.error(err.error.detalles, err.error.titulo);
-        this.cargandoProducto = false;
+      (err: HttpErrorResponse) => {
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
+        this.cargandoService.crearVistaCargando(false);
       }
     );
   }
@@ -81,18 +97,17 @@ export class CatalogoProductosComponent implements OnInit {
       }
     })
   }
-  eliminarProducto(indiceFamilia, indiceProducto) {
-    this.cargandoEliminado = true;
+  eliminarProducto(indiceFamilia: number, indiceProducto: number) {
+    this.cargandoService.crearVistaCargando(true, 'Eliminando producto')
     this.usuarioService.eliminarProducto(<string>this.familias[indiceFamilia].productos[indiceProducto]._id, <string>this.familias[indiceFamilia]._id).subscribe(
       (eliminado) => {
-        console.log(eliminado);
         this.familias[indiceFamilia].productos.splice(indiceProducto, 1);
-        this.toastr.success('Producto eliminado correctamente', '', { closeButton: true });
-        this.cargandoEliminado = false;
+        this.toastr.abrirToastr('exito', 'Producto eliminado correctamente', '');
+        this.cargandoService.crearVistaCargando(false);
       },
-      (err) => {
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
-        this.cargandoEliminado = false;
+      (err: HttpErrorResponse) => {
+        this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+        this.cargandoService.crearVistaCargando(false);
       }
     );
   }
@@ -113,11 +128,10 @@ export class CatalogoProductosComponent implements OnInit {
   editarProducto(producto: Producto, productoAux: Producto, indiceFamilia, indiceProducto) {
     this.usuarioService.actualizarProducto(producto).subscribe(
       (actualizado) => {
-        console.log(actualizado);
-        this.toastr.success('Producto actualizado correctamente', '', { closeButton: true });
+        this.toastr.abrirToastr('exito', 'Producto actualizado correctamente', '');
       },
-      (err) => {
-        this.toastr.error(err.error.detalles, err.error.titulo, { closeButton: true });
+      (err: HttpErrorResponse) => {
+        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
         this.restablecerValores(indiceFamilia, indiceProducto, productoAux);
       }
     );

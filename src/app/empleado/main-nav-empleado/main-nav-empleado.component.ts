@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
@@ -19,7 +19,7 @@ import { CargandoService } from 'src/app/comun/servicios/cargando.service';
   styleUrls: ['./main-nav-empleado.component.scss'],
   animations: [Animaciones.toggle, Animaciones.rotacion]
 })
-export class MainNavEmpleadoComponent implements OnInit {
+export class MainNavEmpleadoComponent implements OnInit, AfterViewInit {
   menus: any = [];
   pestanasActivas: boolean[] = [];
   navbarAbierto: boolean = true;
@@ -48,9 +48,12 @@ export class MainNavEmpleadoComponent implements OnInit {
       }
     )
   }
-
+  ngAfterViewInit(){
+    setTimeout(() => {
+      this.temasService.iniciarTemas();
+    })
+  }
   ngOnInit(): void {
-    this.temasService.iniciarTemas();
     this.iniciarMenus();
     this.iniciarPestanas();
     this.buscarPestanaActiva();

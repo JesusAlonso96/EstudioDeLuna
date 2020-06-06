@@ -25,7 +25,7 @@ const ordenCompraSchema = new mongoose_1.Schema({
     terminosPago: { type: String, required: false },
     lugarEntrega: { type: String, required: false },
     subtotal: { type: Number, required: true },
-    iva: { type: Number, required: true },
+    iva: { type: Boolean, required: true },
     total: { type: Number, required: true },
     costoEnvio: { type: Number, required: false },
     productosOrdenCompra: {

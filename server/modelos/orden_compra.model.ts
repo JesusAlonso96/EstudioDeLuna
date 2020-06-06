@@ -19,7 +19,7 @@ export interface IOrdenCompra extends Document {
     terminosPago: string;
     lugarEntrega: string;
     subtotal: number;
-    iva: number;
+    iva: boolean;
     total: number;
     costoEnvio: number;
     productosOrdenCompra: [
@@ -41,7 +41,7 @@ const ordenCompraSchema = new Schema({
     terminosPago: { type: String, required: false },
     lugarEntrega: { type: String, required: false },
     subtotal: { type: Number, required: true },
-    iva: { type: Number, required: true },
+    iva: { type: Boolean, required: true },
     total: { type: Number, required: true },
     costoEnvio: { type: Number, required: false },
     productosOrdenCompra: {

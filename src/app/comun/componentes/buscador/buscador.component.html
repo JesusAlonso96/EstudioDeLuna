@@ -236,104 +236,52 @@
                             [ngClass]="{'hide':!(datosTabla!=null && datosTabla.data.length == 0)}"></mat-footer-row>
                     </mat-table>
                 </ng-container>
-                <ng-container *ngSwitchCase="'familia'">
-                    <mat-table [dataSource]="datosTabla" matSort>
-                        <ng-container matColumnDef="id">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element._id}}</mat-cell>
-                        </ng-container>
-                        <ng-container matColumnDef="nombre">
-                            <mat-header-cell *matHeaderCellDef>Nombre</mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.nombre}}</mat-cell>
-                        </ng-container>
-                        <ng-container *ngIf="accion == 'editar'" matColumnDef="editar">
-                            <mat-header-cell *matHeaderCellDef>Editar empresa</mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                <button mat-mini-fab color="accent" (click)="confirmarEdicionEmpresa(element)">
-                                    <mat-icon>edit</mat-icon>
-                                </button>
-                            </mat-cell>
-                        </ng-container>
-                        <ng-container *ngIf="accion == 'editar'" matColumnDef="eliminar">
-                            <mat-header-cell *matHeaderCellDef>Eliminar empresa</mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                <button mat-mini-fab class="icono-error"
-                                    (click)="confirmarEliminacionElemento(element,'empresa',3)">
-                                    <mat-icon>delete</mat-icon>
-                                </button>
-                            </mat-cell>
-                        </ng-container>
-                        <ng-container *ngIf="accion == 'restaurar'" matColumnDef="restaurar">
-                            <mat-header-cell *matHeaderCellDef>Restaurar familia</mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                <a (click)="confirmarRestauracionElemento(element,'familia',4)" mat-mini-fab
-                                    color="primary">
-                                    <mat-icon>restore_from_trash</mat-icon>
-                                </a>
-                            </mat-cell>
-                        </ng-container>
-                        <ng-container matColumnDef="noData">
-                            <mat-footer-cell *matFooterCellDef colspan="6">
-                                No hay empresas registradas
-                            </mat-footer-cell>
-                        </ng-container>
-                        <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
-                        <mat-row *matRowDef="let row;columns: columnas;"></mat-row>
-                        <mat-footer-row *matFooterRowDef="['noData']"
-                            [ngClass]="{'hide':!(datosTabla!=null && datosTabla.data.length == 0)}"></mat-footer-row>
-                    </mat-table>
-                </ng-container>
                 <ng-container *ngSwitchCase="'almacen'">
-                    <mat-table [dataSource]="datosTabla" matSort>
+                    <table mat-table class="w-100" [dataSource]="datosTabla" matSort>
                         <ng-container matColumnDef="id">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.id}}</mat-cell>
+                            <th class="text-center" mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                            <td class="text-center" mat-cell *matCellDef="let element">{{element.id}}</td>
                         </ng-container>
                         <ng-container matColumnDef="nombre">
-                            <mat-header-cell *matHeaderCellDef>Nombre</mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.nombre}}</mat-cell>
+                            <th class="text-center" mat-header-cell *matHeaderCellDef>Nombre</th>
+                            <td class="text-center" mat-cell *matCellDef="let element">{{element.nombre}}</td>
                         </ng-container>
                         <ng-container matColumnDef="direccion">
-                            <mat-header-cell *matHeaderCellDef>Direccion</mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.direccion.calle}}
-                                {{element.direccion.colonia}} #{{element.direccion.num_ext}}</mat-cell>
+                            <th class="text-center" mat-header-cell *matHeaderCellDef>Direccion</th>
+                            <td class="text-center" mat-cell *matCellDef="let element">{{element.direccion.calle}}
+                                {{element.direccion.colonia}} #{{element.direccion.num_ext}}</td>
                         </ng-container>
                         <ng-container *ngIf="accion == 'administrar'" matColumnDef="editar">
-                            <mat-header-cell *matHeaderCellDef>Editar almacen</mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                <button mat-mini-fab color="accent" (click)="confirmarEdicionAlmacen(element)">
+                            <th class="text-center" mat-header-cell *matHeaderCellDef>Editar almacen</th>
+                            <td class="text-center" mat-cell *matCellDef="let element">
+                                <button mat-icon-button class="icono-advertencia" (click)="confirmarEdicionAlmacen(element)">
                                     <mat-icon>edit</mat-icon>
                                 </button>
-                            </mat-cell>
+                            </td>
                         </ng-container>
                         <ng-container *ngIf="accion == 'administrar'" matColumnDef="eliminar">
-                            <mat-header-cell *matHeaderCellDef>Eliminar almacen</mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                <button mat-mini-fab class="icono-error"
+                            <th class="text-center" mat-header-cell *matHeaderCellDef>Eliminar almacen</th>
+                            <td mat-cell *matCellDef="let element">
+                                <button mat-icon-button class="icono-error"
                                     (click)="confirmarEliminacionElemento(element,'almacen',4)">
                                     <mat-icon>delete</mat-icon>
                                 </button>
-                            </mat-cell>
+                            </td>
                         </ng-container>
                         <ng-container *ngIf="accion == 'restaurar'" matColumnDef="restaurar">
-                            <mat-header-cell *matHeaderCellDef>Restaurar almacen</mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                <a (click)="confirmarRestauracionElemento(element,'almacen',5)" mat-mini-fab
-                                    color="primary">
+                            <th mat-header-cell *matHeaderCellDef>Restaurar almacen</th>
+                            <td mat-cell *matCellDef="let element">
+                                <a (click)="confirmarRestauracionElemento(element,'almacen',5)" mat-icon-button
+                                    class="icono-advertencia">
                                     <mat-icon>restore_from_trash</mat-icon>
                                 </a>
-                            </mat-cell>
+                            </td>
                         </ng-container>
-                        <ng-container matColumnDef="noData">
-                            <mat-footer-cell *matFooterCellDef colspan="6">
-                                No hay almacenes registrados
-                            </mat-footer-cell>
-                        </ng-container>
-                        <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
-                        <mat-row *matRowDef="let row;columns: columnas;"></mat-row>
-                        <mat-footer-row *matFooterRowDef="['noData']"
-                            [ngClass]="{'hide':!(datosTabla!=null && datosTabla.data.length == 0)}"></mat-footer-row>
-                    </mat-table>
+                        <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+                        <tr mat-row *matRowDef="let row;columns: columnas;"></tr>
+                    </table>
+                    <app-alerta *ngIf="(datosTabla!=null && datosTabla.data.length == 0)" tipo="info"
+                        tipo_bootstrap="info" mensaje="No hay almacenes disponibles en esta seccion"></app-alerta>
                 </ng-container>
                 <ng-container *ngSwitchCase="'tipo de gasto general'">
                     <mat-table [dataSource]="datosTabla" matSort>

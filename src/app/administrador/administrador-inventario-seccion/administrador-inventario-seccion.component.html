@@ -1,38 +1,40 @@
-<mat-tab-group>
-    <mat-tab label="Almacenes">
-        <ng-template matTabContent>
-            <app-inventarios-almacenes></app-inventarios-almacenes>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Orden de compra">
-        <ng-template matTabContent>
-            <app-inventarios-orden-compra>
-            </app-inventarios-orden-compra>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Compra">
-        <ng-template matTabContent>
-            <app-inventarios-compra></app-inventarios-compra>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Inventario fisico">
-        <ng-template matTabContent>
-            <app-inventarios-inv-fisico></app-inventarios-inv-fisico>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Baja insumo">
-        <ng-template matTabContent>
-            <app-inventarios-baja-insumo></app-inventarios-baja-insumo>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Traspasos">
-        <ng-template matTabContent>
-            <app-inventarios-almacenes-traspasos></app-inventarios-almacenes-traspasos>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Movimientos de insumos">
-        <ng-template matTabContent>
-            <app-inventarios-entradas-salidas></app-inventarios-entradas-salidas>
-        </ng-template>
-    </mat-tab>
-</mat-tab-group>
+<mat-card class="container mb-4 mt-3">
+    <mat-tab-group>
+        <mat-tab label="Almacenes">
+            <ng-template matTabContent>
+                <app-inventarios-almacenes></app-inventarios-almacenes>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Orden de compra">
+            <ng-template matTabContent>
+                <app-inventarios-orden-compra>
+                </app-inventarios-orden-compra>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Compra">
+            <ng-template matTabContent>
+                <app-inventarios-compra></app-inventarios-compra>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Inventario fisico">
+            <ng-template matTabContent>
+                <app-inventarios-inv-fisico></app-inventarios-inv-fisico>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Baja insumo">
+            <ng-template matTabContent>
+                <app-inventarios-baja-insumo></app-inventarios-baja-insumo>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Traspasos">
+            <ng-template matTabContent>
+                <app-inventarios-almacenes-traspasos></app-inventarios-almacenes-traspasos>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Movimientos de insumos">
+            <ng-template matTabContent>
+                <app-inventarios-entradas-salidas></app-inventarios-entradas-salidas>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+</mat-card>

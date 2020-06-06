@@ -31,6 +31,10 @@ const inventario_1 = __importDefault(require("../rutas/inventario"));
 const sucursal_1 = __importDefault(require("../rutas/sucursal"));
 const traspaso_1 = __importDefault(require("../rutas/traspaso"));
 const cotizaciones_1 = __importDefault(require("../rutas/cotizaciones"));
+const tipo_gasto_general_1 = __importDefault(require("../rutas/tipo_gasto_general"));
+const gasto_general_1 = __importDefault(require("../rutas/gasto_general"));
+const gasto_insumo_1 = __importDefault(require("../rutas/gasto_insumo"));
+const compras_1 = __importDefault(require("../rutas/compras"));
 const pedidos_1 = __importDefault(require("../rutas/pedidos"));
 class Servidor {
     constructor() {
@@ -68,6 +72,10 @@ class Servidor {
         this.app.use('/api/v1/inventarios', inventario_1.default);
         this.app.use('/api/v1/traspasos', traspaso_1.default);
         this.app.use('/api/v1/sucursales', sucursal_1.default);
+        this.app.use('/api/v1/tipos-gasto-general', tipo_gasto_general_1.default);
+        this.app.use('/api/v1/gastos-generales', gasto_general_1.default);
+        this.app.use('/api/v1/gastos-insumos', gasto_insumo_1.default);
+        this.app.use('/api/v1/compras', compras_1.default);
         this.app.use('/api/v2/root', root_1.default);
         this.app.use('/api/v2/cajas', caja_1.default);
         this.app.use('/api/v2/configuracion', configuracion_1.default);

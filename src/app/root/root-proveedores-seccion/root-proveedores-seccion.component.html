@@ -1,27 +1,29 @@
-<mat-tab-group>
-    <mat-tab label="Agregar">
-        <ng-template matTabContent>
-            <app-root-proveedores-alta></app-root-proveedores-alta>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Eliminar">
-        <ng-template matTabContent>
-            <app-root-proveedores-baja></app-root-proveedores-baja>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Editar">
-        <ng-template matTabContent>
-            <app-root-proveedores-editar></app-root-proveedores-editar>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Restaurar">
-        <ng-template matTabContent>
-            <app-root-proveedores-restaurar></app-root-proveedores-restaurar>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Insumos">
-        <ng-template matTabContent>
-            <app-root-proveedores-insumos></app-root-proveedores-insumos>
-        </ng-template>
-    </mat-tab>
-</mat-tab-group>
+<mat-card class="container mb-4">
+    <mat-tab-group>
+        <mat-tab label="Agregar">
+            <ng-template matTabContent>
+                <app-root-proveedores-alta></app-root-proveedores-alta>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Eliminar">
+            <ng-template matTabContent>
+                <app-root-proveedores-baja></app-root-proveedores-baja>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Editar">
+            <ng-template matTabContent>
+                <app-root-proveedores-editar></app-root-proveedores-editar>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Restaurar">
+            <ng-template matTabContent>
+                <app-root-proveedores-restaurar></app-root-proveedores-restaurar>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Insumos">
+            <ng-template matTabContent>
+                <app-root-proveedores-insumos></app-root-proveedores-insumos>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+</mat-card>

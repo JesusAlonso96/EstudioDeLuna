@@ -104,6 +104,7 @@ import { AdministradorReportesSeccionComponent } from './administrador-reportes-
 import { ReportesComprasComponent } from './administrador-reportes-seccion/reportes-compras/reportes-compras.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ProductosSeccionRestaurarComponent } from './productos-seccion/productos-seccion-restaurar/productos-seccion-restaurar.component';
 
 
 @NgModule({
@@ -179,7 +180,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ComprasGastosInsumosRegistradosComponent,
     ComprasGastosInsumosPendientesComponent,
     AdministradorReportesSeccionComponent,
-    ReportesComprasComponent
+    ReportesComprasComponent,
+    ProductosSeccionRestaurarComponent
   ],
   imports: [
     CommonModule,

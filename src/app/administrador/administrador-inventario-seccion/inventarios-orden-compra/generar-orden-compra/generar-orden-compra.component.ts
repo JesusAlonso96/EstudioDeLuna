@@ -10,6 +10,7 @@ import { SeleccionarProductoProveedorComponent } from 'src/app/comun/componentes
 import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-generar-orden-compra',
@@ -18,66 +19,69 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class GenerarOrdenCompraComponent implements OnInit {
   idBusqueda: number;
-  fechaEntrega: any;
-  fechaPedido: any;
   nombreProductoSeleccionado: string;
   ordenCompra: OrdenCompra = new OrdenCompra();
   productoOrdenCompra: ProductoOrdenCompra = new ProductoOrdenCompra();
   dataSource: MatTableDataSource<ProductoOrdenCompra>;
-  proveedor: Proveedor = new Proveedor();
+  proveedores: Proveedor[] = [];
   productos: ProductoProveedor[];
   productoSeleccionado: ProductoProveedor = new ProductoProveedor();
-  cargando: boolean = false;
-  columnas: string[] = ['cantidad', 'existencia', 'nombre', 'descripcion', 'eliminar', 'costo'];
-  iva: boolean;
+  fechaEmpiezaEn: Date = new Date(Date.now());
+  columnas: string[] = ['cantidad', 'existencia', 'nombre', 'descripcion', 'eliminar', 'cantidades'];
   //FORMULARIO
   constructor(private dialog: MatDialog,
     private toastr: NgToastrService,
     private usuarioService: UsuarioService,
+    private cargandoService: CargandoService,
     private proveedoresService: ProveedoresService) { }
 
   ngOnInit() {
     this.iniciarVariablesEstaticas();
     this.inicializarTabla();
+    this.obtenerProveedores();
   }
   inicializarTabla() {
     this.dataSource = new MatTableDataSource(this.ordenCompra.productosOrdenCompra);
   }
-  seleccionaProveedor() {
-    const dialogRef = this.dialog.open(SeleccionarProveedorComponent);
-    dialogRef.afterClosed().subscribe(proveedor => {
-      if (proveedor) {
-        if (this.ordenCompra.proveedor.nombre != 'Sin proveedor seleccionado') {
-          if (this.ordenCompra.proveedor._id != proveedor._id) {
-            this.productos = [];
-            this.ordenCompra.productosOrdenCompra = [];
-            this.dataSource.data = this.ordenCompra.productosOrdenCompra;
+  obtenerProveedores() {
+    this.cargandoService.crearVistaCargando(true);
+    this.proveedoresService.obtenerProveedores().subscribe(
+      (proveedores: Proveedor[]) => {
+        this.cargandoService.crearVistaCargando(false);
+        for (let proveedor of proveedores) {
+          if (proveedor.productos.length > 0) {
+            this.proveedores.push(proveedor);
           }
         }
-        this.ordenCompra.proveedor = proveedor;
-        this.obtenerProductosProveedor(this.ordenCompra.proveedor._id);
-      }
-    })
-  }
-  obtenerProductosProveedor(idProveedor: string) {
-    this.cargando = true;
-    this.proveedoresService.obtenerProductosProveedor(idProveedor).subscribe(
-      (productos: ProductoProveedor[]) => {
-        this.cargando = false;
-        this.productos = productos;
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
-        this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
+        this.cargandoService.crearVistaCargando(false);
+        this.toastr.error(err.error.detalles, err.error.titulo);
       }
     );
   }
+  obtenerProductosProveedor() {
+    if (this.ordenCompra.proveedor.productos.length > 0) {
+      this.cargandoService.crearVistaCargando(true, 'Obteniendo insumos del proveedor');
+      this.proveedoresService.obtenerProductosProveedor(this.ordenCompra.proveedor._id).subscribe(
+        (productos: ProductoProveedor[]) => {
+          this.cargandoService.crearVistaCargando(false);
+          this.productos = productos;
+          console.log(this.productos);
+        },
+        (err: HttpErrorResponse) => {
+          this.cargandoService.crearVistaCargando(false);
+          this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
+        }
+      );
+    }
+
+  }
   iniciarVariablesEstaticas() {
-    this.ordenCompra.proveedor.nombre = 'Sin proveedor seleccionado';
     this.nombreProductoSeleccionado = 'Sin producto seleccionado';
   }
   proveedorSeleccionado(): boolean {
-    return this.ordenCompra.proveedor.nombre == 'Sin proveedor seleccionado' ? false : true;
+    return this.ordenCompra.proveedor.nombre !== undefined ? true : false;
   }
   filtroProducto() {
     if (this.productos.find(producto => { return producto.id == this.idBusqueda })) {
@@ -109,17 +113,9 @@ export class GenerarOrdenCompraComponent implements OnInit {
   }
   generarOrdenCompra() {
     let error: boolean = false;
-    console.log(this.ordenCompra.proveedor)
+    console.log("fecha de entrega: ", this.ordenCompra.fechaEntrega, " fecha del pedido: ", this.ordenCompra.fechaPedido)
     if (this.ordenCompra.proveedor.nombre == 'Sin proveedor seleccionado') {
       this.toastr.abrirToastr('error', 'Por favor, ingresa el proveedor', 'Proveedor requerido');
-      error = true;
-    }
-    if (!this.fechaPedido) {
-      this.toastr.abrirToastr('error', 'Por favor, ingresa la fecha del pedido', 'Fecha del pedido requerida');
-      error = true;
-    }
-    if (!this.fechaEntrega) {
-      this.toastr.abrirToastr('error', 'Por favor, ingresa la fecha de entrega', 'Fecha de entrega requerida');
       error = true;
     }
     if (this.ordenCompra.productosOrdenCompra.length == 0 || !this.ordenCompra.productosOrdenCompra) {
@@ -127,8 +123,9 @@ export class GenerarOrdenCompraComponent implements OnInit {
       error = true;
     }
     if (!error) {
-      this.ordenCompra.fechaEntrega = this.fechaEntrega._d;
-      this.ordenCompra.fechaPedido = this.fechaPedido._d;
+      // this.ordenCompra.fechaEntrega = this.fechaEntrega._d;
+      // this.ordenCompra.fechaPedido = this.fechaPedido._d;
+      console.log(this.ordenCompra);
       this.ordenCompra.subtotal = this.calcularSubtotalOrden();
       this.ordenCompra.total = this.calcularTotalOrden();
       this.guardarOrdenCompra(this.ordenCompra);
@@ -137,21 +134,19 @@ export class GenerarOrdenCompraComponent implements OnInit {
   resetearFormulario() {
     this.ordenCompra = new OrdenCompra();
     this.ordenCompra.productosOrdenCompra = [];
-    this.fechaPedido = null;
-    this.fechaEntrega = null;
     this.ordenCompra.proveedor.nombre = 'Sin proveedor seleccionado';
     this.dataSource.data = this.ordenCompra.productosOrdenCompra;
   }
   guardarOrdenCompra(ordenCompra: OrdenCompra) {
-    this.cargando = true;
+    this.cargandoService.crearVistaCargando(true, 'Generando orden de compra');
     this.usuarioService.agregarOrdenCompra(ordenCompra).subscribe(
       (ordenGuardada: OrdenCompra) => {
-        this.cargando = false;
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', 'Se ha creado exitosamente la orden de compra', 'Orden de compra creada');
         this.resetearFormulario();
       },
-      (err: any) => {
-        this.cargando = false;
+      (err: HttpErrorResponse) => {
+        this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
       }
     );
@@ -217,11 +212,10 @@ export class GenerarOrdenCompraComponent implements OnInit {
       for (let prod of this.ordenCompra.productosOrdenCompra) {
         subtotal = subtotal + (prod.insumo.costo * prod.cantidadOrden);
       }
-      if (this.iva) {
-        this.ordenCompra.iva = (subtotal * .16);
-        subtotal = subtotal + this.ordenCompra.iva;
+      if (this.ordenCompra.iva) {
+        subtotal = subtotal + (subtotal * .16);
       }
-      else this.ordenCompra.iva = 0;
+      else this.ordenCompra.iva = false;
       if (this.ordenCompra.costoEnvio) subtotal = subtotal + this.ordenCompra.costoEnvio;
       return subtotal;
     } else return 0;

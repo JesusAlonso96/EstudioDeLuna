@@ -20,6 +20,7 @@ const productoSchema = new mongoose_1.Schema({
     caracteristicas: [{ type: String }],
     ancho: { type: Number },
     alto: { type: Number },
-    activo: { type: Number }
+    activo: { type: Number },
+    foto: { type: String }
 });
 exports.Producto = mongoose_1.default.model('Producto', productoSchema);

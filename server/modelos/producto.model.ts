@@ -15,6 +15,7 @@ export interface IProducto extends Document {
     ancho: number;
     alto: number;
     activo: number;
+    foto: string;
 }
 
 const productoSchema = new Schema({
@@ -29,7 +30,8 @@ const productoSchema = new Schema({
     caracteristicas: [{ type: String }],
     ancho: { type: Number },
     alto: { type: Number },
-    activo: { type: Number }
+    activo: { type: Number },
+    foto: { type: String }
 });
 
 export const Producto = mongoose.model<IProducto>('Producto', productoSchema);

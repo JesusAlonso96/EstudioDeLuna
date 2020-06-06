@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, AfterViewInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable, Subject } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
@@ -21,7 +21,7 @@ import { CargandoService } from 'src/app/comun/servicios/cargando.service';
   styleUrls: ['./main-nav-admin.component.scss'],
   animations: [Animaciones.deslizarAbajo, Animaciones.deslizarDerecha, Animaciones.rotacion]
 })
-export class MainNavAdminComponent implements OnInit {
+export class MainNavAdminComponent implements OnInit,AfterViewInit {
   @HostListener('scroll', ['$event'])
   pestanasActivas: boolean[] = [];
   pestanas: Pestana[] = [];
@@ -56,9 +56,13 @@ export class MainNavAdminComponent implements OnInit {
     if (scrollOffset >= 100) this.mostrarToggleSidebar = true;
     if (scrollOffset <= 25) this.mostrarToggleSidebar = false;
   }
+  ngAfterViewInit(){
+    setTimeout(() => {
+      this.temasService.iniciarTemas();
+    })
+  }
   ngOnInit() {
     this.obtenerPestanas();
-    this.temasService.iniciarTemas();
     this.obtenerLogoActual();
     this.obtenerNuevoLogotipo();
 
