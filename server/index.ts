@@ -18,12 +18,11 @@ servidor.app.use(bodyParser.urlencoded({ extended: true }));
 servidor.app.use(bodyParser.json());
 
 /* CORS */
-servidor.app.use(cors({ origin: true, credentials: true }));
+servidor.app.use(cors({ origin: true, credentials: false }));
 
 /* Rutas de imagenes */
 servidor.app.use(express.static('subidas'));
 servidor.app.use(express.static('subidas/logotipos'));
-
 
 /*Servidor inicializado */
 servidor.iniciar();

@@ -3,7 +3,9 @@
   <mat-sidenav #drawer class="sidebar" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
     <div class="header">
-      <img [src]="logotipoActual" alt="Logotipo actual de la empresa">
+      <img *ngIf="logotipoActual != ''" [src]="logotipoActual" alt="Logotipo actual de la empresa">
+      <img *ngIf="logotipoActual == ''" src="../../../assets/imagenes/logo.png" alt="Logotipo actual de la empresa">
+
     </div>
     <hr>
     <mat-nav-list>

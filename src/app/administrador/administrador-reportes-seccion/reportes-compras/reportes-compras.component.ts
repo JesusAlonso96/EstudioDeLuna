@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material';
 import { GastoInsumo } from 'src/app/comun/modelos/gasto_insumo.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { GastoGeneralService } from 'src/app/comun/servicios/gasto-general.service';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-reportes-compras',
@@ -82,6 +83,7 @@ export class ReportesComprasComponent implements OnInit {
   constructor(private gastoInsumoService: GastoInsumoService,
     private gastoGeneralesService: GastoGeneralService,
     private toastr: NgToastrService,
+    private cargandoService: CargandoService,
     private dialog: MatDialog) {
     this.tipoReporte = TiposReporte.Anual;
     this.inicializarAnios();
@@ -100,7 +102,7 @@ export class ReportesComprasComponent implements OnInit {
   }
 
   obtenerReporteGastosInsumosPorFecha() {
-    this.cargandoGastosInsumos = true;
+    this.cargandoGastosInsumos = this.cargandoService.crearVistaCargando(true,'Obteniendo reporte');
     this.gastoInsumoService.obtenerReporteGastosInsumosPorFecha(this.tipoReporte, this.anioSeleccionado, this.mesSeleccionado, this.diaSeleccionado).subscribe(
       (datosGastosInsumo: any[]) => {
         switch (this.tipoReporte) {
@@ -114,7 +116,7 @@ export class ReportesComprasComponent implements OnInit {
             this.inicializarDatosGraficaPorFecha(datosGastosInsumo, 0, 0, 23, 'Horas');
             break;
         }
-        this.cargandoGastosInsumos = false;
+        this.cargandoGastosInsumos = this.cargandoService.crearVistaCargando(false);
       },
       (err: HttpErrorResponse) => {
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
@@ -123,11 +125,11 @@ export class ReportesComprasComponent implements OnInit {
   }
 
   obtenerReporteGastosInsumosPorProveedor() {
-    this.cargandoGastosInsumosPorProveedor = true;
+    this.cargandoGastosInsumosPorProveedor = this.cargandoService.crearVistaCargando(true,'Obteniendo reporte');
     this.gastoInsumoService.obtenerReporteGastosInsumosPorProveedor(this.tipoReporte, this.anioSeleccionado, this.mesSeleccionado, this.diaSeleccionado).subscribe(
       (datosGastosInsumos: any[]) => {
         this.inicializarDatosGraficaPorProveedores(datosGastosInsumos)
-        this.cargandoGastosInsumosPorProveedor = false;
+        this.cargandoGastosInsumosPorProveedor = this.cargandoService.crearVistaCargando(false);
       },
       (err: HttpErrorResponse) => {
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
@@ -136,7 +138,7 @@ export class ReportesComprasComponent implements OnInit {
   }
 
   obtenerReporteGastosGeneralesPorFecha() {
-    this.cargandoGastosGenerales = true;
+    this.cargandoGastosGenerales = this.cargandoService.crearVistaCargando(true,'Obteniendo reporte');
     this.gastoGeneralesService.obtenerReporteGastosGeneralesPorFecha(this.tipoReporte, this.anioSeleccionado, this.mesSeleccionado, this.diaSeleccionado).subscribe(
       (datosGastosGenerales: any[]) => {
         switch (this.tipoReporte) {
@@ -150,7 +152,7 @@ export class ReportesComprasComponent implements OnInit {
             this.inicializarDatosGraficaPorFecha(datosGastosGenerales, 1, 0, 23, 'Horas');
             break;
         }
-        this.cargandoGastosGenerales = false;
+        this.cargandoGastosGenerales = this.cargandoService.crearVistaCargando(false);
       },
       (err: HttpErrorResponse) => {
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);
@@ -159,11 +161,11 @@ export class ReportesComprasComponent implements OnInit {
   }
 
   obtenerReporteGastosGeneralesPorTipoGastoGeneral() {
-    this.cargandoGastosGeneralesPorTipoDeGastoGeneral = true;
+    this.cargandoGastosGeneralesPorTipoDeGastoGeneral = this.cargandoService.crearVistaCargando(true,'Obteniendo reporte');
     this.gastoGeneralesService.obtenerReporteGastosGeneralesPorTipoGastoGeneral(this.tipoReporte, this.anioSeleccionado, this.mesSeleccionado, this.diaSeleccionado).subscribe(
       (datosGastosGenerales: any[]) => {
         this.inicializarDatosGraficaPorTipoGastoGeneral(datosGastosGenerales)
-        this.cargandoGastosGeneralesPorTipoDeGastoGeneral = false;
+        this.cargandoGastosGeneralesPorTipoDeGastoGeneral = this.cargandoService.crearVistaCargando(false);
       },
       (err: HttpErrorResponse) => {
         this.toastr.abrirToastr('error', err.error.detalles, err.error.titulo);

@@ -18,6 +18,5 @@ rutasConfiguracion.get('', autenticacionMiddleware, ConfiguracionCtrl.obtenerCon
 
 rutasConfiguracion.patch('/notificaciones', autenticacionMiddleware, ConfiguracionCtrl.guardarConfiguracionNotificaciones);
 rutasConfiguracion.patch('/temas', autenticacionMiddleware, ConfiguracionCtrl.cambiarTema);
-rutasConfiguracion.patch('/logotipo', autenticacionMiddleware, upload.single('imagen'), ConfiguracionCtrl.cambiarLogotipo);
 
 export default rutasConfiguracion;

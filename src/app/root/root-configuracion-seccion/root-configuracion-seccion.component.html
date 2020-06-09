@@ -1,0 +1,165 @@
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-lg-7 col-md-12">
+            <mat-card class="card container mb-4 w-100 p-0">
+                <div class="card-header bg-transparent border-0">
+                    <button class="btn-titulo mb-4" mat-raised-button color="accent">
+                        <h5>Notificaciones</h5>
+                    </button>
+                </div>
+                <div class="card-body mt-4">
+                    <form #notificacionesForm="ngForm">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h6 class="titulos">Escoge las opciones con las cuales se mostraran las
+                                        notificaciones.
+                                    </h6>
+                                    <mat-divider></mat-divider>
+                                </div>
+                            </div>
+                            <div class="row mt-3 mb-2">
+                                <div class="col-lg-6 col-md-12">
+                                    <mat-checkbox [(ngModel)]="configuracion.notificaciones.botonCerrar"
+                                        name="botonCerrar" #botonCerrar="ngModel">Boton de cerrar</mat-checkbox>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <mat-checkbox [(ngModel)]="configuracion.notificaciones.barraProgreso"
+                                        name="barraProgreso" #barraProgreso="ngModel">Barra de progreso</mat-checkbox>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6">
+                                    <mat-form-field class="full-width input" appearance="outline">
+                                        <mat-label>Tiempo de visualizacion</mat-label>
+                                        <mat-icon matPrefix>alarm_add&nbsp;</mat-icon>
+                                        <input type="number" [(ngModel)]="configuracion.notificaciones.tiempo"
+                                            name="tiempo" #tiempo="ngModel" matInput required>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <mat-form-field class="full-width input" appearance="outline">
+                                        <mat-label>Posicion</mat-label>
+                                        <mat-icon matPrefix>aspect_ratio&nbsp;</mat-icon>
+                                        <mat-select [(ngModel)]="configuracion.notificaciones.posicion" name="posicion"
+                                            #posicion="ngModel" required>
+                                            <mat-option value="toast-top-right">
+                                                Arriba y a la derecha
+                                            </mat-option>
+                                            <mat-option value="toast-top-left">
+                                                Arriba y a la izquierda
+                                            </mat-option>
+                                            <mat-option value="toast-bottom-right">
+                                                Abajo y a la derecha
+                                            </mat-option>
+                                            <mat-option value="toast-bottom-left">
+                                                Abajo y a la izquierda
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-transparent border-0 d-flex justify-content-between">
+                    <button class="mr-auto" mat-raised-button color="primary" (click)="abrirToastr()">
+                        <mat-icon>play_arrow</mat-icon>
+                        Probar configuracion
+                    </button>
+                    <button class="ml-auto" mat-raised-button [disabled]="!notificacionesForm.valid"
+                        (click)="guardarConfiguracionNotificaciones()" class="btn-exito">
+                        <mat-icon>save</mat-icon>
+                        Guardar
+                    </button>
+                </div>
+            </mat-card>
+        </div>
+        <div class="col-lg-5 col-md-12">
+            <mat-card class="card container mb-4 w-100 p-0">
+                <div class="card-header bg-transparent border-0">
+                    <button class="btn-titulo mb-4" mat-raised-button color="accent">
+                        <h5>Logotipo</h5>
+                    </button>
+                </div>
+                <div class="card-body mt-4">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h6 class="titulos">Escoge el logotipo de la empresa.</h6>
+                                <mat-divider></mat-divider>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form #logoForm="ngForm">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <input style="display: none;" type="file" accept="image/*"
+                                                    (change)="cambioArchivoEvento($event)" #imagen required />
+                                                <button mat-raised-button color="primary" (click)="imagen.click()">
+                                                    <mat-icon>get_app</mat-icon>
+                                                    Seleccionar imagen
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt-4">
+                                            <div class="col-lg-4" @primerEstado *ngIf="logotipoActual != ''">
+                                                <mat-toolbar class="mat-toolbar-cropper">
+                                                    <span>Logotipo actual</span>
+                                                </mat-toolbar>
+                                                <hr>
+                                                <img [src]="logotipoActual" class="img-thumbnail" width="200px"
+                                                    height="150px" alt="Logotipo actual de la empresa" srcset="">
+                                            </div>
+                                            <div class="col-lg-4" @primerEstado>
+                                                <mat-toolbar class="mat-toolbar-cropper"
+                                                    *ngIf="imagenLogoRecortada != ''">
+                                                    <span>Recortar imagen</span>
+                                                </mat-toolbar>
+                                                <hr *ngIf="imagenLogoRecortada != ''">
+                                                <image-cropper *ngIf="eventoCambioImagenLogotipo"
+                                                    [imageChangedEvent]="eventoCambioImagenLogotipo"
+                                                    [maintainAspectRatio]="true" [aspectRatio]="1 / 1" format="jpg"
+                                                    (imageCropped)="imagenRecortada($event)"
+                                                    (imageLoaded)="imagenCargada()" (cropperReady)="cortadorListo()"
+                                                    (loadImageFailed)="cargarImagenFallida()">
+                                                </image-cropper>
+                                            </div>
+                                            <div class="col-lg-4" @primerEstado *ngIf="imagenLogoRecortada != ''">
+                                                <mat-toolbar class="mat-toolbar-cropper">
+                                                    <span>Vista previa</span>
+                                                    <span class="espaciador"></span>
+                                                    <button mat-icon-button class="float-right" color="warn"
+                                                        (click)="eliminarImagen()">
+                                                        <mat-icon>close</mat-icon>
+                                                    </button>
+                                                </mat-toolbar>
+                                                <hr>
+                                                <img class="text-center" [src]="imagenLogoRecortada"
+                                                    class="img-thumbnail" width="200px" height="150px"
+                                                    alt="Logotipo nuevo de la empresa">
+                                            </div>
+                                        </div>
+                                        <div class="row mt-4 mb-4">
+                                            <div class="col-lg-12">
+                                                <button mat-raised-button color="primary" class="float-right"
+                                                    [disabled]="!imagenValida()" (click)="guardarImagen()">Guardar
+                                                    imagen</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+
+                </div>
+            </mat-card>
+        </div>
+    </div>
+</div>

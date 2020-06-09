@@ -6,6 +6,7 @@ import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
 import { ProductoProveedor } from 'src/app/comun/modelos/producto_proveedor.model';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { ProveedoresService } from 'src/app/comun/servicios/proveedores.service';
+import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 
 @Component({
   selector: 'app-root-proveedores-insumo-restaurar',
@@ -23,6 +24,7 @@ export class RootProveedoresInsumoRestaurarComponent implements OnInit {
   constructor(
     private proveedoresService: ProveedoresService,
     private toastr: NgToastrService,
+    private cargandoService: CargandoService,
     private dialog: MatDialog) { }
 
   ngOnInit() {
@@ -30,15 +32,15 @@ export class RootProveedoresInsumoRestaurarComponent implements OnInit {
   }
 
   obtenerProductosEliminados() {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Obteniendo productos eliminados');
     this.proveedoresService.obtenerProductosProveedorEliminados().subscribe(
       (productos: ProductoProveedor[]) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.productos = productos;
         this.inicializarTabla();
       },
       (err: HttpErrorResponse) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.error('error', err.error.titulo, err.error.detalles);
       }
     );
@@ -53,10 +55,10 @@ export class RootProveedoresInsumoRestaurarComponent implements OnInit {
     })
   }
   restaurarProductoEliminado(producto: ProductoProveedor) {
-    this.cargando = true;
+    this.cargando = this.cargandoService.crearVistaCargando(true,'Restaurando producto eliminado');
     this.proveedoresService.restaurarProductoProveedorEliminado(producto).subscribe(
       (resp: Mensaje) => {
-        this.cargando = false;
+        this.cargando = this.cargandoService.crearVistaCargando(false);
         this.toastr.abrirToastr('exito', resp.titulo, resp.detalles);
         this.quitarProductoEliminado(producto);
       }

@@ -44,6 +44,7 @@ export class EmpleadoPedidosRealizadosComponent implements OnInit {
     this.cargandoService.crearVistaCargando(true, 'Obteniendo pedidos...')
     this.pedidosService.obtenerPedidosRealizados(this.autenticacionService.getIdUsuario(), tipoFiltro).subscribe(
       (pedidos: any[]) => {
+        console.log(pedidos[0].pedido)
         this.pedidos = this.pedidosFiltrados = pedidos[0].pedido;
         this.cargandoService.crearVistaCargando(false);
       },

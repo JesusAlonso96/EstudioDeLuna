@@ -1,5 +1,5 @@
 <mat-card class="container mb-4">
-    <mat-tab-group>
+    <mat-tab-group mat-align-tabs="center">
         <mat-tab label="Administrar">
             <ng-template matTabContent>
                 <app-caja-detalles></app-caja-detalles>
@@ -8,6 +8,11 @@
         <mat-tab label="Restaurar">
             <ng-template matTabContent>
                 <app-caja-restaurar></app-caja-restaurar>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Cortes de caja">
+            <ng-template matTabContent>
+                <app-caja-corte-caja></app-caja-corte-caja>
             </ng-template>
         </mat-tab>
     </mat-tab-group>

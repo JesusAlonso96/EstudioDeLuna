@@ -27,6 +27,7 @@ import rutasGastoGeneral from '../rutas/gasto_general';
 import rutasGastoInsumo from '../rutas/gasto_insumo';
 import rutasCompras from '../rutas/compras';
 import rutasPedidos from '../rutas/pedidos';
+import rutasEmpresa from '../rutas/empresa';
 
 export default class Servidor {
     private static _instance: Servidor;
@@ -39,6 +40,7 @@ export default class Servidor {
         this.puerto = environment.PUERTO_SERVIDOR;
         this.httpServidor = new http.Server(this.app);
         this.io = SocketIO(this.httpServidor);
+        this.io.origins('*:*');
         this.escucharSockets();
     }
 
@@ -82,9 +84,9 @@ export default class Servidor {
         this.app.use('/api/v2/proveedores', rutasProveedores);
         this.app.use('/api/v2/cotizaciones', rutasCotizaciones);
         this.app.use('/api/v2/pedidos', rutasPedidos);
+        this.app.use('/api/v2/empresa', rutasEmpresa);
     }
     iniciar() {
-
         this.inicializarRutas();
         const appPath = path.join(__dirname, '../../../', 'dist/cliente');
         this.app.use(express.static(appPath));

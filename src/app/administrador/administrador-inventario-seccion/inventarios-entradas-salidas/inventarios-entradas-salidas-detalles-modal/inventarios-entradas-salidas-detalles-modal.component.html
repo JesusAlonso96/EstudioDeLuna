@@ -30,13 +30,13 @@
                 <mat-icon mat-list-icon>local_offer</mat-icon>
                 <h4 mat-line>{{movimiento.insumo.nombre}}</h4>
             </mat-list-item>
-            <mat-list-item *ngIf="movimiento.traspaso.id != null">
+            <mat-list-item *ngIf="traspasoValido()">
                 <mat-icon mat-list-icon>swap_horiz</mat-icon>
-                <h4 mat-line>Traspaso con ID {{movimiento.traspaso.id}}</h4>
+                <h4 mat-line>Traspaso con ID {{obtenerIdInventario()}}</h4>
             </mat-list-item>
-            <mat-list-item *ngIf="movimiento.inventario.id != null">
+            <mat-list-item *ngIf="traspasoValido()">
                 <mat-icon mat-list-icon>inventory</mat-icon>
-                <h4 mat-line>Inventario con ID {{movimiento.inventario.id}}</h4>
+                <h4 mat-line>Inventario con ID {{obtenerIdInventario()}}</h4>
             </mat-list-item>
             <mat-list-item>
                 <mat-icon mat-list-icon>comment</mat-icon>

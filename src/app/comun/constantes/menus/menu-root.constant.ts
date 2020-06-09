@@ -13,6 +13,11 @@ const MenuRoot = [
         nombre: "Proveedores",
         icono: "assignment_ind",
         ruta: "/root/proveedores"
+    },
+    {
+        nombre: "Mi empresa",
+        icono: "business_center",
+        ruta: "/root/empresa"
     }
 ]
 export default MenuRoot;

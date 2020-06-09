@@ -124,7 +124,7 @@ exports.obtenerPedidosPorEmpleado = (req, res) => {
         case 1:
             const dia = new Date(Date.now()).getDate();
             filtro = {
-                fecha_creacion: {
+                fecha_realizacion: {
                     $gte: new Date(anioActual, mesActual, dia, 0, 0, 0),
                     $lte: new Date(anioActual, mesActual, dia, 24, 0, 0)
                 }
@@ -134,7 +134,7 @@ exports.obtenerPedidosPorEmpleado = (req, res) => {
             const diaActual = new Date().getDate();
             const inicioSemana = diaActual - new Date().getDay();
             filtro = {
-                fecha_creacion: {
+                fecha_realizacion: {
                     $gte: new Date(anioActual, mesActual, inicioSemana),
                     $lte: new Date(anioActual, mesActual, inicioSemana + 7)
                 }
@@ -144,7 +144,7 @@ exports.obtenerPedidosPorEmpleado = (req, res) => {
             const fechaInicio = new Date(anioActual, mesActual, 1);
             const fechaFin = new Date(anioActual, mesActual, moment_1.default(fechaInicio).daysInMonth());
             filtro = {
-                fecha_creacion: {
+                fecha_realizacion: {
                     $gte: fechaInicio,
                     $lte: fechaFin
                 }
@@ -155,17 +155,17 @@ exports.obtenerPedidosPorEmpleado = (req, res) => {
             const fechaInicioTresMeses = new Date(anioActual, mesInicio, 1);
             const fechaFinTresMeses = new Date(anioActual, mesActual, moment_1.default(new Date(anioActual, mesActual, 1)).daysInMonth());
             filtro = {
-                fecha_creacion: {
+                fecha_realizacion: {
                     $gte: fechaInicioTresMeses,
                     $lte: fechaFinTresMeses
                 }
             };
             break;
         default:
-            filtro = { fecha_creacion: null };
+            filtro = { fecha_realizacion: null };
             break;
     }
-    if (filtro.fecha_creacion !== null) {
+    if (filtro.fecha_realizacion !== null) {
         usuario_model_1.Usuario.aggregate()
             .lookup({
             from: "pedidos",
@@ -192,7 +192,7 @@ exports.obtenerPedidosPorEmpleado = (req, res) => {
             .match({
             _id: mongoose_1.Types.ObjectId(req.params.id),
             $or: [{ "pedidosTomados.status": 'Vendido' }, { "pedidosTomados.status": 'Finalizado' }],
-            "pedidosTomados.fecha_creacion": filtro.fecha_creacion
+            "pedidosTomados.fecha_realizacion": filtro.fecha_realizacion
         })
             .project({
             _id: '$pedidosTomados._id',
@@ -203,6 +203,7 @@ exports.obtenerPedidosPorEmpleado = (req, res) => {
             ape_mat_cliente: { $arrayElemAt: ['$cliente.ape_mat', 0] },
             fecha_creacion: '$pedidosTomados.fecha_creacion',
             fecha_entrega: '$pedidosTomados.fecha_entrega',
+            fecha_realizacion: '$pedidosTomados.fecha_realizacion',
             comentarios: '$pedidosTomados.comentarios',
             total: '$pedidosTomados.total',
             anticipo: '$pedidosTomados.anticipo',
@@ -217,6 +218,7 @@ exports.obtenerPedidosPorEmpleado = (req, res) => {
                     status: '$status',
                     fecha_creacion: '$fecha_creacion',
                     fecha_entrega: '$fecha_entrega',
+                    fecha_realizacion: '$fecha_realizacion',
                     comentarios: '$comentarios',
                     cliente: {
                         $concat: ['$nombre_cliente', ' ', '$ape_pat_cliente', ' ', '$ape_mat_cliente']
@@ -275,6 +277,7 @@ exports.obtenerPedidosPorEmpleado = (req, res) => {
             ape_mat_cliente: { $arrayElemAt: ['$cliente.ape_mat', 0] },
             fecha_creacion: '$pedidosTomados.fecha_creacion',
             fecha_entrega: '$pedidosTomados.fecha_entrega',
+            fecha_realizacion: '$pedidosTomados.fecha_realizacion',
             comentarios: '$pedidosTomados.comentarios',
             total: '$pedidosTomados.total',
             anticipo: '$pedidosTomados.anticipo',
@@ -289,6 +292,7 @@ exports.obtenerPedidosPorEmpleado = (req, res) => {
                     status: '$status',
                     fecha_creacion: '$fecha_creacion',
                     fecha_entrega: '$fecha_entrega',
+                    fecha_realizacion: '$fecha_realizacion',
                     comentarios: '$comentarios',
                     cliente: {
                         $concat: ['$nombre_cliente', ' ', '$ape_pat_cliente', ' ', '$ape_mat_cliente']
@@ -590,10 +594,18 @@ exports.tomarPedido = (req, res) => {
     });
 };
 exports.actualizarEstadoPedido = (req, res) => {
+    let camposActualizar = {};
+    if (req.body.status == 'Finalizado') {
+        camposActualizar = {
+            status: req.body.status,
+            fecha_realizacion: new Date(Date.now())
+        };
+    }
+    else
+        camposActualizar = { status: req.body.status };
+    console.log("campos a actualizar", camposActualizar);
     pedido_model_1.Pedido.findOneAndUpdate({ _id: req.body._id }, {
-        $set: {
-            status: req.body.status
-        }
+        $set: camposActualizar
     }).exec((err, pedidoActualizado) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al actualizar el pedido' });
@@ -652,3 +664,7 @@ exports.eliminarNotificacionPorPedido = (req, res) => {
         }
     });
 };
+function crearFiltroPedidos(tipoUsuario) {
+    switch (tipoUsuario) {
+    }
+}

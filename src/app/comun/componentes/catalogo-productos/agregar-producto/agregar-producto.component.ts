@@ -1,11 +1,13 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Producto } from 'src/app/comun/modelos/producto.model';
+import { Animaciones } from 'src/app/comun/constantes/animaciones';
 
 @Component({
   selector: 'app-agregar-producto',
   templateUrl: './agregar-producto.component.html',
-  styleUrls: ['./agregar-producto.component.scss']
+  styleUrls: ['./agregar-producto.component.scss'],
+  animations:[Animaciones.carga]
 })
 export class AgregarProductoComponent implements OnInit {
 

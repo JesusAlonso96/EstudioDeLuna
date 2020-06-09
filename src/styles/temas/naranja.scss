@@ -9,6 +9,7 @@
 @import '../componentes/steppers';
 @import '../componentes/inputs';
 @import '../componentes/paginador';
+@import '../componentes/titulos.scss';
 @include mat-core();
 
 $naranja-primario-color:#f4511e;
@@ -37,6 +38,7 @@ $naranja-tema: mat-light-theme($naranja-primario, $naranja-secundario, $naranja-
   @include steppers ($naranja-primario-color);
   @include inputs($naranja-primario-color, $naranja-secundario-color, $naranja-terciario-color);
   @include paginador($naranja-secundario-color);
+  @include titulos;
   .mat-toolbar {
     background: inherit;
   }

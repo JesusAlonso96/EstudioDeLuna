@@ -6,6 +6,7 @@ import { Movimiento } from 'src/app/comun/modelos/almacen.model';
 import { Inventario } from 'src/app/comun/modelos/inventario.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CargandoService } from 'src/app/comun/servicios/cargando.service';
+import { Traspaso } from 'src/app/comun/modelos/traspaso.model';
 
 @Component({
   selector: 'app-inventarios-entradas-salidas-detalles-modal',
@@ -51,5 +52,11 @@ export class InventariosEntradasSalidasDetallesModalComponent implements OnInit 
       case 'Alta inventario':
       case 'Recepcion traspaso': return true;
     }
+  }
+  traspasoValido(){
+    return (<Traspaso>this.movimiento.traspaso).id != null;
+  }
+  obtenerIdInventario(){
+    return (<Inventario>this.movimiento.inventario).id;
   }
 }

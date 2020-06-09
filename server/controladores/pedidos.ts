@@ -117,7 +117,7 @@ export let obtenerPedidosPorEmpleado = (req: Request, res: Response) => {
         case 1:
             const dia = new Date(Date.now()).getDate();
             filtro = {
-                fecha_creacion: {
+                fecha_realizacion: {
                     $gte: new Date(anioActual, mesActual, dia, 0, 0, 0),
                     $lte: new Date(anioActual, mesActual, dia, 24, 0, 0)
                 }
@@ -126,7 +126,7 @@ export let obtenerPedidosPorEmpleado = (req: Request, res: Response) => {
             const diaActual = new Date().getDate()
             const inicioSemana = diaActual - new Date().getDay();
             filtro = {
-                fecha_creacion: {
+                fecha_realizacion: {
                     $gte: new Date(anioActual, mesActual, inicioSemana),
                     $lte: new Date(anioActual, mesActual, inicioSemana + 7)
                 }
@@ -136,7 +136,7 @@ export let obtenerPedidosPorEmpleado = (req: Request, res: Response) => {
             const fechaInicio = new Date(anioActual, mesActual, 1);
             const fechaFin = new Date(anioActual, mesActual, moment(fechaInicio).daysInMonth())
             filtro = {
-                fecha_creacion: {
+                fecha_realizacion: {
                     $gte: fechaInicio,
                     $lte: fechaFin
                 }
@@ -147,15 +147,15 @@ export let obtenerPedidosPorEmpleado = (req: Request, res: Response) => {
             const fechaInicioTresMeses = new Date(anioActual, mesInicio, 1);
             const fechaFinTresMeses = new Date(anioActual, mesActual, moment(new Date(anioActual, mesActual, 1)).daysInMonth());
             filtro = {
-                fecha_creacion: {
+                fecha_realizacion: {
                     $gte: fechaInicioTresMeses,
                     $lte: fechaFinTresMeses
                 }
             }
             break;
-        default: filtro = { fecha_creacion: null }; break;
+        default: filtro = { fecha_realizacion: null }; break;
     }
-    if (filtro.fecha_creacion !== null) {
+    if (filtro.fecha_realizacion !== null) {
         Usuario.aggregate()
             .lookup({
                 from: "pedidos",
@@ -182,7 +182,7 @@ export let obtenerPedidosPorEmpleado = (req: Request, res: Response) => {
             .match({
                 _id: Types.ObjectId(req.params.id),
                 $or: [{ "pedidosTomados.status": 'Vendido' }, { "pedidosTomados.status": 'Finalizado' }],
-                "pedidosTomados.fecha_creacion": filtro.fecha_creacion
+                "pedidosTomados.fecha_realizacion": filtro.fecha_realizacion
             })
             .project({
                 _id: '$pedidosTomados._id',
@@ -193,6 +193,7 @@ export let obtenerPedidosPorEmpleado = (req: Request, res: Response) => {
                 ape_mat_cliente: { $arrayElemAt: ['$cliente.ape_mat', 0] },
                 fecha_creacion: '$pedidosTomados.fecha_creacion',
                 fecha_entrega: '$pedidosTomados.fecha_entrega',
+                fecha_realizacion: '$pedidosTomados.fecha_realizacion',
                 comentarios: '$pedidosTomados.comentarios',
                 total: '$pedidosTomados.total',
                 anticipo: '$pedidosTomados.anticipo',
@@ -207,6 +208,7 @@ export let obtenerPedidosPorEmpleado = (req: Request, res: Response) => {
                         status: '$status',
                         fecha_creacion: '$fecha_creacion',
                         fecha_entrega: '$fecha_entrega',
+                        fecha_realizacion: '$fecha_realizacion',
                         comentarios: '$comentarios',
                         cliente: {
                             $concat: ['$nombre_cliente', ' ', '$ape_pat_cliente', ' ', '$ape_mat_cliente']
@@ -264,6 +266,7 @@ export let obtenerPedidosPorEmpleado = (req: Request, res: Response) => {
                 ape_mat_cliente: { $arrayElemAt: ['$cliente.ape_mat', 0] },
                 fecha_creacion: '$pedidosTomados.fecha_creacion',
                 fecha_entrega: '$pedidosTomados.fecha_entrega',
+                fecha_realizacion: '$pedidosTomados.fecha_realizacion',
                 comentarios: '$pedidosTomados.comentarios',
                 total: '$pedidosTomados.total',
                 anticipo: '$pedidosTomados.anticipo',
@@ -278,6 +281,7 @@ export let obtenerPedidosPorEmpleado = (req: Request, res: Response) => {
                         status: '$status',
                         fecha_creacion: '$fecha_creacion',
                         fecha_entrega: '$fecha_entrega',
+                        fecha_realizacion: '$fecha_realizacion',
                         comentarios: '$comentarios',
                         cliente: {
                             $concat: ['$nombre_cliente', ' ', '$ape_pat_cliente', ' ', '$ape_mat_cliente']
@@ -572,10 +576,16 @@ export let tomarPedido = (req: Request, res: Response) => {
     });
 }
 export let actualizarEstadoPedido = (req: Request, res: Response) => {
-    Pedido.findOneAndUpdate({ _id: req.body._id }, {
-        $set: {
-            status: req.body.status
+    let camposActualizar = {};
+    if(req.body.status == 'Finalizado'){
+        camposActualizar = {
+            status:req.body.status,
+            fecha_realizacion: new Date(Date.now())
         }
+    } else camposActualizar = {status:req.body.status}
+    console.log("campos a actualizar", camposActualizar)
+    Pedido.findOneAndUpdate({ _id: req.body._id }, {
+        $set: camposActualizar
     }).exec((err: NativeError, pedidoActualizado: IPedido) => {
         if (err) return res.status(422).send({ titulo: 'Error', detalles: 'Ocurrio un error al actualizar el pedido' });
         Pedido
@@ -583,20 +593,20 @@ export let actualizarEstadoPedido = (req: Request, res: Response) => {
             .populate('cliente')
             .exec((err: NativeError, pedido: IPedido | null) => {
                 if (pedido) {
-                    if (pedido.cliente && pedido.status == 'Finalizado') {
-                        let opciones = {
-                            from: '"Estudio de Luna" <j.alonso.jacl2@gmail.com>',
-                            to: pedido.cliente.email,
-                            subject: 'Pedido listo',
-                            html: `<b>Tu pedido ya esta disponible para ser recogido</b>` // html body
-
+                        if(pedido.cliente && pedido.status == 'Finalizado'){
+                            let opciones = {
+                                from: '"Estudio de Luna" <j.alonso.jacl2@gmail.com>',
+                                to: pedido.cliente.email,
+                                subject: 'Pedido listo',
+                                html: `<b>Tu pedido ya esta disponible para ser recogido</b>` // html body
+    
+                            }
+                            transporter.sendMail(opciones, (err: Error | null, info: any) => {
+                                if (err) return res.status(422).send({ titulo: 'Error al enviar correo', detalles: 'Ocurrio un error al enviar el correo electronico, por favor intentalo de nuevo mas tarde' });
+                                console.log("Message sent: %s", info.messageId);
+                                console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+                            })
                         }
-                        transporter.sendMail(opciones, (err: Error | null, info: any) => {
-                            if (err) return res.status(422).send({ titulo: 'Error al enviar correo', detalles: 'Ocurrio un error al enviar el correo electronico, por favor intentalo de nuevo mas tarde' });
-                            console.log("Message sent: %s", info.messageId);
-                            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-                        })
-                    }
                     return res.status(200).json(pedido);
                 } else return res.status(404).send({ titulo: 'Error al actualizar el estado del pedido', detalles: 'Ocurrio un error al actualizar el estado del pedido, posiblemente no exista.' });
             });
@@ -626,4 +636,11 @@ export let eliminarNotificacionPorPedido = (req: Request, res: Response) => {
                     });
             }
         });
+}
+
+
+function crearFiltroPedidos(tipoUsuario: number){
+    switch(tipoUsuario){
+
+    }
 }

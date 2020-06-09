@@ -34,6 +34,8 @@ export interface IPedido extends Document {
     metodoPago: string;
     sucursal: ISucursal['_id'];
     usuario: IUsuario['_id'];
+    fecha_realizacion: Date;
+    fecha_entrega_real: Date;
 }
 const pedidoSchema = new Schema({
     num_pedido: { type: Number },//
@@ -60,7 +62,9 @@ const pedidoSchema = new Schema({
     foto: { type: String },
     metodoPago: { type: String },
     sucursal: [{ type: Schema.Types.ObjectId, ref: 'Sucursal' }],//
-    usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' }
+    usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' },
+    fecha_realizacion: { type: Date },
+    fecha_entrega_real: { type: Date }
 });
 
 pedidoSchema.plugin(autoIncrement.plugin, { model: 'Pedido', field: 'num_pedido' });

@@ -24,6 +24,14 @@ import { RootProveedoresBajaComponent } from './root-proveedores-seccion/root-pr
 import { RootProveedoresEditarComponent } from './root-proveedores-seccion/root-proveedores-editar/root-proveedores-editar.component';
 import { RootProveedoresRestaurarComponent } from './root-proveedores-seccion/root-proveedores-restaurar/root-proveedores-restaurar.component';
 import { RootProveedoresInsumosComponent } from './root-proveedores-seccion/root-proveedores-insumos/root-proveedores-insumos.component';
+import { RootConfiguracionSeccionComponent } from './root-configuracion-seccion/root-configuracion-seccion.component';
+import { RootEmpresaSeccionComponent } from './root-empresa-seccion/root-empresa-seccion.component';
+import { RootEmpresaSeccionDatosGeneralesComponent } from './root-empresa-seccion/root-empresa-seccion-datos-generales/root-empresa-seccion-datos-generales.component';
+import { RootEmpresaSeccionContactoComponent } from './root-empresa-seccion/root-empresa-seccion-contacto/root-empresa-seccion-contacto.component';
+import { RootEmpresaSeccionDireccionComponent } from './root-empresa-seccion/root-empresa-seccion-direccion/root-empresa-seccion-direccion.component';
+import { RootEmpresaSeccionLogoComponent } from './root-empresa-seccion/root-empresa-seccion-logo/root-empresa-seccion-logo.component';
+import { RootEmpresaSeccionFacturacionComponent } from './root-empresa-seccion/root-empresa-seccion-facturacion/root-empresa-seccion-facturacion.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 
 
@@ -46,7 +54,14 @@ import { RootProveedoresInsumosComponent } from './root-proveedores-seccion/root
     RootProveedoresInsumosComponent,
     RootProveedoresInsumoAltaComponent,
     RootProveedoresInsumoBajaComponent,
-    RootProveedoresInsumoRestaurarComponent
+    RootProveedoresInsumoRestaurarComponent,
+    RootConfiguracionSeccionComponent,
+    RootEmpresaSeccionComponent,
+    RootEmpresaSeccionDatosGeneralesComponent,
+    RootEmpresaSeccionContactoComponent,
+    RootEmpresaSeccionDireccionComponent,
+    RootEmpresaSeccionLogoComponent,
+    RootEmpresaSeccionFacturacionComponent
   ],
   imports: [
     CommonModule,
@@ -55,7 +70,8 @@ import { RootProveedoresInsumosComponent } from './root-proveedores-seccion/root
     ReactiveFormsModule,
     FormsModule,
     RootRoutingModule,
-    ComunModule
+    ComunModule,
+    ImageCropperModule
   ]
 })
 export class RootModule { }

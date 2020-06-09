@@ -23,19 +23,26 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-lg-6 col-md-6" *ngIf="corte.caja">
-                                    <div class="card sin-borde" style="width: 18rem;">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Caja {{corte.caja.id}}</h5>
-                                            <h6 class="card-subtitle mb-2 text-muted">
-                                                {{corte.caja.fechaRegistro | formatoFecha:1}}</h6>
-                                            <p class="card-text">
-                                                Total en caja: ${{corte.caja.cantidadTotal}}. <br>
-                                                Total en efectivo: ${{corte.caja.cantidadEfectivo}}. <br>
-                                                Total en tarjetas: ${{corte.caja.cantidadTarjetas}}.
-                                            </p>
-
+                                    <mat-card class="card container p-0">
+                                        <div class="card-header bg-transparent border-0">
+                                            <button class="btn-titulo mb-4" mat-raised-button color="accent">
+                                                <h5>Caja {{corte.caja.id}}</h5>
+                                            </button>
                                         </div>
-                                    </div>
+                                        <div class="card-body mt-4">
+                                            <div class="card-text">
+                                                <h6 class="titulos text-end">
+                                                    {{corte.caja.fechaRegistro | formatoFecha:1}}</h6>
+                                                <hr>
+                                                <p class="card-text">
+                                                    Total en caja: {{corte.caja.cantidadTotal | currency}}. <br>
+                                                    Total en efectivo: {{corte.caja.cantidadEfectivo | currency}}.
+                                                    <br>
+                                                    Total en tarjetas: {{corte.caja.cantidadTarjetas | currency}}.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </mat-card>
                                 </div>
                             </div>
                             <div class="row mt-4" *ngIf="!corteRealizado">

@@ -1,0 +1,70 @@
+<mat-card class="card container mb-4 w-100 p-0">
+    <div class="card-header bg-transparent border-0">
+        <button class="btn-titulo mb-4" mat-raised-button color="accent">
+            <h5>Logotipo</h5>
+        </button>
+        <img [@carga]="'in'" *ngIf="logotipoActual != ''" [src]="logotipoActual" class="logotipo-actual img-thumbnail"
+        width="200px" height="150px" alt="Logotipo actual de la empresa" srcset="">
+    </div>
+    <div class="card-body mt-4">
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h6>Escoge el logotipo de la empresa.</h6>
+                    <hr>
+                </div>
+            </div>
+            <div class="row h-50">
+                <div class="col-lg-12 h-100">
+                    <form #logoForm="ngForm">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <input style="display: none;" type="file" accept="image/*"
+                                        (change)="cambioArchivoEvento($event)" #imagen required />
+                                    <button mat-raised-button color="primary" (click)="imagen.click()">
+                                        <mat-icon>get_app</mat-icon>
+                                        Seleccionar imagen
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-lg-4" [@carga]="'in'">
+                                    <mat-toolbar class="mat-toolbar-cropper" *ngIf="imagenLogoRecortada != ''">
+                                        <span>Recortar imagen</span>
+                                    </mat-toolbar>
+                                    <hr *ngIf="imagenLogoRecortada != ''">
+                                    <image-cropper *ngIf="eventoCambioImagenLogotipo"
+                                        [imageChangedEvent]="eventoCambioImagenLogotipo" [maintainAspectRatio]="true"
+                                        [aspectRatio]="1 / 1" format="jpg" (imageCropped)="imagenRecortada($event)"
+                                        (imageLoaded)="imagenCargada()" (cropperReady)="cortadorListo()"
+                                        (loadImageFailed)="cargarImagenFallida()">
+                                    </image-cropper>
+                                </div>
+                                <div class="col-lg-4" [@carga]="'in'" *ngIf="imagenLogoRecortada != ''">
+                                    <mat-toolbar class="mat-toolbar-cropper">
+                                        <span>Vista previa</span>
+                                        <span class="espaciador"></span>
+                                        <button mat-icon-button class="float-right" color="warn"
+                                            (click)="eliminarImagen()">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    </mat-toolbar>
+                                    <hr>
+                                    <img class="text-center" [src]="imagenLogoRecortada" class="img-thumbnail"
+                                        width="200px" height="150px" alt="Logotipo nuevo de la empresa">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer bg-transparent border-0 d-flex justify-content-between">
+        <button mat-raised-button color="primary" class="ml-auto btn-exito" [disabled]="!imagenValida()"
+            (click)="guardarImagen()">Guardar
+            imagen</button>
+    </div>
+</mat-card>

@@ -36,12 +36,14 @@ const gasto_general_1 = __importDefault(require("../rutas/gasto_general"));
 const gasto_insumo_1 = __importDefault(require("../rutas/gasto_insumo"));
 const compras_1 = __importDefault(require("../rutas/compras"));
 const pedidos_1 = __importDefault(require("../rutas/pedidos"));
+const empresa_1 = __importDefault(require("../rutas/empresa"));
 class Servidor {
     constructor() {
         this.app = express_1.default();
         this.puerto = environment_1.environment.PUERTO_SERVIDOR;
         this.httpServidor = new http_1.default.Server(this.app);
         this.io = socket_io_1.default(this.httpServidor);
+        this.io.origins('*:*');
         this.escucharSockets();
     }
     static get instance() {
@@ -82,6 +84,7 @@ class Servidor {
         this.app.use('/api/v2/proveedores', proveedores_1.default);
         this.app.use('/api/v2/cotizaciones', cotizaciones_1.default);
         this.app.use('/api/v2/pedidos', pedidos_1.default);
+        this.app.use('/api/v2/empresa', empresa_1.default);
     }
     iniciar() {
         this.inicializarRutas();

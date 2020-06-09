@@ -10,10 +10,11 @@ import { TemasService } from 'src/app/comun/servicios/temas.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ConfiguracionService } from 'src/app/comun/servicios/configuracion.service';
 import { environment } from 'src/environments/environment';
 import { Animaciones } from 'src/app/comun/constantes/animaciones';
 import { CargandoService } from 'src/app/comun/servicios/cargando.service';
+import { EmpresaService } from 'src/app/comun/servicios/empresa.service';
+import { DatosEmpresa } from 'src/app/comun/modelos/datos_empresa.model';
 
 @Component({
   selector: 'app-main-nav-admin',
@@ -43,7 +44,7 @@ export class MainNavAdminComponent implements OnInit,AfterViewInit {
     private rutas: Router,
     private usuarioService: UsuarioService,
     private toastr: NgToastrService,
-    private configuracionService: ConfiguracionService) {
+    private empresaService: EmpresaService) {
     this.cargandoService.cambioEmitido$.subscribe(
       cargando => {
         this.cargando.cargando = cargando.cargando;
@@ -81,11 +82,20 @@ export class MainNavAdminComponent implements OnInit,AfterViewInit {
     );
   }
   obtenerLogoActual() {
-    const usuario: any = this.autenticacionService.getTokenDesencriptado();
-    this.logotipoActual = this.urlFotos + usuario.logo;
+    this.cargandoService.crearVistaCargando(true);
+      this.empresaService.obtenerLogotipoEmpresa().subscribe(
+        (empresa: DatosEmpresa) => {
+          this.cargandoService.crearVistaCargando(false);
+          this.logotipoActual = this.urlFotos + empresa.rutaLogo;
+        },
+        (err: HttpErrorResponse) => {
+          this.cargandoService.crearVistaCargando(false);
+          this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+        }
+      );
   }
   obtenerNuevoLogotipo() {
-    this.configuracionService.escucharNuevoLogo()
+    this.empresaService.escucharNuevoLogo()
       .pipe(
         takeUntil(this.onDestroy$)
       )

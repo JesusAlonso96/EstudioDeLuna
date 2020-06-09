@@ -19,7 +19,7 @@ mongoose_1.default.connect(environment_1.environment.DB_URL, { useNewUrlParser: 
 servidor.app.use(body_parser_1.default.urlencoded({ extended: true }));
 servidor.app.use(body_parser_1.default.json());
 /* CORS */
-servidor.app.use(cors_1.default({ origin: true, credentials: true }));
+servidor.app.use(cors_1.default({ origin: true, credentials: false }));
 /* Rutas de imagenes */
 servidor.app.use(express_1.default.static('subidas'));
 servidor.app.use(express_1.default.static('subidas/logotipos'));

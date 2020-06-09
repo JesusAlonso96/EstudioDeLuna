@@ -105,6 +105,9 @@ import { ReportesComprasComponent } from './administrador-reportes-seccion/repor
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProductosSeccionRestaurarComponent } from './productos-seccion/productos-seccion-restaurar/productos-seccion-restaurar.component';
+import { CajaCorteCajaComponent } from './administrador-caja-seccion/caja-corte-caja/caja-corte-caja.component';
+import { CajaAltaCorteCajaComponent } from './administrador-caja-seccion/caja-corte-caja/caja-alta-corte-caja/caja-alta-corte-caja.component';
+import { CajaHistorialCorteCajaComponent } from './administrador-caja-seccion/caja-corte-caja/caja-historial-corte-caja/caja-historial-corte-caja.component';
 
 
 @NgModule({
@@ -181,7 +184,10 @@ import { ProductosSeccionRestaurarComponent } from './productos-seccion/producto
     ComprasGastosInsumosPendientesComponent,
     AdministradorReportesSeccionComponent,
     ReportesComprasComponent,
-    ProductosSeccionRestaurarComponent
+    ProductosSeccionRestaurarComponent,
+    CajaCorteCajaComponent,
+    CajaAltaCorteCajaComponent,
+    CajaHistorialCorteCajaComponent
   ],
   imports: [
     CommonModule,

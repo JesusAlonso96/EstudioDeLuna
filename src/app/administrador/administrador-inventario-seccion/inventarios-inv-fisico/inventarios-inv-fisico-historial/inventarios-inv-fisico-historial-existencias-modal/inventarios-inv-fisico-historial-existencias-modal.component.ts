@@ -5,6 +5,7 @@ import { InventarioService } from 'src/app/comun/servicios/inventario.service';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
 import { InventariosInvFisicoAlmacenesExistenciasModalComponent } from '../../inventarios-inv-fisico-almacenes/inventarios-inv-fisico-almacenes-existencias-modal/inventarios-inv-fisico-almacenes-existencias-modal.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Almacen } from 'src/app/comun/modelos/almacen.model';
 
 @Component({
   selector: 'app-inventarios-inv-fisico-historial-existencias-modal',
@@ -64,5 +65,8 @@ export class InventariosInvFisicoHistorialExistenciasModalComponent implements O
   borrarBusqueda() {
     this.busquedaElemento = '';
     this.aplicarFiltroBusqueda();
+  }
+  obtenerNombreAlmacen(){
+    return (<Almacen>this.data.almacen).nombre;
   }
 }

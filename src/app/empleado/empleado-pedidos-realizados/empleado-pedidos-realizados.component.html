@@ -30,12 +30,14 @@
     </div>
     <div class="row">
       <div *ngFor="let pedido of pedidosFiltrados" class="col-lg-4 col-md-6 col-sm-12">
-        <mat-card class="card mb-4">
+        <mat-card class="card p-0 mb-4">
           <mat-card-header class="card-header border-0 bg-transparent">
             <img mat-card-avatar class="foto" *ngIf="!pedido.foto" src="../../../assets/imagenes/profile_user.gif">
             <img mat-card-avatar class="foto" *ngIf="pedido.foto" [src]="url_fotos + pedido.foto">
             <mat-card-title>Pedido {{pedido.num_pedido}}</mat-card-title>
             <mat-card-subtitle>Creado en {{pedido.fecha_creacion | date:"dd-MM-yyyy, h:mm a"}}
+            </mat-card-subtitle>
+            <mat-card-subtitle>Realizado en {{pedido.fecha_realizacion | date:"dd-MM-yyyy, h:mm a"}}
             </mat-card-subtitle>
           </mat-card-header>
           <div class="card-body">

@@ -27,5 +27,4 @@ const rutasConfiguracion = express_1.Router();
 rutasConfiguracion.get('', middlewares_1.autenticacionMiddleware, ConfiguracionCtrl.obtenerConfiguracionUsuario);
 rutasConfiguracion.patch('/notificaciones', middlewares_1.autenticacionMiddleware, ConfiguracionCtrl.guardarConfiguracionNotificaciones);
 rutasConfiguracion.patch('/temas', middlewares_1.autenticacionMiddleware, ConfiguracionCtrl.cambiarTema);
-rutasConfiguracion.patch('/logotipo', middlewares_1.autenticacionMiddleware, upload.single('imagen'), ConfiguracionCtrl.cambiarLogotipo);
 exports.default = rutasConfiguracion;

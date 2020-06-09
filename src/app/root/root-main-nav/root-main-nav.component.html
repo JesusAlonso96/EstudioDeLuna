@@ -2,6 +2,10 @@
 <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #drawer class="sidebar" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
         [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+        <div class="header">
+            <img *ngIf="logotipoActual != ''" [src]="logotipoActual" alt="Logotipo actual de la empresa">
+            <img *ngIf="logotipoActual == ''" src="../../../assets/imagenes/logo.png" alt="Logotipo actual de la empresa">
+        </div>
         <mat-nav-list class="mt-4">
             <mat-list-item class="mx-auto mb-1">
                 <mat-icon mat-list-icon>account_circle</mat-icon>
@@ -16,24 +20,28 @@
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
-        <div  class="navbar" color="primary">
+        <div class="navbar" color="primary">
             <button mat-mini-fab class="btn-toggle" aria-label="Toggle sidenav" (click)="drawer.toggle()">
-                <mat-icon [@rotacion]="drawer.opened ? 'rotado' : 'inicial' ">{{drawer.opened ? 'more_vert' : 'view_list'}}
+                <mat-icon [@rotacion]="drawer.opened ? 'rotado' : 'inicial' ">
+                    {{drawer.opened ? 'more_vert' : 'view_list'}}
                 </mat-icon>
-              </button>
-              <span style="color: #555;">{{moduloActual}}</span>
-              <span class="espaciador"></span>
-              <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-nav" color="primary" matTooltip="Temas">
+            </button>
+            <span style="color: #555;">{{moduloActual}}</span>
+            <span class="espaciador"></span>
+            <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-nav" color="primary" matTooltip="Temas">
                 <mat-icon>palette</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu" style="padding: 1;">
+            </button>
+            <mat-menu #menu="matMenu" style="padding: 1;">
                 <button mat-menu-item class="dot mr-4 ml-2" (click)="cambiarTema('default')"></button>
                 <button mat-menu-item class="dot-rojo mr-2" (click)="cambiarTema('tema-rojo')"></button> <br>
                 <button mat-menu-item class="dot-azul mr-4 ml-2" (click)="cambiarTema('tema-azul')"></button>
                 <button mat-menu-item class="dot-verde mr-2" (click)="cambiarTema('tema-verde')"></button>
-              </mat-menu>
-            <button mat-icon-button class="btn-nav" (click)="cerrarSesion()" 
-                matTooltip="Cerrar sesion">
+            </mat-menu>
+            <button mat-icon-button class="btn-nav" (click)="activarModuloActivo('Configuracion del sistema')"
+                routerLink="/root/configuracion" color="primary" matTooltip="Configuracion del sistema">
+                <mat-icon>settings</mat-icon>
+            </button>
+            <button mat-icon-button class="btn-nav" (click)="cerrarSesion()" matTooltip="Cerrar sesion">
                 <mat-icon>exit_to_app</mat-icon>
             </button>
         </div>

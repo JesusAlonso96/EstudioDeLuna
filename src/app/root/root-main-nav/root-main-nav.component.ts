@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ServicioAutenticacionService } from 'src/app/autenticacion/servicio-autenticacion/servicio-autenticacion.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { CargandoService } from 'src/app/comun/servicios/cargando.service';
 import MenuRoot from 'src/app/comun/constantes/menus/menu-root.constant';
 import { TemasService } from 'src/app/comun/servicios/temas.service';
@@ -11,6 +11,9 @@ import { Animaciones } from 'src/app/comun/constantes/animaciones';
 import { Mensaje } from 'src/app/comun/modelos/mensaje.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgToastrService } from 'src/app/comun/servicios/ng-toastr.service';
+import { EmpresaService } from 'src/app/comun/servicios/empresa.service';
+import { DatosEmpresa } from 'src/app/comun/modelos/datos_empresa.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root-main-nav',
@@ -23,7 +26,10 @@ export class RootMainNavComponent implements OnInit {
   menus: any[] = [];
   pestanasActivas: boolean[] = [];
   moduloActual: string = '';
-  
+  logotipoActual: string = '';
+  private onDestroy$ = new Subject<boolean>();
+  urlFotos = environment.url_fotos;
+
   cargando = {
     cargando: false,
     texto: ''
@@ -33,6 +39,7 @@ export class RootMainNavComponent implements OnInit {
     private cargandoService: CargandoService,
     private temasService: TemasService,
     private toastr: NgToastrService,
+    private empresaService: EmpresaService,
     private rutas: Router) {
     this.cargandoService.cambioEmitido$.subscribe(
       cargando => {
@@ -47,6 +54,8 @@ export class RootMainNavComponent implements OnInit {
     this.menus = MenuRoot;
     this.iniciarPestanas();
     this.buscarPestanaActiva();
+    this.obtenerLogoActual();
+    this.obtenerNuevoLogotipo();
   }
 
   cerrarSesion() {
@@ -88,5 +97,30 @@ export class RootMainNavComponent implements OnInit {
           this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
         }
       );
+    }
+    /* LOGOTIPO */
+    obtenerLogoActual(){
+      this.cargandoService.crearVistaCargando(true);
+      this.empresaService.obtenerLogotipoEmpresa().subscribe(
+        (empresa: DatosEmpresa) => {
+          this.cargandoService.crearVistaCargando(false);
+          this.logotipoActual = this.urlFotos + empresa.rutaLogo;
+        },
+        (err: HttpErrorResponse) => {
+          this.cargandoService.crearVistaCargando(false);
+          this.toastr.abrirToastr('error', err.error.titulo, err.error.detalles);
+        }
+      );
+    }
+    obtenerNuevoLogotipo() {
+      this.empresaService.escucharNuevoLogo()
+        .pipe(
+          takeUntil(this.onDestroy$)
+        )
+        .subscribe(
+          (logotipo: { ruta: string }) => {
+            this.logotipoActual = this.urlFotos + logotipo.ruta;
+          }
+        );
     }
 }

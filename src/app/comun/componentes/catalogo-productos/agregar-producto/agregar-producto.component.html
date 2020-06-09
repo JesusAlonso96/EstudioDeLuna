@@ -1,16 +1,16 @@
 <h2 mat-dialog-title>Agregar producto</h2>
-<mat-dialog-content>
+<div mat-dialog-content>
     <form class="container-fluid" #productoForm="ngForm">
         <div class="row">
             <div class="col-lg-6">
-                <mat-form-field appearance="outline" class="full-width">
+                <mat-form-field appearance="outline">
                     <mat-label>Familia</mat-label>
                     <input matInput type="text" [(ngModel)]="producto.familia.nombre" name="nombreFamilia"
                         #nombreFamilia="ngModel" disabled>
                 </mat-form-field>
             </div>
             <div class="col-lg-6">
-                <mat-form-field appearance="outline" class="full-width">
+                <mat-form-field appearance="outline">
                     <mat-label>Nombre</mat-label>
                     <input matInput type="text" [(ngModel)]="producto.nombre" name="nombre" #nombre="ngModel"
                         placeholder="Nombre" required>
@@ -22,7 +22,7 @@
         </div>
         <div class="row">
             <div class="col-lg-6">
-                <mat-form-field appearance="outline" class="full-width">
+                <mat-form-field appearance="outline">
                     <mat-label>Numero de fotos</mat-label>
                     <input matInput type="number" [(ngModel)]="producto.num_fotos" name="num_fotos" #num_fotos="ngModel"
                         placeholder="Numero de fotos" required>
@@ -33,7 +33,7 @@
                 </mat-form-field>
             </div>
             <div class="col-lg-6">
-                <mat-form-field appearance="outline" class="full-width">
+                <mat-form-field appearance="outline">
                     <mat-label>Precio</mat-label>
                     <input matInput type="number" [(ngModel)]="producto.precio" name="precio" #precio="ngModel"
                         placeholder="Precio" required>
@@ -45,7 +45,7 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <mat-form-field appearance="outline" class="full-width">
+                <mat-form-field appearance="outline">
                     <mat-label>Descripcion del producto</mat-label>
                     <textarea matInput placeholder="Ingresa una descripcion" [(ngModel)]="producto.descripcion"
                         name="descripcion" #descripcion="ngModel" cols="20" rows="10" required></textarea>
@@ -83,15 +83,13 @@
                     </button>
 
                 </div>
-                <div class="col-lg-12">
-                    <ul>
-                        <li *ngFor="let caracteristica of producto.caracteristicas; let i = index">
-                            {{caracteristica}}
-                            <button mat-icon-button (click)="quitarCaracteristica(i)">
-                                <mat-icon>close</mat-icon>
-                            </button>
-                        </li>
-                    </ul>
+                <div class="col-6">
+                    <mat-chip-list class="mat-chip-list-stacked">
+                        <mat-chip [@carga]="'in'" class="d-flex justify-content-between w-100" *ngFor="let caracteristica of producto.caracteristicas; let i = index" color="warn" selected>
+                            <span>{{caracteristica}}</span>
+                            <mat-icon (click)="quitarCaracteristica(i)" matChipRemove>cancel</mat-icon>
+                        </mat-chip>
+                    </mat-chip-list>
                 </div>
             </ng-container>
         </div>
@@ -106,14 +104,14 @@
         <div class="row">
             <ng-container *ngIf="tam">
                 <div class="col-lg-6">
-                    <mat-form-field appearance="outline" class="full-width">
+                    <mat-form-field appearance="outline">
                         <mat-label>Ingresa el ancho (pulgadas)</mat-label>
                         <input matInput type="number" [(ngModel)]="producto.ancho" name="ancho" #ancho="ngModel"
                             placeholder="Ancho">
                     </mat-form-field>
                 </div>
                 <div class="col-lg-6">
-                    <mat-form-field appearance="outline" class="full-width">
+                    <mat-form-field appearance="outline">
                         <mat-label>Ingresa el alto (pulgadas)</mat-label>
                         <input matInput type="number" [(ngModel)]="producto.alto" name="alto" #alto="ngModel"
                             placeholder="Alto">
@@ -145,9 +143,9 @@
             </div>
         </div>
     </form>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-    <button mat-button [mat-dialog-close]="producto" [disabled]="!productoForm.valid"
-        >Agregar</button>
-    <button mat-button (click)="onNoClick()">Cancelar</button>
-</mat-dialog-actions>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" [mat-dialog-close]="producto"
+        [disabled]="!productoForm.valid">Agregar</button>
+    <button mat-raised-button (click)="onNoClick()">Cancelar</button>
+</div>
