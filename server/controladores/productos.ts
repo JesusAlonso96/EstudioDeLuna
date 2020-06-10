@@ -4,7 +4,7 @@ import { NativeError, Types } from 'mongoose';
 import { Producto, IProducto } from '../modelos/producto.model';
 
 export let obtenerFamilias = (req: Request, res: Response) => {
-    Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
+    Familia.find({ activa: 1 })
         .exec((err: NativeError, familias: IFamilia[]) => {
             if (err) return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron cargar las familias' });
             return res.json(familias);
@@ -21,7 +21,7 @@ export let obtenerProductosInactivos = (req: Request, res: Response) => {
 
 }
 export let obtenerFamiliasYProductos = (req: Request, res: Response) => {
-    Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
+    Familia.find({ activa: 1 })
         .populate({
             path: 'productos',
             match: { activo: 1 }
@@ -34,7 +34,7 @@ export let obtenerFamiliasYProductos = (req: Request, res: Response) => {
 
 }
 export let obtenerFamiliasYProductosInactivos = (req: Request, res: Response) => {
-    Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
+    Familia.find({ activa: 1 })
         .populate({
             path: 'productos',
             match: { activo: 0 }

@@ -4,7 +4,7 @@ const familia_model_1 = require("../modelos/familia.model");
 const mongoose_1 = require("mongoose");
 const producto_model_1 = require("../modelos/producto.model");
 exports.obtenerFamilias = (req, res) => {
-    familia_model_1.Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
+    familia_model_1.Familia.find({ activa: 1 })
         .exec((err, familias) => {
         if (err)
             return res.status(422).send({ titulo: 'Error', detalles: 'No se pudieron cargar las familias' });
@@ -22,7 +22,7 @@ exports.obtenerProductos = (req, res) => {
 exports.obtenerProductosInactivos = (req, res) => {
 };
 exports.obtenerFamiliasYProductos = (req, res) => {
-    familia_model_1.Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
+    familia_model_1.Familia.find({ activa: 1 })
         .populate({
         path: 'productos',
         match: { activo: 1 }
@@ -35,7 +35,7 @@ exports.obtenerFamiliasYProductos = (req, res) => {
     });
 };
 exports.obtenerFamiliasYProductosInactivos = (req, res) => {
-    familia_model_1.Familia.find({ activa: 1, sucursal: res.locals.usuario.sucursal })
+    familia_model_1.Familia.find({ activa: 1 })
         .populate({
         path: 'productos',
         match: { activo: 0 }
