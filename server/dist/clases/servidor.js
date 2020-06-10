@@ -31,12 +31,12 @@ const inventario_1 = __importDefault(require("../rutas/inventario"));
 const sucursal_1 = __importDefault(require("../rutas/sucursal"));
 const traspaso_1 = __importDefault(require("../rutas/traspaso"));
 const cotizaciones_1 = __importDefault(require("../rutas/cotizaciones"));
-const tipo_gasto_general_1 = __importDefault(require("../rutas/tipo_gasto_general"));
 const gasto_general_1 = __importDefault(require("../rutas/gasto_general"));
 const gasto_insumo_1 = __importDefault(require("../rutas/gasto_insumo"));
 const compras_1 = __importDefault(require("../rutas/compras"));
 const pedidos_1 = __importDefault(require("../rutas/pedidos"));
 const empresa_1 = __importDefault(require("../rutas/empresa"));
+const tipo_gasto_general_1 = __importDefault(require("../rutas/tipo_gasto_general"));
 class Servidor {
     constructor() {
         this.app = express_1.default();

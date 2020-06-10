@@ -56,6 +56,7 @@ export class ServicioAutenticacionService {
       localStorage.removeItem('usuario_meta');
       localStorage.removeItem('moduloActual');
       localStorage.removeItem('tema-actual');
+      localStorage.removeItem('c_a');
     })
     this.tokenDesencriptado = new tokenDesencriptado();
   }

@@ -406,7 +406,7 @@ exports.registrarUsuario = (req, res) => {
             posicion: 'toast-top-right',
             barraProgreso: false
         },
-        tema: 'default'
+        tema: 'tema-rojo'
     };
     usuario_model_1.Usuario.findOne({ username: req.body.username })
         .exec((err, usuarioEncontrado) => {

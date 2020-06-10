@@ -22,12 +22,12 @@ import rutasInventario from '../rutas/inventario';
 import rutasSucursal from '../rutas/sucursal';
 import rutasTraspaso from '../rutas/traspaso';
 import rutasCotizaciones from '../rutas/cotizaciones';
-import rutasTipoGastoGeneral from '../rutas/tipo_gasto_general';
 import rutasGastoGeneral from '../rutas/gasto_general';
 import rutasGastoInsumo from '../rutas/gasto_insumo';
 import rutasCompras from '../rutas/compras';
 import rutasPedidos from '../rutas/pedidos';
 import rutasEmpresa from '../rutas/empresa';
+import rutasTipoGastoGeneral from '../rutas/tipo_gasto_general';
 
 export default class Servidor {
     private static _instance: Servidor;

@@ -385,7 +385,7 @@ export let registrarUsuario = (req: Request, res: Response) => {
             posicion: 'toast-top-right',
             barraProgreso: false
         },
-        tema: 'default'
+        tema: 'tema-rojo'
     }
     Usuario.findOne({ username: req.body.username })
         .exec((err: any, usuarioEncontrado: IUsuario) => {
